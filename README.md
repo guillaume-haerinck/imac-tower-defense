@@ -33,9 +33,11 @@ The recommended compiler is MSVC. To install it you will need [Visual Studio](ht
 
 ### Build & Launch
 
-The `CMakeLists.txt` file ensure that the project will work on Linux and Windows plateforms. Before launching the compiled binaries, **make sure that the working directory is set to this folder**, or the shaders files and images will not be found by the program. If you are unsure about how to do it, just copy the builded files to this folder before launching them. (by default, they will be in the `bin/Debug` folder).
+The `CMakeLists.txt` file ensure that the project will work on Linux and Windows plateforms.
 
-You can build and launch the projects in many different ways, we covered a few of them :
+Before launching the compiled binaries, **make sure that the working directory is set to this folder**, or the shaders files and images will not be found by the program. If you are unsure about how to do it, just copy the builded files to this folder before launching them. (by default, they will be in the `bin/Debug` folder).
+
+You can build and launch the project in many different ways, we covered a few of them :
 
 #### With Bash (Linux only)
 
@@ -47,7 +49,7 @@ TODO
 
 #### With VSCode
 
-You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommand using the `C/C++` extension coming from Microsoft and the `CMake` extension from twxs.
+You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
 ![Screenshot](doc/readme-img/extensions.png?raw=true "VSCode extensions")
 
@@ -76,9 +78,28 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [PPM](http://netpbm.sourceforge.net/doc/ppm.html) - The file format used to store data with images
 - [Rang](https://github.com/agauniyal/rang) - Add color to terminal logs
 
-## Usefull articles
+## Useful articles
 
 - [Awesome Opengl](https://github.com/eug/awesome-opengl) - A list of usefull tools for OpenGl
+
+## Inspired by
+
+- [tddod](https://github.com/Daivuk/tddod) - Data oriented tower defense
+
+## To-Do list
+
+- [x] Integrate ECS system
+- [x] Load & play spritesheet
+- [ ] Load, validate and interpret .itd files
+- [ ] Load map as a grid
+- [ ] User interface
+- [ ] Construction system
+- [ ] Monster path following
+- [ ] Attack system
+- [ ] Waves system
+- [ ] Monster state machine
+- [ ] Banking system
+- [ ] Upgrade system
 
 ## Authors
 
