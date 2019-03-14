@@ -4,7 +4,7 @@
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
 
-#include "render/index-buffer.hpp"
+#include "graphics/index-buffer.hpp"
 #include "components/sprite.hpp"
 
 class SpriteFactory {

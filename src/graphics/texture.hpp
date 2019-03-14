@@ -11,7 +11,7 @@ private:
 	int m_width, m_height, m_bpp;
 
 public:
-	Texture(const std::string& path = "ressources/textures/missing.png");
+	Texture(const std::string& path = "textures/missing.png");
 	~Texture();
  
 	void bind(unsigned int slot = 0) const;

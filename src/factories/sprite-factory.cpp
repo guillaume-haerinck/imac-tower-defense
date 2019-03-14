@@ -1,14 +1,14 @@
 #include "sprite-factory.hpp"
 
 #include "debug/gl-error-handling.hpp"
-#include "render/vertex-array.hpp"
-#include "render/shader.hpp"
-#include "render/texture.hpp"
-#include "render/texture-array.hpp"
+#include "graphics/vertex-array.hpp"
+#include "graphics/shader.hpp"
+#include "graphics/texture.hpp"
+#include "graphics/texture-array.hpp"
 
 SpriteFactory::SpriteFactory(entt::registry<>& registry)
-: m_shaderBasic("ressources/shaders/basic-mvp.vert", "ressources/shaders/basic-texture.frag"),
-  m_shaderTexArray("ressources/shaders/basic-mvp.vert", "ressources/shaders/basic-texture-array2d.frag"),
+: m_shaderBasic("shaders/basic-mvp.vert", "shaders/basic-texture.frag"),
+  m_shaderTexArray("shaders/basic-mvp.vert", "shaders/basic-texture-array2d.frag"),
   m_registry(registry)
 {
     /* Index buffer */
@@ -66,6 +66,7 @@ cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2
     mySprite.shader = &m_shaderBasic;
     mySprite.ib = &m_ib;
     mySprite.textureID = texture.getID();
+    mySprite.target = GL_TEXTURE_2D;
     mySprite.vaID = va.getID();
     return mySprite;
 }
@@ -107,6 +108,7 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
     mySprite.shader = &m_shaderTexArray;
     mySprite.ib = &m_ib;
     mySprite.textureID = texture.getID();
+    mySprite.target = GL_TEXTURE_2D_ARRAY;
     mySprite.vaID = va.getID();
     return mySprite;
 }

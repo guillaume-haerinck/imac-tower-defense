@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     }
     SDL_GL_LoadLibrary(NULL);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -63,6 +63,15 @@ int main(int argc, char** argv) {
         DEBUG_BREAK;
 		return EXIT_FAILURE;
 	}
+    int glMajVersion, glMinVersion;
+    glGetIntegerv(GL_MAJOR_VERSION, &glMajVersion);
+    glGetIntegerv(GL_MINOR_VERSION, &glMinVersion);
+    if (glMajVersion < 4 || glMajVersion < 4 && glMinVersion < 3) {
+        std::cerr << "[Error] Your graphic card driver is not up to date, you must have at least OpenGL 4.4" << std::endl;
+        std::cout << "OpenGL version " <<  glGetString(GL_VERSION) << std::endl;
+        DEBUG_BREAK;
+		return EXIT_FAILURE;
+    }
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(glError_messageCallback, 0);
@@ -91,13 +100,12 @@ int main(int argc, char** argv) {
     
     /* Assign components */
     SpriteFactory spriteFactory(registry);
-    registry.assign<cmpt::Sprite>(hoursHandleEntity, spriteFactory.createAtlas("ressources/textures/spritesheet-space.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
+    registry.assign<cmpt::Sprite>(hoursHandleEntity, spriteFactory.createAtlas("images/textures/spritesheet-space.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
     registry.assign<cmpt::Transform>(hoursHandleEntity, glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, -2.0f), glm::quat());
     cmpt::SpriteAnimation myAnim;
     myAnim.activeTile = 0;
     myAnim.endTile = 25;
     myAnim.startTile = 0;
-    myAnim.speed = 1;
     registry.assign<cmpt::SpriteAnimation>(hoursHandleEntity, myAnim);
     registry.assign<tag::Hours>(hoursHandleEntity);
 

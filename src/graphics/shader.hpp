@@ -13,7 +13,7 @@ private:
 	std::unordered_map<std::string, int> m_UniformLocationCache;
 
 public:
-	Shader(const std::string& filepathVertex = "ressources/shaders/basic.vert", const std::string& filepathFragment = "ressources/shaders/basic.frag");
+	Shader(const std::string& filepathVertex = "shaders/basic.vert", const std::string& filepathFragment = "shaders/basic.frag");
 	~Shader();
 
 	void bind() const;

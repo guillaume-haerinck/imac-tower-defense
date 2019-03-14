@@ -11,7 +11,8 @@ void RenderSystem::update(entt::registry<>& registry, glm::mat4& view, glm::mat4
     registry.group<cmpt::Transform, cmpt::Sprite>().each([&](auto entity, cmpt::Transform& transform, cmpt::Sprite& sprite) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
-	    GLCall(glBindTextureUnit(0, sprite.textureID)); // Texture unit 0 for images
+        GLCall(glBindTexture(sprite.target, sprite.textureID));
+        GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images
 
         glm::mat4 mvp = projection * view * getModelMatrix(transform); // Inverted by glm
         sprite.ib->bind();
