@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     /* Create Window */
     SDL_Window* window;
     window = SDL_CreateWindow(
-        "IMACGL",
+        "IMAC Tower Defense",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         WIN_WIDTH, WIN_HEIGHT,
         SDL_WINDOW_OPENGL
@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
     
     /* Assign components */
     SpriteFactory spriteFactory(registry);
-    registry.assign<cmpt::Sprite>(hoursHandleEntity, spriteFactory.createAtlas("images/textures/spritesheet-space.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
+    registry.assign<cmpt::Sprite>(hoursHandleEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
     registry.assign<cmpt::Transform>(hoursHandleEntity, glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, -2.0f), glm::quat());
     cmpt::SpriteAnimation myAnim;
     myAnim.activeTile = 0;

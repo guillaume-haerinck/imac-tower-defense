@@ -41,7 +41,6 @@ void glError_clear();
 
 /**
  * @brief Print OpenGl errors to the console if any
- * @note Must not be called between a glBegin() and glEnd() or it will throw 'invalid operation' error
  * 
  * @param functionName
  * @param filename
@@ -54,7 +53,6 @@ bool glError_doesFunctionWorks(const char* functionName, const char* filename, i
 /**
  * @brief Detailed log of open gl
  * @note You must have glEnable(GL_DEBUG_OUTPUT) and glDebugMessageCallback(debugCallback, nullptr) to get it working.
- * @note For C++ only
  * 
  * @param source 
  * @param type 
