@@ -77,6 +77,7 @@ int main(int argc, char** argv) {
     glDebugMessageCallback(glError_messageCallback, 0);
     std::cout << "OpenGL version " <<  glGetString(GL_VERSION) << std::endl;
     std::cout << "Press 'P' to activate wireframe mode" << std::endl;
+    std::cout << std::endl << "--------------------------------------------" << std::endl << std::endl;
 
     /* Enable blending & Z-Buffer */
 	GLCall(glEnable(GL_BLEND));

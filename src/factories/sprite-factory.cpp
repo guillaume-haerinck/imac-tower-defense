@@ -7,8 +7,8 @@
 #include "graphics/texture-array.hpp"
 
 SpriteFactory::SpriteFactory(entt::registry<>& registry)
-: m_shaderBasic("shaders/basic-mvp.vert", "shaders/basic-texture.frag"),
-  m_shaderTexArray("shaders/basic-mvp.vert", "shaders/basic-texture-array2d.frag"),
+: m_shaderTex("shaders/texture/texture.vert", "shaders/texture/texture.frag"),
+  m_shaderTexArray("shaders/texture/texture.vert", "shaders/texture/texture-array.frag"),
   m_registry(registry)
 {
     /* Index buffer */
@@ -49,21 +49,21 @@ cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2
 	va.addBuffer(vb, vbLayout);
 
     /* Uniforms */
-    m_shaderBasic.bind();
-    m_shaderBasic.setUniformMat4f("u_mvp", glm::mat4(1.0f));
+    m_shaderTex.bind();
+    m_shaderTex.setUniformMat4f("u_mvp", glm::mat4(1.0f));
     Texture texture(textureFilepath);
     texture.bind();
-	m_shaderBasic.setUniform1i("u_texture", 0);
+	m_shaderTex.setUniform1i("u_texture", 0);
     
     /* Cleanup */
-    m_shaderBasic.unbind();
+    m_shaderTex.unbind();
     va.unbind();
     vb.unbind();
     texture.unbind();
     
     /* Send IDs */
     cmpt::Sprite mySprite;
-    mySprite.shader = &m_shaderBasic;
+    mySprite.shader = &m_shaderTex;
     mySprite.ib = &m_ib;
     mySprite.textureID = texture.getID();
     mySprite.target = GL_TEXTURE_2D;

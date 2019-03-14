@@ -73,6 +73,8 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
 - [EnTT](https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system) - The ECS framework
+- [PPM](http://netpbm.sourceforge.net/doc/ppm.html) - The file format used to store data with images
+- [Rang](https://github.com/agauniyal/rang) - Add color to terminal logs
 
 ## Usefull articles
 
