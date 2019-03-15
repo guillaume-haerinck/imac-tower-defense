@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <cstdlib>
 #include <iostream>
+#include <Ultralight/Ultralight.h>
 
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
@@ -114,6 +115,9 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem;
     MovementSystem movementSystem;
     AnimationSystem animationSystem;
+
+    /* TEST  */
+    ultralight::Platform& platform = ultralight::Platform::instance();
 
     /* Main loop */
     bool bWireframe = false;

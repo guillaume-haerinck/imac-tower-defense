@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>Release Notes</title>
+<style type="text/css">
+body {
+  background-color: #6d59fb;
+  margin: 0;
+  line-height: 1.4;
+}
+a, a:link, a:visited {
+  color: #6d59fb;
+}
+a:hover { 
+  color: #8676ff;
+}
+a:active {
+  color: black;
+}
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  background-color: rgb(255, 250, 223);
+  padding: 2px;
+}
+#content {
+  width: 500px;
+  margin: 45px auto;
+  background-color: white;
+  font-family: Segoe UI, -apple-system, sans-serif;
+  padding: 40px 60px;
+  color: #333;
+  box-shadow: 15px 25px #4937d5;
+}
+h3 {
+  border-bottom: 6px solid #EEE;
+}
+
+h4, dt {
+  margin:0;
+  margin-top: 0.5em;
+  padding:6px;
+  font-weight: bold;
+}
+p {
+  padding: 6px;
+  margin: 0.5em 0;
+  margin-bottom: 1.5em;
+ }
+</style>
+</head>
+<body>
+<div id="content">
+
+<h2>Welcome to the Ultralight 0.9.1 Beta!</h2>
+<p>Thanks for checking out the Beta! We hope you'll enjoy this release and appreciate any and all feedback as we work towards a stable release.</p>
+
+<dl>
+  <dt>Discussion Community:</dt><dd><a href="https://discuss.ultralig.ht">https://discuss.ultralig.ht</a></dd>
+  <dt>Chat Room (on Slack)</dt><dd><a href="https://chat.ultralig.ht">https://chat.ultralig.ht</a></dd>
+  <dt>Issue Tracker</dt><dd><a href="https://github.com/ultralight-ux/ultralight/issues">https://github.com/ultralight-ux/ultralight/issues</a></dd>
+</dl>
+<br/>
+
+<h3>News</h3>
+
+<h4>Linux 64-bit and Windows 32-bit Support</h4>
+
+<p>We are now officially on all three major desktop platforms! We now support Linux 64-bit (Debian 9.5.0+ / Ubuntu) as well as Windows 32-bit.</p>
+
+<h4>OpenGL Support</h4>
+
+<p>We now support OpenGL 3.2 and up (in addition to D3D11 and Metal2) and it's just as fast as our other drivers. This work was done as part of the new GLFW port, check out <code>GPUDriverGL.h</code> and the GLSL shader code within the Framework directory.</p>
+
+<h4>New CMake / GLFW Projects</h4>
+
+<p>We've ported the Framework code over to GLFW (a lightweight, cross-platform OpenGL/Vulkan toolkit) and set up cross-platform CMake projects for the samples so you can generate projects for your favorite platform with a single click.
+</p>
+
+<h4>New C++ JavaScriptCore Bindings</h4>
+
+<p>We've created C++ bindings for JavaScriptCore that provide automatic memory management and helpful conversions between common types. This should save loads of time integrating your native code with JavaScript and is safer to boot. See <code>JSHelpers.h</code> in the Framework code.</p>
+
+<h3>Bug Fixes / Major API Changes</h3>
+
+<ul>
+<li>Fixed crash that occurs when destroying a View with active JavaScript.</li>
+<li>Fixed memory leak with decoded images.</li>
+<li>Renamed min and max functions so we don't require <code>NOMINMAX</code> on Windows.</li>
+<li>Removed <code>Vector</code> template, added <code>String8</code> and <code>String32</code> and made <code>String</code> use them for all UTF conversions.</li>
+<li>Made <code>String16::length()</code> return number of characters minus the trailing null (it previously included it).</li>
+</ul>
+
+<h3>Future Work</h3>
+
+<p>Some more stuff coming later:</li>
+
+<ul>
+<li>C Bindings</li>
+<li>C# Bindings</li>
+<li>Node.js Bindings</li>
+<li>Complex Text Support</li>
+<li>IME Support</li>
+<li>CSS Shadows</li>
+<li>CSS Masks / Filter Effects</li>
+<li>Child Views</li>
+<li>Performance Improvements</li>
+<li>Memory Usage Improvements</li>
+</ul>
+
+ <p style="text-align: right;">- Ultralight Team</p>
+ </div>
+ </body>
+ </html>
+ 
