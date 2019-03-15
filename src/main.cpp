@@ -1,13 +1,11 @@
-#include <glad/glad.h>
 #include <cstdlib>
 #include <iostream>
-
+#include <glad/glad.h>
 #include <GL/glu.h>
 #include <SDL2/SDL.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include <Ultralight/Ultralight.h>
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -118,9 +116,6 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem;
     MovementSystem movementSystem;
     AnimationSystem animationSystem;
-
-    /* TEST ULTRALIGHT */
-    ultralight::Platform& platform = ultralight::Platform::instance();
 
     /* TEST IMGUI */
     IMGUI_CHECKVERSION();
