@@ -1,13 +1,16 @@
 #include <glad/glad.h>
-#include <GL/glu.h>
-#include <SDL2/SDL.h>
 #include <cstdlib>
 #include <iostream>
-#include <Ultralight/Ultralight.h>
 
-#include "entt/entt.hpp"
-#include "glm/glm.hpp"
-#include "glm/gtc/quaternion.hpp"
+#include <GL/glu.h>
+#include <SDL2/SDL.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl.h>
+#include <imgui/imgui_impl_opengl3.h>
+#include <Ultralight/Ultralight.h>
+#include <entt/entt.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "debug/gl-error-handling.hpp"
 #include "core/tags.hpp"
@@ -116,8 +119,24 @@ int main(int argc, char** argv) {
     MovementSystem movementSystem;
     AnimationSystem animationSystem;
 
-    /* TEST  */
+    /* TEST ULTRALIGHT */
     ultralight::Platform& platform = ultralight::Platform::instance();
+
+    /* TEST IMGUI */
+    IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+    /*
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui_ImplSDL2_InitForOpenGL(window, &context);
+	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui::StyleColorsDark();
+
+	ImGui::NewFrame();
+    {
+        ImGui::Begin("Hello, world!");
+        ImGui::End();
+    }
+    */
 
     /* Main loop */
     bool bWireframe = false;

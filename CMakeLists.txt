@@ -7,6 +7,7 @@ project(imac-tower-defense)
 file(
     GLOB_RECURSE
     MY_SOURCES
+    lib/imgui/*
     src/*
 )
 
