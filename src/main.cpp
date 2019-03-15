@@ -125,18 +125,10 @@ int main(int argc, char** argv) {
     /* TEST IMGUI */
     IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-    /*
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui_ImplSDL2_InitForOpenGL(window, &context);
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGui::StyleColorsDark();
-
-	ImGui::NewFrame();
-    {
-        ImGui::Begin("Hello, world!");
-        ImGui::End();
-    }
-    */
 
     /* Main loop */
     bool bWireframe = false;
@@ -146,6 +138,20 @@ int main(int argc, char** argv) {
     unsigned int tempFrameCount = 0;
     while (!bQuit) {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+        /* IMGUI Start */
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(window);
+		ImGui::NewFrame();
+		{
+			ImGui::Begin("Hello, world!");
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+
+		/* IMGUI Render */
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         /* Render */
         view = glm::lookAt(camPos, camTarget, camDirection); // Update camera
@@ -219,6 +225,9 @@ int main(int argc, char** argv) {
         beginTicks = endTicks;
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
     SDL_DestroyWindow(window);
     SDL_Quit();
     return EXIT_SUCCESS;
