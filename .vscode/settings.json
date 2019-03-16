@@ -57,6 +57,23 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "clocale": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "optional": "cpp",
+        "set": "cpp",
+        "shared_mutex": "cpp",
+        "string_view": "cpp",
+        "thread": "cpp",
+        "cctype": "cpp",
+        "codecvt": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "locale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
     }
 }

@@ -1,6 +1,7 @@
 #include "texture.hpp"
 
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "stb_image/stb_image.h"
 
 Texture::Texture(const std::string& path)
@@ -11,7 +12,7 @@ Texture::Texture(const std::string& path)
 	stbi_set_flip_vertically_on_load(1);
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, 4);
 	if (!m_localBuffer) {
-		std::cout << "[Error] Unable to open texture " << path << std::endl;
+		spdlog::critical("[Texture] Unable to open texture {}", path);
 		debug_break();
 	}
 

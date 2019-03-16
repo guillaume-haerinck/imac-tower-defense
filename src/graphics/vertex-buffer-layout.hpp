@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 
 #include "logger/gl-error-handler.hpp"
 
@@ -18,7 +19,7 @@ struct VertexBufferElement {
 			case GL_UNSIGNED_INT:	return 4;
 			case GL_UNSIGNED_BYTE:	return 1;
 		}
-		std::cerr << "[Error] Unknown size of type : getSizeOfType() : vertex-buffer-layout.hpp" << std::endl;
+		spdlog::error("[Vertex buffer layout] Unknown size of type : getSizeOfType() : vertex-buffer-layout.hpp");
 		debug_break();
 		return 0;
 	}

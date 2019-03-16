@@ -1,5 +1,5 @@
 #include "gl-error-handler.hpp"
-#include "rang/rang.hpp"
+#include "spdlog/spdlog.h"
 
 void glr::clear() {
 	while (glGetError() != GL_NO_ERROR);
@@ -8,40 +8,51 @@ void glr::clear() {
 bool glr::doesFunctionWorks(const char* functionName, const char* filename, int line) {
     GLenum error;
 	while ((error = glGetError()) != GL_NO_ERROR) {
-        std::cout << rang::bg::red << "[OpenGL Error] " << gluErrorString(error) << ": " << functionName << " " << filename << " : " << line << rang::bg::reset << std::endl;
+        spdlog::error("[OpenGL Error]) {}: {} {} {}", gluErrorString(error), functionName, filename, line);
 		return false;
 	}
 	return true;
 }
 
-void GLAPIENTRY glr::messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* userParam) {
-	std::cout << "[";
-	switch (source) {
-		case GL_DEBUG_SOURCE_API: std::cout << "Api"; break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: std::cout << "Window system"; break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Shader compiler"; break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY: std::cout << "Third party"; break;
-		case GL_DEBUG_SOURCE_APPLICATION: std::cout << "Application"; break;
-		case GL_DEBUG_SOURCE_OTHER: std::cout << "Other"; break;
-	}
-	std::cout << " ";
+void GLAPIENTRY glr::messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* user_param) {
+	auto const sourceString = [source]() {
+		switch (source) {
+			case GL_DEBUG_SOURCE_API: return "Api";
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "Window system";
+			case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Shader compiler";
+			case GL_DEBUG_SOURCE_THIRD_PARTY: return "Third party";
+			case GL_DEBUG_SOURCE_APPLICATION: return "Application";
+			case GL_DEBUG_SOURCE_OTHER: return "Other";
+		}
+	}();
 
-	switch (type) {
-		case GL_DEBUG_TYPE_ERROR: std::cout << "error"; break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "depreciated behavior"; break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: std::cout << "undefined behavior"; break;
-		case GL_DEBUG_TYPE_PORTABILITY: std::cout << "portability"; break;
-		case GL_DEBUG_TYPE_PERFORMANCE: std::cout << "performance"; break;
-		case GL_DEBUG_TYPE_MARKER: std::cout << "marker"; break;
-		case GL_DEBUG_TYPE_OTHER: std::cout << "other"; break;
-	}
-	std::cout << "]";
+	auto const typeString = [type]() {
+		switch (type) {
+			case GL_DEBUG_TYPE_ERROR: return "error";
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "deprecated behavior";
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "undefined behavior";
+			case GL_DEBUG_TYPE_PORTABILITY: return "portability";
+			case GL_DEBUG_TYPE_PERFORMANCE: return "performance";
+			case GL_DEBUG_TYPE_MARKER: return "marker";
+			case GL_DEBUG_TYPE_OTHER: return "other";
+		}
+	}();
 
 	switch (severity) {
-		case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << rang::fg::green; break;
-		case GL_DEBUG_SEVERITY_LOW: std::cout << rang::fg::cyan; break;
-		case GL_DEBUG_SEVERITY_MEDIUM: std::cout << rang::fg::magenta; break;
-		case GL_DEBUG_SEVERITY_HIGH: std::cout << rang::fg::red; break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION:
+			spdlog::info("[{} {}] {} : {}", sourceString, typeString, id, message);
+			break;
+
+		case GL_DEBUG_SEVERITY_LOW:
+			spdlog::warn("[{} {}] {} : {}", sourceString, typeString, id, message);
+			break;
+
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			spdlog::error("[{} {}] {} : {}", sourceString, typeString, id, message);
+			break;
+
+		case GL_DEBUG_SEVERITY_HIGH:
+			spdlog::critical("[{} {}] {} : {}", sourceString, typeString, id, message);
+			break;
 	}
-	std::cout << " " << id << " : " << message << rang::fg::reset << std::endl;
 }

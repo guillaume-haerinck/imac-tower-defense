@@ -134,7 +134,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
 - [EnTT](https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system) - The ECS framework
-- [Rang](https://github.com/agauniyal/rang) - Add color to terminal logs
+- [SPDLog](https://github.com/gabime/spdlog) - Logging lib
 - [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
 - [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header

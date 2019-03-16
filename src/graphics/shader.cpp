@@ -1,10 +1,12 @@
 #include "shader.hpp"
-#include "logger/gl-error-handler.hpp"
 
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <spdlog/spdlog.h>
+
+#include "logger/gl-error-handler.hpp"
 
 Shader::Shader(const std::string& filepathVertex, const std::string& filepathFragment)
 	: m_FilePathVertex(filepathVertex), m_FilePathFragment(filepathFragment), m_rendererID(0)
@@ -21,7 +23,7 @@ Shader::~Shader() {
 std::string Shader::parseShader(const std::string& filepath) {
 	std::ifstream stream(filepath);
 	if (!stream) {
-		std::cerr << "[Error] parseShader: File " << filepath << " don't exist !" << std::endl;
+		spdlog::critical("[Shader] parseShader(): File {} don't exist !", filepath);
 		debug_break();
 		return "";
 	}
@@ -49,8 +51,20 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = (char *)alloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
-		std::cerr << "[Error] Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader") << std::endl;
-		std::cout << message << std::endl;
+		auto const typeString = [type]() {
+			switch (type) {
+				case GL_VERTEX_SHADER: return "fragment";
+				case GL_FRAGMENT_SHADER: return "vertex";
+				case GL_TESS_EVALUATION_SHADER: return "tesselation evaluation";
+				case GL_TESS_CONTROL_SHADER: return "tesselation control";
+				case GL_GEOMETRY_SHADER: return "geometry";
+				case GL_COMPUTE_SHADER: return "compute";
+				default: return "unknown type";
+			}
+		}();
+
+		spdlog::error("[Shader] Failed to compile {} shader", typeString);
+		spdlog::error("[Shader] {}", message);
 		GLCall(glDeleteShader(id));
 		return 0;
 	}
@@ -101,7 +115,7 @@ int Shader::getUniformLocation(const std::string& name) {
 
 	GLCall(int location = glGetUniformLocation(m_rendererID, name.c_str()));
 	if (location == -1) {
-		std::cout << "Warning: uniform '" << name << "' doesn't exist !" << std::endl;
+		spdlog::warn("[Shader] uniform '{}' doesn't exist !", name);
 	}
 	m_UniformLocationCache[name] = location;
 	return location;

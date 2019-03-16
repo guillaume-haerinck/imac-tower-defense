@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GL/glu.h>
 #include <debugbreak/debugbreak.h>
+#include <spdlog/spdlog.h>
 #include <SDL2/SDL.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
@@ -26,9 +27,12 @@
 #include "systems/animation-system.hpp"
 
 int main(int argc, char** argv) {
+    /* Init logger */
+    spdlog::set_pattern("[%l] %^ %v %$");
+
     /* Init SDL */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
-        std::cerr << "[SDL2 Error] Unable to initialize SDL: " << SDL_GetError() << std::endl;
+        spdlog::critical("[SDL2] Unable to initialize SDL: {}", SDL_GetError());
         debug_break();
         return EXIT_FAILURE;
     }
@@ -51,7 +55,7 @@ int main(int argc, char** argv) {
         SDL_WINDOW_OPENGL
     );
     if (window == nullptr) {
-        std::cerr << "[SDL2 Error] Window is null: " << SDL_GetError() << std::endl;
+        spdlog::critical("[SDL2] Window is null: {}", SDL_GetError());
         debug_break();
         return EXIT_FAILURE;
     }
@@ -59,12 +63,12 @@ int main(int argc, char** argv) {
     /* Create OpenGl context */
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (context == nullptr) {
-        std::cerr << "[SDL2 Error] OpenGL context is null: " << SDL_GetError() << std::endl;
+        spdlog::critical("[SDL2] OpenGL context is null: {}",  SDL_GetError());
         debug_break();
         return EXIT_FAILURE;
     }
     if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
-        std::cerr << "[Error] Glad not init" << std::endl;
+        spdlog::critical("[Glad] Glad not init");
         debug_break();
 		return EXIT_FAILURE;
 	}
@@ -72,8 +76,8 @@ int main(int argc, char** argv) {
     glGetIntegerv(GL_MAJOR_VERSION, &glMajVersion);
     glGetIntegerv(GL_MINOR_VERSION, &glMinVersion);
     if (glMajVersion < 4 || glMajVersion < 4 && glMinVersion < 3) {
-        std::cerr << "[Error] Your graphic card driver is not up to date, you must have at least OpenGL 4.4" << std::endl;
-        std::cout << "OpenGL version " <<  glGetString(GL_VERSION) << std::endl;
+        spdlog::critical("[OpenGl] Your graphic card driver is not up to date, you must have at least OpenGL 4.4");
+        spdlog::info("OpenGL version ", glGetString(GL_VERSION));
         debug_break();
 		return EXIT_FAILURE;
     }
@@ -121,7 +125,7 @@ int main(int argc, char** argv) {
     AnimationSystem animationSystem;
 
     /* TEST NOESIS */
-    Noesis::GUI::Init(nullptr, noelog::logHandler, nullptr);
+    Noesis::GUI::Init(nullptr, noelog::messageCallback, nullptr);
 
     /* TEST IMGUI */
     IMGUI_CHECKVERSION();

@@ -1,6 +1,7 @@
 #include "texture-array.hpp"
 
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "stb_image/stb_image.h"
 
 TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei tileHeight)
@@ -9,7 +10,7 @@ TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei t
 {
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, STBI_rgb_alpha);
 	if (!m_localBuffer) {
-		std::cout << "[Error] Unable to open texture atlas " << path << std::endl;
+		spdlog::critical("[Texture array] Unable to open texture atlas {}", path);
 		debug_break();
 	}
 
