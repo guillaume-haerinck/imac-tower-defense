@@ -1,11 +1,12 @@
 #include "index-buffer.hpp"
 
-#include "debug/gl-error-handling.hpp"
+#include <assert.h>
+#include "logger/gl-error-handler.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
 	: m_count(count)
 {
-	ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+	assert(sizeof(unsigned int) == sizeof(GLuint));
 
 	GLCall(glGenBuffers(1, &m_rendererID));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID));
@@ -27,7 +28,7 @@ void IndexBuffer::unbind() const {
 }
 
 void IndexBuffer::init(const unsigned int* data, unsigned int count) {
-	ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+	assert(sizeof(unsigned int) == sizeof(GLuint));
 	m_count = count;
 
 	GLCall(glGenBuffers(1, &m_rendererID));

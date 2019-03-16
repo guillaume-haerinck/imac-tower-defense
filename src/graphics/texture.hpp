@@ -1,6 +1,6 @@
 #pragma once
 
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
 #include <string>
 
 class Texture {

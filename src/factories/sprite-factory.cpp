@@ -1,6 +1,6 @@
 #include "sprite-factory.hpp"
 
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
 #include "graphics/vertex-array.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture.hpp"

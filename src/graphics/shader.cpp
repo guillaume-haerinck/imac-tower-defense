@@ -1,5 +1,5 @@
 #include "shader.hpp"
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
 
 #include <fstream>
 #include <string>
@@ -22,7 +22,7 @@ std::string Shader::parseShader(const std::string& filepath) {
 	std::ifstream stream(filepath);
 	if (!stream) {
 		std::cerr << "[Error] parseShader: File " << filepath << " don't exist !" << std::endl;
-		DEBUG_BREAK;
+		debug_break();
 		return "";
 	}
 

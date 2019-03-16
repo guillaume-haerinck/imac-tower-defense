@@ -1,11 +1,11 @@
-#include "gl-error-handling.hpp"
+#include "gl-error-handler.hpp"
 #include "rang/rang.hpp"
 
-void glError_clear() {
+void glr::clear() {
 	while (glGetError() != GL_NO_ERROR);
 }
 
-bool glError_doesFunctionWorks(const char* functionName, const char* filename, int line) {
+bool glr::doesFunctionWorks(const char* functionName, const char* filename, int line) {
     GLenum error;
 	while ((error = glGetError()) != GL_NO_ERROR) {
         std::cout << rang::bg::red << "[OpenGL Error] " << gluErrorString(error) << ": " << functionName << " " << filename << " : " << line << rang::bg::reset << std::endl;
@@ -14,7 +14,7 @@ bool glError_doesFunctionWorks(const char* functionName, const char* filename, i
 	return true;
 }
 
-void GLAPIENTRY glError_messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* userParam) {
+void GLAPIENTRY glr::messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* userParam) {
 	std::cout << "[";
 	switch (source) {
 		case GL_DEBUG_SOURCE_API: std::cout << "Api"; break;

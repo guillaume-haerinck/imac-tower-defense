@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GL/glu.h>
+#include <debugbreak/debugbreak.h>
 #include <SDL2/SDL.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
@@ -11,7 +12,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <Noesis_pch.h>
 
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
+#include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
 #include "factories/sprite-factory.hpp"
@@ -23,23 +25,11 @@
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
 
-void LogHandler(const char* filename, uint32_t line, uint32_t level, const char* channel,
-    const char* message)
-{
-    if (strcmp(channel, "") == 0)
-    {
-        // [TRACE] [DEBUG] [INFO] [WARNING] [ERROR]
-        const char* prefixes[] = { "T", "D", "I", "W", "E" };
-        const char* prefix = level < NS_COUNTOF(prefixes) ? prefixes[level] : " ";
-        fprintf(stderr, "[NOESIS/%s] %s\n", prefix, message);
-    }
-}
-
 int main(int argc, char** argv) {
     /* Init SDL */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
         std::cerr << "[SDL2 Error] Unable to initialize SDL: " << SDL_GetError() << std::endl;
-        DEBUG_BREAK;
+        debug_break();
         return EXIT_FAILURE;
     }
     SDL_GL_LoadLibrary(NULL);
@@ -62,7 +52,7 @@ int main(int argc, char** argv) {
     );
     if (window == nullptr) {
         std::cerr << "[SDL2 Error] Window is null: " << SDL_GetError() << std::endl;
-        DEBUG_BREAK;
+        debug_break();
         return EXIT_FAILURE;
     }
 
@@ -70,12 +60,12 @@ int main(int argc, char** argv) {
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (context == nullptr) {
         std::cerr << "[SDL2 Error] OpenGL context is null: " << SDL_GetError() << std::endl;
-        DEBUG_BREAK;
+        debug_break();
         return EXIT_FAILURE;
     }
     if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
         std::cerr << "[Error] Glad not init" << std::endl;
-        DEBUG_BREAK;
+        debug_break();
 		return EXIT_FAILURE;
 	}
     int glMajVersion, glMinVersion;
@@ -84,12 +74,12 @@ int main(int argc, char** argv) {
     if (glMajVersion < 4 || glMajVersion < 4 && glMinVersion < 3) {
         std::cerr << "[Error] Your graphic card driver is not up to date, you must have at least OpenGL 4.4" << std::endl;
         std::cout << "OpenGL version " <<  glGetString(GL_VERSION) << std::endl;
-        DEBUG_BREAK;
+        debug_break();
 		return EXIT_FAILURE;
     }
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(glError_messageCallback, 0);
+    glDebugMessageCallback(glr::messageCallback, 0);
     std::cout << "OpenGL version " <<  glGetString(GL_VERSION) << std::endl;
     std::cout << "Press 'P' to activate wireframe mode" << std::endl;
     std::cout << std::endl << "--------------------------------------------" << std::endl << std::endl;
@@ -131,7 +121,7 @@ int main(int argc, char** argv) {
     AnimationSystem animationSystem;
 
     /* TEST NOESIS */
-    Noesis::GUI::Init(nullptr, LogHandler, nullptr);
+    Noesis::GUI::Init(nullptr, noelog::logHandler, nullptr);
 
     /* TEST IMGUI */
     IMGUI_CHECKVERSION();

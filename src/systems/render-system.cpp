@@ -1,6 +1,6 @@
 #include "render-system.hpp"
 
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
 #include "components/sprite.hpp"
 
 RenderSystem::RenderSystem() {}

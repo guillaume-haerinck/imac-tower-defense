@@ -10,7 +10,7 @@ TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei t
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, STBI_rgb_alpha);
 	if (!m_localBuffer) {
 		std::cout << "[Error] Unable to open texture atlas " << path << std::endl;
-		DEBUG_BREAK;
+		debug_break();
 	}
 
 	GLsizei tilesX = m_width / tileWidth;

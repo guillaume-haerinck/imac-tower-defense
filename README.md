@@ -114,10 +114,10 @@ The project follows the **Entity Component System** design pattern.
 | `main.cpp`    | Entry point of the game |
 | `components`  | Struct of data for entities |
 | `core`        | Entry point delegation |
-| `debug`       | Logger, sandbox mode and gui for devs |
 | `factories`   | Classes used to build entities |
 | `graphics`    | Wrapper classes for OpenGL objects |
 | `gui`         | User interface for end-users |
+| `logger` |    | Error and log handler for the game |
 | `systems`     | Update the game and the entities based on their components |
 | **data**      | **Game levels description** |
 | **doc**       | **Documentation** |
@@ -137,6 +137,8 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [Rang](https://github.com/agauniyal/rang) - Add color to terminal logs
 - [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
+- [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header
+- [StbImage](https://github.com/nothings/stb) - Load images
 
 ## Useful articles
 

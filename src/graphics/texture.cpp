@@ -12,7 +12,7 @@ Texture::Texture(const std::string& path)
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, 4);
 	if (!m_localBuffer) {
 		std::cout << "[Error] Unable to open texture " << path << std::endl;
-		DEBUG_BREAK;
+		debug_break();
 	}
 
 	GLCall(glGenTextures(1, &m_rendererID));

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <assert.h>
+#include <iostream>
 #include <glad/glad.h>
 
-#include "debug/gl-error-handling.hpp"
+#include "logger/gl-error-handler.hpp"
 
 struct VertexBufferElement {
 	unsigned int type;
@@ -16,7 +18,8 @@ struct VertexBufferElement {
 			case GL_UNSIGNED_INT:	return 4;
 			case GL_UNSIGNED_BYTE:	return 1;
 		}
-		ASSERT(false);
+		std::cerr << "[Error] Unknown size of type : getSizeOfType() : vertex-buffer-layout.hpp" << std::endl;
+		debug_break();
 		return 0;
 	}
 };
