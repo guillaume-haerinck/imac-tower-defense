@@ -65,7 +65,31 @@ TODO
 
 ## Documentation
 
+The project follows the **Entity Component System** design pattern. It means that
+
+### Folder structure
+
+| Folder        | Description       |
+| ------------- | ----------------- |
+| **src**       | **Source code**   |
+| `main.cpp`    | Entry point of the game |
+| `components`  | Struct of data for entities |
+| `core`        | Entry point delegation |
+| `debug`       | Logger, sandbox mode and gui for devs |
+| `factories`   | Classes used to build entities |
+| `graphics`    | Wrapper classes for OpenGL objects |
+| `gui`         | User interface for end-users |
+| `systems`     | Update the game and the entities based on their components |
+| **data**      | **Game levels description** |
+| **doc**       | **Documentation** |
+| **images**    | **Non-UI images used by the game** |
+| **shaders**   | **GLSL shaders used by openGL for rendering** |
+
+### Project explanation
+
 The github repository have Wiki pages.
+
+### Code reference
 
 The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 
@@ -75,8 +99,9 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
 - [EnTT](https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system) - The ECS framework
-- [PPM](http://netpbm.sourceforge.net/doc/ppm.html) - The file format used to store data with images
 - [Rang](https://github.com/agauniyal/rang) - Add color to terminal logs
+- [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
+- [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
 
 ## Useful articles
 

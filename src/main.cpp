@@ -9,6 +9,7 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <Noesis_pch.h>
 
 #include "debug/gl-error-handling.hpp"
 #include "core/tags.hpp"
@@ -21,6 +22,18 @@
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
+
+void LogHandler(const char* filename, uint32_t line, uint32_t level, const char* channel,
+    const char* message)
+{
+    if (strcmp(channel, "") == 0)
+    {
+        // [TRACE] [DEBUG] [INFO] [WARNING] [ERROR]
+        const char* prefixes[] = { "T", "D", "I", "W", "E" };
+        const char* prefix = level < NS_COUNTOF(prefixes) ? prefixes[level] : " ";
+        fprintf(stderr, "[NOESIS/%s] %s\n", prefix, message);
+    }
+}
 
 int main(int argc, char** argv) {
     /* Init SDL */
@@ -116,6 +129,9 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem;
     MovementSystem movementSystem;
     AnimationSystem animationSystem;
+
+    /* TEST NOESIS */
+    Noesis::GUI::Init(nullptr, LogHandler, nullptr);
 
     /* TEST IMGUI */
     IMGUI_CHECKVERSION();

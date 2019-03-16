@@ -11,26 +11,21 @@ file(
     src/*
 )
 
-## Compile flags
-if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
-elseif (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-endif()
-
 # Translation unit
 find_package(OpenGL REQUIRED)
 if (NOT WIN32)
     find_package(SDL2 REQUIRED)
 else()
     set(SDL2_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/lib/SDL2-2.0.9/include)
-    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2main.lib)
+    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x64/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x64/SDL2main.lib)
+    set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86_64/Noesis.lib)
 endif()
 add_library(GLAD STATIC "lib/glad/src/glad.c")
 add_library(STB_IMAGE STATIC "lib/stb_image/stb_image.cpp")
 include_directories( # Search directories for .h files
     ${OPENGL_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
+    lib/NoesisGUI-2.2.0/Include
     lib/glad/include
     lib/entt/src
     lib
@@ -48,18 +43,31 @@ if (NOT WIN32) # Add static library .lib files
         STB_IMAGE
         GLAD -ldl
     )
+    add_custom_command( # Copy .so to build folder
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
 else()
     target_link_libraries(
         ${PROJECT_NAME}
         ${OPENGL_LIBRARIES}
         ${SDL2_LIBRARIES}
+        ${NOESIS_LIBRARIES}
         STB_IMAGE
         GLAD
-    ) # Copy dynamic library .dll files to build folder
-    add_custom_command(
+    )
+    add_custom_command( # Copy .dll to build folder
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2.dll"
+        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x64/SDL2.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/windows_x86_64"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
 endif()
