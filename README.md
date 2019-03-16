@@ -26,18 +26,20 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
 ### To-do list
 
-[x] Integrate ECS system
-[x] Load & play spritesheet
-[ ] Load, validate and interpret .itd files
-[ ] Load map as a grid
-[ ] User interface
-[ ] Construction system
-[ ] Monster path following
-[ ] Attack system
-[ ] Waves system
-[ ] Monster state machine
-[ ] Banking system
-[ ] Upgrade system
+To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-tower-defense)
+
+- [x] Integrate ECS system
+- [x] Load & play spritesheet
+- [ ] Load, validate and interpret .itd files
+- [ ] Load map as a grid
+- [ ] User interface
+- [ ] Construction system
+- [ ] Monster path following
+- [ ] Attack system
+- [ ] Waves system
+- [ ] Monster state machine
+- [ ] Banking system
+- [ ] Upgrade system
 
 ## Getting Started
 
@@ -45,7 +47,7 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
 You must install **[CMake](https://cmake.org/)** and a C++ compiler for at least **C++ 17**. More on the compiler on the next sections.
 
-The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine). The dependencies are targeted for **x64 processor**, so make sure yours is (99% chance it is) or you won't be able to compile the project without modifying the source code.
+The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine). The dependencies are targeted for **x64 processor**, so make sure yours is (99% chance it is) or you won't be able to compile the project. If you really want to use a x86 architecture, download SDL2 and Noesis Gui libs for x86 and alter the CMakeLists.txt to link against them.
 
 #### Linux
 
