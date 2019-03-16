@@ -33,32 +33,28 @@ int main(int argc, char** argv) {
         debug_break();
         return EXIT_FAILURE;
     }
-    
-    /* Camera variables */
-    glm::vec3 camPos = glm::vec3(0, 0, 3);
-    glm::vec3 camTarget = glm::vec3(0, 0, 0);
-    glm::vec3 camDirection = glm::vec3(0, 1, 0);
 
     /* Model and Projection matrices */
-	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float) WIN_WIDTH / (float)WIN_HEIGHT, 0.1f, 100.0f);
-	glm::mat4 view = glm::lookAt(camPos, camTarget, camDirection);
+	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
+	glm::mat4 viewMat = glm::mat4(1.0f);
+
+    /* Camera variables */
+    glm::vec3 camPos = glm::vec3(0, 0, 0);
 
     /* Create entities */
     entt::registry registry;
-    auto hoursHandleEntity = registry.create();
-    auto minutesHandleEntity = registry.create();
-    auto clockEntity = registry.create();
+    auto myEntity = registry.create();
     
     /* Assign components */
     SpriteFactory spriteFactory(registry);
-    registry.assign<cmpt::Sprite>(hoursHandleEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
-    registry.assign<cmpt::Transform>(hoursHandleEntity, glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, -2.0f), glm::quat());
+    registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
+    registry.assign<cmpt::Transform>(myEntity, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim;
     myAnim.activeTile = 0;
     myAnim.endTile = 25;
     myAnim.startTile = 0;
-    registry.assign<cmpt::SpriteAnimation>(hoursHandleEntity, myAnim);
-    registry.assign<tag::Hours>(hoursHandleEntity);
+    registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim);
+    registry.assign<tag::Hours>(myEntity);
 
     /* Create systems */
     RenderSystem renderSystem;
@@ -89,7 +85,7 @@ int main(int argc, char** argv) {
         /* Render */
         {
             // Update camera
-            view = glm::lookAt(camPos, camTarget, camDirection);
+            viewMat = glm::translate(glm::mat4(1.0f), camPos);
 
             // Update systems
             if (tempFrameCount >= 2) {
@@ -98,7 +94,7 @@ int main(int argc, char** argv) {
             }
             tempFrameCount++;
             movementSystem.update(registry, deltatime);
-            renderSystem.update(registry, view, proj);
+            renderSystem.update(registry, viewMat, projMat);
 
             // Update gui
             ImGui::Render();

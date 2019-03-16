@@ -14,7 +14,7 @@ void RenderSystem::update(entt::registry<>& registry, glm::mat4& view, glm::mat4
         GLCall(glBindTexture(sprite.target, sprite.textureID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images
 
-        glm::mat4 mvp = projection * view * getModelMatrix(transform); // Inverted by glm
+        glm::mat4 mvp = projection * view * getModelMatrix(transform);
         sprite.ib->bind();
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
