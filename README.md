@@ -2,13 +2,50 @@
 
 An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
+## Table of Contents
+
+[**Features**](#features)
+
+[**Getting Started**](#getting-started)
+  * [**Prerequisites**](#prerequisites)
+  * [**Linux**](#linux)
+  * [**Windows**](#windows)
+  * [**Build**](#build)
+  * [**Launch**](#launch)
+
+[**Documentation**](#documentation)
+  * [**Philosophy**](#philosophy)
+  * [**Folder structure**](#folder-structure)
+  * [**Reference**](#code-reference)
+
+**Additional info**
+  * [**Dependencies**](#dependencies)
+  * [**Inspired by**](#inspired-by)
+
+## Features
+
+### To-do list
+
+[x] Integrate ECS system
+[x] Load & play spritesheet
+[ ] Load, validate and interpret .itd files
+[ ] Load map as a grid
+[ ] User interface
+[ ] Construction system
+[ ] Monster path following
+[ ] Attack system
+[ ] Waves system
+[ ] Monster state machine
+[ ] Banking system
+[ ] Upgrade system
+
 ## Getting Started
 
 ### Prerequisites
 
 You must install **[CMake](https://cmake.org/)** and a C++ compiler for at least **C++ 17**. More on the compiler on the next sections.
 
-The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine).
+The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine). The dependencies are targeted for **x64 processor**, so make sure yours is (99% chance it is) or you won't be able to compile the project without modifying the source code.
 
 #### Linux
 
@@ -31,41 +68,41 @@ The recommended compiler is MSVC. To install it you will need [Visual Studio](ht
 
 ![Screenshot](doc/readme-img/vs-studio.png?raw=true "Visual studio packages selection")
 
-### Build & Launch
+### Build
 
 The `CMakeLists.txt` file ensure that the project will work on Linux and Windows plateforms.
 
-Before launching the compiled binaries, **make sure that the working directory is set to this folder**, or the shaders files and images will not be found by the program. If you are unsure about how to do it, just copy the builded files to this folder before launching them. (by default, they will be in the `bin/Debug` folder).
-
 You can build and launch the project in many different ways, we covered a few of them :
 
-#### With Bash (Linux only)
+#### `Option 1: Bash (Linux only)`
 
 TODO
 
-#### With Visual Studio (Windows only)
+#### `Option 2: Visual Studio (Windows only)`
 
 TODO
 
-#### With VSCode
+#### `Option 3: VSCode`
 
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
 ![Screenshot](doc/readme-img/extensions.png?raw=true "VSCode extensions")
 
-From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 X86` kit. Once the configuration is done, you can compile the project by pressing `f7`.
+From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - amd64` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch them by pressing `f5`.
 
-![Screenshot](doc/readme-img/kit-selection.png?raw=true "Kit selection on VSCode")
-
-The .exe file will be outputed in `build/Debug` folder. You can launch them by pressing `f5`.
-
-#### With CLion
+#### `Option 4: CLion`
 
 TODO
 
+### Launch
+
+Before launching the compiled binaries, **make sure that the working directory is set to this folder**, or the shaders files and images will not be found by the program. If you are unsure about how to do it, just copy the builded files to this folder before launching them. (by default, they will be in the `bin/Debug` folder).
+
 ## Documentation
 
-The project follows the **Entity Component System** design pattern. It means that
+### Philosohy
+
+The project follows the **Entity Component System** design pattern.
 
 ### Folder structure
 
@@ -85,10 +122,6 @@ The project follows the **Entity Component System** design pattern. It means tha
 | **images**    | **Non-UI images used by the game** |
 | **shaders**   | **GLSL shaders used by openGL for rendering** |
 
-### Project explanation
-
-The github repository have Wiki pages.
-
 ### Code reference
 
 The reference for the code is built with [doxygen](http://www.doxygen.nl/).
@@ -105,26 +138,12 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 
 ## Useful articles
 
-- [Awesome Opengl](https://github.com/eug/awesome-opengl) - A list of usefull tools for OpenGl
+- [Awesome Opengl](https://github.com/eug/awesome-opengl) - A list of useful tools for OpenGl
+- [Awesome Readme](https://github.com/matiassingers/awesome-readme) - A list of great readme files
 
 ## Inspired by
 
 - [tddod](https://github.com/Daivuk/tddod) - Data oriented tower defense
-
-## To-Do list
-
-- [x] Integrate ECS system
-- [x] Load & play spritesheet
-- [ ] Load, validate and interpret .itd files
-- [ ] Load map as a grid
-- [ ] User interface
-- [ ] Construction system
-- [ ] Monster path following
-- [ ] Attack system
-- [ ] Waves system
-- [ ] Monster state machine
-- [ ] Banking system
-- [ ] Upgrade system
 
 ## Authors
 
