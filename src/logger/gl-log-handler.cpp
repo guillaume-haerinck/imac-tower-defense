@@ -1,11 +1,11 @@
-#include "gl-error-handler.hpp"
+#include "gl-log-handler.hpp"
 #include "spdlog/spdlog.h"
 
-void glr::clear() {
+void gllog::clear() {
 	while (glGetError() != GL_NO_ERROR);
 }
 
-bool glr::doesFunctionWorks(const char* functionName, const char* filename, int line) {
+bool gllog::doesFunctionWorks(const char* functionName, const char* filename, int line) {
     GLenum error;
 	while ((error = glGetError()) != GL_NO_ERROR) {
         spdlog::error("[OpenGL Error]) {}: {} {} {}", gluErrorString(error), functionName, filename, line);
@@ -14,7 +14,7 @@ bool glr::doesFunctionWorks(const char* functionName, const char* filename, int 
 	return true;
 }
 
-void GLAPIENTRY glr::messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* user_param) {
+void GLAPIENTRY gllog::messageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, GLchar const* message, void const* user_param) {
 	auto const sourceString = [source]() {
 		switch (source) {
 			case GL_DEBUG_SOURCE_API: return "Api";

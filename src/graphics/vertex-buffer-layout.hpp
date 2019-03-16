@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 
-#include "logger/gl-error-handler.hpp"
+#include "logger/gl-log-handler.hpp"
 
 struct VertexBufferElement {
 	unsigned int type;

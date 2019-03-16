@@ -6,7 +6,7 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 
-#include "logger/gl-error-handler.hpp"
+#include "logger/gl-log-handler.hpp"
 
 Shader::Shader(const std::string& filepathVertex, const std::string& filepathFragment)
 	: m_FilePathVertex(filepathVertex), m_FilePathFragment(filepathFragment), m_rendererID(0)

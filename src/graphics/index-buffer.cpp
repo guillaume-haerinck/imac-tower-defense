@@ -1,7 +1,7 @@
 #include "index-buffer.hpp"
 
 #include <assert.h>
-#include "logger/gl-error-handler.hpp"
+#include "logger/gl-log-handler.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
 	: m_count(count)

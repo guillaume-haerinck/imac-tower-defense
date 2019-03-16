@@ -15,12 +15,12 @@
  * @brief Assertion and logger handling for opengl functions
  */
 #ifdef GL_DEBUG
-    #define GLCall(x) glr::clear(); x; assert(glr::doesFunctionWorks(#x, __FILE__, __LINE__))
+    #define GLCall(x) gllog::clear(); x; assert(gllog::doesFunctionWorks(#x, __FILE__, __LINE__))
 #else
     #define GLCall(x) x
 #endif
 
-namespace glr {
+namespace gllog {
 /**
  * @brief Empty the OpenGl error buffer
  */

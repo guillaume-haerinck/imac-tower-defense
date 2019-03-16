@@ -117,7 +117,7 @@ The project follows the **Entity Component System** design pattern.
 | `factories`   | Classes used to build entities |
 | `graphics`    | Wrapper classes for OpenGL objects |
 | `gui`         | User interface for end-users |
-| `logger` |    | Error and log handler for the game |
+| `logger` |    | Error and log handlers for the game |
 | `systems`     | Update the game and the entities based on their components |
 | **data**      | **Game levels description** |
 | **doc**       | **Documentation** |
