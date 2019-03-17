@@ -50,10 +50,15 @@ int main(int argc, char** argv) {
 
     /* Create entities */
     entt::registry registry;
+    SpriteFactory spriteFactory(registry);
+    
     auto myEntity = registry.create();
+    auto myEntity2 = registry.create();
+    auto myEntity3 = registry.create();
+    auto myEntity4 = registry.create();
+    
     
     /* Assign components */
-    SpriteFactory spriteFactory(registry);
     registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
     registry.assign<cmpt::Transform>(myEntity, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim;
@@ -63,6 +68,24 @@ int main(int argc, char** argv) {
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim);
     registry.assign<tag::Hours>(myEntity);
 
+    registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
+    
+    registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+    registry.assign<cmpt::Transform>(myEntity3, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
+
+    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.createAtlas("images/spritesheets/squeleton.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
+    registry.assign<cmpt::Transform>(myEntity4, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    cmpt::SpriteAnimation myAnim2;
+    myAnim2.activeTile = 0;
+    myAnim2.endTile = 90;
+    myAnim2.startTile = 0;
+    registry.assign<cmpt::SpriteAnimation>(myEntity4, myAnim);
+
+    // FIXME -> Sometimes the last entity drawn is black when noesis is rendering
+    // FIXME -> The sprite uv coordinates of texture array are not inverted when it is not the first created
+    // FIXME -> Cannot make different sprite atlas
+    
     /* Create systems */
     RenderSystem renderSystem;
     MovementSystem movementSystem;
@@ -78,19 +101,10 @@ int main(int argc, char** argv) {
     Noesis::Ptr<Noesis::Grid> xaml(Noesis::GUI::ParseXaml<Noesis::Grid>(R"(
         <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
             <Grid.Background>
-
             </Grid.Background>
             <Viewbox>
                 <StackPanel Margin="50">
                     <Button Content="Hello World!" Margin="0,30,0,0"/>
-                    <Rectangle Height="5" Margin="-10,20,-10,0">
-                        <Rectangle.Fill>
-                            <RadialGradientBrush>
-                                <GradientStop Offset="0" Color="#40000000"/>
-                                <GradientStop Offset="1" Color="#00000000"/>
-                            </RadialGradientBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
                 </StackPanel>
             </Viewbox>
         </Grid>
@@ -134,6 +148,7 @@ int main(int argc, char** argv) {
             tempFrameCount++;
             movementSystem.update(registry, deltatime);
 
+            
             // Update view (layout, animations, ...)
             _view->Update(SDL_GetTicks());
 
