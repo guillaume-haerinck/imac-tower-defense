@@ -1,6 +1,6 @@
 # Requirement
 cmake_minimum_required(VERSION 2.8)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # ---------------------------------------- PROJECT FILES
 project(imac-tower-defense)
@@ -17,30 +17,36 @@ set(
 
 if (WIN32)
     set(SDL2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/include)
-    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2main.lib)
+    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2main.lib)
+    set(ENTITYX_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/entityx/lib/win_x86/entityx-d.lib)
     set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/Noesis.lib;${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/NoesisApp.lib)
-    set(ENTITYX_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/entityx/lib/x86/entityx-d.lib)
-
 else()
     find_package(SDL2 REQUIRED)
     set(
         CMAKE_PREFIX_PATH 
-        ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86;
-        ${CMAKE_SOURCE_DIR}/lib/entityx/lib/linux_x86;
+        ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;
+        ${CMAKE_SOURCE_DIR}/lib/entityx/lib/linux_x86_64;
     )
+    find_library(ENTITYX_LIBRARIES entityx)
     find_library(NOESIS_LIB Noesis)
     find_library(NOESIS_APP_LIB NoesisApp)
-    set(NOESIS_LIBRARIES NOESIS_LIB NOESIS_APP_LIB)
-    find_library(ENTITYX_LIBRARIES EntityX)
+    set(NOESIS_LIBRARIES ${NOESIS_LIB} ${NOESIS_APP_LIB})
+endif()
 
+if (ENTITYX_LIBRARIES) 
+    message("Found EntityX: " ${ENTITYX_LIBRARIES})
+endif()
+if (SDL2_LIBRARIES) 
+    message("Found SDL2: " ${SDL2_LIBRARIES})
+endif()
+if (NOESIS_LIBRARIES) 
+    message("Found Noesis: " ${NOESIS_LIBRARIES})
 endif()
 
 # ----------------------------------------- BUILD DEPENDENCIES IF NEEDED
-file(GLOB_RECURSE NOESIS_GL_SOURCES lib/NoesisGUI-2.2.0/src/Packages/Render/GLRenderDevice/Src/*)
 file(GLOB_RECURSE IMGUI_SOURCES lib/imgui/*)
-
-add_library(NOESIS_GL STATIC ${NOESIS_GL_SOURCES})
 add_library(IMGUI STATIC ${IMGUI_SOURCES})
+add_library(NOESIS_GL STATIC "lib/NoesisGUI-2.2.0/Src/Packages/Render/GLRenderDevice/Src/GLRenderDevice.cpp")
 add_library(STB_IMAGE STATIC "lib/stb_image/stb_image.cpp")
 add_library(GLAD STATIC "lib/glad/src/glad.c")
 
@@ -67,20 +73,24 @@ target_link_libraries(
     NOESIS_GL
     IMGUI
     STB_IMAGE
-    GLAD # -ldl flag on linux ?
+    GLAD
 )
+
+if (UNIX) # Use dynamic linking library
+    target_link_libraries(${PROJECT_NAME} -ldl)
+endif()
 
 if (WIN32) # Copy .dll to build folder
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/x86/SDL2.dll"
+        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/lib/entityx/lib/x86/entityx-d.dll"
+        "${PROJECT_SOURCE_DIR}/lib/entityx/lib/win_x86/entityx-d.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
     add_custom_command(
@@ -90,3 +100,4 @@ if (WIN32) # Copy .dll to build folder
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
 endif()
+
