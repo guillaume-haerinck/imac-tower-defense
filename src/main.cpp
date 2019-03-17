@@ -59,6 +59,20 @@ int main(int argc, char** argv) {
     
     
     /* Assign components */
+    // ------------------- CHANGE THE ORDER OF CREATE TO CHECK IF EVERYTHING WORKS --------------------------
+    
+    
+    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.createAtlas("images/spritesheets/squeleton.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
+    registry.assign<cmpt::Transform>(myEntity4, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    cmpt::SpriteAnimation myAnim2;
+    myAnim2.activeTile = 0;
+    myAnim2.endTile = 25;
+    myAnim2.startTile = 0;
+    registry.assign<cmpt::SpriteAnimation>(myEntity4, myAnim2);
+
+    registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
+
     registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
     registry.assign<cmpt::Transform>(myEntity, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim;
@@ -67,24 +81,20 @@ int main(int argc, char** argv) {
     myAnim.startTile = 0;
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim);
     registry.assign<tag::Hours>(myEntity);
-
-    registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
-    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
     
     registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity3, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
 
-    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.createAtlas("images/spritesheets/squeleton.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
-    registry.assign<cmpt::Transform>(myEntity4, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
-    cmpt::SpriteAnimation myAnim2;
-    myAnim2.activeTile = 0;
-    myAnim2.endTile = 90;
-    myAnim2.startTile = 0;
-    registry.assign<cmpt::SpriteAnimation>(myEntity4, myAnim);
+    
 
-    // FIXME -> Sometimes the last entity drawn is black when noesis is rendering
-    // FIXME -> The sprite uv coordinates of texture array are not inverted when it is not the first created
-    // FIXME -> Cannot make different sprite atlas
+    
+    // FIXME -> The sprite uv coordinates of texture array are not inverted when at still texture is created before
+    // FIXME -> Animation of a second sprite is the same as the first one
+
+    // FIXED -> Sometimes the last entity drawn is black when noesis is rendering
+    // FIXED -> Cannot make different sprite atlas
+    // -> Viens de la texture unit qui est bind après
+    // https://stackoverflow.com/questions/10477994/opengl-texture-unit
     
     /* Create systems */
     RenderSystem renderSystem;
@@ -161,7 +171,7 @@ int main(int argc, char** argv) {
             GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
             GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
 
-            GLCall(glClearColor(1.0f, 1.0f, 1.0f, 0.0f));
+            GLCall(glClearColor(0.8f, 1.0f, 1.0f, 0.0f));
             GLCall(glClearStencil(0));
             GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 

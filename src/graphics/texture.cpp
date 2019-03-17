@@ -17,6 +17,7 @@ Texture::Texture(const std::string& path)
 	}
 
 	GLCall(glGenTextures(1, &m_rendererID));
+	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_rendererID));
 
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));

@@ -19,6 +19,7 @@ TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei t
 	GLsizei tileCount = tilesX * tilesY;
 	
 	GLCall(glGenTextures(1, &m_rendererID));
+	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D_ARRAY, m_rendererID));
 
 	GLCall(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
@@ -31,6 +32,7 @@ TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei t
 	{
 		GLuint tempTexture = 0;
 		GLCall(glGenTextures(1, &tempTexture));
+		GLCall(glActiveTexture(GL_TEXTURE0));
 		GLCall(glBindTexture(GL_TEXTURE_2D, tempTexture));
 		GLCall(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, m_width, m_height));
 		GLCall(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer));

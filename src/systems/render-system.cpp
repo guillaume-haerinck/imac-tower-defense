@@ -11,13 +11,19 @@ void RenderSystem::update(entt::registry<>& registry, glm::mat4& view, glm::mat4
     registry.group<cmpt::Transform, cmpt::Sprite>().each([&](auto entity, cmpt::Transform& transform, cmpt::Sprite& sprite) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
-        GLCall(glBindTexture(sprite.target, sprite.textureID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images
+        GLCall(glBindTexture(sprite.target, sprite.textureID));
 
         glm::mat4 mvp = projection * view * getModelMatrix(transform);
         sprite.ib->bind();
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
+
+        // Unbind everything
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        GLCall(glBindVertexArray(0));
+        GLCall(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+        GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     });
 }
 
