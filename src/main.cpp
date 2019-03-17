@@ -78,11 +78,7 @@ int main(int argc, char** argv) {
     Noesis::Ptr<Noesis::Grid> xaml(Noesis::GUI::ParseXaml<Noesis::Grid>(R"(
         <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
             <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Offset="0" Color="#FF123F61"/>
-                    <GradientStop Offset="0.6" Color="#FF0E4B79"/>
-                    <GradientStop Offset="0.7" Color="#FF106097"/>
-                </LinearGradientBrush>
+
             </Grid.Background>
             <Viewbox>
                 <StackPanel Margin="50">
@@ -115,29 +111,6 @@ int main(int argc, char** argv) {
     double deltatime = TARGET_DELTA_MS;
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
-        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-        /* -------------- NOESIS TEST -------------------- */
-        {
-            // Update view (layout, animations, ...)
-            _view->Update(SDL_GetTicks());
-
-            // Offscreen rendering phase populates textures needed by the on-screen rendering
-            _view->GetRenderer()->UpdateRenderTree();
-            _view->GetRenderer()->RenderOffscreen();
-
-            // If you are going to render here with your own engine you need to restore the GPU state
-            // because noesis changes it. In this case only framebuffer and viewport need to be restored
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
-
-            glClearColor(0.0f, 0.0f, 0.25f, 0.0f);
-            glClearStencil(0);
-
-            // Rendering is done in the active framebuffer
-            _view->GetRenderer()->Render();
-        }
-
         /* Imgui main debug window */
 		{
             ImGui_ImplOpenGL3_NewFrame();
@@ -160,7 +133,27 @@ int main(int argc, char** argv) {
             }
             tempFrameCount++;
             movementSystem.update(registry, deltatime);
+
+            // Update view (layout, animations, ...)
+            _view->Update(SDL_GetTicks());
+
+            // Offscreen rendering phase populates textures needed by the on-screen rendering
+            _view->GetRenderer()->UpdateRenderTree();
+            _view->GetRenderer()->RenderOffscreen();
+
+            // If you are going to render here with your own engine you need to restore the GPU state
+            // because noesis changes it. In this case only framebuffer and viewport need to be restored
+            GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+            GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
+
+            GLCall(glClearColor(1.0f, 1.0f, 1.0f, 0.0f));
+            GLCall(glClearStencil(0));
+            GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
             renderSystem.update(registry, viewMat, projMat);
+
+            // Rendering is done in the active framebuffer
+            _view->GetRenderer()->Render();
 
             // Update gui
             ImGui::Render();
