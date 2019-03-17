@@ -13,4 +13,6 @@ namespace noelog {
      * @param message 
      */
     void messageCallback(const char* filename, uint32_t line, uint32_t level, const char* channel, const char* message);
+
+    void errorHandler(const char* file, uint32_t line, const char* message, bool fatal);
 }

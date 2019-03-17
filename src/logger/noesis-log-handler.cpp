@@ -10,3 +10,7 @@ void noelog::messageCallback(const char* filename, uint32_t line, uint32_t level
     	case 4: spdlog::error("[Noesis] {}", message); break; 	// Error
 	}
 }
+
+void noelog::errorHandler(const char* file, uint32_t line, const char* message, bool fatal) {
+	spdlog::error("[Noesis] {}", message);
+}

@@ -11,7 +11,12 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <Noesis_pch.h>
+
+#include <NsRender/GLFactory.h>
+#include <NsGui/IntegrationAPI.h>
+#include <NsGui/IRenderer.h>
+#include <NsGui/IView.h>
+#include <NsGui/Grid.h>
 
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -26,6 +31,8 @@
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
+
+static Noesis::IView* _view;
 
 int main(int argc, char** argv) {
     Game game;
@@ -65,12 +72,71 @@ int main(int argc, char** argv) {
     bool bWireframe = false;
     unsigned int tempFrameCount = 0;
 
+    /* -------------------------------- NOESIS TEST --------------------------- */
+    // For simplicity purposes we are not using resource providers in this sample. ParseXaml() is
+    // enough if there is no extra XAML dependencies
+    Noesis::Ptr<Noesis::Grid> xaml(Noesis::GUI::ParseXaml<Noesis::Grid>(R"(
+        <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#FF123F61"/>
+                    <GradientStop Offset="0.6" Color="#FF0E4B79"/>
+                    <GradientStop Offset="0.7" Color="#FF106097"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Viewbox>
+                <StackPanel Margin="50">
+                    <Button Content="Hello World!" Margin="0,30,0,0"/>
+                    <Rectangle Height="5" Margin="-10,20,-10,0">
+                        <Rectangle.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="0" Color="#40000000"/>
+                                <GradientStop Offset="1" Color="#00000000"/>
+                            </RadialGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </StackPanel>
+            </Viewbox>
+        </Grid>
+    )"));
+
+    // View creation to render and interact with the user interface
+    // We transfer the ownership to a global pointer instead of a Ptr<> because there is no way
+    // in GLUT to do shutdown and we don't want the Ptr<> to be released at global time
+    _view = Noesis::GUI::CreateView(xaml).GiveOwnership();
+    _view->SetIsPPAAEnabled(true);
+
+    // Renderer initialization with an OpenGL device
+    _view->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+    _view->SetSize(WIN_WIDTH, WIN_HEIGHT);
+
     /* Main loop */
     bool bQuit = false;
     double deltatime = TARGET_DELTA_MS;
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+        /* -------------- NOESIS TEST -------------------- */
+        {
+            // Update view (layout, animations, ...)
+            _view->Update(SDL_GetTicks());
+
+            // Offscreen rendering phase populates textures needed by the on-screen rendering
+            _view->GetRenderer()->UpdateRenderTree();
+            _view->GetRenderer()->RenderOffscreen();
+
+            // If you are going to render here with your own engine you need to restore the GPU state
+            // because noesis changes it. In this case only framebuffer and viewport need to be restored
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
+
+            glClearColor(0.0f, 0.0f, 0.25f, 0.0f);
+            glClearStencil(0);
+
+            // Rendering is done in the active framebuffer
+            _view->GetRenderer()->Render();
+        }
 
         /* Imgui main debug window */
 		{
@@ -112,6 +178,11 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
                     printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
+                    _view->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    _view->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
                 
                 case SDL_KEYDOWN:

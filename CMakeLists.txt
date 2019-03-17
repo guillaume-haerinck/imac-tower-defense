@@ -7,6 +7,7 @@ project(imac-tower-defense)
 file(
     GLOB_RECURSE
     MY_SOURCES
+    lib/NoesisGUI-2.2.0/src/Packages/Render/GLRenderDevice/Src/* # TODO move to add_library
     lib/imgui/*
     src/*
 )
@@ -32,6 +33,8 @@ add_library(STB_IMAGE STATIC "lib/stb_image/stb_image.cpp")
 include_directories(
     ${OPENGL_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
+    lib/NoesisGUI-2.2.0/src/Packages/App/Display/Include
+    lib/NoesisGUI-2.2.0/src/Packages/Render/GLRenderDevice/Include
     lib/NoesisGUI-2.2.0/Include
     lib/glad/include
     lib/entt/src

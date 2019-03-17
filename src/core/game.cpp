@@ -99,7 +99,7 @@ int Game::init() {
 	ImGui::StyleColorsDark();
 
     /* Init Noesis GUI */
-    Noesis::GUI::Init(nullptr, noelog::messageCallback, nullptr);
+    Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
 
     isInit = true;
     return EXIT_SUCCESS;
