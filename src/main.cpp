@@ -8,7 +8,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
-#include <entt/entt.hpp>
+#include <entityx/entityx.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
@@ -49,45 +49,32 @@ int main(int argc, char** argv) {
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
     /* Create entities */
-    entt::registry registry;
+    entityx::EntityX registry;
     SpriteFactory spriteFactory(registry);
     
-    auto myEntity = registry.create();
-    auto myEntity2 = registry.create();
-    auto myEntity3 = registry.create();
-    auto myEntity4 = registry.create();
+    /* --------------------------------- PLAYGROUND TO CHECK FOR BUGS ----------------- */
+    entityx::Entity myEntity =  registry.entities.create();
+    entityx::Entity myEntity2 = registry.entities.create();
+    entityx::Entity myEntity3 = registry.entities.create();
+    entityx::Entity myEntity4 = registry.entities.create();
     
-    
-    /* Assign components */
-    // ------------------- CHANGE THE ORDER OF CREATE TO CHECK IF EVERYTHING WORKS --------------------------
-    
-    
-    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.createAtlas("images/spritesheets/squeleton.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
-    registry.assign<cmpt::Transform>(myEntity4, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
-    cmpt::SpriteAnimation myAnim2;
-    myAnim2.activeTile = 0;
-    myAnim2.endTile = 25;
-    myAnim2.startTile = 0;
-    registry.assign<cmpt::SpriteAnimation>(myEntity4, myAnim2);
+    myEntity.assign<cmpt::Sprite>(spriteFactory.createAtlas("images/spritesheets/squeleton.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
+    myEntity.assign<cmpt::Transform>(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    cmpt::SpriteAnimation myAnim2(0, 25, 0);
+    myEntity.assign<cmpt::SpriteAnimation>(myAnim2);
 
-    registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
-    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
+    myEntity2.assign<cmpt::Sprite>(spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+    myEntity2.assign<cmpt::Transform>(glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
 
-    registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
-    registry.assign<cmpt::Transform>(myEntity, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
-    cmpt::SpriteAnimation myAnim;
-    myAnim.activeTile = 0;
-    myAnim.endTile = 25;
-    myAnim.startTile = 0;
-    registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim);
-    registry.assign<tag::Hours>(myEntity);
+    myEntity3.assign<cmpt::Sprite>(spriteFactory.createAtlas("images/spritesheets/spaceman.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
+    myEntity3.assign<cmpt::Transform>(glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
+    cmpt::SpriteAnimation myAnim(0, 25, 0);
+    myEntity3.assign<cmpt::SpriteAnimation>(myAnim);
+    //myEntity3.assign<tag::Hours>(myEntity);
     
-    registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
-    registry.assign<cmpt::Transform>(myEntity3, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
+    myEntity4.assign<cmpt::Sprite>(spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+    myEntity4.assign<cmpt::Transform>(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
 
-    
-
-    
     // FIXME -> The sprite uv coordinates of texture array are not inverted when at still texture is created before
     // FIXME -> Animation of a second sprite is the same as the first one
 
@@ -157,7 +144,6 @@ int main(int argc, char** argv) {
             }
             tempFrameCount++;
             movementSystem.update(registry, deltatime);
-
             
             // Update view (layout, animations, ...)
             _view->Update(SDL_GetTicks());

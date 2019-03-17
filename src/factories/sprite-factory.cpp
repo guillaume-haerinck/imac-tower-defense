@@ -6,7 +6,7 @@
 #include "graphics/texture.hpp"
 #include "graphics/texture-array.hpp"
 
-SpriteFactory::SpriteFactory(entt::registry<>& registry)
+SpriteFactory::SpriteFactory(entityx::EntityX& registry)
 : m_shaderTex("shaders/texture/texture.vert", "shaders/texture/texture.frag"),
   m_shaderTexArray("shaders/texture/texture.vert", "shaders/texture/texture-array.frag"),
   m_registry(registry)
@@ -22,7 +22,7 @@ SpriteFactory::SpriteFactory(entt::registry<>& registry)
 }
 
 SpriteFactory::~SpriteFactory() {
-    m_registry.view<cmpt::Sprite>().each([&](auto entity, cmpt::Sprite& sprite) {
+    m_registry.entities.each<cmpt::Sprite>([](entityx::Entity entity, cmpt::Sprite& sprite) {
         GLCall(glDeleteTextures(1, &sprite.textureID));
         GLCall(glDeleteVertexArrays(1, &sprite.vaID));
     });
@@ -60,14 +60,9 @@ cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2
     va.unbind();
     vb.unbind();
     texture.unbind();
-    
-    /* Send IDs */
-    cmpt::Sprite mySprite;
-    mySprite.shader = &m_shaderTex;
-    mySprite.ib = &m_ib;
-    mySprite.textureID = texture.getID();
-    mySprite.target = GL_TEXTURE_2D;
-    mySprite.vaID = va.getID();
+
+    /* Send copy of object */
+    cmpt::Sprite mySprite(texture.getID(), va.getID(), GL_TEXTURE_2D, &m_shaderTex, &m_ib);
     return mySprite;
 }
 
@@ -103,12 +98,7 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
     vb.unbind();
     texture.unbind();
     
-    /* Send IDs */
-    cmpt::Sprite mySprite;
-    mySprite.shader = &m_shaderTexArray;
-    mySprite.ib = &m_ib;
-    mySprite.textureID = texture.getID();
-    mySprite.target = GL_TEXTURE_2D_ARRAY;
-    mySprite.vaID = va.getID();
+    /* Send copy of object */
+    cmpt::Sprite mySprite(texture.getID(), va.getID(), GL_TEXTURE_2D_ARRAY, &m_shaderTexArray, &m_ib);
     return mySprite;
 }

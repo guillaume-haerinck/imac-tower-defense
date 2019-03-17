@@ -45,9 +45,9 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 
 ### Prerequisites
 
-You must install **[CMake](https://cmake.org/)** and a C++ compiler for at least **C++ 17**. More on the compiler on the next sections.
+You must install **[CMake](https://cmake.org/)** and a C++ compiler which handles **C++ 11**. More on the compiler on the next sections.
 
-The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine). The dependencies are targeted for **x64 processor**, so make sure yours is (99% chance it is) or you won't be able to compile the project. If you really want to use a x86 architecture, download SDL2 and Noesis Gui libs for x86 and alter the CMakeLists.txt to link against them.
+The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine).
 
 #### Linux
 
@@ -133,7 +133,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [OpenGL](http://docs.gl/) - The graphic API used
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
-- [EnTT](https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system) - The ECS framework
+- [EntityX](https://github.com/alecthomas/entityx) - The ECS framework
 - [SPDLog](https://github.com/gabime/spdlog) - Logging lib
 - [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging

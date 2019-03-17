@@ -1,11 +1,11 @@
 #pragma once
 
-#include "entt/entt.hpp"
+#include <entityx/entityx.h>
 
 class MovementSystem {
 public:
     MovementSystem();
     ~MovementSystem();
 
-    void update(entt::registry<>& registry, double deltatime);
+    void update(entityx::EntityX& registry, double deltatime);
 };

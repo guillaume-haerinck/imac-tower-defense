@@ -6,6 +6,9 @@
 
 namespace cmpt {
 struct Sprite {
+    Sprite(unsigned int textureID, unsigned int vaID, GLenum target, Shader* shader, IndexBuffer* ib) 
+    : textureID(textureID), vaID(vaID), target(target), shader(shader), ib(ib) {}
+
     unsigned int textureID;
     unsigned int vaID;
     GLenum target;
