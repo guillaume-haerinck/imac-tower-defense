@@ -1,5 +1,10 @@
 # Imac Tower Defense Changelog
 
+## 17.03.19
+
+Change ECS library ENTT for EntityX. Now the project is compatible from C++ 11.
+Use x86 architecture on Windows for larger audience.
+
 ## 16.03.19
 
 ImGUI, NeosisGUI and logging system implementation.
