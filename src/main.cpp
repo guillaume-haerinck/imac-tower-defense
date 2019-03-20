@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     
     myEntity.assign<cmpt::Sprite>(spriteFactory.createAtlas("images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
     myEntity.assign<cmpt::Transform>(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
-    cmpt::SpriteAnimation myAnim2(0, 25, 6);
+    cmpt::SpriteAnimation myAnim2(0, 5, 0);
     myEntity.assign<cmpt::SpriteAnimation>(myAnim2);
 
     myEntity2.assign<cmpt::Sprite>(spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 
     myEntity3.assign<cmpt::Sprite>(spriteFactory.createAtlas("images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
     myEntity3.assign<cmpt::Transform>(glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
-    cmpt::SpriteAnimation myAnim(0, 25, 12);
+    cmpt::SpriteAnimation myAnim(6, 11, 6);
     myEntity3.assign<cmpt::SpriteAnimation>(myAnim);
     //myEntity3.assign<tag::Hours>(myEntity);
     
@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
 
             // Update systems
-            if (tempFrameCount >= 2) {
+            if (tempFrameCount >= 10) {
                 animationSystem.update(registry, deltatime);
                 tempFrameCount = 0;
             }
