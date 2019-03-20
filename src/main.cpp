@@ -75,9 +75,9 @@ int main(int argc, char** argv) {
     myEntity4.assign<cmpt::Sprite>(spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     myEntity4.assign<cmpt::Transform>(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
 
-    // FIXME -> The sprite uv coordinates of texture array are not inverted when at still texture is created before
-    // FIXME -> Animation of a second sprite is the same as the first one
-
+    // FIXED -> The sprite uv coordinates of texture array are not inverted when at still texture is created before
+    // -> The stbi invert flag when importing images was staying on
+    // FIXED -> Animation of a second sprite is the same as the first one -> Binding problem
     // FIXED -> Sometimes the last entity drawn is black when noesis is rendering
     // FIXED -> Cannot make different sprite atlas
     // -> Viens de la texture unit qui est bind après
