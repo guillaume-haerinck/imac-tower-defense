@@ -2,13 +2,14 @@
 
 #include "logger/gl-log-handler.hpp"
 #include "components/sprite.hpp"
+#include "components/sprite-animation.hpp"
 
 RenderSystem::RenderSystem() {}
 
 RenderSystem::~RenderSystem() {}
 
 void RenderSystem::update(entityx::EntityX& registry, glm::mat4& view, glm::mat4& projection) {
-    registry.entities.each<cmpt::Transform, cmpt::Sprite>([this, view = view, projection = projection](entityx::Entity entity, cmpt::Transform& transform, cmpt::Sprite& sprite) {
+    registry.entities.each<cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>([this, view = view, projection = projection](entityx::Entity entity, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images
@@ -17,6 +18,7 @@ void RenderSystem::update(entityx::EntityX& registry, glm::mat4& view, glm::mat4
         glm::mat4 mvp = projection * view * getModelMatrix(transform);
         sprite.ib->bind();
         sprite.shader->setUniformMat4f("u_mvp", mvp);
+        sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
     });
 }
