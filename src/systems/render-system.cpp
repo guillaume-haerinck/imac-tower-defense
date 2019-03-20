@@ -18,12 +18,6 @@ void RenderSystem::update(entityx::EntityX& registry, glm::mat4& view, glm::mat4
         sprite.ib->bind();
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
-
-        // Unbind everything
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-        GLCall(glBindVertexArray(0));
-        GLCall(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
-        GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     });
 }
 
