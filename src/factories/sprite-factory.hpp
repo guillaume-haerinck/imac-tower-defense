@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <entityx/entityx.h>
+#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
 #include "graphics/index-buffer.hpp"
@@ -9,7 +9,7 @@
 
 class SpriteFactory {
 public:
-    SpriteFactory(entityx::EntityX& registry);
+    SpriteFactory(entt::DefaultRegistry& registry);
     ~SpriteFactory();
 
     cmpt::Sprite create(const std::string& textureFilepath, glm::vec2 displaySize, GLenum usage);
@@ -21,5 +21,5 @@ private:
     Shader m_shaderTexArray;
     IndexBuffer m_ib;    // All sprites shares the same index buffer
     float m_vertex;      // All sprites shares the same vertex data
-    entityx::EntityX& m_registry;
+    entt::DefaultRegistry& m_registry;
 };

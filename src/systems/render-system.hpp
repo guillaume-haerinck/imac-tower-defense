@@ -6,7 +6,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
-#include <entityx/entityx.h>
+#include <entt/entt.hpp>
 
 #include "components/transform.hpp"
 
@@ -15,7 +15,7 @@ public:
     RenderSystem();
     ~RenderSystem();
 
-    void update(entityx::EntityX& registry, glm::mat4& view, glm::mat4& projection);
+    void update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection);
 
 private:
     glm::mat4 getModelMatrix(cmpt::Transform& transform);

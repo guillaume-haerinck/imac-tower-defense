@@ -7,6 +7,6 @@ MovementSystem::MovementSystem() {}
 
 MovementSystem::~MovementSystem() {}
 
-void MovementSystem::update(entityx::EntityX& registry, double deltatime) {
+void MovementSystem::update(entt::DefaultRegistry& registry, double deltatime) {
 
 }

@@ -8,8 +8,8 @@ RenderSystem::RenderSystem() {}
 
 RenderSystem::~RenderSystem() {}
 
-void RenderSystem::update(entityx::EntityX& registry, glm::mat4& view, glm::mat4& projection) {
-    registry.entities.each<cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>([this, view = view, projection = projection](entityx::Entity entity, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
+void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection) {
+    registry.view<cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this, view = view, projection = projection](const uint32_t entity, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images

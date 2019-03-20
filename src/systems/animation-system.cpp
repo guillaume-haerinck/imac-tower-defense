@@ -8,8 +8,8 @@ AnimationSystem::AnimationSystem() {}
 
 AnimationSystem::~AnimationSystem() {}
 
-void AnimationSystem::update(entityx::EntityX& registry, double deltatime) {
-    registry.entities.each<cmpt::SpriteAnimation, cmpt::Sprite>([](entityx::Entity entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
+void AnimationSystem::update(entt::DefaultRegistry& registry, double deltatime) {
+    registry.view<cmpt::SpriteAnimation, cmpt::Sprite>().each([](uint32_t entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
         if (animation.activeTile < animation.endTile) {
             animation.activeTile++;
         } else {

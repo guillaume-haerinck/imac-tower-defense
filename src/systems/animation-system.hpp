@@ -1,11 +1,11 @@
 #pragma once
 
-#include <entityx/entityx.h>
+#include <entt/entt.hpp>
 
 class AnimationSystem {
 public:
     AnimationSystem();
     ~AnimationSystem();
 
-    void update(entityx::EntityX& registry, double deltatime);
+    void update(entt::DefaultRegistry& registry, double deltatime);
 };

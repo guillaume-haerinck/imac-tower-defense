@@ -6,7 +6,7 @@
 #include "graphics/texture.hpp"
 #include "graphics/texture-array.hpp"
 
-SpriteFactory::SpriteFactory(entityx::EntityX& registry)
+SpriteFactory::SpriteFactory(entt::DefaultRegistry& registry)
 : m_shaderTex("shaders/texture/texture.vert", "shaders/texture/texture.frag"),
   m_shaderTexArray("shaders/texture/texture.vert", "shaders/texture/texture-array.frag"),
   m_registry(registry)
@@ -22,7 +22,7 @@ SpriteFactory::SpriteFactory(entityx::EntityX& registry)
 }
 
 SpriteFactory::~SpriteFactory() {
-    m_registry.entities.each<cmpt::Sprite>([](entityx::Entity entity, cmpt::Sprite& sprite) {
+    m_registry.view<cmpt::Sprite>().each([](uint32_t entity, cmpt::Sprite& sprite) {
         GLCall(glDeleteTextures(1, &sprite.textureID));
         GLCall(glDeleteVertexArrays(1, &sprite.vaID));
     });

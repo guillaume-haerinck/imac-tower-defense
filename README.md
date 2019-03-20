@@ -45,13 +45,13 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 
 ### Prerequisites
 
-You must install **[CMake](https://cmake.org/)** and a C++ compiler which handles **C++ 11**. More on the compiler on the next sections.
+You must install **[CMake](https://cmake.org/)** and a C++ compiler which handles **C++ 14**. More on the compiler on the next sections.
 
 The project need your graphic card driver to be up to date, as it is using **OpenGL 4.4** core profile (released in 2013, so it should be fine).
 
 #### Linux
 
-The recommended compiler is g++, which is included by default on many linux distribution. You can update it with :
+The recommended compiler is g++, minimum version required is `g++ 6.1`, which is included by default on many linux distribution. You can update it with :
 
 ```bash
 sudo apt-get install build-essential
@@ -133,7 +133,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [OpenGL](http://docs.gl/) - The graphic API used
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
-- [EntityX](https://github.com/alecthomas/entityx) - The ECS framework
+- [ENTT](https://github.com/alecthomas/entityx](https://github.com/skypjack/entt) - The ECS framework
 - [SPDLog](https://github.com/gabime/spdlog) - Logging lib
 - [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
