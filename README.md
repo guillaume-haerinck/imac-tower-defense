@@ -141,7 +141,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [OpenGL](http://docs.gl/) - The graphic API used
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
-- [ENTT](https://github.com/alecthomas/entityx](https://github.com/skypjack/entt) - The ECS framework
+- [ENTT](https://github.com/skypjack/entt) - The ECS framework
 - [SPDLog](https://github.com/gabime/spdlog) - Logging lib
 - [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
