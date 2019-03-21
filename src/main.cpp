@@ -31,6 +31,7 @@
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
+#include "gui/my-grid.hpp"
 
 static Noesis::IView* _noeView;
 
@@ -88,14 +89,18 @@ int main(int argc, char** argv) {
     unsigned int tempFrameCount = 0;
 
     /* Noesis GUI */
-    Noesis::Ptr<Noesis::FrameworkElement> xaml = Noesis::GUI::LoadXaml<Noesis::FrameworkElement>("hello-world.xaml");
+    //Noesis::Ptr<Noesis::FrameworkElement> xaml = Noesis::GUI::LoadXaml<Noesis::FrameworkElement>("hello-world.xaml");
+    MyGrid mygrid;
+    Noesis::Ptr<Noesis::FrameworkElement> xaml = mygrid;
 
     // Handle event with direct subscription
+    /*
     Noesis::Button* button = xaml->FindName<Noesis::Button>("button");
     button->Click() += [](Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args)
     {
         std::cout << "Button was clicked !" << std::endl;
     };
+    */
 
     _noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
     _noeView->SetIsPPAAEnabled(true);
