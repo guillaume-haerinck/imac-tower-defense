@@ -1,5 +1,10 @@
 # Imac Tower Defense Changelog
 
+## 20.03.19
+
+Fix several bugs related to sprite array rendering.
+Switch back to ENTT in C++ 14 to get tag supports.
+
 ## 17.03.19
 
 Change ECS library ENTT for EntityX. Now the project is compatible from C++ 11.

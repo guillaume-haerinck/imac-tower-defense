@@ -5,6 +5,9 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <NsApp/LocalFontProvider.h>
+#include <NsApp/LocalTextureProvider.h>
+#include <NsApp/LocalXamlProvider.h>
 
 #include "constants.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -18,6 +21,7 @@ Game::~Game() {
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+    Noesis::GUI::Shutdown();
     SDL_DestroyWindow(m_window);
     SDL_Quit();
 }
@@ -100,6 +104,9 @@ int Game::init() {
 
     /* Init Noesis GUI */
     Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
+    Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./gui"));
+    Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./gui"));
+    Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./gui"));
 
     isInit = true;
     return EXIT_SUCCESS;

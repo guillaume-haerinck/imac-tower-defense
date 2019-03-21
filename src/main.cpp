@@ -32,7 +32,7 @@
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
 
-static Noesis::IView* _view;
+static Noesis::IView* _noeView;
 
 int main(int argc, char** argv) {
     Game game;
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     entt::DefaultRegistry registry;
     SpriteFactory spriteFactory(registry);
     
-    /* --------------------------------- PLAYGROUND TO CHECK FOR BUGS ----------------- */
+    /* Assign components */
     auto myEntity =  registry.create();
     auto myEntity2 = registry.create();
     auto myEntity3 = registry.create();
@@ -87,30 +87,13 @@ int main(int argc, char** argv) {
     bool bWireframe = false;
     unsigned int tempFrameCount = 0;
 
-    /* -------------------------------- NOESIS TEST --------------------------- */
-    // For simplicity purposes we are not using resource providers in this sample. ParseXaml() is
-    // enough if there is no extra XAML dependencies
-    Noesis::Ptr<Noesis::Grid> xaml(Noesis::GUI::ParseXaml<Noesis::Grid>(R"(
-        <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-            <Grid.Background>
-            </Grid.Background>
-            <Viewbox>
-                <StackPanel Margin="50">
-                    <Button Content="Hello World!" Margin="0,30,0,0"/>
-                </StackPanel>
-            </Viewbox>
-        </Grid>
-    )"));
+    /* Noesis GUI */
+    Noesis::Ptr<Noesis::FrameworkElement> xaml = Noesis::GUI::LoadXaml<Noesis::FrameworkElement>("hello-world.xaml");
 
-    // View creation to render and interact with the user interface
-    // We transfer the ownership to a global pointer instead of a Ptr<> because there is no way
-    // in GLUT to do shutdown and we don't want the Ptr<> to be released at global time
-    _view = Noesis::GUI::CreateView(xaml).GiveOwnership();
-    _view->SetIsPPAAEnabled(true);
-
-    // Renderer initialization with an OpenGL device
-    _view->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-    _view->SetSize(WIN_WIDTH, WIN_HEIGHT);
+    _noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
+    _noeView->SetIsPPAAEnabled(true);
+    _noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+    _noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
     /* Main loop */
     bool bQuit = false;
@@ -127,41 +110,40 @@ int main(int argc, char** argv) {
 			ImGui::End();
 		}
 
-        /* Render */
+        /* Noesis update */
+        {
+            // Noesis gui update
+            _noeView->Update(SDL_GetTicks());
+            _noeView->GetRenderer()->UpdateRenderTree();
+            _noeView->GetRenderer()->RenderOffscreen();
+
+            // Need to restore the GPU state because noesis changes it
+            GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+            GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
+            GLCall(glClearColor(0.8f, 1.0f, 1.0f, 0.0f));
+            GLCall(glClearStencil(0));
+            GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+        }
+
+        /* Game updates */
         {
             // Update camera
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
 
-            // Update systems
+            // TODO use delatime or target framerate to have constant animation no matter the target
             if (tempFrameCount >= 10) {
                 animationSystem.update(registry, deltatime);
                 tempFrameCount = 0;
             }
             tempFrameCount++;
             movementSystem.update(registry, deltatime);
-            
-            // Update view (layout, animations, ...)
-            _view->Update(SDL_GetTicks());
 
-            // Offscreen rendering phase populates textures needed by the on-screen rendering
-            _view->GetRenderer()->UpdateRenderTree();
-            _view->GetRenderer()->RenderOffscreen();
+        }
 
-            // If you are going to render here with your own engine you need to restore the GPU state
-            // because noesis changes it. In this case only framebuffer and viewport need to be restored
-            GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-            GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-
-            GLCall(glClearColor(0.8f, 1.0f, 1.0f, 0.0f));
-            GLCall(glClearStencil(0));
-            GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
+        /* Render */
+        {
             renderSystem.update(registry, viewMat, projMat);
-
-            // Rendering is done in the active framebuffer
-            _view->GetRenderer()->Render();
-
-            // Update gui
+            _noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -177,11 +159,11 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
                     printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-                    _view->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    _noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    _view->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    _noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
                 
                 case SDL_KEYDOWN:
@@ -233,5 +215,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Cleanup
+    _noeView->GetRenderer()->Shutdown();
     return EXIT_SUCCESS;
 }

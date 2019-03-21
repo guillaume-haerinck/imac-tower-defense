@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 set(
     NOESIS_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/App/Display/Include;
+    ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/App/Providers/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/Render/GLRenderDevice/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Include;
 )
@@ -37,7 +38,6 @@ endif()
 # ----------------------------------------- BUILD DEPENDENCIES IF NEEDED
 file(GLOB_RECURSE IMGUI_SOURCES lib/imgui/*)
 add_library(IMGUI STATIC ${IMGUI_SOURCES})
-add_library(NOESIS_GL STATIC "lib/NoesisGUI-2.2.0/Src/Packages/Render/GLRenderDevice/Src/GLRenderDevice.cpp")
 add_library(STB_IMAGE STATIC "lib/stb_image/stb_image.cpp")
 add_library(GLAD STATIC "lib/glad/src/glad.c")
 
@@ -60,7 +60,6 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     ${SDL2_LIBRARIES}
     ${NOESIS_LIBRARIES}
-    NOESIS_GL
     IMGUI
     STB_IMAGE
     GLAD

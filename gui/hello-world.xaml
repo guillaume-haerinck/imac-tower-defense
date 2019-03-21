@@ -1,0 +1,9 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <Grid.Background>
+    </Grid.Background>
+    <Viewbox>
+        <StackPanel Margin="50">
+            <Button Content="Hello World !" Margin="0,30,0,0"/>
+        </StackPanel>
+    </Viewbox>
+</Grid>

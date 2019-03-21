@@ -155,11 +155,11 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 
 ## Inspired by
 
-- [tddod](https://github.com/Daivuk/tddod) - Data oriented tower defense
+- [tddod](https://github.com/Daivuk/tddod) - Data oriented tower defense using ENTT library
 - [Unity tower defense template](https://unity3d.com/learn/tutorials/s/tower-defense-template) - Tower defense game made with Unity engine
 - [Unreal engine tower defense template](https://docs.unrealengine.com/en-us/Resources/SampleGames/StrategyGame) - Tower defense game made with Unreal Engine
 - [RayWenderlich TD](https://www.raywenderlich.com/2709-how-to-make-a-tower-defense-game-tutorial) - Tower defense game made in Objective C
-
+- [ENTT Pacman](https://github.com/Kerndog73/EnTT-Pacman) - Pacman game using ENTT library
 
 ## Authors
 
