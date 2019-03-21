@@ -78,7 +78,15 @@ You can build and launch the project in many different ways, we covered a few of
 
 #### `Option 1: Bash (Linux only)`
 
-TODO
+Go to this folder with a terminal, and enter those commands.
+
+```bash
+cmake .
+make
+./bin/imac-tower-defense
+```
+
+It means that you are genererating a Makefile, then using it to build the project, and finally running the binaries from the current working directory (needed to find assets).
 
 #### `Option 2: Visual Studio (Windows only)`
 
