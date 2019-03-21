@@ -90,6 +90,13 @@ int main(int argc, char** argv) {
     /* Noesis GUI */
     Noesis::Ptr<Noesis::FrameworkElement> xaml = Noesis::GUI::LoadXaml<Noesis::FrameworkElement>("hello-world.xaml");
 
+    // Handle event with direct subscription
+    Noesis::Button* button = xaml->FindName<Noesis::Button>("button");
+    button->Click() += [](Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args)
+    {
+        std::cout << "Button was clicked !" << std::endl;
+    };
+
     _noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
     _noeView->SetIsPPAAEnabled(true);
     _noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
