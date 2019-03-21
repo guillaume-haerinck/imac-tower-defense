@@ -53,35 +53,30 @@ int main(int argc, char** argv) {
     SpriteFactory spriteFactory(registry);
     
     /* --------------------------------- PLAYGROUND TO CHECK FOR BUGS ----------------- */
-    uint32_t myEntity =  registry.create();
-    uint32_t myEntity2 = registry.create();
-    uint32_t myEntity3 = registry.create();
-    uint32_t myEntity4 = registry.create();
+    auto myEntity =  registry.create();
+    auto myEntity2 = registry.create();
+    auto myEntity3 = registry.create();
+    auto myEntity4 = registry.create();
     
     registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
     registry.assign<cmpt::Transform>(myEntity, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim2(0, 5, 0);
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
+    registry.assign<renderTag::Animated>(myEntity);
 
     registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
+    registry.assign<renderTag::Still>(myEntity2);
 
     registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
     registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim(6, 11, 6);
     registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
-    //myEntity3.assign<tag::Hours>(myEntity);
+    registry.assign<renderTag::Animated>(myEntity3);
     
     registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity4, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
-
-    // FIXED -> The sprite uv coordinates of texture array are not inverted when at still texture is created before
-    // -> The stbi invert flag when importing images was staying on
-    // FIXED -> Animation of a second sprite is the same as the first one -> Binding problem
-    // FIXED -> Sometimes the last entity drawn is black when noesis is rendering
-    // FIXED -> Cannot make different sprite atlas
-    // -> Viens de la texture unit qui est bind après
-    // https://stackoverflow.com/questions/10477994/opengl-texture-unit
+    registry.assign<renderTag::Still>(myEntity4);
     
     /* Create systems */
     RenderSystem renderSystem;
