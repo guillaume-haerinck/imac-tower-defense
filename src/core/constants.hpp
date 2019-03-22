@@ -1,7 +1,7 @@
 #pragma once
 
 static const int WIN_WIDTH = 1920 / 2;
-static const int WIN_HEIGHT = 1080 / 3;
+static const int WIN_HEIGHT = 1080 / 2;
 static const float WIN_RATIO = (float) WIN_WIDTH / WIN_HEIGHT;
 
 static const float TARGET_DELTA_MS = 1000.0f / 60.0f; // 60 FPS

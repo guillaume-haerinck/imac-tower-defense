@@ -1,5 +1,6 @@
 #include "noesis-log-handler.hpp"
 #include <spdlog/spdlog.h>
+#include <debugbreak/debugbreak.h>
 
 void noelog::messageCallback(const char* filename, uint32_t line, uint32_t level, const char* channel, const char* message) {
   	switch (level) {
@@ -13,4 +14,6 @@ void noelog::messageCallback(const char* filename, uint32_t line, uint32_t level
 
 void noelog::errorHandler(const char* file, uint32_t line, const char* message, bool fatal) {
 	spdlog::error("[Noesis] {}", message);
+	if (fatal)
+		debug_break();
 }

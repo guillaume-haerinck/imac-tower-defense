@@ -7,8 +7,8 @@
 #include "graphics/texture-array.hpp"
 
 SpriteFactory::SpriteFactory(entt::DefaultRegistry& registry)
-: m_shaderTex("shaders/texture/texture.vert", "shaders/texture/texture.frag"),
-  m_shaderTexArray("shaders/texture/texture.vert", "shaders/texture/texture-array.frag"),
+: m_shaderTex("res/shaders/texture/texture.vert", "res/shaders/texture/texture.frag"),
+  m_shaderTexArray("res/shaders/texture/texture.vert", "res/shaders/texture/texture-array.frag"),
   m_registry(registry)
 {
     /* Index buffer */

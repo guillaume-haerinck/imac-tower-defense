@@ -124,13 +124,18 @@ The project follows the **Entity Component System** design pattern.
 | `core`        | Entry point delegation |
 | `factories`   | Classes used to build entities |
 | `graphics`    | Wrapper classes for OpenGL objects |
-| `gui`         | User interface for end-users |
+| `gui`         | User interface logic |
 | `logger` |    | Error and log handlers for the game |
 | `systems`     | Update the game and the entities based on their components |
-| **data**      | **Game levels description** |
+| **res**       | **Ressources loaded at runtime** |
+| `audio`       | Musics and sound effects used accross the game |
+| `fonts`       | Fonts used accross the game |
+| `gui`         | XAML files describing the view for each user interface |
+| `images`      | Images and spritesheets used by the game |
+| `maps`        | .ITD and .PPM describing the levels of the game |
+| `shaders`     | GLSL shaders used by openGL for rendering |
 | **doc**       | **Documentation** |
-| **images**    | **Non-UI images used by the game** |
-| **shaders**   | **GLSL shaders used by openGL for rendering** |
+| **lib**       | **Dependencies** |
 
 ### Code reference
 

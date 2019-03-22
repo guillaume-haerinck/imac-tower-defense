@@ -1,3 +1,5 @@
+#pragma once
+
 // TODO unique identifier, work almost as a tag, but can only be attributed to one entity
 
 /*
