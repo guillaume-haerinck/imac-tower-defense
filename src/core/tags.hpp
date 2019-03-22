@@ -8,7 +8,7 @@
 
 namespace renderTag
 {
-    TAG(Animated);
-    TAG(Still);
+    TAG(Atlas);
+    TAG(Single);
 };
 

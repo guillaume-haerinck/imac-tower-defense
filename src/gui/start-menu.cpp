@@ -2,6 +2,12 @@
 
 #include <NsGui/Button.h>
 
+/* TODO Data binding
+    https://www.noesisengine.com/docs/Gui.Core.DataBindingTutorial.html
+    https://www.noesisengine.com/docs/Gui.Core.UserControlTutorial.html
+    https://www.noesisengine.com/docs/Gui.Core.CustomControlTutorial.html
+*/
+
 StartMenu::StartMenu() {
     InitializeComponent();
 }

@@ -63,21 +63,21 @@ int main(int argc, char** argv) {
     registry.assign<cmpt::Transform>(myEntity, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim2(0, 5, 0);
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
-    registry.assign<renderTag::Animated>(myEntity);
+    registry.assign<renderTag::Atlas>(myEntity);
 
     registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
-    registry.assign<renderTag::Still>(myEntity2);
+    registry.assign<renderTag::Single>(myEntity2);
 
     registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
     registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
     cmpt::SpriteAnimation myAnim(6, 11, 6);
     registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
-    registry.assign<renderTag::Animated>(myEntity3);
+    registry.assign<renderTag::Atlas>(myEntity3);
     
     registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity4, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
-    registry.assign<renderTag::Still>(myEntity4);
+    registry.assign<renderTag::Single>(myEntity4);
     
     /* Create systems */
     RenderSystem renderSystem;
