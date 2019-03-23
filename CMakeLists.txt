@@ -7,6 +7,7 @@ project(imac-tower-defense)
 file(GLOB_RECURSE MY_SOURCES src/*)
 
 # ---------------------------------------- FIND DEPENDENCIES
+# Common on all platform
 find_package(OpenGL REQUIRED)
 set(
     NOESIS_INCLUDE_DIRS 
@@ -16,13 +17,17 @@ set(
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Include;
 )
 set(FMOD_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/inc)
+if(WIN32)
+    set(BULLET_ROOT ${CMAKE_SOURCE_DIR}/lib/bullet-2.8.8)
+endif()
+find_package(Bullet)
 
-if (WIN32)
+if (WIN32) # On windows
     set(SDL2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/include)
     set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2main.lib)
     set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/Noesis.lib;${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/NoesisApp.lib)
     set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/windows_x86/fmod_vc.lib)
-else()
+else() # On linux
     find_package(SDL2 REQUIRED)
     set(
         CMAKE_PREFIX_PATH 
@@ -57,6 +62,7 @@ include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${NOESIS_INCLUDE_DIRS}
     ${FMOD_INCLUDE_DIRS}
+    ${BULLET_INCLUDE_DIRS}
     lib/glad/include
     lib/entt-cpp14/src
     lib
@@ -72,6 +78,7 @@ target_link_libraries(
     ${SDL2_LIBRARIES}
     ${NOESIS_LIBRARIES}
     ${FMOD_LIBRARIES}
+    ${BULLET_LIBRARIES}
     IMGUI
     STB_IMAGE
     GLAD

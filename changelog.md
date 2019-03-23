@@ -2,7 +2,7 @@
 
 ## 23.03.19
 
-Add FMOD lib to play sounds.
+Add FMOD lib to play sounds and Bullet lib for physics.
 
 ## 20.03.19
 

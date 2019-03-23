@@ -34,7 +34,7 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [ ] Load map as a grid
 - [ ] User interface
 - [x] Play audio
-- [ ] Object picking (using Bullet physics ?)
+- [ ] Object picking
 - [ ] Construction system
 - [ ] Monster path following
 - [ ] Attack system
@@ -60,11 +60,12 @@ The recommended compiler is g++, minimum version required is `g++ 6.1`, which is
 sudo apt-get install build-essential
 ```
 
-You will also need the OpenGl and SDL2 packages.
+You will also need OpenGl, SDL2 and Bullet physics packages.
 
 ```bash
 sudo apt-get install libsdl2-dev
 sudo apt-get install libglu1-mesa-dev mesa-common-dev
+sudo apt-get install libbullet-dev
 ```
 
 #### Windows
@@ -156,6 +157,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header
 - [StbImage](https://github.com/nothings/stb) - Load images
 - [FMOD](https://www.fmod.com/) - Load and play adaptative audio
+- [Bullet](https://pybullet.org/wordpress/) - Physics library
 
 ## Useful articles
 
