@@ -1,0 +1,95 @@
+.. -*- mode: rst; encoding: utf-8 -*-
+
+.. meta::
+   :description: Encapsulates a NoesisGUI application.
+
+=================
+Application Class
+=================
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+namespace `NoesisApp <Gui.Core._ClassHierarchy.html#noesisapp-namespace>`__ | `MSDN <http://msdn.microsoft.com/en-us/library/system.windows.application.aspx>`_
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Encapsulates a NoesisGUI application. 
+
+ 
+
+
+
+Inheritance Hierarchy
+=====================
+
+.. |bullet| unicode:: U+2022 .. Circular Bullet
+.. |INDEX| image:: icon_index.png
+   :align: middle
+
+|  |bullet| *Application*
+
+
+|INDEX| `Class Hierarchy Index <Gui.Core._ClassHierarchy.html>`__
+
+
+Methods
+=======
+
+================================================== ================================================================================================================================================================
+Name                                               Description                                                                                                                                                     
+================================================== ================================================================================================================================================================
+*Activated*                                        Occurs when an application becomes the foreground application                                                                                                   
+*Current*                                          Gets the current application object                                                                                                                             
+*Deactivated*                                      Occurs when an application stops being the foreground application                                                                                               
+*Exit*                                             Occurs just before an application shuts down                                                                                                                    
+*Init*                                             Initializes the application with on the given display and command line arguments                                                                                
+*Shutdown*                                         Shuts down an application that returns the specified exit code to the operating system                                                                          
+*StartUp*                                          Occurs when the `Application <App.ApplicationLauncher._Application.html>`_ is initialized                                                                       
+*Tick*                                             Ticks application                                                                                                                                               
+================================================== ================================================================================================================================================================
+
+|
+
+
+
+Properties
+==========
+
+.. |DP| image:: icon_dp.png
+   :align: middle
+.. |RO| image:: icon_ro.png
+   :align: middle
+.. |DP_RO| image:: icon_dp-ro.png
+   :align: middle
+.. |None| image:: icon_none.png
+   :align: middle
+.. |DP_| image:: icon_dp_.png
+   :align: middle
+.. |RO_| image:: icon_ro_.png
+   :align: middle
+
+========== ================================================== ======================================================================================================================================================
+|          Name                                               Description                                                                                                                                           
+========== ================================================== ======================================================================================================================================================
+|RO|       *Arguments*                                        Retrieves command line arguments                                                                                                                      
+|RO|       *MainWindow*                                       Gets the main window of the application                                                                                                               
+|NONE|     *Resources*                                        Gets or sets a collection of application-scope resources, such as styles and brushes                                                                  
+|NONE|     *StartupUri*                                       Gets or sets a UI that is automatically shown when application starts                                                                                 
+========== ================================================== ======================================================================================================================================================
+
+| |DP_| *Dependency Property* - |RO_| *Read only*
+
+|
+
+
+
+Events
+======
+
+
+.. |R| image:: ev_r-icon.png
+   :align: middle
+.. |N| image:: ev_nr-icon.png
+   :align: middle
+.. |D| image:: ev_d-icon.png
+   :align: middle
+
+Application has no events
+

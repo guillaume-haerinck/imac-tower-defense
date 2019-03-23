@@ -155,6 +155,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
 - [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header
 - [StbImage](https://github.com/nothings/stb) - Load images
+- [FMOD](https://www.fmod.com/) - Load and play adaptative audio
 
 ## Useful articles
 
