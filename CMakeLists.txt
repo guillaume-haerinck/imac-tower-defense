@@ -24,17 +24,25 @@ if (WIN32)
     set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/x86/fmod_vc.lib)
 else()
     find_package(SDL2 REQUIRED)
-    set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64)
+    set(
+        CMAKE_PREFIX_PATH 
+        ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;
+        ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/linux_x86_64
+    )
     find_library(NOESIS_LIB Noesis)
     find_library(NOESIS_APP_LIB NoesisApp)
     set(NOESIS_LIBRARIES ${NOESIS_LIB} ${NOESIS_APP_LIB})
+    find_library(FMOD_LIBRARIES fmod)
 endif()
 
-if (SDL2_LIBRARIES) 
+if (SDL2_LIBRARIES)
     message("Found SDL2: " ${SDL2_LIBRARIES})
 endif()
-if (NOESIS_LIBRARIES) 
+if (NOESIS_LIBRARIES)
     message("Found Noesis: " ${NOESIS_LIBRARIES})
+endif()
+if (FMOD_LIBRARIES)
+    message("Found FMOD: " ${FMOD_LIBRARIES})
 endif()
 
 # ----------------------------------------- BUILD DEPENDENCIES IF NEEDED
