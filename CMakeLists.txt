@@ -15,24 +15,34 @@ set(
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/Render/GLRenderDevice/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Include;
 )
+set(FMOD_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/inc)
 
 if (WIN32)
     set(SDL2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/include)
     set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2main.lib)
     set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/Noesis.lib;${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/NoesisApp.lib)
+    set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/x86/fmod_vc.lib)
 else()
     find_package(SDL2 REQUIRED)
-    set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64)
+    set(
+        CMAKE_PREFIX_PATH 
+        ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;
+        ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/linux_x86_64
+    )
     find_library(NOESIS_LIB Noesis)
     find_library(NOESIS_APP_LIB NoesisApp)
     set(NOESIS_LIBRARIES ${NOESIS_LIB} ${NOESIS_APP_LIB})
+    find_library(FMOD_LIBRARIES fmod)
 endif()
 
-if (SDL2_LIBRARIES) 
+if (SDL2_LIBRARIES)
     message("Found SDL2: " ${SDL2_LIBRARIES})
 endif()
-if (NOESIS_LIBRARIES) 
+if (NOESIS_LIBRARIES)
     message("Found Noesis: " ${NOESIS_LIBRARIES})
+endif()
+if (FMOD_LIBRARIES)
+    message("Found FMOD: " ${FMOD_LIBRARIES})
 endif()
 
 # ----------------------------------------- BUILD DEPENDENCIES IF NEEDED
@@ -46,6 +56,7 @@ include_directories(
     ${OPENGL_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
     ${NOESIS_INCLUDE_DIRS}
+    ${FMOD_INCLUDE_DIRS}
     lib/glad/include
     lib/entt-cpp14/src
     lib
@@ -60,6 +71,7 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     ${SDL2_LIBRARIES}
     ${NOESIS_LIBRARIES}
+    ${FMOD_LIBRARIES}
     IMGUI
     STB_IMAGE
     GLAD
@@ -80,6 +92,12 @@ if (WIN32) # Copy .dll to build folder
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/windows_x86"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/x86/fmod.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
 endif()
