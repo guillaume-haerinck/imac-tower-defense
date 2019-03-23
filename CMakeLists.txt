@@ -19,9 +19,9 @@ set(FMOD_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/inc)
 
 if (WIN32)
     set(SDL2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/include)
-    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2main.lib)
+    set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2main.lib)
     set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/Noesis.lib;${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/NoesisApp.lib)
-    set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/x86/fmod_vc.lib)
+    set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/windows_x86/fmod_vc.lib)
 else()
     find_package(SDL2 REQUIRED)
     set(
@@ -85,7 +85,7 @@ if (WIN32) # Copy .dll to build folder
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/win_x86/SDL2.dll"
+        "${PROJECT_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
     add_custom_command(
@@ -97,7 +97,7 @@ if (WIN32) # Copy .dll to build folder
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/x86/fmod.dll"
+        "${PROJECT_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/windows_x86/fmod.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
 endif()

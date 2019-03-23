@@ -46,24 +46,24 @@ int main(int argc, char** argv) {
 
     /* TEST FMOD SOUNDS */
     FMOD_RESULT result;
-    FMOD::System* system = nullptr;
+    FMOD::System* fmodSystem = nullptr;
     FMOD::Channel* channel = 0;
 
-    result = FMOD::System_Create(&system);
+    result = FMOD::System_Create(&fmodSystem);
     if (result != FMOD_OK) {
         spdlog::error("[FMOD] {} {}", result, FMOD_ErrorString(result));
         debug_break();
     }
 
-    result = system->init(512, FMOD_INIT_NORMAL, 0);
+    result = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);
     if (result != FMOD_OK) {
         spdlog::error("[FMOD] {} {}", result, FMOD_ErrorString(result));
         debug_break();
     }
 
     FMOD::Sound* mySound;
-    system->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
-    system->playSound(mySound, 0, false, &channel);
+    fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
+    fmodSystem->playSound(mySound, 0, false, &channel);
 
     /* Model and Projection matrices */
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
@@ -241,6 +241,7 @@ int main(int argc, char** argv) {
     }
 
     // Cleanup
+    mySound->release();
     _noeView->GetRenderer()->Shutdown();
     return EXIT_SUCCESS;
 }
