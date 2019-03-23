@@ -32,10 +32,13 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [x] Load & play spritesheet
 - [ ] Load, validate and interpret .itd files
 - [ ] Load map as a grid
-- [ ] User interface
+- [-] User interface
+- [ ] Play audio (using FMOD ?)
+- [ ] Object picking (using Bullet physics ?)
 - [ ] Construction system
 - [ ] Monster path following
 - [ ] Attack system
+- [ ] Projectiles
 - [ ] Waves system
 - [ ] Monster state machine
 - [ ] Banking system
