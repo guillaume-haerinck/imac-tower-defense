@@ -94,7 +94,7 @@ It means that you are genererating a Makefile, then using it to build the projec
 
 #### `Option 2: Visual Studio (Windows only)`
 
-From Visual Studio 2015, you don't need to generate a visual studio project with cmake. You can simply open visual studio, browse the toolbar to `File->Open->Cmake...` and select the `CMakeLists.txt` at the root of this directory. From this point, you have to make sure that you are using a `x86 build configuration`, and running the `imac-tower-defense target`. If everything is done, simply press `f5` or click on the green arrow at the top.
+From Visual Studio 2015, you don't need to generate a visual studio project with cmake. You can simply open visual studio, browse the toolbar to *File->Open->Cmake...* and select the `CMakeLists.txt` at the root of this directory. From this point, you have to make sure that you are using a **x86 build configuration**, and running the **imac-tower-defense target**. If everything is done, simply press `f5` or click on the green arrow at the top.
 
 ![Screenshot](doc/readme-img/vs-studio-launch.png?raw=true "VS launch")
 
@@ -104,7 +104,7 @@ You will need the `CMakeTools` extension from vector-of-bools. If you want to ch
 
 ![Screenshot](doc/readme-img/vs-code-extensions.png?raw=true "VSCode extensions")
 
-From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - amd64` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch it by pressing `f5`, but make sure to pick your operating system.
+From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - x86` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch it by pressing `f5`, but make sure to pick your operating system.
 
 ![Screenshot](doc/readme-img/vs-code-launch.png?raw=true "VSCode Launch options")
 
