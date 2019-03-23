@@ -94,19 +94,19 @@ It means that you are genererating a Makefile, then using it to build the projec
 
 #### `Option 2: Visual Studio (Windows only)`
 
-TODO
+From Visual Studio 2015, you don't need to generate a visual studio project with cmake. You can simply open visual studio, browse the toolbar to `File->Open->Cmake...` and select the `CMakeLists.txt` at the root of this directory. From this point, you have to make sure that you are using a `x86 build configuration`, and running the `imac-tower-defense target`. If everything is done, simply press `f5` or click on the green arrow at the top.
+
+![Screenshot](doc/readme-img/vs-studio-launch.png?raw=true "VS launch")
 
 #### `Option 3: VSCode`
 
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
-![Screenshot](doc/readme-img/extensions.png?raw=true "VSCode extensions")
+![Screenshot](doc/readme-img/vs-code-extensions.png?raw=true "VSCode extensions")
 
-From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - amd64` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch them by pressing `f5`.
+From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - amd64` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch it by pressing `f5`, but make sure to pick your operating system.
 
-#### `Option 4: CLion`
-
-TODO
+![Screenshot](doc/readme-img/vs-code-launch.png?raw=true "VSCode Launch options")
 
 ### Launch
 
@@ -129,7 +129,7 @@ The project follows the **Entity Component System** design pattern.
 | `factories`   | Classes used to build entities |
 | `graphics`    | Wrapper classes for OpenGL objects |
 | `gui`         | User interface logic |
-| `logger` |    | Error and log handlers for the game |
+| `logger`      | Error and log handlers for the game |
 | `systems`     | Update the game and the entities based on their components |
 | **res**       | **Ressources loaded at runtime** |
 | `audio`       | Musics and sound effects used accross the game |
@@ -148,16 +148,16 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 ## Dependencies
 
 - [OpenGL](http://docs.gl/) - The graphic API used
-- [GLM](https://glm.g-truc.net/0.9.9/index.html) - The opengl maths library
+- [GLM](https://glm.g-truc.net/) - The opengl maths library
 - [SDL2](https://wiki.libsdl.org/) - The library used to create a valid OpenGl context
 - [ENTT](https://github.com/skypjack/entt) - The ECS framework
 - [SPDLog](https://github.com/gabime/spdlog) - Logging lib
-- [NeosisGUI](https://www.noesisengine.com/docs/Gui.Core.Index.html) - GUI WPF lib for end users
+- [NeosisGUI](https://www.noesisengine.com/) - GUI WPF lib for end users
 - [Imgui](https://github.com/ocornut/imgui) - Immediate mode GUI lib for debugging
 - [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header
 - [StbImage](https://github.com/nothings/stb) - Load images
 - [FMOD](https://www.fmod.com/) - Load and play adaptative audio
-- [Bullet](https://pybullet.org/wordpress/) - Physics library
+- [Bullet](https://pybullet.org/) - Physics library
 
 ## Useful articles
 
