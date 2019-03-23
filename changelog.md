@@ -1,5 +1,9 @@
 # Imac Tower Defense Changelog
 
+## 23.03.19
+
+Add FMOD lib to play sounds.
+
 ## 20.03.19
 
 Fix several bugs related to sprite array rendering.
