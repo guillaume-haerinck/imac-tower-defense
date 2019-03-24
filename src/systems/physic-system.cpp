@@ -8,6 +8,7 @@ PhysicSystem::PhysicSystem() {}
 
 PhysicSystem::~PhysicSystem() {}
 
+/*
 void PhysicSystem::update(entt::DefaultRegistry& registry, double deltatime, btDiscreteDynamicsWorld& dynamicsWorld) {
     for (int i = dynamicsWorld.getNumCollisionObjects() - 1; i >= 0; i--) {
         btCollisionObject* obj = dynamicsWorld.getCollisionObjectArray()[i];
@@ -25,3 +26,4 @@ void PhysicSystem::update(entt::DefaultRegistry& registry, double deltatime, btD
         transform.rotation.w = trans.getRotation().getW();
     });
 }
+*/

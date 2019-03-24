@@ -1,13 +1,11 @@
 #pragma once
 
-#include <BulletCollision/CollisionShapes/btCollisionShape.h>
-
 namespace cmpt {
 struct Collision {
-    Collision(btCollisionShape* collisionShape, bool isTrigger)
-    : collisionShape(collisionShape), isTrigger(isTrigger) {}
+    Collision(bool isTrigger)
+    : isTrigger(isTrigger) {}
 
-    btCollisionShape* collisionShape;
+    //btCollisionShape* collisionShape;
     bool isTrigger;
 };
 }

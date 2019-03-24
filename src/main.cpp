@@ -18,7 +18,7 @@
 #include <NsGui/IRenderer.h>
 #include <NsGui/IView.h>
 #include <NsGui/Grid.h>
-#include <btBulletDynamicsCommon.h>
+#include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -26,7 +26,6 @@
 #include "core/tags.hpp"
 #include "core/constants.hpp"
 #include "factories/sprite-factory.hpp"
-#include "factories/rigid-body-factory.hpp"
 #include "components/transform.hpp"
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
@@ -69,14 +68,11 @@ int main(int argc, char** argv) {
     fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
     fmodSystem->playSound(mySound, 0, false, &channel);
 
-    /* Setup Physics */
-	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-    // dynamicsWorld->addConstraint() // Limit the z axis ?
+    /* ---------------- TEST PHYSICS --------------- */
+	b2Vec2 gravity(0.0f, -10.0f);
+    b2World world(gravity);
+    b2BodyDef groundBodyDef;
+	groundBodyDef.position.Set(0.0f, -10.0f);
 
     /* Model and Projection matrices */
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
@@ -88,7 +84,6 @@ int main(int argc, char** argv) {
     /* Create factories */
     entt::DefaultRegistry registry;
     SpriteFactory spriteFactory(registry);
-    RigidBodyFactory rigidBodyFactory(registry, *dynamicsWorld);
     
     /* Assign components */
     auto myEntity = registry.create();
@@ -102,9 +97,6 @@ int main(int argc, char** argv) {
     cmpt::SpriteAnimation myAnim2(0, 5, 0);
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
     registry.assign<renderTag::Atlas>(myEntity);
-    btCollisionShape* squareShape = new btBoxShape(btVector3(btScalar(15.), btScalar(15.), btScalar(1.)));
-    cmpt::Collision myCollider1(squareShape, false);
-    registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.createStatic(myTransform1, myCollider1));
 
     registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
@@ -115,19 +107,11 @@ int main(int argc, char** argv) {
     cmpt::SpriteAnimation myAnim(6, 11, 6);
     registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
     registry.assign<renderTag::Atlas>(myEntity3);
-    
-    /* 
-        FIMXE the rendered sprite display shape is changed when there is a collision. WTF
-        -> Seems to be the Z rotation, as we are in ortho view, we cannot see it
-    */
 
     registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f, 2.0f), GL_DYNAMIC_DRAW));
     cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
     registry.assign<cmpt::Transform>(myEntity4, myTransform2);
     registry.assign<renderTag::Single>(myEntity4);
-    btCollisionShape* rectangleShape = new btBoxShape(btVector3(btScalar(15.), btScalar(30.), btScalar(1.)));
-    cmpt::Collision myCollider2(rectangleShape, false);
-    registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.createDynamic(myTransform2, myCollider2, btScalar(0.1f), btVector3(0, 0, 0)));
     
     /* Create systems */
     RenderSystem renderSystem;
@@ -191,8 +175,7 @@ int main(int argc, char** argv) {
             tempFrameCount++;
             
             // Update physics
-            dynamicsWorld->stepSimulation(1.f / 60.f, 10); // TODO use target framerate ?
-            physicSystem.update(registry, deltatime, *dynamicsWorld);
+            //physicSystem.update(registry, deltatime, *dynamicsWorld);
         }
 
         /* Render */
@@ -273,10 +256,5 @@ int main(int argc, char** argv) {
     // Cleanup
     mySound->release();
     noeView->GetRenderer()->Shutdown();
-	delete dynamicsWorld;
-	delete solver;
-	delete overlappingPairCache;
-	delete dispatcher;
-	delete collisionConfiguration;
     return EXIT_SUCCESS;
 }

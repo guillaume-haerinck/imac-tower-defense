@@ -1,5 +1,9 @@
 # Imac Tower Defense Changelog
 
+## 24.03.19
+
+Switch Bullet for Box2D, better fit for a 2D game.
+
 ## 23.03.19
 
 Add FMOD lib to play sounds and Bullet lib for physics.

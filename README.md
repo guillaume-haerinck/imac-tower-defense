@@ -60,12 +60,11 @@ The recommended compiler is g++, minimum version required is `g++ 6.1`, which is
 sudo apt-get install build-essential
 ```
 
-You will also need OpenGl, SDL2 and Bullet physics packages.
+You will also need the OpenGl and SDL2 packages.
 
 ```bash
 sudo apt-get install libsdl2-dev
 sudo apt-get install libglu1-mesa-dev mesa-common-dev
-sudo apt-get install libbullet-dev
 ```
 
 #### Windows
@@ -157,7 +156,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 - [Debugbreak](https://github.com/scottt/debugbreak) - Cross-platform code breakpoint header
 - [StbImage](https://github.com/nothings/stb) - Load images
 - [FMOD](https://www.fmod.com/) - Load and play adaptative audio
-- [Bullet](https://pybullet.org/) - Physics library
+- [Box2D](https://box2d.org/) - 2D Physics library
 
 ## Useful articles
 
