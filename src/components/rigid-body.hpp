@@ -1,9 +1,12 @@
 #pragma once
 
+#include <Box2D/Box2D.h>
+
 namespace cmpt {
 struct RigidBody {
-    RigidBody() {}
+    RigidBody(b2Body* body, b2FixtureDef* collider) : body(body), collider(collider) {}
 
-    //btRigidBody* rb;
+    b2Body* body;
+    b2FixtureDef* collider;
 };
 }

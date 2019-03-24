@@ -32,6 +32,7 @@ else() # On linux
     find_library(NOESIS_APP_LIB NoesisApp)
     set(NOESIS_LIBRARIES ${NOESIS_LIB} ${NOESIS_APP_LIB})
     find_library(FMOD_LIBRARIES fmod)
+    find_library(BOX2D_LIBRARIES box2d)
 endif()
 
 if (SDL2_LIBRARIES)
