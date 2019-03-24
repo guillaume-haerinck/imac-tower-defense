@@ -20,7 +20,7 @@ set(FMOD_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/inc)
 if(WIN32)
     set(BULLET_ROOT ${CMAKE_SOURCE_DIR}/lib/bullet-2.8.8)
 endif()
-find_package(Bullet)
+find_package(Bullet REQUIRED)
 
 if (WIN32) # On windows
     set(SDL2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/include)

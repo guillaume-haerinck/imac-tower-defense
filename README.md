@@ -76,7 +76,7 @@ The recommended compiler is MSVC. To install it you will need [Visual Studio](ht
 
 ### Build
 
-The `CMakeLists.txt` file ensure that the project will work on Linux and Windows plateforms.
+The `CMakeLists.txt` file ensure that the project will work on Linux and Windows platforms.
 
 You can build and launch the project in many different ways, we covered a few of them :
 
@@ -94,7 +94,7 @@ It means that you are genererating a Makefile, then using it to build the projec
 
 #### `Option 2: Visual Studio (Windows only)`
 
-From Visual Studio 2015, you don't need to generate a visual studio project with cmake. You can simply open visual studio, browse the toolbar to *File->Open->Cmake...* and select the `CMakeLists.txt` at the root of this directory. From this point, you have to make sure that you are using a **x86 build configuration**, and running the **imac-tower-defense target**. If everything is done, simply press `f5` or click on the green arrow at the top.
+From Visual Studio 2017, you don't need to generate a visual studio project with cmake. You can simply open visual studio, browse the toolbar to *File->Open->Cmake...* and select the `CMakeLists.txt` at the root of this directory. From this point, you have to make sure that you are using a **x86 build configuration**, and running the **imac-tower-defense target**. If everything is done, simply press `f5` or click on the green arrow at the top.
 
 ![Screenshot](doc/readme-img/vs-studio-launch.png?raw=true "VS launch")
 

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "glm/glm.hpp"
+#include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 namespace cmpt {
 struct Collision {
-    Collision(glm::vec3 size = glm::vec3(1.0f), bool isTrigger = false) 
-    : size(size), isTrigger(isTrigger) {}
+    Collision(btCollisionShape* collisionShape, bool isTrigger)
+    : collisionShape(collisionShape), isTrigger(isTrigger) {}
 
-    glm::vec3 size;
+    btCollisionShape* collisionShape;
     bool isTrigger;
 };
 }

@@ -13,12 +13,12 @@
 #include <glm/gtc/quaternion.hpp>
 #include <fmod.hpp>
 #include <fmod_errors.h>
-
 #include <NsRender/GLFactory.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsGui/IRenderer.h>
 #include <NsGui/IView.h>
 #include <NsGui/Grid.h>
+#include <btBulletDynamicsCommon.h>
 
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -26,16 +26,16 @@
 #include "core/tags.hpp"
 #include "core/constants.hpp"
 #include "factories/sprite-factory.hpp"
+#include "factories/rigid-body-factory.hpp"
 #include "components/transform.hpp"
-#include "components/motion.hpp"
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
 #include "systems/render-system.hpp"
-#include "systems/movement-system.hpp"
+#include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
 #include "gui/start-menu.hpp"
 
-static Noesis::IView* _noeView;
+static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
     Game game;
@@ -44,26 +44,34 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    /* TEST FMOD SOUNDS */
-    FMOD_RESULT result;
+    /* --------------- TEST FMOD SOUNDS ---------------- */
+    FMOD_RESULT fmodResult;
     FMOD::System* fmodSystem = nullptr;
     FMOD::Channel* channel = 0;
 
-    result = FMOD::System_Create(&fmodSystem);
-    if (result != FMOD_OK) {
-        spdlog::error("[FMOD] {} {}", result, FMOD_ErrorString(result));
+    fmodResult = FMOD::System_Create(&fmodSystem);
+    if (fmodResult != FMOD_OK) {
+        spdlog::error("[FMOD] {} {}", fmodResult, FMOD_ErrorString(fmodResult));
         debug_break();
     }
 
-    result = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);
-    if (result != FMOD_OK) {
-        spdlog::error("[FMOD] {} {}", result, FMOD_ErrorString(result));
+    fmodResult = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);
+    if (fmodResult != FMOD_OK) {
+        spdlog::error("[FMOD] {} {}", fmodResult, FMOD_ErrorString(fmodResult));
         debug_break();
     }
 
     FMOD::Sound* mySound;
     fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
     fmodSystem->playSound(mySound, 0, false, &channel);
+
+    /* Setup Physics */
+	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+	dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
     /* Model and Projection matrices */
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
@@ -72,21 +80,26 @@ int main(int argc, char** argv) {
     /* Camera variables */
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
-    /* Create entities */
+    /* Create factories */
     entt::DefaultRegistry registry;
     SpriteFactory spriteFactory(registry);
+    RigidBodyFactory rigidBodyFactory(registry, *dynamicsWorld);
     
     /* Assign components */
-    auto myEntity =  registry.create();
+    auto myEntity = registry.create();
     auto myEntity2 = registry.create();
     auto myEntity3 = registry.create();
     auto myEntity4 = registry.create();
     
-    registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
-    registry.assign<cmpt::Transform>(myEntity, glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
+    cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Transform>(myEntity, myTransform1);
     cmpt::SpriteAnimation myAnim2(0, 5, 0);
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
     registry.assign<renderTag::Atlas>(myEntity);
+    btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(15.), btScalar(15.), btScalar(15.)));
+    cmpt::Collision myCollider1(groundShape, false);
+    registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.createStatic(myTransform1, myCollider1));
 
     registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
     registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
@@ -98,14 +111,16 @@ int main(int argc, char** argv) {
     registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
     registry.assign<renderTag::Atlas>(myEntity3);
     
-    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
-    registry.assign<cmpt::Transform>(myEntity4, glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_DYNAMIC_DRAW));
+    cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Transform>(myEntity4, myTransform2);
     registry.assign<renderTag::Single>(myEntity4);
+    registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.createDynamic(myTransform2, myCollider1, btScalar(1.f), btVector3(0, 0, 0)));
     
     /* Create systems */
     RenderSystem renderSystem;
-    MovementSystem movementSystem;
     AnimationSystem animationSystem;
+    PhysicSystem physicSystem;
 
     /* Loop general variables */
     bool bWireframe = false;
@@ -115,10 +130,10 @@ int main(int argc, char** argv) {
     StartMenu startMenu;
     Noesis::Ptr<Noesis::FrameworkElement> xaml = startMenu;
 
-    _noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
-    _noeView->SetIsPPAAEnabled(true);
-    _noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-    _noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
+    noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
+    noeView->SetIsPPAAEnabled(true);
+    noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+    noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
     /* Main loop */
     bool bQuit = false;
@@ -138,9 +153,9 @@ int main(int argc, char** argv) {
         /* Noesis update */
         {
             // Noesis gui update
-            _noeView->Update(SDL_GetTicks());
-            _noeView->GetRenderer()->UpdateRenderTree();
-            _noeView->GetRenderer()->RenderOffscreen();
+            noeView->Update(SDL_GetTicks());
+            noeView->GetRenderer()->UpdateRenderTree();
+            noeView->GetRenderer()->RenderOffscreen();
 
             // Need to restore the GPU state because noesis changes it
             GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
@@ -155,20 +170,23 @@ int main(int argc, char** argv) {
             // Update camera
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
 
+            // Update animation
             // TODO use delatime or target framerate to have constant animation no matter the target
             if (tempFrameCount >= 10) {
                 animationSystem.update(registry, deltatime);
                 tempFrameCount = 0;
             }
             tempFrameCount++;
-            movementSystem.update(registry, deltatime);
-
+            
+            // Update physics
+            dynamicsWorld->stepSimulation(1.f / 60.f, 10); // TODO use target framerate ?
+            physicSystem.update(registry, deltatime, *dynamicsWorld);
         }
 
         /* Render */
         {
             renderSystem.update(registry, viewMat, projMat);
-            _noeView->GetRenderer()->Render();
+            noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -184,11 +202,11 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
                     printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-                    _noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    _noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
                 
                 case SDL_KEYDOWN:
@@ -242,6 +260,11 @@ int main(int argc, char** argv) {
 
     // Cleanup
     mySound->release();
-    _noeView->GetRenderer()->Shutdown();
+    noeView->GetRenderer()->Shutdown();
+	delete dynamicsWorld;
+	delete solver;
+	delete overlappingPairCache;
+	delete dispatcher;
+	delete collisionConfiguration;
     return EXIT_SUCCESS;
 }

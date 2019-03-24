@@ -10,6 +10,8 @@
 
 #include "components/transform.hpp"
 
+/* TODO use framebuffer */
+
 class RenderSystem {
 public:
     RenderSystem();

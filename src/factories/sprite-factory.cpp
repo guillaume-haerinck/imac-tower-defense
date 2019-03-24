@@ -22,7 +22,7 @@ SpriteFactory::SpriteFactory(entt::DefaultRegistry& registry)
 }
 
 SpriteFactory::~SpriteFactory() {
-    m_registry.view<cmpt::Sprite>().each([](uint32_t entity, cmpt::Sprite& sprite) {
+    m_registry.view<cmpt::Sprite>().each([](auto entity, cmpt::Sprite& sprite) {
         GLCall(glDeleteTextures(1, &sprite.textureID));
         GLCall(glDeleteVertexArrays(1, &sprite.vaID));
     });
