@@ -18,5 +18,10 @@ void PhysicSystem::update(entt::DefaultRegistry& registry, double deltatime, btD
         btTransform trans;
         trans = rigidbody.rb->getWorldTransform();
         transform.position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+        // TODO find better way to apply rotation ?
+        transform.rotation.x = trans.getRotation().getX();
+        transform.rotation.y = trans.getRotation().getY();
+        transform.rotation.z = trans.getRotation().getZ();
+        transform.rotation.w = trans.getRotation().getW();
     });
 }

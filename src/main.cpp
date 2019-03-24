@@ -35,6 +35,10 @@
 #include "systems/animation-system.hpp"
 #include "gui/start-menu.hpp"
 
+/*
+    TODO memory leak detected, use Valgrind to check where it comes from
+*/
+
 static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
@@ -72,6 +76,7 @@ int main(int argc, char** argv) {
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    // dynamicsWorld->addConstraint() // Limit the z axis ?
 
     /* Model and Projection matrices */
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
@@ -92,30 +97,37 @@ int main(int argc, char** argv) {
     auto myEntity4 = registry.create();
     
     registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
-    cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat());
+    cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
     registry.assign<cmpt::Transform>(myEntity, myTransform1);
     cmpt::SpriteAnimation myAnim2(0, 5, 0);
     registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
     registry.assign<renderTag::Atlas>(myEntity);
-    btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(15.), btScalar(15.), btScalar(15.)));
-    cmpt::Collision myCollider1(groundShape, false);
+    btCollisionShape* squareShape = new btBoxShape(btVector3(btScalar(15.), btScalar(15.), btScalar(1.)));
+    cmpt::Collision myCollider1(squareShape, false);
     registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.createStatic(myTransform1, myCollider1));
 
     registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
-    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     registry.assign<renderTag::Single>(myEntity2);
 
     registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
-    registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat());
+    registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     cmpt::SpriteAnimation myAnim(6, 11, 6);
     registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
     registry.assign<renderTag::Atlas>(myEntity3);
     
-    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_DYNAMIC_DRAW));
-    cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::quat());
+    /* 
+        FIMXE the rendered sprite display shape is changed when there is a collision. WTF
+        -> Seems to be the Z rotation, as we are in ortho view, we cannot see it
+    */
+
+    registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f, 2.0f), GL_DYNAMIC_DRAW));
+    cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
     registry.assign<cmpt::Transform>(myEntity4, myTransform2);
     registry.assign<renderTag::Single>(myEntity4);
-    registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.createDynamic(myTransform2, myCollider1, btScalar(1.f), btVector3(0, 0, 0)));
+    btCollisionShape* rectangleShape = new btBoxShape(btVector3(btScalar(15.), btScalar(30.), btScalar(1.)));
+    cmpt::Collision myCollider2(rectangleShape, false);
+    registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.createDynamic(myTransform2, myCollider2, btScalar(0.1f), btVector3(0, 0, 0)));
     
     /* Create systems */
     RenderSystem renderSystem;

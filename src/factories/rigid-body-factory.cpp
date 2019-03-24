@@ -26,6 +26,7 @@ cmpt::RigidBody RigidBodyFactory::createStatic(cmpt::Transform transform, cmpt::
     btTransform rbTransform;
     rbTransform.setIdentity();
     rbTransform.setOrigin(btVector3(transform.position.x, transform.position.y, transform.position.z));
+    rbTransform.setRotation(btQuaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w));
     btScalar mass(0.);
     btVector3 localInertia(0, 0, 0);
     collider.collisionShape->calculateLocalInertia(mass, localInertia);
@@ -44,6 +45,7 @@ cmpt::RigidBody RigidBodyFactory::createDynamic(cmpt::Transform transform, cmpt:
     btTransform rbTransform;
     rbTransform.setIdentity();
     rbTransform.setOrigin(btVector3(transform.position.x, transform.position.y, transform.position.z));
+    rbTransform.setRotation(btQuaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w));
     collider.collisionShape->calculateLocalInertia(mass, localInertia);
 
     btDefaultMotionState* myMotionState = new btDefaultMotionState(rbTransform);
