@@ -13,6 +13,7 @@ public:
     ~PrimitiveFactory();
 
     cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
+    cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
 
 private:
     Shader m_shaderBasic;

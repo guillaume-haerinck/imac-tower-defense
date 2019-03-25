@@ -130,8 +130,7 @@ int main(int argc, char** argv) {
         registry.assign<renderTag::Single>(myEntity4);
         registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.create(b2_dynamicBody, myTransform2, myCollider1));
 
-        // TODO fixme
-        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRect(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
         registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
     
