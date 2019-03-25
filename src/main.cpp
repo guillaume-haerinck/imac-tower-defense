@@ -27,9 +27,11 @@
 #include "core/constants.hpp"
 #include "factories/sprite-factory.hpp"
 #include "factories/rigid-body-factory.hpp"
+#include "factories/primitive-factory.hpp"
 #include "components/transform.hpp"
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
+#include "components/primitive.hpp"
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
@@ -75,22 +77,27 @@ int main(int argc, char** argv) {
         spdlog::error("[FMOD] {} {}", fmodResult, FMOD_ErrorString(fmodResult));
         debug_break();
     }
-/*
+
     FMOD::Sound* mySound;
     fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
     fmodSystem->playSound(mySound, 0, false, &channel);
-*/
+
     /* Create factories */
     entt::DefaultRegistry registry;
     SpriteFactory spriteFactory(registry);
+    PrimitiveFactory primitiveFactory(registry);
     RigidBodyFactory rigidBodyFactory(registry, physicWorld);
     
+    
     /* ----------------------- TESTING PLAYGROUND ------------------ */
+    // TODO draw primitives
+    // TODO draw debug primitives for colliders
     {
         auto myEntity = registry.create();
         auto myEntity2 = registry.create();
         auto myEntity3 = registry.create();
         auto myEntity4 = registry.create();
+        auto myEntity5 = registry.create();
         
         registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
@@ -122,6 +129,10 @@ int main(int argc, char** argv) {
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
         registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.create(b2_dynamicBody, myTransform2, myCollider1));
+
+        // TODO fixme
+        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRect(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
     
     /* Create systems */

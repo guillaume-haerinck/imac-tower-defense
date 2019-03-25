@@ -101,9 +101,8 @@ From Visual Studio 2017, you don't need to generate a visual studio project with
 
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
-![Screenshot](doc/readme-img/vs-code-extensions.png?raw=true "VSCode extensions")
-
-From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select the `Visual Studio Community 2017 - x86` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch it by pressing `f5`, but make sure to pick your operating system.
+![Screenshot](doc/readme-img/vs-code-extensions.png?raw=true "VSCode extensions"
+From this point, when you will open the repository folder with VSCode, it will prompt you to configure the projet. You must select a x86 kit, for exemple the `Visual Studio Community 2017 - x86` kit. Once the configuration is done, you can compile the project by pressing `f7`. The .exe file will be outputed in `build/Debug` folder. You can launch it by pressing `f5`, but make sure to pick your operating system.
 
 ![Screenshot](doc/readme-img/vs-code-launch.png?raw=true "VSCode Launch options")
 
