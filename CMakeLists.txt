@@ -27,12 +27,17 @@ if (WIN32) # On windows
     set(BOX2D_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/windows_x86/Debug/Box2D.lib)
 else() # On linux
     find_package(SDL2 REQUIRED)
-    set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/linux_x86_64)
+    set(
+        CMAKE_PREFIX_PATH 
+        ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;
+        ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/linux_x86_64;
+        ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/linux_x86_64/Debug
+    )
     find_library(NOESIS_LIB Noesis)
     find_library(NOESIS_APP_LIB NoesisApp)
     set(NOESIS_LIBRARIES ${NOESIS_LIB} ${NOESIS_APP_LIB})
     find_library(FMOD_LIBRARIES fmod)
-    find_library(BOX2D_LIBRARIES box2d)
+    find_library(BOX2D_LIBRARIES Box2D)
 endif()
 
 if (SDL2_LIBRARIES)
@@ -43,6 +48,9 @@ if (NOESIS_LIBRARIES)
 endif()
 if (FMOD_LIBRARIES)
     message("Found FMOD: " ${FMOD_LIBRARIES})
+endif()
+if (BOX2D_LIBRARIES)
+    message("Found BOX2D: " ${FMOD_LIBRARIES})
 endif()
 
 # ----------------------------------------- BUILD DEPENDENCIES IF NEEDED
