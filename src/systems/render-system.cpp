@@ -11,11 +11,6 @@ RenderSystem::RenderSystem() {}
 RenderSystem::~RenderSystem() {}
 
 void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection) {
-    /* 
-       We use multiple loops instead of a unique one with conditions that grabs missing components.
-       Because it is faster, cache-friendly, and easier to debug as rendered entities are separated by types.
-    */
-    
     registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([&](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
@@ -51,7 +46,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
-        GLCall(glDrawArrays(primitive.type, 0, primitive.vertexCount)); // TODO use count
+        GLCall(glDrawArrays(primitive.type, 0, primitive.vertexCount));
     });
 }
 

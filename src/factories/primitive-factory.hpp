@@ -15,6 +15,8 @@ public:
     cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
     cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
 
+    // TODO circle and line
+
 private:
     Shader m_shaderBasic;
     entt::DefaultRegistry& m_registry;

@@ -90,8 +90,7 @@ int main(int argc, char** argv) {
     
     
     /* ----------------------- TESTING PLAYGROUND ------------------ */
-    // TODO draw primitives
-    // TODO draw debug primitives for colliders
+    // TODO draw debug primitives for colliders, create a new component with more info than primitive ? Should be enabled and disabled on a keypress, and using groups (static, dynamic, ...)
     {
         auto myEntity = registry.create();
         auto myEntity2 = registry.create();

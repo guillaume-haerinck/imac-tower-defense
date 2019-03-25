@@ -6,7 +6,7 @@ VertexArray::VertexArray() {
 }
 
 VertexArray::~VertexArray() {
-	//GLCall(glDeleteVertexArrays(1, &m_rendererID));  // Deleted in sprite factory
+	//GLCall(glDeleteVertexArrays(1, &m_rendererID));  // Deleted in sprite or primitive factory
 }
 
 void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) {

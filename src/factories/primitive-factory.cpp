@@ -12,8 +12,10 @@ PrimitiveFactory::PrimitiveFactory(entt::DefaultRegistry& registry)
 {
 }
 
-PrimitiveFactory::~PrimitiveFactory()
-{
+PrimitiveFactory::~PrimitiveFactory() {
+    m_registry.view<cmpt::Primitive>().each([](auto entity, cmpt::Primitive& primitive) {
+        GLCall(glDeleteVertexArrays(1, &primitive.vaID));
+    });
 }
 
 cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize, GLenum usage) {
