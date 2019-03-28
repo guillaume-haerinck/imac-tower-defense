@@ -1,3 +1,8 @@
+#if defined(_WIN32) && defined(_DEBUG)
+    #define _CRTDBG_MAP_ALLOC
+    #include <stdlib.h>
+    #include <crtdbg.h>
+#endif
 #include <cstdlib>
 #include <iostream>
 #include <glad/glad.h>
@@ -21,6 +26,7 @@
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
+#include "core/debug.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
@@ -37,13 +43,16 @@
 #include "systems/animation-system.hpp"
 #include "gui/start-menu.hpp"
 
-/*
-    TODO memory leak detected, use Valgrind to check where it comes from
-*/
-
 static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
+    /* Remove console on release builds */
+    DebugOnly(std::cout << "----------- DEBUG MODE BUILD -------------" << std::endl);
+	#if !defined(_DEBUG) && defined (_WIN32)
+		FreeConsole();
+    #endif
+
+    /* Init game */
     Game game;
     if (game.init() == EXIT_FAILURE) {
         debug_break();
@@ -164,6 +173,7 @@ int main(int argc, char** argv) {
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
         /* Imgui main debug window */
+        #ifdef _DEBUG
 		{
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL2_NewFrame(game.getWindow());
@@ -172,6 +182,7 @@ int main(int argc, char** argv) {
 			    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
+        #endif // _DEBUG
 
         /* Noesis update */
         {
@@ -209,8 +220,10 @@ int main(int argc, char** argv) {
         {
             renderSystem.update(registry, viewMat, projMat);
             noeView->GetRenderer()->Render();
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            #ifdef _DEBUG
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            #endif // _DEBUG
         }
 
         /* Handle events */
@@ -281,7 +294,13 @@ int main(int argc, char** argv) {
     }
 
     // Cleanup
-    //mySound->release();
+    mySound->release();
     noeView->GetRenderer()->Shutdown();
+
+    // Check memory leaks
+    #if defined(_WIN32) && defined(_DEBUG)
+        _CrtDumpMemoryLeaks();
+    #endif
+
     return EXIT_SUCCESS;
 }

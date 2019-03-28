@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Linux) Launch Debug",
+            "name": "(Linux) Debug Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}//build/bin/Debug/imac-tower-defense",
@@ -24,10 +24,21 @@
             ]
         },
         {
-            "name": "(Windows) Launch Debug",
+            "name": "(Windows) Debug Launch",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/bin/Debug/imac-tower-defense.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true
+        },
+        {
+            "name": "(Windows) Release Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/Release/imac-tower-defense.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

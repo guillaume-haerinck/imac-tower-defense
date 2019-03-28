@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef NDEBUG
-    #define GL_DEBUG
-#endif
-
 #include <glad/glad.h>
 #include <GL/glu.h>
 #include <assert.h>
@@ -14,7 +10,7 @@
 /**
  * @brief Assertion and logger handling for opengl functions
  */
-#ifdef GL_DEBUG
+#ifdef _DEBUG
     #define GLCall(x) gllog::clear(); x; assert(gllog::doesFunctionWorks(#x, __FILE__, __LINE__))
 #else
     #define GLCall(x) x

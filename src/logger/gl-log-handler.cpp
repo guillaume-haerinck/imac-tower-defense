@@ -23,6 +23,7 @@ void GLAPIENTRY gllog::messageCallback(GLenum source, GLenum type, GLuint id, GL
 			case GL_DEBUG_SOURCE_THIRD_PARTY: return "Third party";
 			case GL_DEBUG_SOURCE_APPLICATION: return "Application";
 			case GL_DEBUG_SOURCE_OTHER: return "Other";
+			default: return "";
 		}
 	}();
 
@@ -35,6 +36,7 @@ void GLAPIENTRY gllog::messageCallback(GLenum source, GLenum type, GLuint id, GL
 			case GL_DEBUG_TYPE_PERFORMANCE: return "performance";
 			case GL_DEBUG_TYPE_MARKER: return "marker";
 			case GL_DEBUG_TYPE_OTHER: return "other";
+			default: return "";
 		}
 	}();
 
