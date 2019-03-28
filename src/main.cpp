@@ -91,6 +91,13 @@ int main(int argc, char** argv) {
     
     /* ----------------------- TESTING PLAYGROUND ------------------ */
     // TODO draw debug primitives for colliders, create a new component with more info than primitive ? Should be enabled and disabled on a keypress, and using groups (static, dynamic, ...)
+    // Check game engine architecture book 10.2.1 Debug Drawing API. Use another register specific to debug ? Debug draw should be called from anywhere within the code
+    // Singleton inside of the logger ? Golder Should be renamed debugger
+    // A "cheat" class and "sanddox" class
+    // For draw debug, use immediate mode ? 
+    // Find a way to have it removed with no performance impact on release mode (use a macro to define the class ?)
+    // -> The same for imgui, remove on release mode
+    // https://github.com/glampert/debug-draw
     {
         auto myEntity = registry.create();
         auto myEntity2 = registry.create();

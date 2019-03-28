@@ -11,7 +11,7 @@ RenderSystem::RenderSystem() {}
 RenderSystem::~RenderSystem() {}
 
 void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection) {
-    registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([&](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
+    registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
@@ -25,7 +25,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
     });
 
-    registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([&](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
+    registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
         GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
@@ -38,7 +38,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
     });
 
-    registry.view<cmpt::Transform, cmpt::Primitive>().each([&](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
+    registry.view<cmpt::Transform, cmpt::Primitive>().each([this, projection, view](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         primitive.shader->bind();
         GLCall(glBindVertexArray(primitive.vaID));
 
