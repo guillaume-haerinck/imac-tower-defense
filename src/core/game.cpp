@@ -24,6 +24,8 @@ Game::~Game() {
     Noesis::GUI::Shutdown();
     SDL_DestroyWindow(m_window);
     SDL_Quit();
+    spdlog::drop_all();
+    spdlog::shutdown();
 }
 
 int Game::init() {

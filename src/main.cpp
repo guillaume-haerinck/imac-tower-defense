@@ -1,3 +1,9 @@
+#ifdef _WIN32
+    #define _CRTDBG_MAP_ALLOC
+    #include <stdlib.h>
+    #include <crtdbg.h>
+#endif
+
 #include <cstdlib>
 #include <iostream>
 #include <glad/glad.h>
@@ -37,15 +43,15 @@
 #include "systems/animation-system.hpp"
 #include "gui/start-menu.hpp"
 
-/*
-    TODO memory leak detected from Box2D and NoesisGUI, find a way to fix them
-*/
-
 static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
-    Game game;
-    if (game.init() == EXIT_FAILURE) {
+    #ifdef _WIN32 // Check memory leaks
+        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    #endif // _WIN32
+
+    Game* game = new Game();
+    if (game->init() == EXIT_FAILURE) {
         debug_break();
         return EXIT_FAILURE;
     }
@@ -59,7 +65,7 @@ int main(int argc, char** argv) {
 
     /* Init Physics */
 	b2Vec2 gravity(0.0f, -10.0f);
-    b2World physicWorld(gravity);
+    b2World* physicWorld = new b2World(gravity);
 
     /* Init Sounds */
     FMOD_RESULT fmodResult;
@@ -84,9 +90,9 @@ int main(int argc, char** argv) {
 
     /* Create factories */
     entt::DefaultRegistry registry;
-    SpriteFactory spriteFactory(registry);
-    PrimitiveFactory primitiveFactory(registry);
-    RigidBodyFactory rigidBodyFactory(registry, physicWorld);
+    SpriteFactory* spriteFactory = new SpriteFactory(registry);
+    PrimitiveFactory* primitiveFactory = new PrimitiveFactory(registry);
+    RigidBodyFactory* rigidBodyFactory = new RigidBodyFactory(registry, physicWorld);
     
     
     /* ----------------------- TESTING PLAYGROUND ------------------ */
@@ -104,7 +110,7 @@ int main(int argc, char** argv) {
         auto myEntity4 = registry.create();
         auto myEntity5 = registry.create();
         
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
+        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<cmpt::Transform>(myEntity, myTransform1);
         cmpt::SpriteAnimation myAnim2(0, 5, 0);
@@ -117,25 +123,25 @@ int main(int argc, char** argv) {
         myCollider1->density = 1.0f;
         myCollider1->friction = 0.3f;
         myCollider1->shape = &myColliderShape1; // Will be cloned so can go out of scope
-        registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.create(b2_staticBody, myTransform1, myCollider1));
+        registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory->create(b2_staticBody, myTransform1, myCollider1));
 
-        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory->create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
         registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<renderTag::Single>(myEntity2);
 
-        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
+        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
         registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         cmpt::SpriteAnimation myAnim(6, 11, 6);
         registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
         registry.assign<renderTag::Atlas>(myEntity3);
 
-        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f, 2.0f), GL_DYNAMIC_DRAW));
+        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f, 2.0f), GL_DYNAMIC_DRAW));
         cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
-        registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.create(b2_dynamicBody, myTransform2, myCollider1));
+        registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory->create(b2_dynamicBody, myTransform2, myCollider1));
 
-        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
         registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
     
@@ -165,7 +171,7 @@ int main(int argc, char** argv) {
         /* Imgui main debug window */
 		{
             ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL2_NewFrame(game.getWindow());
+            ImGui_ImplSDL2_NewFrame(game->getWindow());
             ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
 			    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -200,7 +206,7 @@ int main(int argc, char** argv) {
             tempFrameCount++;
             
             // Update physics
-            physicWorld.Step(1.0f / 60.0f, 6, 2);
+            physicWorld->Step(1.0f / 60.0f, 6, 2);
             physicSystem.update(registry, deltatime, physicWorld);
         }
 
@@ -222,8 +228,8 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-                    //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left); // FIXME a crash might come from here on fac's computer
+                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game->getWindow())->h) - e.button.y);
+                    // noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left); // FIXME a crash might come from here on fac's computer
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -258,7 +264,7 @@ int main(int argc, char** argv) {
         }
 
         /* Update window */
-        SDL_GL_SwapWindow(game.getWindow());
+        SDL_GL_SwapWindow(game->getWindow());
 
         /* Check framerate */
         {
@@ -279,8 +285,13 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Cleanup
-    //mySound->release();
+    /* Delete in the reverse order of creation */
+    delete spriteFactory;
+    delete primitiveFactory;
+    delete rigidBodyFactory;
+    delete physicWorld;
+    mySound->release();
     noeView->GetRenderer()->Shutdown();
+    delete game;
     return EXIT_SUCCESS;
 }

@@ -10,5 +10,5 @@ public:
     PhysicSystem();
     ~PhysicSystem();
 
-    void update(entt::DefaultRegistry& registry, double deltatime, b2World& physicWorld);
+    void update(entt::DefaultRegistry& registry, double deltatime, b2World* physicWorld);
 };
