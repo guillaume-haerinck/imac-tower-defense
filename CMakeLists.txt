@@ -2,15 +2,9 @@
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_CXX_STANDARD 14)
 
-# ---------------------------------------- PROJECT CONFIGURATION
+# ---------------------------------------- PROJECT FILES
 project(imac-tower-defense)
 file(GLOB_RECURSE MY_SOURCES src/*)
-
-set(BUILD_TYPE "Release")
-if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    set(BUILD_TYPE "Debug")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
-endif()
 
 # ---------------------------------------- FIND DEPENDENCIES
 # Common on all platform
@@ -30,14 +24,14 @@ if (WIN32) # On windows
     set(SDL2_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2.lib;${CMAKE_SOURCE_DIR}/lib/SDL2-2.0.9/lib/windows_x86/SDL2main.lib)
     set(NOESIS_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/Noesis.lib;${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Lib/windows_x86/NoesisApp.lib)
     set(FMOD_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/windows_x86/fmod_vc.lib)
-    set(BOX2D_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/windows_x86/${BUILD_TYPE}/Box2D.lib)
+    set(BOX2D_LIBRARIES ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/windows_x86/Debug/Box2D.lib)
 else() # On linux
     find_package(SDL2 REQUIRED)
     set(
         CMAKE_PREFIX_PATH 
         ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Bin/linux_x86_64;
         ${CMAKE_SOURCE_DIR}/lib/fmod-2.0.0/api/core/lib/linux_x86_64;
-        ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/linux_x86_64/${BUILD_TYPE}
+        ${CMAKE_SOURCE_DIR}/lib/box2d-2.3.0/lib/linux_x86_64/Debug
     )
     find_library(NOESIS_LIB Noesis)
     find_library(NOESIS_APP_LIB NoesisApp)

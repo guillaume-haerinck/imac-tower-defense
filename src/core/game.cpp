@@ -85,12 +85,9 @@ int Game::init() {
         debug_break();
 		return EXIT_FAILURE;
     }
-	#ifdef _DEBUG
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(gllog::messageCallback, 0);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
-	#endif // _DEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(gllog::messageCallback, 0);
 
     /* Enable blending & Z-Buffer */
 	GLCall(glEnable(GL_BLEND));
@@ -106,11 +103,7 @@ int Game::init() {
 	ImGui::StyleColorsDark();
 
     /* Init Noesis GUI */
-	#ifdef _DEBUG
-		Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
-	#else
-		Noesis::GUI::Init(noelog::errorHandler, nullptr, nullptr);
-	#endif // _DEBUG
+    Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
     Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
     Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
     Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
