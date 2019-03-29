@@ -49,7 +49,7 @@ static Noesis::IView* noeView;
 int main(int argc, char** argv) {
     #ifdef _WIN32 // Check memory leaks
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    #endif // _WIN32
+    #endif
 
     Game* game = new Game();
     if (game->init() == EXIT_FAILURE) {
@@ -218,13 +218,10 @@ int main(int argc, char** argv) {
         /* Render */
         {
             renderSystem.update(registry, viewMat, projMat);
-            
+            physicWorld->DrawDebugData();
             noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-            physicWorld->DrawDebugData();
-            debugDraw->DrawPoint(b2Vec2(50.0f * WIN_RATIO, 50.0f), 10, b2Color(1.0f, 0.0f, 0.0f, 1.0f));
         }
 
         /* Handle events */

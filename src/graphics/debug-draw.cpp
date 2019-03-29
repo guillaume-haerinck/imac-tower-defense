@@ -58,10 +58,45 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
 }
 
 void DebugDraw::DrawTransform(const b2Transform& xf) {
-    
+    // Binding
+    m_shaderBasic.bind();
+    m_va.bind();
+    m_vb.bind();
 
-    //std::cout << "draw transform asked" << std::endl;
+    // TODO add triangle at the end to make an arrow
+
+    // Update Y axis
+    float axisScale = 10.0f;
+    b2Vec2 origin = xf.p;
+    b2Vec2 endPoint = origin + axisScale * xf.q.GetYAxis();
+    float yAxis[] = {
+        origin.x,   origin.y,
+        endPoint.x, endPoint.y
+    };
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(float), &yAxis));
     
+    // Render Y axis
+    glm::mat4 mvp = m_projMat * m_viewMat;
+    m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+    m_shaderBasic.setUniform4f("u_color", 0.0f, 1.0f, 0.0f, 1.0f); // Y axis in Green
+    GLCall(glDrawArrays(GL_LINES, 0, 4));
+
+    // Update X axis
+    endPoint = origin + axisScale * xf.q.GetXAxis();
+    float xAxis[] = {
+        origin.x,   origin.y,
+        endPoint.x, endPoint.y
+    };
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(float), &xAxis));
+
+    // Render X axis
+    m_shaderBasic.setUniform4f("u_color", 1.0f, 0.0f, 0.0f, 1.0f); // X axis in Red
+    GLCall(glDrawArrays(GL_LINES, 0, 4));
+    
+    // Unbinding
+    m_vb.unbind();
+    m_va.unbind();
+    m_shaderBasic.unbind();
 }
 
 void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
