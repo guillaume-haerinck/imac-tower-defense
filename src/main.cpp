@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
         auto myEntity4 = registry.create();
         auto myEntity5 = registry.create();
         
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(200, 200)));
+        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<cmpt::Transform>(myEntity, myTransform1);
         cmpt::SpriteAnimation myAnim2(0, 25, 0);
@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
             debugDraw->setViewMat(viewMat);
 
             // Update animation
-            if (tempFrameCount >= 10) { // TODO use delatime or target framerate to have constant animation no matter the target
+            if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
                 animationSystem.update(registry, deltatime);
                 tempFrameCount = 0;
             }
