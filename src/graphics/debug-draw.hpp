@@ -2,6 +2,14 @@
 
 #include <Box2D/Box2D.h>
 
+#include "graphics/shader.hpp"
+#include "graphics/vertex-array.hpp"
+
+/**
+ * @brief Immediate-mode debug drawing
+ * @note Makes heavy use of glBufferSubData to update vertex array at each function call
+ */
+
 class DebugDraw : public b2Draw {
 public:
     DebugDraw();
@@ -22,6 +30,8 @@ public:
 	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) override;
 
 private:
-    /* data */
+    Shader m_shaderBasic;
+	VertexArray m_va;
+	unsigned int m_vertexBufferMaxSize;
 };
 

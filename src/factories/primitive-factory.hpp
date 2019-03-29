@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "graphics/index-buffer.hpp"
+#include "graphics/shader.hpp"
 #include "components/primitive.hpp"
 
 class PrimitiveFactory {

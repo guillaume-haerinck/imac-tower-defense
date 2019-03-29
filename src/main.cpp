@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    /* Model and Projection matrices */
+    /* View and Projection matrices */
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
 
@@ -107,13 +107,6 @@ int main(int argc, char** argv) {
     
     
     /* ----------------------- TESTING PLAYGROUND ------------------ */
-    // TODO draw debug primitives for colliders
-    // + Add "cheat" class and "sanddox" class
-    // + In-game menus for debugging using IMGUi
-    // Enable and disable everything at runtime (so not using macros, because anoying to recompile and lead to clutered code)
-    // https://github.com/glampert/debug-draw
-    // Game engine architecture Chap II 10) Tools for debugging
-    // -> see how to store it (bit flags, array of boolean, enums ...), and where (game class or debug class next to it ?)
     {
         auto myEntity = registry.create();
         auto myEntity2 = registry.create();
@@ -224,10 +217,12 @@ int main(int argc, char** argv) {
         /* Render */
         {
             renderSystem.update(registry, viewMat, projMat);
-            physicWorld->DrawDebugData();
+            
             noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            physicWorld->DrawDebugData();
         }
 
         /* Handle events */
