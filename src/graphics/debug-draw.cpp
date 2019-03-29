@@ -7,7 +7,7 @@
 
 DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
 : m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
-  m_vbMaxSize(512),
+  m_vbMaxSize(64),
   m_vb(nullptr, m_vbMaxSize * sizeof(float), GL_DYNAMIC_DRAW),
   m_viewMat(viewMat),
   m_projMat(projMat)
@@ -30,7 +30,11 @@ DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
     m_vb.unbind();
 }
 
-DebugDraw::~DebugDraw() {}
+DebugDraw::~DebugDraw() {
+    unsigned int vaId = m_va.getID();
+    GLCall(glDeleteVertexArrays(1, &vaId));
+    m_vb.~VertexBuffer();
+}
 
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
     //std::cout << "draw polygon asked" << std::endl;
@@ -61,24 +65,24 @@ void DebugDraw::DrawTransform(const b2Transform& xf) {
 }
 
 void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
+    // Binding
     m_shaderBasic.bind();
     m_va.bind();
     m_vb.bind();
+    GLCall(glPointSize(size));
 
     // Update buffer
     float data[] = {p.x,  p.y};
     GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(float), &data));
     
-    // Uniforms
+    // Update
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
-
-    // Draw call
-    GLCall(glPointSize(size));
     GLCall(glDrawArrays(GL_POINTS, 0, 1));
-    GLCall(glPointSize(1));
 
+    // Unbinding
+    GLCall(glPointSize(1));
     m_vb.unbind();
     m_va.unbind();
     m_shaderBasic.unbind();

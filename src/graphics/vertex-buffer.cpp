@@ -8,8 +8,8 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum usage) {
 }
 
 VertexBuffer::~VertexBuffer() {
-	std::cout << "vb destructor called !" << std::endl;
-	// TODO check if OK to delete buffer, because it is now handled by the Vertex Array
+	// It is ok to delete a vertex buffer after binding it to vertex array
+	// The buffer will not be deleted by opengl until it is no longer in use
 	GLCall(glDeleteBuffers(1, &m_rendererID));
 }
 
