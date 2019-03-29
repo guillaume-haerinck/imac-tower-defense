@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Box2D/Box2D.h>
+#include <glm/glm.hpp>
 
 #include "graphics/shader.hpp"
 #include "graphics/vertex-array.hpp"
@@ -12,7 +13,7 @@
 
 class DebugDraw : public b2Draw {
 public:
-    DebugDraw();
+    DebugDraw(glm::mat4 viewMat = glm::mat4(1.0f), glm::mat4 projMat = glm::mat4(1.0f));
     ~DebugDraw();
 
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
@@ -29,10 +30,16 @@ public:
 
 	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) override;
 
+	/* Setters */
+	void setProjMat(glm::mat4 mat);
+	void setViewMat(glm::mat4 mat);
+
 private:
     Shader m_shaderBasic;
 	VertexArray m_va;
 	VertexBuffer m_vb;
-	unsigned int m_vertexBufferMaxSize;
+	unsigned int m_vbMaxSize;
+	glm::mat4 m_viewMat;
+	glm::mat4 m_projMat;
 };
 

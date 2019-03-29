@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     b2World* physicWorld = new b2World(gravity);
 
     /* Init Debug draw for physic */
-    DebugDraw* debugDraw = new DebugDraw();
+    DebugDraw* debugDraw = new DebugDraw(viewMat, projMat);
     physicWorld->SetDebugDraw(debugDraw);
     // Say what to draw
     debugDraw->SetFlags(b2Draw::e_shapeBit);
@@ -201,6 +201,7 @@ int main(int argc, char** argv) {
         {
             // Update camera
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
+            debugDraw->setViewMat(viewMat);
 
             // Update animation
             if (tempFrameCount >= 10) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -223,6 +224,7 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             physicWorld->DrawDebugData();
+            debugDraw->DrawPoint(b2Vec2(50.0f * WIN_RATIO, 50.0f), 10, b2Color(1.0f, 0.0f, 0.0f, 1.0f));
         }
 
         /* Handle events */
