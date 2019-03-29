@@ -224,6 +224,14 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 
+        b2Vec2 rect[]{
+            b2Vec2(0.0f, 0.0f),
+            b2Vec2(0.0f, 10.0f),
+            b2Vec2(10.0f, 10.0f),
+            b2Vec2(10.0f, 0.0f)
+        };
+        debugDraw->DrawPolygon(rect, 4, b2Color(0.0f, 0.0f, 1.0f, 1.0f));
+
         /* Handle events */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
