@@ -73,10 +73,6 @@ int main(int argc, char** argv) {
     physicWorld->SetDebugDraw(debugDraw);
     // Say what to draw
     debugDraw->SetFlags(b2Draw::e_shapeBit);
-    debugDraw->SetFlags(b2Draw::e_jointBit);
-    debugDraw->SetFlags(b2Draw::e_aabbBit);
-    debugDraw->SetFlags(b2Draw::e_pairBit);
-    debugDraw->SetFlags(b2Draw::e_centerOfMassBit);
     
     /* Init Sounds */
     FMOD_RESULT fmodResult;
@@ -95,9 +91,9 @@ int main(int argc, char** argv) {
         debug_break();
     }
 
-    FMOD::Sound* mySound;
-    fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
-    fmodSystem->playSound(mySound, 0, false, &channel);
+    //FMOD::Sound* mySound;
+    //fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
+    //fmodSystem->playSound(mySound, 0, false, &channel);
 
     /* Create factories */
     entt::DefaultRegistry registry;
@@ -224,14 +220,6 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 
-        b2Vec2 rect[]{
-            b2Vec2(0.0f, 0.0f),
-            b2Vec2(0.0f, 10.0f),
-            b2Vec2(10.0f, 10.0f),
-            b2Vec2(10.0f, 0.0f)
-        };
-        debugDraw->DrawPolygon(rect, 4, b2Color(0.0f, 0.0f, 1.0f, 1.0f));
-
         /* Handle events */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -299,13 +287,14 @@ int main(int argc, char** argv) {
         }
     }
 
+    //mySound->release();
+
     /* Delete in the reverse order of creation */
     delete spriteFactory;
     delete primitiveFactory;
     delete rigidBodyFactory;
     delete debugDraw;
     delete physicWorld;
-    mySound->release();
     noeView->GetRenderer()->Shutdown();
     delete game;
     return EXIT_SUCCESS;

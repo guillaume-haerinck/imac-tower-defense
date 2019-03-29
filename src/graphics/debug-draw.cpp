@@ -59,7 +59,7 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
-    GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount * 2));
+    GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount));
     
     // Unbinding
     m_vb.unbind();
@@ -68,15 +68,41 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
-    //std::cout << "draw solid polygon asked" << std::endl;
+    assert(vertexCount < m_vbMaxSize * 2);
+    
+    // Binding
+    m_shaderBasic.bind();
+    m_va.bind();
+    m_vb.bind();
+
+    // Update
+    std::vector<float> array(vertexCount * 2);
+    unsigned int dataIndex = 0;
+    for (int i = 0; i < vertexCount; i++) {
+        array[dataIndex] = vertices[i].x;
+        array[dataIndex + 1] = vertices[i].y;
+        dataIndex += 2;
+	}
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * 2 * sizeof(float), array.data()));
+    
+    // Render
+    glm::mat4 mvp = m_projMat * m_viewMat;
+    m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+    m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
+    GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount));
+    
+    // Unbinding
+    m_vb.unbind();
+    m_va.unbind();
+    m_shaderBasic.unbind();
 }
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) {
-    //std::cout << "draw circle asked" << std::endl;
+    std::cout << "draw circle asked" << std::endl;
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) {
-    //std::cout << "draw solid circle asked" << std::endl;
+    std::cout << "draw solid circle asked" << std::endl;
 }
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
