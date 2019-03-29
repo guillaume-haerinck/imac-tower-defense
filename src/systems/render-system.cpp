@@ -18,7 +18,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         GLCall(glBindTexture(sprite.target, sprite.textureID));
         sprite.ib->bind();
 
-        glm::mat4 mvp = projection * view * getModelMatrix(transform);
+        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
         
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
@@ -32,7 +32,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         GLCall(glBindTexture(sprite.target, sprite.textureID));
         sprite.ib->bind();
 
-        glm::mat4 mvp = projection * view * getModelMatrix(transform);
+        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
         
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
@@ -42,7 +42,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         primitive.shader->bind();
         GLCall(glBindVertexArray(primitive.vaID));
 
-        glm::mat4 mvp = projection * view * getModelMatrix(transform);
+        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
         
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);

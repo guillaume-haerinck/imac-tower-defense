@@ -21,7 +21,6 @@ Game::~Game() {
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-    Noesis::GUI::Shutdown();
     SDL_DestroyWindow(m_window);
     SDL_Quit();
     spdlog::drop_all();

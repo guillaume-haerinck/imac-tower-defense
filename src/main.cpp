@@ -229,11 +229,11 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
                     printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game->getWindow())->h) - e.button.y);
-                    // noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left); // FIXME a crash might come from here on fac's computer
+                    noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    // noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
                 
                 case SDL_KEYDOWN:
