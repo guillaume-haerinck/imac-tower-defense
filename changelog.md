@@ -1,5 +1,9 @@
 # Imac Tower Defense Changelog
 
+## 29.03.2019
+
+Debug drawing for physics
+
 ## 24.03.19
 
 Switch Bullet for Box2D, better fit for a 2D game.

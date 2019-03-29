@@ -12,8 +12,8 @@ public:
     SpriteFactory(entt::DefaultRegistry& registry);
     ~SpriteFactory();
 
-    cmpt::Sprite create(const std::string& textureFilepath, glm::vec2 displaySize, GLenum usage);
-    cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, GLenum usage, glm::vec2 tileSize);
+    cmpt::Sprite create(const std::string& textureFilepath, glm::vec2 displaySize);
+    cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize);
     // TODO batch rendering with glTextureView ?
 
 private:

@@ -18,7 +18,7 @@ PrimitiveFactory::~PrimitiveFactory() {
     });
 }
 
-cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize, GLenum usage) {
+cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize) {
     float positions[] = {
 		-displaySize.x,  displaySize.y, // 0
 		 displaySize.x,  displaySize.y, // 1
@@ -26,7 +26,7 @@ cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displayS
          displaySize.x, -displaySize.y  // 3
 	};
     unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), usage);
+    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
 
@@ -48,7 +48,7 @@ cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displayS
     return rectangle;
 }
 
-cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 displaySize, GLenum usage) {
+cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 displaySize) {
     float positions[] = {
 		-displaySize.x,  displaySize.y, // 0
 		 displaySize.x,  displaySize.y, // 1
@@ -56,7 +56,7 @@ cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 d
         -displaySize.x, -displaySize.y  // 3
 	};
     unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), usage);
+    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
 

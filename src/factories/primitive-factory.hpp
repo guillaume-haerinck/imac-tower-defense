@@ -13,8 +13,8 @@ public:
     PrimitiveFactory(entt::DefaultRegistry& registry);
     ~PrimitiveFactory();
 
-    cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
-    cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize, GLenum usage);
+    cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize);
+    cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize);
 
     // TODO circle and line
 

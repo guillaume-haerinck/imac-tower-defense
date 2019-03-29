@@ -28,7 +28,7 @@ SpriteFactory::~SpriteFactory() {
     });
 }
 
-cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2 displaySize, GLenum usage) {
+cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2 displaySize) {
 	/* Vertex buffer */
     // TODO add enum to specify the pivot point ? By default center
 	float positions[] = {
@@ -39,7 +39,7 @@ cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2
 		 displaySize.x, -displaySize.y,  1.0f, 0.0f  // 3 bottomright
 	};
     unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), usage);
+    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
     vbLayout.push<float>(2); // Texture coordinates
@@ -66,7 +66,7 @@ cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2
     return mySprite;
 }
 
-cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, GLenum usage, glm::vec2 tileSize) {
+cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize) {
     float positions[] = {
         // Pos                           // Inverted UV to start at topleft
 		-displaySize.x,  displaySize.y,  0.0f, 0.0f, // 0 topleft
@@ -75,7 +75,7 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
 		 displaySize.x, -displaySize.y,  1.0f, 1.0f  // 3 bottomright
 	};
     unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), usage);
+    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
     vbLayout.push<float>(2); // Texture coordinates

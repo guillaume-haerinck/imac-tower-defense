@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
         auto myEntity4 = registry.create();
         auto myEntity5 = registry.create();
         
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(196, 196)));
+        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), glm::vec2(196, 196)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<cmpt::Transform>(myEntity, myTransform1);
         cmpt::SpriteAnimation myAnim2(0, 25, 0);
@@ -125,23 +125,23 @@ int main(int argc, char** argv) {
         myCollider1->shape = &myColliderShape1; // Will be cloned so can go out of scope
         registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory->create(b2_staticBody, myTransform1, myCollider1));
 
-        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory->create("res/images/textures/arrow.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory->create("res/images/textures/arrow.png", glm::vec2(1.0f)));
         registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<renderTag::Single>(myEntity2);
 
-        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
+        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), glm::vec2(65, 65)));
         registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         cmpt::SpriteAnimation myAnim(0, 36, 0);
         registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
         registry.assign<renderTag::Atlas>(myEntity3);
 
-        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f)));
         cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
         registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory->create(b2_dynamicBody, myTransform2, myCollider1));
 
-        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f), GL_STATIC_DRAW));
+        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f)));
         registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
     
