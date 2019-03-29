@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     DebugDraw* debugDraw = new DebugDraw(viewMat, projMat);
     physicWorld->SetDebugDraw(debugDraw);
     // Say what to draw
-    debugDraw->SetFlags(b2Draw::e_shapeBit);
+    debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
     
     /* Init Sounds */
     FMOD_RESULT fmodResult;
@@ -141,8 +141,8 @@ int main(int argc, char** argv) {
         registry.assign<renderTag::Single>(myEntity4);
         registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory->create(b2_dynamicBody, myTransform2, myCollider1));
 
-        registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f)));
-        registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
+        //registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f)));
+        //registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
     
     /* Create systems */

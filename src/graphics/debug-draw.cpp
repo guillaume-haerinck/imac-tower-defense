@@ -196,10 +196,8 @@ void DebugDraw::DrawTransform(const b2Transform& xf) {
     m_va.bind();
     m_vb.bind();
 
-    // TODO add triangle at the end to make an arrow
-
     // Update Y axis
-    float axisScale = 10.0f;
+    float axisScale = 5.0f;
     b2Vec2 origin = xf.p;
     b2Vec2 endPoint = origin + axisScale * xf.q.GetYAxis();
     float yAxis[] = {
