@@ -220,8 +220,6 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 
-        debugDraw->DrawCircle(b2Vec2(10.0f, 10.0f), 10, b2Color(1.0f, 0.0f, 0.0f, 1.0f));
-
         /* Handle events */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {

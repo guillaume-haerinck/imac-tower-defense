@@ -152,13 +152,17 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
     // Update
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-    m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
+    m_shaderBasic.setUniform4f("u_color", color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, color.a * 0.5f);
     GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
 
     // Unbinding
     m_vb.unbind();
     m_va.unbind();
     m_shaderBasic.unbind();
+
+    // Draw a line fixed in the circle to animate rotation.
+	b2Vec2 endpoint = center + radius * axis;
+    DrawSegment(center, endpoint, color);
 }
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {

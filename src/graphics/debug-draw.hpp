@@ -8,7 +8,7 @@
 
 /**
  * @brief Immediate-mode debug drawing
- * @note Makes heavy use of glBufferSubData to update vertex array at each function call
+ * @note Makes heavy use of glBufferData to update vertex array at each function call
  */
 
 class DebugDraw : public b2Draw {
