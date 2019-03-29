@@ -85,11 +85,16 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 	}
     GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * 2 * sizeof(float), array.data()));
     
-    // Render
+    // Render outline
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount));
+    
+    // Render inside TODO use a tesselation shader to fill the inside completely no matter the shape
+    // polygon triangulation
+    m_shaderBasic.setUniform4f("u_color", color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, color.a * 0.5f);
+    GLCall(glDrawArrays(GL_TRIANGLES, 0, vertexCount));
     
     // Unbinding
     m_vb.unbind();

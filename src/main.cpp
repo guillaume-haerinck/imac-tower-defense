@@ -110,10 +110,10 @@ int main(int argc, char** argv) {
         auto myEntity4 = registry.create();
         auto myEntity5 = registry.create();
         
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_DYNAMIC_DRAW, glm::vec2(50, 50)));
+        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(200, 200)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<cmpt::Transform>(myEntity, myTransform1);
-        cmpt::SpriteAnimation myAnim2(0, 5, 0);
+        cmpt::SpriteAnimation myAnim2(0, 25, 0);
         registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
         registry.assign<renderTag::Atlas>(myEntity);
         // Setup physics for this entity
@@ -129,13 +129,13 @@ int main(int argc, char** argv) {
         registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<renderTag::Single>(myEntity2);
 
-        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/test.jpg", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(50, 50)));
+        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), GL_STATIC_DRAW, glm::vec2(65, 65)));
         registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
-        cmpt::SpriteAnimation myAnim(6, 11, 6);
+        cmpt::SpriteAnimation myAnim(0, 36, 0);
         registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
         registry.assign<renderTag::Atlas>(myEntity3);
 
-        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f, 2.0f), GL_DYNAMIC_DRAW));
+        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f), GL_STATIC_DRAW));
         cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
@@ -168,6 +168,8 @@ int main(int argc, char** argv) {
     double deltatime = TARGET_DELTA_MS;
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
+        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
         /* Imgui main debug window */
 		{
             ImGui_ImplOpenGL3_NewFrame();
@@ -188,9 +190,7 @@ int main(int argc, char** argv) {
             // Need to restore the GPU state because noesis changes it
             GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
             GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-            GLCall(glClearColor(0.8f, 1.0f, 1.0f, 0.0f));
             GLCall(glClearStencil(0));
-            GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         }
 
         /* Game updates */
