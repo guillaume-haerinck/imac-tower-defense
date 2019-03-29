@@ -54,7 +54,28 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
 }
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
-    //std::cout << "draw segment asked" << std::endl;
+    // Binding
+    m_shaderBasic.bind();
+    m_va.bind();
+    m_vb.bind();
+
+    // Update
+    float data[] = {
+        p1.x, p1.y,
+        p2.x, p2.y
+    };
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(float), &data));
+    
+    // Render
+    glm::mat4 mvp = m_projMat * m_viewMat;
+    m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+    m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
+    GLCall(glDrawArrays(GL_LINES, 0, 4));
+    
+    // Unbinding
+    m_vb.unbind();
+    m_va.unbind();
+    m_shaderBasic.unbind();
 }
 
 void DebugDraw::DrawTransform(const b2Transform& xf) {
