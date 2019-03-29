@@ -1,5 +1,6 @@
 #include "debug-draw.hpp"
 
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <glad/glad.h>
 #include <vector>
@@ -8,8 +9,8 @@
 
 DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
 : m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
-  m_vbMaxSize(64),
-  m_vb(nullptr, m_vbMaxSize * sizeof(float), GL_DYNAMIC_DRAW),
+  m_vbMaxSize(32),
+  m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
   m_viewMat(viewMat),
   m_projMat(projMat)
 {
@@ -53,7 +54,7 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
         array[dataIndex + 1] = vertices[i].y;
         dataIndex += 2;
 	}
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * 2 * sizeof(float), array.data()));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Render
     glm::mat4 mvp = m_projMat * m_viewMat;
@@ -83,7 +84,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
         array[dataIndex + 1] = vertices[i].y;
         dataIndex += 2;
 	}
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * 2 * sizeof(float), array.data()));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Render outline
     glm::mat4 mvp = m_projMat * m_viewMat;
@@ -103,11 +104,61 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
 }
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) {
-    std::cout << "draw circle asked" << std::endl;
+    // Binding
+    m_shaderBasic.bind();
+    m_va.bind();
+    m_vb.bind();
+
+    // Update buffer
+    unsigned int segmentNumber = 17; // TODO define segment number based on radius
+    const float TWO_PI = (float) M_PI * 2;
+    std::vector<float> array;
+    for (unsigned int i = 0; i <= segmentNumber; i++) {
+		array.push_back(radius * cos(i * TWO_PI / segmentNumber) + center.x);
+		array.push_back(radius * sin(i * TWO_PI / segmentNumber) + center.y);
+	}
+    GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
+    
+    // Update
+    glm::mat4 mvp = m_projMat * m_viewMat;
+    m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+    m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
+    GLCall(glDrawArrays(GL_LINE_STRIP, 0, segmentNumber + 1));
+
+    // Unbinding
+    m_vb.unbind();
+    m_va.unbind();
+    m_shaderBasic.unbind();
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) {
-    std::cout << "draw solid circle asked" << std::endl;
+    // Binding
+    m_shaderBasic.bind();
+    m_va.bind();
+    m_vb.bind();
+
+    // Update buffer
+    unsigned int segmentNumber = 17; // TODO define segment number based on radius
+    const float TWO_PI = (float) M_PI * 2;
+    std::vector<float> array;
+	array.push_back(center.x);
+	array.push_back(center.y);
+    for (unsigned int i = 0; i <= segmentNumber; i++) {
+		array.push_back(radius * cos(i * TWO_PI / segmentNumber) + center.x);
+		array.push_back(radius * sin(i * TWO_PI / segmentNumber) + center.y);
+	}
+    GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
+    
+    // Update
+    glm::mat4 mvp = m_projMat * m_viewMat;
+    m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+    m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
+    GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
+
+    // Unbinding
+    m_vb.unbind();
+    m_va.unbind();
+    m_shaderBasic.unbind();
 }
 
 void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
@@ -121,7 +172,7 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
         p1.x, p1.y,
         p2.x, p2.y
     };
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(float), &data));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
     
     // Render
     glm::mat4 mvp = m_projMat * m_viewMat;
@@ -151,7 +202,7 @@ void DebugDraw::DrawTransform(const b2Transform& xf) {
         origin.x,   origin.y,
         endPoint.x, endPoint.y
     };
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(float), &yAxis));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &yAxis, GL_DYNAMIC_DRAW));
     
     // Render Y axis
     glm::mat4 mvp = m_projMat * m_viewMat;
@@ -186,7 +237,7 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
 
     // Update buffer
     float data[] = {p.x,  p.y};
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(float), &data));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &data, GL_DYNAMIC_DRAW));
     
     // Update
     glm::mat4 mvp = m_projMat * m_viewMat;
