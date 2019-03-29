@@ -27,6 +27,7 @@
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
+#include "graphics/debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
@@ -67,6 +68,16 @@ int main(int argc, char** argv) {
 	b2Vec2 gravity(0.0f, -10.0f);
     b2World* physicWorld = new b2World(gravity);
 
+    /* Init Debug draw for physic */
+    DebugDraw* debugDraw = new DebugDraw();
+    physicWorld->SetDebugDraw(debugDraw);
+    // Say what to draw
+    debugDraw->SetFlags(b2Draw::e_shapeBit);
+    debugDraw->SetFlags(b2Draw::e_jointBit);
+    debugDraw->SetFlags(b2Draw::e_aabbBit);
+    debugDraw->SetFlags(b2Draw::e_pairBit);
+    debugDraw->SetFlags(b2Draw::e_centerOfMassBit);
+    
     /* Init Sounds */
     FMOD_RESULT fmodResult;
     FMOD::System* fmodSystem = nullptr;
@@ -213,6 +224,7 @@ int main(int argc, char** argv) {
         /* Render */
         {
             renderSystem.update(registry, viewMat, projMat);
+            physicWorld->DrawDebugData();
             noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -289,6 +301,7 @@ int main(int argc, char** argv) {
     delete spriteFactory;
     delete primitiveFactory;
     delete rigidBodyFactory;
+    delete debugDraw;
     delete physicWorld;
     mySound->release();
     noeView->GetRenderer()->Shutdown();
