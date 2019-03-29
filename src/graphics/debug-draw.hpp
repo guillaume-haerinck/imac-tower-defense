@@ -32,6 +32,7 @@ public:
 private:
     Shader m_shaderBasic;
 	VertexArray m_va;
+	VertexBuffer m_vb;
 	unsigned int m_vertexBufferMaxSize;
 };
 

@@ -8,6 +8,8 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum usage) {
 }
 
 VertexBuffer::~VertexBuffer() {
+	std::cout << "vb destructor called !" << std::endl;
+	// TODO check if OK to delete buffer, because it is now handled by the Vertex Array
 	GLCall(glDeleteBuffers(1, &m_rendererID));
 }
 

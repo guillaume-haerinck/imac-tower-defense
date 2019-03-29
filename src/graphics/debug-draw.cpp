@@ -5,25 +5,27 @@
 
 #include "logger/gl-log-handler.hpp"
 
-DebugDraw::DebugDraw() : m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"), m_vertexBufferMaxSize(512) {
-    /* Vertex buffer */
-    float dataTest[] = {0.0f,  0.0f};
-    VertexBuffer vb(dataTest, m_vertexBufferMaxSize * sizeof(float), GL_DYNAMIC_DRAW);
+DebugDraw::DebugDraw() 
+: m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
+  m_vertexBufferMaxSize(512),
+  m_vb(nullptr, m_vertexBufferMaxSize * sizeof(float), GL_DYNAMIC_DRAW)
+{
+    // Vertex buffer layout
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
 
-    /* Vertex array */
-	m_va.addBuffer(vb, vbLayout);
+    // Vertex array
+	m_va.addBuffer(m_vb, vbLayout);
 
-    /* Uniforms */
+    // Uniforms
     m_shaderBasic.bind();
     m_shaderBasic.setUniformMat4f("u_mvp", glm::mat4(1.0f));
 	m_shaderBasic.setUniform4f("u_color", 1.0f, 0.0f, 0.0f, 1.0f);
 
-    /* Cleanup */
+    // Cleanup
     m_shaderBasic.unbind();
     m_va.unbind();
-    vb.unbind();
+    m_vb.unbind();
 }
 
 DebugDraw::~DebugDraw() {}
@@ -54,13 +56,16 @@ void DebugDraw::DrawTransform(const b2Transform& xf) {
     //std::cout << "draw transform asked" << std::endl;
     m_shaderBasic.bind();
     m_va.bind();
+    m_vb.bind();
 
-    // TODO update buffer data with glBufferSubData
+    float dataTest[] = {0.0f,  0.0f};
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexBufferMaxSize, &dataTest));
     
     m_shaderBasic.setUniformMat4f("u_mvp", glm::mat4(1.0f));
     m_shaderBasic.setUniform4f("u_color", 1.0f, 0.0f, 0.0f, 1.0f);
     GLCall(glDrawArrays(GL_POINTS, 0, 1));
 
+    m_vb.unbind();
     m_va.unbind();
     m_shaderBasic.unbind();
 }
