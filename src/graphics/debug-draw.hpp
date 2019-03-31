@@ -11,6 +11,12 @@
  * @note Makes heavy use of glBufferData to update vertex array at each function call
  */
 
+/* 
+    TODO check if better performance with immutable buffer (size is set and cannot change, update with subdata) http://docs.gl/gl4/glBufferStorage 
+    http://voidptr.io/blog/2016/04/28/ldEngine-Part-1.html
+    https://stackoverflow.com/questions/27810542/what-is-the-difference-between-glbufferstorage-and-glbufferdata
+*/
+
 class DebugDraw : public b2Draw {
 public:
     DebugDraw(glm::mat4 viewMat = glm::mat4(1.0f), glm::mat4 projMat = glm::mat4(1.0f));

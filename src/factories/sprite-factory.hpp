@@ -14,7 +14,7 @@ public:
 
     cmpt::Sprite create(const std::string& textureFilepath, glm::vec2 displaySize);
     cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize);
-    // TODO batch rendering with glTextureView ?
+    // TODO batch rendering with glTextureView ? https://learnopengl.com/Advanced-OpenGL/Instancing for all since they share vertex data
 
 private:
     Shader m_shaderTex;

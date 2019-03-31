@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
         registry.assign<renderTag::Atlas>(myEntity3);
 
         registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f)));
-        cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, M_PI / 3)));
+        cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, 0.0f)));
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
         registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory->create(b2_dynamicBody, myTransform2, myCollider1));
