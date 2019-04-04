@@ -161,6 +161,7 @@ The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 
 - [Awesome Opengl](https://github.com/eug/awesome-opengl) - A list of useful tools for OpenGl
 - [Awesome Readme](https://github.com/matiassingers/awesome-readme) - A list of great readme files
+- [Pathfinding](https://www.redblobgames.com/pathfinding/tower-defense/) - Red blob games's article on pathfinding
 
 ## Inspired by
 
