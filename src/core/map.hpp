@@ -3,10 +3,10 @@
 #include <glm/glm.hpp>
 #include <string>
 
-class Level {
+class Map {
 public:
-    Level(const char* itdFilePath);
-    ~Level();
+    Map(const char* itdFilePath);
+    ~Map();
 
 private:
     glm::vec3 getPixelColors(unsigned char* image, int imageWidth, int x, int y);

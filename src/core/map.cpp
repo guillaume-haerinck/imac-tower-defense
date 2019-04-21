@@ -1,4 +1,4 @@
-#include "level.hpp"
+#include "map.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 #include <debugbreak/debugbreak.h>
 
-Level::Level(const char* itdFilePath) {
+Map::Map(const char* itdFilePath) {
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
     if (file.is_open()) {
@@ -63,10 +63,10 @@ Level::Level(const char* itdFilePath) {
     stbi_image_free(image);
 }
 
-Level::~Level() {
+Map::~Map() {
 }
 
-glm::vec3 Level::getPixelColors(unsigned char* image, int imageWidth, int x, int y) {
+glm::vec3 Map::getPixelColors(unsigned char* image, int imageWidth, int x, int y) {
     glm::vec3 pixel;
     pixel.r = image[3 * (y * imageWidth + x) + 0];
     pixel.g = image[3 * (y * imageWidth + x) + 1];
@@ -74,7 +74,7 @@ glm::vec3 Level::getPixelColors(unsigned char* image, int imageWidth, int x, int
     return pixel;
 }
 
-float Level::getData(std::string line) {
+float Map::getData(std::string line) {
     std::string temp;
     float data;
     std::stringstream ss(line);
@@ -91,7 +91,7 @@ float Level::getData(std::string line) {
     return 0.0f;
 }
 
-glm::vec3 Level::getDataColors(std::string line) {
+glm::vec3 Map::getDataColors(std::string line) {
     std::string temp;
     float data;
     std::stringstream ss(line);

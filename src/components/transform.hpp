@@ -3,9 +3,6 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
-// TODO set position in the grid ? The renderer then transform it to xy ?
-// The scale is the number of tiles of the grid it takes, a int ?
-
 namespace cmpt {
 struct Transform {
     Transform(glm::vec3 scale = glm::vec3(1.0f), glm::vec3 position = glm::vec3(0.0f), glm::quat rotation = glm::quat(1, 0, 0, 0)) 

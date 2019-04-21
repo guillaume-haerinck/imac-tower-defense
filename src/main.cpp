@@ -17,8 +17,6 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <fmod.hpp>
-#include <fmod_errors.h>
 #include <NsRender/GLFactory.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsGui/IRenderer.h>
@@ -32,9 +30,9 @@
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
-#include "factories/sprite-factory.hpp"
-#include "factories/rigid-body-factory.hpp"
-#include "factories/primitive-factory.hpp"
+#include "component-factories/sprite-factory.hpp"
+#include "component-factories/rigid-body-factory.hpp"
+#include "component-factories/primitive-factory.hpp"
 #include "components/transform.hpp"
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
@@ -42,7 +40,10 @@
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
+#include "systems/audio-system.hpp"
 #include "gui/start-menu.hpp"
+
+// #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
 static Noesis::IView* noeView;
 
@@ -57,43 +58,19 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    /* View and Projection matrices */
+    // View and Projection matrices
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
 
-    /* Camera variables */
+    // Camera variables
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
-    /* Init Physics */
+    // Init Physics
 	b2Vec2 gravity(0.0f, -10.0f);
     b2World* physicWorld = new b2World(gravity);
-
-    /* Init Debug draw for physic */
     DebugDraw* debugDraw = new DebugDraw(viewMat, projMat);
     physicWorld->SetDebugDraw(debugDraw);
-    // Say what to draw
     debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
-    
-    /* Init Sounds */
-    FMOD_RESULT fmodResult;
-    FMOD::System* fmodSystem = nullptr;
-    FMOD::Channel* channel = 0;
-
-    fmodResult = FMOD::System_Create(&fmodSystem);
-    if (fmodResult != FMOD_OK) {
-        spdlog::error("[FMOD] {} {}", fmodResult, FMOD_ErrorString(fmodResult));
-        debug_break();
-    }
-
-    fmodResult = fmodSystem->init(512, FMOD_INIT_NORMAL, 0);
-    if (fmodResult != FMOD_OK) {
-        spdlog::error("[FMOD] {} {}", fmodResult, FMOD_ErrorString(fmodResult));
-        debug_break();
-    }
-
-    //FMOD::Sound* mySound;
-    //fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &mySound);
-    //fmodSystem->playSound(mySound, 0, false, &channel);
 
     /* Create factories */
     entt::DefaultRegistry registry;
@@ -144,11 +121,13 @@ int main(int argc, char** argv) {
         //registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f)));
         //registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
+	//*/
     
     /* Create systems */
     RenderSystem renderSystem;
     AnimationSystem animationSystem;
     PhysicSystem physicSystem;
+	AudioSystem audioSystem;
 
     /* Loop general variables */
     bool bWireframe = false;
@@ -287,7 +266,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    //mySound->release();
 
     /* Delete in the reverse order of creation */
     delete spriteFactory;

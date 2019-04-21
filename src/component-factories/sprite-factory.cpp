@@ -83,7 +83,7 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
     /* Vertex array */
     VertexArray va;
 	va.addBuffer(vb, vbLayout);
-
+	
     /* Uniforms */
     m_shaderTexArray.bind();
     m_shaderTexArray.setUniformMat4f("u_mvp", glm::mat4(1.0f));
