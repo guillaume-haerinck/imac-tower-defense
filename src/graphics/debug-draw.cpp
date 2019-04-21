@@ -38,6 +38,8 @@ DebugDraw::~DebugDraw() {
     m_vb.~VertexBuffer();
 }
 
+/* ------------------------------- BOX2I API ------------------------------- */
+
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
     assert(vertexCount < m_vbMaxSize * 2);
     
@@ -254,6 +256,80 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
     m_shaderBasic.unbind();
 }
 
+/* ---------------------------- PROCESSING-LIKE API --------------------------- */
+
+void DebugDraw::triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+
+}
+
+void DebugDraw::rect(float x1, float y1, float x2, float y2) {
+
+}
+
+void DebugDraw::square(float x, float y, float extent) {
+
+}
+
+void DebugDraw::ellipse(float a, float b, float c, float d) {
+
+}
+
+void DebugDraw::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+
+}
+
+void DebugDraw::line(float x1, float y1, float x2, float y2) {
+	// Binding
+	m_shaderBasic.bind();
+	m_va.bind();
+	m_vb.bind();
+
+	// Update
+	float data[] = {
+		x1, y1,
+		x2, y2
+	};
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
+
+	// Render
+	glm::mat4 mvp = m_projMat * m_viewMat;
+	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	GLCall(glDrawArrays(GL_LINES, 0, 4));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderBasic.unbind();
+}
+
+void DebugDraw::point(float x, float y) {
+	// Binding
+	m_shaderBasic.bind();
+	m_va.bind();
+	m_vb.bind();
+
+	// Update buffer
+	float data[] = { x,  y };
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &data, GL_DYNAMIC_DRAW));
+
+	// Update
+	glm::mat4 mvp = m_projMat * m_viewMat;
+	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	GLCall(glDrawArrays(GL_POINTS, 0, 1));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderBasic.unbind();
+}
+
+void DebugDraw::shape(glm::vec2* vertices) {
+	// TODO
+}
+
 // ------------------------------ SETTERS ---------------------------
 void DebugDraw::setProjMat(glm::mat4 mat) { m_projMat = mat; }
 void DebugDraw::setViewMat(glm::mat4 mat) { m_viewMat = mat; }
+void DebugDraw::setColor(glm::vec4 color) { m_color = color; }
