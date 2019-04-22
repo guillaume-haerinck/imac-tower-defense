@@ -25,7 +25,7 @@
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
-#include "graphics/debug-draw.hpp"
+#include "services/debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
@@ -40,7 +40,7 @@
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
-#include "systems/audio-system.hpp"
+#include "services/audio-service.hpp"
 #include "gui/start-menu.hpp"
 
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
@@ -53,8 +53,8 @@ int main(int argc, char** argv) {
     #endif
 
 	entt::DefaultRegistry registry;
-    Game* game = new Game(registry);
-    if (game->init() == EXIT_FAILURE) {
+    Game game(registry);
+    if (game.init() == EXIT_FAILURE) {
         debug_break();
         return EXIT_FAILURE;
     }
@@ -127,7 +127,6 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem;
     AnimationSystem animationSystem;
     PhysicSystem physicSystem;
-	AudioSystem audioSystem;
 
     /* Loop general variables */
     bool bWireframe = false;
@@ -152,7 +151,7 @@ int main(int argc, char** argv) {
         /* Imgui main debug window */
 		{
             ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL2_NewFrame(game->getWindow());
+            ImGui_ImplSDL2_NewFrame(game.getWindow());
             ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
 			    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -209,7 +208,7 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game->getWindow())->h) - e.button.y);
+                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
 
@@ -245,7 +244,7 @@ int main(int argc, char** argv) {
         }
 
         /* Update window */
-        SDL_GL_SwapWindow(game->getWindow());
+        SDL_GL_SwapWindow(game.getWindow());
 
         /* Check framerate */
         {
@@ -267,6 +266,5 @@ int main(int argc, char** argv) {
     }
 
     noeView->GetRenderer()->Shutdown();
-    delete game;
     return EXIT_SUCCESS;
 }

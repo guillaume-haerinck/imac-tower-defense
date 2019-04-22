@@ -1,8 +1,14 @@
 # Imac Tower Defense Changelog
 
-## 29.03.2019
+## 22.04.19
 
-Debug drawing for physics
+Factories are not to be used as singleton anymore.
+Separation between factories for entities and factories for special components.
+Start using services.
+
+## 29.03.19
+
+Debug drawing for physics.
 
 ## 24.03.19
 

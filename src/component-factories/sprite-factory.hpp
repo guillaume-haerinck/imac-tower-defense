@@ -17,6 +17,7 @@ public:
 
 private:
 	// TODO make shader static because shared among each instance
+	// -> Init problem because glad is not up at compile time to create the shader
 
     Shader m_shaderTex;
     Shader m_shaderTexArray;

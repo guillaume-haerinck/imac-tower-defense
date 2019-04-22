@@ -2,6 +2,7 @@
 
 /*
     TODO pathfinding + State machine
+	// Breakdown into multiple systems ?
 */
 
 class AiSystem {
@@ -13,5 +14,4 @@ public:
 
     void update();
 };
-
 

@@ -1,11 +1,11 @@
-#include "audio-system.hpp"
+#include "audio-service.hpp"
 
 #include <fmod.hpp>
 #include <fmod_errors.h>
 #include <spdlog/spdlog.h>
 #include <debugbreak/debugbreak.h>
 
-AudioSystem::AudioSystem() {
+AudioService::AudioService() {
 	FMOD_RESULT fmodResult;
 	FMOD::System* fmodSystem = nullptr;
 	FMOD::Channel* channel = 0;
@@ -28,5 +28,5 @@ AudioSystem::AudioSystem() {
 	//mySound->release();
 }
 
-AudioSystem::~AudioSystem() {
+AudioService::~AudioService() {
 }

@@ -12,7 +12,7 @@ RenderSystem::~RenderSystem() {}
 
 void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection) {
     /* 
-        TODO find a way to use only a few glDraw... by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
+        TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
 
