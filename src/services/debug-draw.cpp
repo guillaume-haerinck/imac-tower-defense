@@ -6,13 +6,15 @@
 #include <vector>
 
 #include "logger/gl-log-handler.hpp"
+#include "core/constants.hpp"
 
 DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
-: m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
-  m_vbMaxSize(32),
-  m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
-  m_viewMat(viewMat),
-  m_projMat(projMat)
+:	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
+	m_vbMaxSize(32),
+	m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
+	m_viewMat(viewMat),
+	m_projMat(projMat),
+	m_color(255., 255., 255., 1.)
 {
     // Vertex buffer layout
 	VertexBufferLayout vbLayout;
@@ -286,8 +288,8 @@ void DebugDraw::line(float x1, float y1, float x2, float y2) {
 
 	// Update
 	float data[] = {
-		x1, y1,
-		x2, y2
+		x1 * WIN_RATIO, y1,
+		x2 * WIN_RATIO, y2
 	};
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
@@ -310,7 +312,7 @@ void DebugDraw::point(float x, float y) {
 	m_vb.bind();
 
 	// Update buffer
-	float data[] = { x,  y };
+	float data[] = { x * WIN_RATIO,  y };
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
 	// Update
@@ -333,3 +335,4 @@ void DebugDraw::shape(glm::vec2* vertices) {
 void DebugDraw::setProjMat(glm::mat4 mat) { m_projMat = mat; }
 void DebugDraw::setViewMat(glm::mat4 mat) { m_viewMat = mat; }
 void DebugDraw::setColor(glm::vec4 color) { m_color = color; }
+void DebugDraw::setColor(float r, float g, float b, float a) { m_color = glm::vec4(r, g, b, a); }

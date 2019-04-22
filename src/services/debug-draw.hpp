@@ -45,6 +45,7 @@ public:
 	void setProjMat(glm::mat4 mat);
 	void setViewMat(glm::mat4 mat);
 	void setColor(glm::vec4 color);
+	void setColor(float r, float g, float b, float a);
 
 private:
     Shader m_shaderBasic;

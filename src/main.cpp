@@ -38,8 +38,6 @@
 #include "services/audio-service.hpp"
 #include "gui/start-menu.hpp"
 
-#include  "components/transform.hpp"
-
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
 static Noesis::IView* noeView;
@@ -144,6 +142,17 @@ int main(int argc, char** argv) {
 
         // Render
         {
+			// POUR JULES <3
+			// 0,0 en bas a gauche
+			// 100, 100 en haut a droite
+			// Suffit de mettre ça dans le update() de n'importe quel systeme
+			{
+				debugDraw->setColor(255, 0, 0, 1);
+				debugDraw->line(0., 50., 50., 50.);
+				GLCall(glPointSize(13));
+				debugDraw->point(10., 10.);
+			}
+
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
             noeView->GetRenderer()->Render();
