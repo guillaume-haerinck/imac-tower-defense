@@ -7,7 +7,7 @@ cmpt::RigidBody RigidBodyFactory::create(b2BodyType type, cmpt::Transform transf
     b2BodyDef bodyDef; // Will be cloned so can go out of scope
 	bodyDef.type = type;
 	bodyDef.position.Set(transform.position.x, transform.position.y);
-    bodyDef.angle = transform.rotation.z;
+    bodyDef.angle = transform.rotation;
 	b2Body* body = m_physicWorld->CreateBody(&bodyDef);
     body->CreateFixture(collider->shape, 0.0f);
 

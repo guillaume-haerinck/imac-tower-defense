@@ -76,9 +76,10 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
 
 glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) {
     glm::mat4 model(1.0f);
-    model = glm::translate(model, transform.position);
-    glm:: mat4 rotation = glm::toMat4(transform.rotation);
-    model *= rotation;
-    model = glm::scale(model, transform.scale);
+    model = glm::translate(model, glm::vec3(transform.position, transform.zIndex));
+	// TODO rotation
+    //glm:: mat4 rotation = glm::toMat4(transform.axis);
+    //model *= rotation;
+    model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
     return model;
 }

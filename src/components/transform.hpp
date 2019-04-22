@@ -1,15 +1,15 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "glm/gtc/quaternion.hpp"
 
 namespace cmpt {
 struct Transform {
-    Transform(glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f), glm::quat rotation = glm::quat(1, 0, 0, 0))
-    : position(position), scale(scale), rotation(rotation) {}
+    Transform(glm::vec2 position = glm::vec2(0.0f), glm::vec2 scale = glm::vec2(1.0f), float axis = 0.0f, int zIndex = 0)
+    : position(position), scale(scale), rotation(rotation), zIndex(zIndex) {}
 
-    glm::vec3 position;
-	glm::vec3 scale;
-    glm::quat rotation;
+    glm::vec2 position;
+	glm::vec2 scale;
+	float rotation;
+	int zIndex;
 };
 }
