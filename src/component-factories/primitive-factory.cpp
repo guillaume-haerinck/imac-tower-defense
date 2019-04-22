@@ -6,17 +6,9 @@
 #include "graphics/texture.hpp"
 #include "graphics/texture-array.hpp"
 
-PrimitiveFactory::PrimitiveFactory(entt::DefaultRegistry& registry) 
-: m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
-  m_registry(registry)
-{
-}
-
-PrimitiveFactory::~PrimitiveFactory() {
-    m_registry.view<cmpt::Primitive>().each([](auto entity, cmpt::Primitive& primitive) {
-        GLCall(glDeleteVertexArrays(1, &primitive.vaID));
-    });
-}
+PrimitiveFactory::PrimitiveFactory() 
+: m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag")
+{}
 
 cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize) {
     float positions[] = {

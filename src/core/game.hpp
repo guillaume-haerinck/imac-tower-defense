@@ -2,10 +2,11 @@
 
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
+#include <entt/entt.hpp>
 
 class Game {
 public:
-    Game();
+    Game(entt::DefaultRegistry& registry);
     ~Game();
 
     int init();
@@ -16,6 +17,7 @@ private:
     bool isInit;
     SDL_Window* m_window;
     SDL_GLContext m_context;
+	entt::DefaultRegistry& m_registry;
 };
 
 

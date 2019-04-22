@@ -52,7 +52,8 @@ int main(int argc, char** argv) {
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     #endif
 
-    Game* game = new Game();
+	entt::DefaultRegistry registry;
+    Game* game = new Game(registry);
     if (game->init() == EXIT_FAILURE) {
         debug_break();
         return EXIT_FAILURE;
@@ -66,17 +67,16 @@ int main(int argc, char** argv) {
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
     // Init Physics
-	b2Vec2 gravity(0.0f, -10.0f);
-    b2World* physicWorld = new b2World(gravity);
-    DebugDraw* debugDraw = new DebugDraw(viewMat, projMat);
-    physicWorld->SetDebugDraw(debugDraw);
+	b2Vec2 gravity(0.0f, -10.0f);	
+    auto physicWorld = std::make_shared<b2World>(gravity);
+    auto debugDraw = std::make_shared<DebugDraw>(viewMat, projMat);
+    physicWorld->SetDebugDraw(debugDraw.get());
     debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
 
     /* Create factories */
-    entt::DefaultRegistry registry;
-    SpriteFactory* spriteFactory = new SpriteFactory(registry);
-    PrimitiveFactory* primitiveFactory = new PrimitiveFactory(registry);
-    RigidBodyFactory* rigidBodyFactory = new RigidBodyFactory(registry, physicWorld);
+	SpriteFactory spriteFactory;
+	PrimitiveFactory primitiveFactory;
+	RigidBodyFactory rigidBodyFactory(physicWorld.get());
     
     
     /* ----------------------- TESTING PLAYGROUND ------------------ */
@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
         auto myEntity4 = registry.create();
         auto myEntity5 = registry.create();
         
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory->createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), glm::vec2(196, 196)));
+        registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), glm::vec2(196, 196)));
         cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<cmpt::Transform>(myEntity, myTransform1);
         cmpt::SpriteAnimation myAnim2(0, 25, 0);
@@ -96,29 +96,29 @@ int main(int argc, char** argv) {
         // Setup physics for this entity
         b2PolygonShape myColliderShape1;
         myColliderShape1.SetAsBox(10.0f, 10.0f);
-        b2FixtureDef* myCollider1 = new b2FixtureDef(); // Will be freed by the rigidbodyfactory
+        b2FixtureDef* myCollider1 = new b2FixtureDef(); // TODO use smart pointer for collider deletion
         myCollider1->density = 1.0f;
         myCollider1->friction = 0.3f;
         myCollider1->shape = &myColliderShape1; // Will be cloned so can go out of scope
-        registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory->create(b2_staticBody, myTransform1, myCollider1));
+        registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.create(b2_staticBody, myTransform1, myCollider1));
 
-        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory->create("res/images/textures/arrow.png", glm::vec2(1.0f)));
+        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f)));
         registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         registry.assign<renderTag::Single>(myEntity2);
 
-        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory->createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), glm::vec2(65, 65)));
+        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), glm::vec2(65, 65)));
         registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
         cmpt::SpriteAnimation myAnim(0, 36, 0);
         registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
         registry.assign<renderTag::Atlas>(myEntity3);
 
-        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory->create("res/images/textures/logo-imac.png", glm::vec2(1.0f)));
+        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f)));
         cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, 0.0f)));
         registry.assign<cmpt::Transform>(myEntity4, myTransform2);
         registry.assign<renderTag::Single>(myEntity4);
-        registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory->create(b2_dynamicBody, myTransform2, myCollider1));
+        registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.create(b2_dynamicBody, myTransform2, myCollider1));
 
-        //registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory->createRectOutline(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f)));
+        //registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRectOutline(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f)));
         //registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
     }
 	//*/
@@ -187,7 +187,7 @@ int main(int argc, char** argv) {
             
             // Update physics
             physicWorld->Step(1.0f / 60.0f, 6, 2);
-            physicSystem.update(registry, deltatime, physicWorld);
+            physicSystem.update(registry, deltatime, physicWorld.get());
         }
 
         /* Render */
@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
 
-        /* Handle events */
+        /* Handle inputs */
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -266,13 +266,6 @@ int main(int argc, char** argv) {
         }
     }
 
-
-    /* Delete in the reverse order of creation */
-    delete spriteFactory;
-    delete primitiveFactory;
-    delete rigidBodyFactory;
-    delete debugDraw;
-    delete physicWorld;
     noeView->GetRenderer()->Shutdown();
     delete game;
     return EXIT_SUCCESS;

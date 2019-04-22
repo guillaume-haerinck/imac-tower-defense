@@ -12,12 +12,27 @@
 #include "constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
+#include "components/sprite.hpp"
+#include "components/primitive.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
 
-Game::Game() : isInit(false), m_window(nullptr), m_context(nullptr) {}
+Game::Game(entt::DefaultRegistry& registry)
+: m_registry(registry), isInit(false), m_window(nullptr), m_context(nullptr) 
+{}
 
 Game::~Game() {
+	// Delete OpenGL data
+	m_registry.view<cmpt::Sprite>().each([](auto entity, cmpt::Sprite& sprite) {
+		GLCall(glDeleteTextures(1, &sprite.textureID));
+		GLCall(glDeleteVertexArrays(1, &sprite.vaID));
+	});
+
+	m_registry.view<cmpt::Primitive>().each([](auto entity, cmpt::Primitive& primitive) {
+		GLCall(glDeleteVertexArrays(1, &primitive.vaID));
+	});
+
+	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();

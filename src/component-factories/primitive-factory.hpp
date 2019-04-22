@@ -10,8 +10,7 @@
 
 class PrimitiveFactory {
 public:
-    PrimitiveFactory(entt::DefaultRegistry& registry);
-    ~PrimitiveFactory();
+    PrimitiveFactory();
 
     cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize);
     cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize);
@@ -20,5 +19,4 @@ public:
 
 private:
     Shader m_shaderBasic;
-    entt::DefaultRegistry& m_registry;
 };

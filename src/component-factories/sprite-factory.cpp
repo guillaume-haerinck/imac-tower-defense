@@ -6,10 +6,9 @@
 #include "graphics/texture.hpp"
 #include "graphics/texture-array.hpp"
 
-SpriteFactory::SpriteFactory(entt::DefaultRegistry& registry)
+SpriteFactory::SpriteFactory()
 : m_shaderTex("res/shaders/texture/texture.vert", "res/shaders/texture/texture.frag"),
-  m_shaderTexArray("res/shaders/texture/texture.vert", "res/shaders/texture/texture-array.frag"),
-  m_registry(registry)
+  m_shaderTexArray("res/shaders/texture/texture.vert", "res/shaders/texture/texture-array.frag")
 {
     /* Index buffer */
 	unsigned int indices[] = {
@@ -19,13 +18,6 @@ SpriteFactory::SpriteFactory(entt::DefaultRegistry& registry)
 	unsigned int arraySize = sizeof(indices) / sizeof(unsigned int);
     m_ib.init(indices, arraySize);
     m_ib.unbind();
-}
-
-SpriteFactory::~SpriteFactory() {
-    m_registry.view<cmpt::Sprite>().each([](auto entity, cmpt::Sprite& sprite) {
-        GLCall(glDeleteTextures(1, &sprite.textureID));
-        GLCall(glDeleteVertexArrays(1, &sprite.vaID));
-    });
 }
 
 cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2 displaySize) {
