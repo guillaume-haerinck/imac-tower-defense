@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
 #include "graphics/index-buffer.hpp"
@@ -11,7 +10,7 @@ class SpriteFactory {
 public:
     SpriteFactory();
 
-    cmpt::Sprite create(const std::string& textureFilepath, glm::vec2 displaySize);
+    cmpt::Sprite createSingle(const std::string& textureFilepath, glm::vec2 displaySize);
     cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize);
     // TODO batch rendering with glTextureView ? https://learnopengl.com/Advanced-OpenGL/Instancing for all since they share vertex data
 

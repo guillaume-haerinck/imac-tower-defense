@@ -4,10 +4,11 @@
 
 namespace cmpt {
 struct TransformTile {
-	TransformTile(glm::vec2 tilePosition, float rotation, glm::vec2 scale) : tilePosition(tilePosition), rotation(rotation), scale(scale) {}
+	TransformTile(glm::vec2 tilePosition = glm::vec2(0, 0), glm::vec2 scale = glm::vec2(1.0f), float rotation = 0.0f)
+	: tilePosition(tilePosition), scale(scale), rotation(rotation) {}
 
 	glm::vec2 tilePosition;
-	float rotation;
 	glm::vec2 scale;
+	float rotation;
 };
 }

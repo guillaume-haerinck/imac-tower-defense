@@ -1,8 +1,7 @@
 #pragma once
 
-#include <entt/entt.hpp>
 #include <Box2D/Box2D.h>
-#include <vector>
+
 #include "components/rigid-body.hpp"
 #include "components/transform.hpp"
 

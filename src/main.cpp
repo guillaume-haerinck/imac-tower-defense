@@ -30,18 +30,15 @@
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
-#include "component-factories/sprite-factory.hpp"
-#include "component-factories/rigid-body-factory.hpp"
-#include "component-factories/primitive-factory.hpp"
-#include "components/transform.hpp"
-#include "components/sprite.hpp"
-#include "components/sprite-animation.hpp"
-#include "components/primitive.hpp"
+#include "entity-factories/tower-factory.hpp"
+#include "entity-factories/enemy-factory.hpp"
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
 #include "services/audio-service.hpp"
 #include "gui/start-menu.hpp"
+
+#include  "components/transform.hpp"
 
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
@@ -52,6 +49,7 @@ int main(int argc, char** argv) {
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     #endif
 
+	// Game start
 	entt::DefaultRegistry registry;
     Game game(registry);
     if (game.init() == EXIT_FAILURE) {
@@ -59,11 +57,9 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    // View and Projection matrices
+    // View position
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
-
-    // Camera variables
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
     // Init Physics
@@ -72,83 +68,40 @@ int main(int argc, char** argv) {
     auto debugDraw = std::make_shared<DebugDraw>(viewMat, projMat);
     physicWorld->SetDebugDraw(debugDraw.get());
     debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+    
+	// Noesis GUI
+	StartMenu startMenu;
+	Noesis::Ptr<Noesis::FrameworkElement> xaml = startMenu;
+	noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
+	noeView->SetIsPPAAEnabled(true);
+	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
-    /* Create factories */
-	SpriteFactory spriteFactory;
-	PrimitiveFactory primitiveFactory;
-	RigidBodyFactory rigidBodyFactory(physicWorld.get());
-    
-    
+	// Entity factories
+	TowerFactory towerFactory(registry);
+	EnemyFactory enemyFactory(registry);
+
     /* ----------------------- TESTING PLAYGROUND ------------------ */
     {
-        auto myEntity = registry.create();
-        auto myEntity2 = registry.create();
-        auto myEntity3 = registry.create();
-        auto myEntity4 = registry.create();
-        auto myEntity5 = registry.create();
-        
-        registry.assign<cmpt::Sprite>(myEntity, spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(1.0f), glm::vec2(196, 196)));
-        cmpt::Transform myTransform1(glm::vec3(20.0f), glm::vec3(90.0f * WIN_RATIO, 10.0f, 0.0f), glm::quat(1, 0, 0, 0));
-        registry.assign<cmpt::Transform>(myEntity, myTransform1);
-        cmpt::SpriteAnimation myAnim2(0, 25, 0);
-        registry.assign<cmpt::SpriteAnimation>(myEntity, myAnim2);
-        registry.assign<renderTag::Atlas>(myEntity);
-        // Setup physics for this entity
-        b2PolygonShape myColliderShape1;
-        myColliderShape1.SetAsBox(10.0f, 10.0f);
-        b2FixtureDef* myCollider1 = new b2FixtureDef(); // TODO use smart pointer for collider deletion
-        myCollider1->density = 1.0f;
-        myCollider1->friction = 0.3f;
-        myCollider1->shape = &myColliderShape1; // Will be cloned so can go out of scope
-        registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.create(b2_staticBody, myTransform1, myCollider1));
-
-        registry.assign<cmpt::Sprite>(myEntity2, spriteFactory.create("res/images/textures/arrow.png", glm::vec2(1.0f)));
-        registry.assign<cmpt::Transform>(myEntity2, glm::vec3(15.0f), glm::vec3(0.0f, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
-        registry.assign<renderTag::Single>(myEntity2);
-
-        registry.assign<cmpt::Sprite>(myEntity3, spriteFactory.createAtlas("res/images/spritesheets/squeleton-65x65.png", glm::vec2(1.0f), glm::vec2(65, 65)));
-        registry.assign<cmpt::Transform>(myEntity3, glm::vec3(25.0f), glm::vec3(50.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
-        cmpt::SpriteAnimation myAnim(0, 36, 0);
-        registry.assign<cmpt::SpriteAnimation>(myEntity3, myAnim);
-        registry.assign<renderTag::Atlas>(myEntity3);
-
-        registry.assign<cmpt::Sprite>(myEntity4, spriteFactory.create("res/images/textures/logo-imac.png", glm::vec2(1.0f)));
-        cmpt::Transform myTransform2(glm::vec3(15.0f), glm::vec3(90.0f * WIN_RATIO, 90.0f, 0.0f), glm::rotate(glm::quat(1, 0, 0, 0), glm::vec3(0.f, 0.f, 0.0f)));
-        registry.assign<cmpt::Transform>(myEntity4, myTransform2);
-        registry.assign<renderTag::Single>(myEntity4);
-        registry.assign<cmpt::RigidBody>(myEntity4, rigidBodyFactory.create(b2_dynamicBody, myTransform2, myCollider1));
-
-        //registry.assign<cmpt::Primitive>(myEntity5, primitiveFactory.createRectOutline(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f)));
-        //registry.assign<cmpt::Transform>(myEntity5, glm::vec3(5.0f), glm::vec3(10.0f * WIN_RATIO, 50.0f, 0.0f), glm::quat(1, 0, 0, 0));
+		towerFactory.create(1, 9);
+		enemyFactory.create(50.0f, 50.0f);
     }
-	//*/
     
-    /* Create systems */
+    // Systems
     RenderSystem renderSystem;
     AnimationSystem animationSystem;
     PhysicSystem physicSystem;
 
-    /* Loop general variables */
+    // Game loop
     bool bWireframe = false;
     unsigned int tempFrameCount = 0;
-
-    /* Noesis GUI */
-    StartMenu startMenu;
-    Noesis::Ptr<Noesis::FrameworkElement> xaml = startMenu;
-
-    noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
-    noeView->SetIsPPAAEnabled(true);
-    noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-    noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
-
-    /* Main loop */
     bool bQuit = false;
     double deltatime = TARGET_DELTA_MS;
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        /* Imgui main debug window */
+        // Imgui main debug window
 		{
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL2_NewFrame(game.getWindow());
@@ -158,7 +111,7 @@ int main(int argc, char** argv) {
 			ImGui::End();
 		}
 
-        /* Noesis update */
+        // Noesis update
         {
             // Noesis gui update
             noeView->Update(SDL_GetTicks());
@@ -171,7 +124,7 @@ int main(int argc, char** argv) {
             GLCall(glClearStencil(0));
         }
 
-        /* Game updates */
+        // Game updates
         {
             // Update camera
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
@@ -189,7 +142,7 @@ int main(int argc, char** argv) {
             physicSystem.update(registry, deltatime, physicWorld.get());
         }
 
-        /* Render */
+        // Render
         {
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
@@ -243,10 +196,11 @@ int main(int argc, char** argv) {
             }
         }
 
-        /* Update window */
+        // Update window
         SDL_GL_SwapWindow(game.getWindow());
 
-        /* Check framerate */
+        // Check framerate
+		// FIXME too rapid on portable computers
         {
             Uint64 endTicks = SDL_GetPerformanceCounter();
             deltatime = (double) (endTicks - beginTicks) * 1000 / (double) SDL_GetPerformanceFrequency();

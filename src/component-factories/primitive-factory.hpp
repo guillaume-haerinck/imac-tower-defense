@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
 #include "graphics/index-buffer.hpp"

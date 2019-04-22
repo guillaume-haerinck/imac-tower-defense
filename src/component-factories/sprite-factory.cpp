@@ -20,7 +20,7 @@ SpriteFactory::SpriteFactory()
     m_ib.unbind();
 }
 
-cmpt::Sprite SpriteFactory::create(const std::string& textureFilepath, glm::vec2 displaySize) {
+cmpt::Sprite SpriteFactory::createSingle(const std::string& textureFilepath, glm::vec2 displaySize) {
 	/* Vertex buffer */
     // TODO add enum to specify the pivot point ? By default center
 	float positions[] = {

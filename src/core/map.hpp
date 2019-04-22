@@ -8,6 +8,9 @@ public:
     Map(const char* itdFilePath);
     ~Map();
 
+	// TODO use flyweight pattern to say the tile type
+	// http://gameprogrammingpatterns.com/flyweight.html
+
 private:
     glm::vec3 getPixelColors(unsigned char* image, int imageWidth, int x, int y);
     glm::vec3 getDataColors(std::string line);
