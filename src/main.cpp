@@ -39,6 +39,8 @@
 #include "services/audio-service.hpp"
 #include "gui/start-menu.hpp"
 
+#include "components/transform.hpp"
+
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
 static Noesis::IView* noeView;
@@ -85,7 +87,7 @@ int main(int argc, char** argv) {
     /* ----------------------- TESTING PLAYGROUND ------------------ */
     {
 		//towerFactory.create(1, 9);
-		enemyFactory.create(50.0f, 50.0f);
+		//enemyFactory.create(50.0f, 50.0f);
     }
     
 	// Map
@@ -181,10 +183,15 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
+                    //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-					glm::vec2 tile = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-					spdlog::info("Tile: {} {}", tile.x, tile.y);
+					{
+						glm::vec2 tilePosition = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
+						unsigned int entityId = map1.getTile(tilePosition.x, tilePosition.y);
+						cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
+						spdlog::info("EntityId {}", entityId);
+						spdlog::info("Transform {} {}", trans.position.x, trans.position.y);
+					}
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -202,9 +209,9 @@ int main(int argc, char** argv) {
                         }
                         bWireframe = !bWireframe;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-                        camPos.y--;
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
                         camPos.y++;
+                    } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                        camPos.y--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
                         camPos.x--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {

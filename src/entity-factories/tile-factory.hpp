@@ -11,7 +11,11 @@ public:
 	TileFactory(entt::DefaultRegistry& registry);
 	~TileFactory();
 
-	void create(glm::vec2 position, glm::vec4 color);
+	unsigned int createSpawn(glm::vec2 position);
+	unsigned int createArrival(glm::vec2 position);
+	unsigned int createPath(glm::vec2 position);
+	unsigned int createConstructible(glm::vec2 position);
+	unsigned int createLocked(glm::vec2 position);
 
 private:
 	entt::DefaultRegistry& m_registry;

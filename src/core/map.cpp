@@ -7,11 +7,12 @@
 #include <debugbreak/debugbreak.h>
 
 #include "constants.hpp"
+#include "maths.hpp"
 
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 :	m_registry(registry),
 	m_tileFactory(registry),
-	m_mapPath("res/maps/"), m_constructibleId(0), m_pathId(0), m_pipeId(0), m_entryId(0), m_exitId(0)
+	m_mapPath("res/maps/")
 {
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
@@ -63,7 +64,23 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
         for (int x = 0; x < imgWidth; x++) {
             color = getPixelColorFromImage(image, imgWidth, x, y);
 			glm::vec2 position = gridToProj(x, y);
-			m_tileFactory.create(position, glm::vec4(color, 1.));
+			unsigned int entityId = 0;
+
+			if (color == m_pathColor) {
+				entityId = m_tileFactory.createPath(position);
+			} else if (color == m_nodeColor) {
+				entityId = m_tileFactory.createPath(position);
+			} else if (color == m_startColor) {
+				entityId = m_tileFactory.createSpawn(position);
+			} else if (color == m_endColor) {
+				entityId = m_tileFactory.createArrival(position);
+			} else if (color == m_constructColor) {
+				entityId = m_tileFactory.createConstructible(position);
+			} else {
+				entityId = m_tileFactory.createLocked(position);
+			}
+			// FIXME saut au passage entre les colonnes
+			m_map.at(y * m_gridHeight + x) = entityId;
         }
     }
     stbi_image_free(image);
@@ -82,20 +99,20 @@ unsigned int Map::getGridWidth()  { return m_gridWidth; }
 unsigned int Map::getGridHeight() { return m_gridHeight; }
 
 glm::vec2 Map::windowToGrid(float x, float y) {
-	float projX = rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH * WIN_RATIO);
-	float projY = rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
+	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH * WIN_RATIO);
+	float projY = imac::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
 	return projToGrid(projX, projY);
 }
 
 glm::vec2 Map::projToGrid(float x, float y) {
-	unsigned int tileX = rangeMapping(x, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
-	unsigned int tileY = rangeMapping(y, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
+	unsigned int tileX = imac::rangeMapping(x, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
+	unsigned int tileY = imac::rangeMapping(y, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
 	return glm::vec2(tileX, tileY);
 }
 
 glm::vec2 Map::gridToProj(unsigned int x, unsigned int y) {
-	float posX = rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
-	float posY = rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
+	float posX = imac::rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
+	float posY = imac::rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
 	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);
 }
 
@@ -151,8 +168,4 @@ glm::vec3 Map::getColorFromString(std::string line) {
     }
 
     return color;
-}
-
-long Map::rangeMapping(long x, long in_min, long in_max, long out_min, long out_max) {
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

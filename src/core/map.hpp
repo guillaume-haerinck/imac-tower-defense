@@ -43,12 +43,4 @@ private:
 	// Aggregation
 	entt::DefaultRegistry& m_registry;
 	TileFactory m_tileFactory;
-
-    // Tile entities (flyweight pattern: only one entity by tile type)
-	unsigned int m_constructibleId;
-	unsigned int m_pathId;
-	unsigned int m_lockedId;
-	unsigned int m_pipeId;
-	unsigned int m_entryId;
-	unsigned int m_exitId;
 };

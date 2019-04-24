@@ -5,6 +5,7 @@
 #include "components/sprite-animation.hpp"
 #include "components/primitive.hpp"
 #include "core/tags.hpp"
+#include "core/maths.hpp"
 
 RenderSystem::RenderSystem() {}
 
