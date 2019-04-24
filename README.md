@@ -97,7 +97,13 @@ From Visual Studio 2017, you don't need to generate a visual studio project with
 
 ![Screenshot](doc/readme-img/vs-studio-launch.png?raw=true "VS launch")
 
+If you add files, you will need to re-generate the cache for a successfull build. To do so, right click on `CMakeLists.txt` and use `Generate Cache for imac-tower-defense`
+
+![Screenshot](doc/readme-img/vs-studio-cache.png?raw=true "VS cache")
+
 #### `Option 3: VSCode`
+
+**WARNING: Does not work on windows with Visual Studio 2019 as the CMakeTools extension hasn't been updated for it yet**
 
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
