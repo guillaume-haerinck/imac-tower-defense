@@ -61,16 +61,8 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
     for (int y = 0; y < imgHeight; y++) {
         for (int x = 0; x < imgWidth; x++) {
             color = getPixelColorFromImage(image, imgWidth, x, y);
-            if (color == m_nodeColor) {
-				glm::vec2 position = gridToWindow(x, y); // FIXME
-				m_tileFactory.create(position, glm::vec4(255., 0., 0., 1.));
-            } else if (color == m_startColor) {
-                
-            } else if (color == m_endColor) {
-
-            } else if (color == m_pathColor) {
-
-            }
+			glm::vec2 position = gridToWindow(x, y); // FIXME
+			m_tileFactory.create(position, glm::vec4(color, 1.));
         }
     }
     stbi_image_free(image);
@@ -95,8 +87,8 @@ glm::vec2 Map::windowToGrid(float x, float y) {
 }
 
 glm::vec2 Map::gridToWindow(unsigned int x, unsigned int y) {
-    float posX = m_gridWidth * x + TILE_SIZE / 2;
-    float posY = m_gridHeight * y + TILE_SIZE / 2;
+    float posX = PROJ_WIDTH / m_gridWidth * x + TILE_SIZE / 2;
+    float posY = PROJ_HEIGHT / m_gridHeight * y + TILE_SIZE / 2;
     return glm::vec2(posX, posY);
 }
 
