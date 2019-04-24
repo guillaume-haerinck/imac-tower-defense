@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
 			// POUR JULES <3
 			// 0,0 en bas a gauche
 			// 100, 100 en haut a droite
-			// Suffit de mettre ça dans le update() de n'importe quel systeme
+			// Suffit de mettre ca dans le update() de n'importe quel systeme
 			{
 				debugDraw->setColor(255, 0, 0, 1);
 				debugDraw->line(0., 50., 50., 50.);

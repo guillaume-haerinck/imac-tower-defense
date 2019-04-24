@@ -6,6 +6,8 @@
 #include <spdlog/spdlog.h>
 #include <debugbreak/debugbreak.h>
 
+#include "constants.hpp"
+
 Map::Map(const char* itdFilePath) {
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
@@ -24,12 +26,12 @@ Map::Map(const char* itdFilePath) {
         while (std::getline(file, line)) {
             if (line.find("#") != std::string::npos) { continue; } // Skip comments
             else if (line.find("carte") != std::string::npos) {     m_mapPath = line.substr(6, line.size()); }
-            else if (line.find("energie") != std::string::npos) {   m_energy = getData(line); }
-            else if (line.find("chemin") != std::string::npos) {    m_pathColor = getDataColors(line); }
-            else if (line.find("noeud") != std::string::npos) {     m_nodeColor = getDataColors(line); }
-            else if (line.find("construct") != std::string::npos) { m_constructColor = getDataColors(line); }
-            else if (line.find("in") != std::string::npos) {        m_startColor = getDataColors(line); }
-            else if (line.find("out") != std::string::npos) {       m_endColor = getDataColors(line); }
+            else if (line.find("energie") != std::string::npos) {   m_energy = getNumberFromString(line); }
+            else if (line.find("chemin") != std::string::npos) {    m_pathColor = getColorFromString(line); }
+            else if (line.find("noeud") != std::string::npos) {     m_nodeColor = getColorFromString(line); }
+            else if (line.find("construct") != std::string::npos) { m_constructColor = getColorFromString(line); }
+            else if (line.find("in") != std::string::npos) {        m_startColor = getColorFromString(line); }
+            else if (line.find("out") != std::string::npos) {       m_endColor = getColorFromString(line); }
         }
         file.close();
     } else {
@@ -44,11 +46,15 @@ Map::Map(const char* itdFilePath) {
         debug_break();
     }
 
+    m_gridWidth = imgWidth;
+    m_gridHeight = imgHeight;
+    m_map.resize(m_gridWidth * m_gridHeight);
+
     // TODO construct adjency list from nodes, start and endpoints, with path color to know who is connected to who and in which order
     glm::vec3 color = glm::vec3(0);
     for (int y = 0; y < imgHeight; y++) {
         for (int x = 0; x < imgWidth; x++) {
-            color = getPixelColors(image, imgWidth, x, y);
+            color = getPixelColorFromImage(image, imgWidth, x, y);
             if (color == m_nodeColor) {
                 spdlog::info("Found node at x: {} y: {}", x ,y);
             } else if (color == m_startColor) {
@@ -66,7 +72,31 @@ Map::Map(const char* itdFilePath) {
 Map::~Map() {
 }
 
-glm::vec3 Map::getPixelColors(unsigned char* image, int imageWidth, int x, int y) {
+void Map::render() {
+
+}
+
+/* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
+
+Tile* Map::getTile(unsigned int x, unsigned int y) {
+    return m_map.at(y * m_gridHeight + x);
+}
+
+glm::vec2 Map::windowToGrid(float x, float y) {
+    unsigned int tileX = x / m_gridWidth;
+    unsigned int tileY = y / m_gridHeight;
+    return glm::vec2(tileX, tileY);
+}
+
+glm::vec2 Map::gridToWindow(unsigned int x, unsigned int y) {
+    float posX = 1 / m_gridWidth * x + TILE_SIZE / 2;
+    float posY = 1 / m_gridHeight * y + TILE_SIZE / 2;
+    return glm::vec2(posX, posY);
+}
+
+/* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
+
+glm::vec3 Map::getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y) {
     glm::vec3 pixel;
     pixel.r = image[3 * (y * imageWidth + x) + 0];
     pixel.g = image[3 * (y * imageWidth + x) + 1];
@@ -74,7 +104,7 @@ glm::vec3 Map::getPixelColors(unsigned char* image, int imageWidth, int x, int y
     return pixel;
 }
 
-float Map::getData(std::string line) {
+float Map::getNumberFromString(std::string line) {
     std::string temp;
     float data;
     std::stringstream ss(line);
@@ -91,7 +121,7 @@ float Map::getData(std::string line) {
     return 0.0f;
 }
 
-glm::vec3 Map::getDataColors(std::string line) {
+glm::vec3 Map::getColorFromString(std::string line) {
     std::string temp;
     float data;
     std::stringstream ss(line);
