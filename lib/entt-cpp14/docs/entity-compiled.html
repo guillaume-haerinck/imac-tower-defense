@@ -6007,7 +6007,7 @@ registry.destruction&lt;MyTag&gt;(entt::<span class="hljs-keyword">tag_t</span>{
         each other in any case. Therefore, note that the greater the number of listeners<br>
         for a type, the greater the performance hit when a tag of the given type is<br>
         created or destroyed.</p>
-    <h2><a id="Runtime_components_441"></a>Runtime components</h2>
+    <h2><a id="runtime-components"></a>Runtime components</h2>
     <p>Defining components at runtime is useful to support plugin systems and mods in<br>
         general. However, it seems impossible with a tool designed around a bunch of<br>
         templates. Indeed it’s not that difficult.<br>
@@ -6030,7 +6030,7 @@ registry.destruction&lt;MyTag&gt;(entt::<span class="hljs-keyword">tag_t</span>{
 </code></pre>
     <p>Once the identifiers are made available, almost everything becomes pretty<br>
         simple.</p>
-    <h3><a id="A_journey_through_a_plugin_470"></a>A journey through a plugin</h3>
+    <h3><a id="a-journey-through-a-plugin"></a>A journey through a plugin</h3>
     <p><code>EnTT</code> comes with an example (actually a test) that shows how to integrate<br>
         compile-time and runtime components in a stack based JavaScript environment. It<br>
         uses <a href="https://github.com/svaarala/duktape"><code>Duktape</code></a> under the hood, mainly<br>
@@ -6048,7 +6048,7 @@ registry.destruction&lt;MyTag&gt;(entt::<span class="hljs-keyword">tag_t</span>{
         from the runtime environment and to filter entities when iterating.<br>
         With a bit of gymnastic, one can narrow views and improve the performance to<br>
         some extent but it was not the goal of the example.</p>
-    <h2><a id="Sorting_is_it_possible_492"></a>Sorting: is it possible?</h2>
+    <h2><a id="sorting-is-it-possible"></a>Sorting: is it possible?</h2>
     <p>It goes without saying that sorting entities and components is possible with<br>
         <code>EnTT</code>.<br>
         In fact, there are two functions that respond to slightly different needs:</p>
@@ -6075,7 +6075,7 @@ registry.destruction&lt;MyTag&gt;(entt::<span class="hljs-keyword">tag_t</span>{
                 misses are minimized when the two components are iterated together.</p>
         </li>
     </ul>
-    <h2><a id="Snapshot_complete_vs_continuous_523"></a>Snapshot: complete vs continuous</h2>
+    <h2><a id="snapshot-complete-vs-continuous"></a>Snapshot: complete vs continuous</h2>
     <p>The <code>Registry</code> class offers basic support to serialization.<br>
         It doesn’t convert components and tags to bytes directly, there wasn’t the need<br>
         of another tool for serialization out there. Instead, it accepts an opaque<br>
@@ -6148,7 +6148,7 @@ registry.snapshot()
     <p>Once a snapshot is created, there exist mainly two <em>ways</em> to load it: as a whole<br>
         and in a kind of <em>continuous mode</em>.<br>
         The following sections describe both loaders and archives in details.</p>
-    <h3><a id="Snapshot_loader_607"></a>Snapshot loader</h3>
+    <h3><a id="snapshot-loader"></a>Snapshot loader</h3>
     <p>A snapshot loader requires that the destination registry be empty and loads all<br>
         the data at once while keeping intact the identifiers that the entities<br>
         originally had.<br>
@@ -6180,7 +6180,7 @@ registry.restore()
         components and tags are saved, it could happen that some of the entities have<br>
         neither components nor tags once restored. The best users can do to deal with<br>
         them is to destroy those entities and thus update their versions.</p>
-    <h3><a id="Continuous_loader_648"></a>Continuous loader</h3>
+    <h3><a id="continuous-loader"></a>Continuous loader</h3>
     <p>A continuous loader is designed to load data from a source registry to a<br>
         (possibly) non-empty destination. The loader can accommodate in a registry more<br>
         than one snapshot in a sort of <em>continuous loading</em> that updates the<br>
@@ -6227,7 +6227,7 @@ loader.entities(input)
     <p>Finally, <code>shrink</code> helps to purge local entities that no longer have a remote<br>
         conterpart. Users should invoke this member function after restoring each<br>
         snapshot, unless they know exactly what they are doing.</p>
-    <h3><a id="Archives_705"></a>Archives</h3>
+    <h3><a id="archives"></a>Archives</h3>
     <p>Archives must publicly expose a predefined set of member functions. The API is<br>
         straightforward and consists only of a group of function call operators that<br>
         are invoked by the snapshot class and the loaders.</p>
@@ -6268,7 +6268,7 @@ loader.entities(input)
                 elements from the underlying storage and copy them in the given variables.</p>
         </li>
     </ul>
-    <h3><a id="One_example_to_rule_them_all_757"></a>One example to rule them all</h3>
+    <h3><a id="one-example-to-rule-them-all"></a>One example to rule them all</h3>
     <p><code>EnTT</code> comes with some examples (actually some tests) that show how to integrate<br>
         a well known library for serialization as an archive. It uses<br>
         <a href="https://uscilab.github.io/cereal/"><code>Cereal C++</code></a> under the hood, mainly<br>
@@ -6277,7 +6277,7 @@ loader.entities(input)
         the best way to do it. However, feel free to use it at your own risk.</p>
     <p>The basic idea is to store everything in a group of queues in memory, then bring<br>
         everything back to the registry with different loaders.</p>
-    <h2><a id="Prototype_770"></a>Prototype</h2>
+    <h2><a id="prototype"></a>Prototype</h2>
     <p>A prototype defines a type of an application in terms of its parts. They can be<br>
         used to assign components to entities of a registry at once.<br>
         Roughly speaking, in most cases prototypes can be considered just as templates<br>
@@ -6337,11 +6337,11 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
         Furthermore, the codebase may be easier to maintain, since updating a prototype<br>
         is much less error prone than jumping around in the codebase to update all the<br>
         snippets copied and pasted around to initialize entities and components.</p>
-    <h2><a id="Helpers_838"></a>Helpers</h2>
+    <h2><a id="helpers"></a>Helpers</h2>
     <p>The so called <em>helpers</em> are small classes and functions mainly designed to offer<br>
         built-in support for the most basic functionalities.<br>
         The list of helpers will grow longer as time passes and new ideas come out.</p>
-    <h3><a id="Dependency_function_844"></a>Dependency function</h3>
+    <h3><a id="dependency-function"></a>Dependency function</h3>
     <p>A <em>dependency function</em> is a predefined listener, actually a function template<br>
         to use to automatically assign components to an entity when a type has a<br>
         dependency on some other types.<br>
@@ -6356,7 +6356,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
         A dependency can easily be broken by means of the following function template:</p>
     <pre><code class="language-cpp">entt::disconnect&lt;AType, AnotherType&gt;(registry.construction&lt;MyType&gt;());
 </code></pre>
-    <h3><a id="Labels_865"></a>Labels</h3>
+    <h3><a id="labels"></a>Labels</h3>
     <p>There’s nothing magical about the way labels can be assigned to entities while<br>
         avoiding a performance hit at runtime. Nonetheless, the syntax can be annoying<br>
         and that’s why a more user-friendly shortcut is provided to do it.<br>
@@ -6365,7 +6365,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
         would be required otherwise. As an example:</p>
     <pre><code class="language-cpp">registry.assign&lt;entt::label&lt;<span class="hljs-string">"enemy"</span>_hs&gt;&gt;(entity);
 </code></pre>
-    <h2><a id="Null_entity_879"></a>Null entity</h2>
+    <h2><a id="null-entity"></a>Null entity</h2>
     <p>In <code>EnTT</code>, there exists a sort of <em>null entity</em> made available to users that is<br>
         accessible via the <code>entt::null</code> variable.<br>
         The library guarantees that the following expression always returns false:</p>
@@ -6383,7 +6383,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
     <pre><code class="language-cpp"><span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span> entity = registry.create();
 <span class="hljs-keyword">const</span> <span class="hljs-keyword">bool</span> null = (entity == entt::null);
 </code></pre>
-    <h1><a id="View_to_persist_or_not_to_persist_907"></a>View: to persist or not to persist?</h1>
+    <h1><a id="view-to-persist-or-not-to-persist"></a>View: to persist or not to persist?</h1>
     <p>First of all, it is worth answering an obvious question: why views?<br>
         Roughly speaking, they are a good tool to enforce single responsibility. A<br>
         system that has access to a registry can create and destroy entities, as well as<br>
@@ -6539,7 +6539,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
         member<br>
         function template of a registry during iterations, if possible. However, keep in<br>
         mind that it works only with the components of the view itself.</p>
-    <h3><a id="Multi_component_standard_view_1075"></a>Multi component standard view</h3>
+    <h3><a id="multi-component-standard-view"></a>Multi component standard view</h3>
     <p>Multi component standard views iterate entities that have at least all the given<br>
         components in their bags. During construction, these views look at the number of<br>
         entities available for each component and pick up a reference to the smallest<br>
@@ -6581,7 +6581,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
         member<br>
         function template of a registry during iterations, if possible. However, keep in<br>
         mind that it works only with the components of the view itself.</p>
-    <h2><a id="Persistent_View_1126"></a>Persistent View</h2>
+    <h2><a id="persistent-view"></a>Persistent View</h2>
     <p>A persistent view returns all the entities and only the entities that have at<br>
         least the given components. Moreover, it’s guaranteed that the entity list is<br>
         tightly packed in memory for fast iterations.<br>
@@ -6668,7 +6668,7 @@ prototype.<span class="hljs-built_in">set</span>&lt;Velocity&gt;(<span class="hl
 </code></pre>
     <p>Performance are exactly the same in both cases.</p>
     <p><strong>Note</strong>: raw views don’t have a <code>get</code> member function for obvious reasons.</p>
-    <h2><a id="Runtime_View_1243"></a>Runtime View</h2>
+    <h2><a id="runtime-view"></a>Runtime View</h2>
     <p>Runtime views iterate entities that have at least all the given components in<br>
         their bags. During construction, these views look at the number of entities<br>
         available for each component and pick up a reference to the smallest<br>
