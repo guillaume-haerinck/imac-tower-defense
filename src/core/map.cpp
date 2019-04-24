@@ -72,13 +72,9 @@ Map::Map(const char* itdFilePath) {
 Map::~Map() {
 }
 
-void Map::render() {
-
-}
-
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
 
-Tile* Map::getTile(unsigned int x, unsigned int y) {
+unsigned int Map::getTile(unsigned int x, unsigned int y) {
     return m_map.at(y * m_gridHeight + x);
 }
 

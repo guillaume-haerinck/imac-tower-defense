@@ -1,6 +1,6 @@
 @ITD 1++
 # ITD ameliore, pas besoin de donnees de graphes. Prend png a la place de ppm
-carte level-1.png
+carte map-1.png
 energie 100
 chemin 255 255 255
 noeud 0 0 0

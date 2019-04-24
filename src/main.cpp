@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    // View position
+    // View position y y	
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0, 0, 0);
