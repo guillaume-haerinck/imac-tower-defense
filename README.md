@@ -103,7 +103,7 @@ If you add files, you will need to re-generate the cache for a successfull build
 
 #### `Option 3: VSCode`
 
-**WARNING: Does not work on windows with Visual Studio 2019 as the CMakeTools extension hasn't been updated for it yet**
+**WARNING: Does not work on windows with Visual Studio 2019 as the CMakeTools extension hasn't been updated for it yet. So use Visual Studio 2019 directly instead**
 
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
