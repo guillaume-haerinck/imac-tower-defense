@@ -9,7 +9,7 @@ TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei t
 	m_width(0), m_height(0), m_bpp(0)
 {
 	// Because the UV map is inverted for texture arrays
-	stbi_set_flip_vertically_on_load(0);
+	stbi_set_flip_vertically_on_load(false);
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, STBI_rgb_alpha);
 	if (!m_localBuffer) {
 		spdlog::critical("[Texture array] Unable to open texture atlas {}", path);

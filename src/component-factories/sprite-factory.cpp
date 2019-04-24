@@ -21,6 +21,7 @@ SpriteFactory::SpriteFactory()
 }
 
 cmpt::Sprite SpriteFactory::createSingle(const std::string& textureFilepath, glm::vec2 displaySize) {
+	displaySize /= 2;
 	/* Vertex buffer */
     // TODO add enum to specify the pivot point ? By default center
 	float positions[] = {
@@ -59,6 +60,7 @@ cmpt::Sprite SpriteFactory::createSingle(const std::string& textureFilepath, glm
 }
 
 cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize) {
+	displaySize /= 2;
     float positions[] = {
         // Pos                           // Inverted UV to start at topleft
 		-displaySize.x,  displaySize.y,  0.0f, 0.0f, // 0 topleft

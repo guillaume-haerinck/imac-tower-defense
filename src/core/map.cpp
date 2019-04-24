@@ -8,7 +8,11 @@
 
 #include "constants.hpp"
 
-Map::Map(const char* itdFilePath) {
+Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
+:	m_registry(registry),
+	m_tileFactory(registry),
+	m_mapPath("res/maps/"), m_constructibleId(0), m_pathId(0), m_pipeId(0), m_entryId(0), m_exitId(0)
+{
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
     if (file.is_open()) {
@@ -25,7 +29,7 @@ Map::Map(const char* itdFilePath) {
         std::string line;
         while (std::getline(file, line)) {
             if (line.find("#") != std::string::npos) { continue; } // Skip comments
-            else if (line.find("carte") != std::string::npos) {     m_mapPath = line.substr(6, line.size()); }
+            else if (line.find("carte") != std::string::npos) {     m_mapPath += line.substr(6, line.size()); }
             else if (line.find("energie") != std::string::npos) {   m_energy = getNumberFromString(line); }
             else if (line.find("chemin") != std::string::npos) {    m_pathColor = getColorFromString(line); }
             else if (line.find("noeud") != std::string::npos) {     m_nodeColor = getColorFromString(line); }
@@ -40,11 +44,13 @@ Map::Map(const char* itdFilePath) {
 
     /* --------------------------- Read Png file ------------------------- */
     int imgWidth, imgHeight, imgChannels;
+	stbi_set_flip_vertically_on_load(true);
     unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
     if (nullptr == image) {
-        spdlog::critical("Echec du chargement de l'image");
+        spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
         debug_break();
     }
+	stbi_set_flip_vertically_on_load(false);
 
     m_gridWidth = imgWidth;
     m_gridHeight = imgHeight;
@@ -56,7 +62,7 @@ Map::Map(const char* itdFilePath) {
         for (int x = 0; x < imgWidth; x++) {
             color = getPixelColorFromImage(image, imgWidth, x, y);
             if (color == m_nodeColor) {
-                spdlog::info("Found node at x: {} y: {}", x ,y);
+				m_tileFactory.create(glm::vec2(x, y), glm::vec4(255., 0., 0., 1.));
             } else if (color == m_startColor) {
                 
             } else if (color == m_endColor) {

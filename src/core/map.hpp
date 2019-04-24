@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 
+#include "entity-factories/tile-factory.hpp"
+
 class Map {
 public:
-    Map(const char* itdFilePath);
+    Map(entt::DefaultRegistry& registry, const char* itdFilePath);
     ~Map();
 
     unsigned int Map::getTile(unsigned int x, unsigned int y);
@@ -19,6 +21,7 @@ private:
     float getNumberFromString(std::string line);
 
 private:
+	// .ITD file data
     glm::vec3 m_pathColor;
     glm::vec3 m_nodeColor;
     glm::vec3 m_startColor;
@@ -26,15 +29,21 @@ private:
     glm::vec3 m_constructColor;
     std::string m_mapPath;
     float m_energy;
+
+	// Map details
     std::vector<unsigned int> m_map;
     unsigned int m_gridWidth;
     unsigned int m_gridHeight;
 
+	// Aggregation
+	entt::DefaultRegistry& m_registry;
+	TileFactory m_tileFactory;
+
     // Tile entities (flyweight pattern: only one entity by tile type)
-	unsigned int constructibleId;
-	unsigned int pathId;
-	unsigned int lockedId;
-	unsigned int pipeId;
-	unsigned int entryId;
-	unsigned int exitId;
+	unsigned int m_constructibleId;
+	unsigned int m_pathId;
+	unsigned int m_lockedId;
+	unsigned int m_pipeId;
+	unsigned int m_entryId;
+	unsigned int m_exitId;
 };

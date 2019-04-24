@@ -25,6 +25,7 @@
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
+#include "core/map.hpp"
 #include "services/debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    // View position y y	
+    // View position
 	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0, 0, 0);
@@ -68,12 +69,14 @@ int main(int argc, char** argv) {
     debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
     
 	// Noesis GUI
+	/*
 	StartMenu startMenu;
 	Noesis::Ptr<Noesis::FrameworkElement> xaml = startMenu;
 	noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
 	noeView->SetIsPPAAEnabled(true);
 	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
+	*/
 
 	// Entity factories
 	TowerFactory towerFactory(registry);
@@ -81,10 +84,14 @@ int main(int argc, char** argv) {
 
     /* ----------------------- TESTING PLAYGROUND ------------------ */
     {
-		towerFactory.create(1, 9);
-		enemyFactory.create(50.0f, 50.0f);
+		//towerFactory.create(1, 9);
+		//enemyFactory.create(50.0f, 50.0f);
     }
     
+	// Map
+	// TODO use a service to pass the registry around ?
+	Map map1(registry, "res/maps/map-1.itd");
+
     // Systems
     RenderSystem renderSystem;
     AnimationSystem animationSystem;
@@ -110,6 +117,7 @@ int main(int argc, char** argv) {
 		}
 
         // Noesis update
+		/*
         {
             // Noesis gui update
             noeView->Update(SDL_GetTicks());
@@ -121,6 +129,7 @@ int main(int argc, char** argv) {
             GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
             GLCall(glClearStencil(0));
         }
+		*/
 
         // Game updates
         {
@@ -146,16 +155,18 @@ int main(int argc, char** argv) {
 			// 0,0 en bas a gauche
 			// 100, 100 en haut a droite
 			// Suffit de mettre ca dans le update() de n'importe quel systeme
+			/*
 			{
 				debugDraw->setColor(255, 0, 0, 1);
 				debugDraw->line(0., 50., 50., 50.);
 				GLCall(glPointSize(13));
 				debugDraw->point(10., 10.);
 			}
+			*/
 
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
-            noeView->GetRenderer()->Render();
+            //noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
@@ -171,11 +182,11 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
                     printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-                    noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+                    //noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
                 
                 case SDL_KEYDOWN:
@@ -228,6 +239,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    noeView->GetRenderer()->Shutdown();
+    //noeView->GetRenderer()->Shutdown();
     return EXIT_SUCCESS;
 }

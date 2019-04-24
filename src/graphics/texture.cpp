@@ -9,12 +9,13 @@ Texture::Texture(const std::string& path)
 	m_width(0), m_height(0), m_bpp(0)
 {
 	// Because 0,0 is bottom left in OpenGL
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(true);
 	m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_bpp, 4);
 	if (!m_localBuffer) {
 		spdlog::critical("[Texture] Unable to open texture {}", path);
 		debug_break();
 	}
+	stbi_set_flip_vertically_on_load(false);
 
 	GLCall(glGenTextures(1, &m_rendererID));
 	GLCall(glActiveTexture(GL_TEXTURE0));

@@ -11,6 +11,7 @@ PrimitiveFactory::PrimitiveFactory()
 {}
 
 cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize) {
+	displaySize /= 2;
     float positions[] = {
 		-displaySize.x,  displaySize.y, // 0
 		 displaySize.x,  displaySize.y, // 1
@@ -41,6 +42,7 @@ cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displayS
 }
 
 cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 displaySize) {
+	displaySize /= 2;
     float positions[] = {
 		-displaySize.x,  displaySize.y, // 0
 		 displaySize.x,  displaySize.y, // 1
