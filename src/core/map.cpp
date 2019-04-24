@@ -62,7 +62,8 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
         for (int x = 0; x < imgWidth; x++) {
             color = getPixelColorFromImage(image, imgWidth, x, y);
             if (color == m_nodeColor) {
-				m_tileFactory.create(glm::vec2(x, y), glm::vec4(255., 0., 0., 1.));
+				glm::vec2 position = gridToWindow(x, y); // FIXME
+				m_tileFactory.create(position, glm::vec4(255., 0., 0., 1.));
             } else if (color == m_startColor) {
                 
             } else if (color == m_endColor) {
@@ -84,6 +85,9 @@ unsigned int Map::getTile(unsigned int x, unsigned int y) {
     return m_map.at(y * m_gridHeight + x);
 }
 
+unsigned int Map::getGridWidth()  { return m_gridWidth; }
+unsigned int Map::getGridHeight() { return m_gridHeight; }
+
 glm::vec2 Map::windowToGrid(float x, float y) {
     unsigned int tileX = x / m_gridWidth;
     unsigned int tileY = y / m_gridHeight;
@@ -91,8 +95,8 @@ glm::vec2 Map::windowToGrid(float x, float y) {
 }
 
 glm::vec2 Map::gridToWindow(unsigned int x, unsigned int y) {
-    float posX = 1 / m_gridWidth * x + TILE_SIZE / 2;
-    float posY = 1 / m_gridHeight * y + TILE_SIZE / 2;
+    float posX = m_gridWidth * x + TILE_SIZE / 2;
+    float posY = m_gridHeight * y + TILE_SIZE / 2;
     return glm::vec2(posX, posY);
 }
 

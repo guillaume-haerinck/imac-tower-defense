@@ -15,6 +15,9 @@ public:
     glm::vec2 windowToGrid(float x, float y);
     glm::vec2 gridToWindow(unsigned int x, unsigned int y);
 
+	unsigned int getGridWidth();
+	unsigned int getGridHeight();
+
 private:
     glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
     glm::vec3 getColorFromString(std::string line);

@@ -14,6 +14,6 @@ TileFactory::~TileFactory() {
 
 void TileFactory::create(glm::vec2 position, glm::vec4 color) {
 	auto myEntity = m_registry.create();
-	m_registry.assign<cmpt::Primitive>(myEntity, m_primitiveFactory.createRect(color, glm::vec2(1)));
+	m_registry.assign<cmpt::Primitive>(myEntity, m_primitiveFactory.createRect(color, glm::vec2(TILE_SIZE)));
 	m_registry.assign<cmpt::Transform>(myEntity, position);
 }

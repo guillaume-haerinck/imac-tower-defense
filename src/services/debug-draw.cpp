@@ -288,8 +288,8 @@ void DebugDraw::line(float x1, float y1, float x2, float y2) {
 
 	// Update
 	float data[] = {
-		x1 * WIN_RATIO, y1,
-		x2 * WIN_RATIO, y2
+		x1, y1,
+		x2, y2
 	};
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 

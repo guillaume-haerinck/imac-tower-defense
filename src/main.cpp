@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     }
 
     // View position
-	glm::mat4 projMat = glm::ortho(0.0f, 100.0f * WIN_RATIO, 0.0f, 100.0f, 0.0f, 100.0f);
+	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
@@ -163,6 +163,15 @@ int main(int argc, char** argv) {
 				debugDraw->point(10., 10.);
 			}
 			*/
+
+			// DEBUG draw grid
+			for (int x = 0; x <= map1.getGridWidth() * TILE_SIZE; x += TILE_SIZE) {
+				debugDraw->line(x, 0, x, map1.getGridHeight() * TILE_SIZE);
+			}
+
+			for (int y = 0; y <= map1.getGridHeight() * TILE_SIZE; y += TILE_SIZE) {
+				debugDraw->line(0, y, map1.getGridWidth()* TILE_SIZE, y);
+			}
 
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
