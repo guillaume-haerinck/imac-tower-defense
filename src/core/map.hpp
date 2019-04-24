@@ -13,7 +13,8 @@ public:
 
     unsigned int Map::getTile(unsigned int x, unsigned int y);
     glm::vec2 windowToGrid(float x, float y);
-    glm::vec2 gridToWindow(unsigned int x, unsigned int y);
+	glm::vec2 projToGrid(float x, float y);
+    glm::vec2 gridToProj(unsigned int x, unsigned int y);
 
 	unsigned int getGridWidth();
 	unsigned int getGridHeight();
@@ -22,6 +23,7 @@ private:
     glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
     glm::vec3 getColorFromString(std::string line);
     float getNumberFromString(std::string line);
+	inline long rangeMapping(long x, long in_min, long in_max, long out_min, long out_max);
 
 private:
 	// .ITD file data

@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     }
 
     // View position
-	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
+	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, PROJ_HEIGHT, 0.0f, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
@@ -164,15 +164,6 @@ int main(int argc, char** argv) {
 			}
 			*/
 
-			// DEBUG draw grid
-			for (int x = 0; x <= map1.getGridWidth() * TILE_SIZE; x += TILE_SIZE) {
-				debugDraw->line(x, 0, x, map1.getGridHeight() * TILE_SIZE);
-			}
-
-			for (int y = 0; y <= map1.getGridHeight() * TILE_SIZE; y += TILE_SIZE) {
-				debugDraw->line(0, y, map1.getGridWidth()* TILE_SIZE, y);
-			}
-
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
             //noeView->GetRenderer()->Render();
@@ -190,8 +181,10 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
+                    printf("clic en (%d, %d)\n", e.button.x, e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+					glm::vec2 tile = map1.windowToGrid(e.button.x, e.button.y);
+					spdlog::info("Tile: {} {}", tile.x, tile.y);
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -209,9 +202,9 @@ int main(int argc, char** argv) {
                         }
                         bWireframe = !bWireframe;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-                        camPos.y++;
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
                         camPos.y--;
+                    } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                        camPos.y++;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
                         camPos.x--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {

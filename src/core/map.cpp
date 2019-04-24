@@ -44,13 +44,11 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 
     /* --------------------------- Read Png file ------------------------- */
     int imgWidth, imgHeight, imgChannels;
-	stbi_set_flip_vertically_on_load(true);
     unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
     if (nullptr == image) {
         spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
         debug_break();
     }
-	stbi_set_flip_vertically_on_load(false);
 
     m_gridWidth = imgWidth;
     m_gridHeight = imgHeight;
@@ -61,7 +59,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
     for (int y = 0; y < imgHeight; y++) {
         for (int x = 0; x < imgWidth; x++) {
             color = getPixelColorFromImage(image, imgWidth, x, y);
-			glm::vec2 position = gridToWindow(x, y); // FIXME
+			glm::vec2 position = gridToProj(x, y);
 			m_tileFactory.create(position, glm::vec4(color, 1.));
         }
     }
@@ -81,15 +79,21 @@ unsigned int Map::getGridWidth()  { return m_gridWidth; }
 unsigned int Map::getGridHeight() { return m_gridHeight; }
 
 glm::vec2 Map::windowToGrid(float x, float y) {
-    unsigned int tileX = x / m_gridWidth;
-    unsigned int tileY = y / m_gridHeight;
-    return glm::vec2(tileX, tileY);
+	float projX = rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH * WIN_RATIO);
+	float projY = rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
+	return projToGrid(projX, projY);
 }
 
-glm::vec2 Map::gridToWindow(unsigned int x, unsigned int y) {
-    float posX = PROJ_WIDTH / m_gridWidth * x + TILE_SIZE / 2;
-    float posY = PROJ_HEIGHT / m_gridHeight * y + TILE_SIZE / 2;
-    return glm::vec2(posX, posY);
+glm::vec2 Map::projToGrid(float x, float y) {
+	unsigned int tileX = rangeMapping(x, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
+	unsigned int tileY = rangeMapping(y, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
+	return glm::vec2(tileX, tileY);
+}
+
+glm::vec2 Map::gridToProj(unsigned int x, unsigned int y) {
+	float posX = rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
+	float posY = rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
+	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);
 }
 
 /* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
@@ -144,4 +148,8 @@ glm::vec3 Map::getColorFromString(std::string line) {
     }
 
     return color;
+}
+
+long Map::rangeMapping(long x, long in_min, long in_max, long out_min, long out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
