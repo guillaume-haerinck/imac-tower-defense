@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     }
 
     // View position
-	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, PROJ_HEIGHT, 0.0f, 0.0f, 100.0f);
+	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0, 0, 0);
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     /* ----------------------- TESTING PLAYGROUND ------------------ */
     {
 		//towerFactory.create(1, 9);
-		//enemyFactory.create(50.0f, 50.0f);
+		enemyFactory.create(50.0f, 50.0f);
     }
     
 	// Map
@@ -181,9 +181,9 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-                    printf("clic en (%d, %d)\n", e.button.x, e.button.y);
+                    printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-					glm::vec2 tile = map1.windowToGrid(e.button.x, e.button.y);
+					glm::vec2 tile = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
 					spdlog::info("Tile: {} {}", tile.x, tile.y);
                     break;
 

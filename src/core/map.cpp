@@ -44,11 +44,14 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 
     /* --------------------------- Read Png file ------------------------- */
     int imgWidth, imgHeight, imgChannels;
+	// Because 0,0 is bottom left in OpenGL
+	stbi_set_flip_vertically_on_load(true);
     unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
     if (nullptr == image) {
         spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
         debug_break();
     }
+	stbi_set_flip_vertically_on_load(false);
 
     m_gridWidth = imgWidth;
     m_gridHeight = imgHeight;
