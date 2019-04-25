@@ -191,6 +191,7 @@ int main(int argc, char** argv) {
 						cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
 						spdlog::info("EntityId {}", entityId);
 						spdlog::info("Transform {} {}", trans.position.x, trans.position.y);
+						enemyFactory.create(trans.position.x, trans.position.y);
 					}
                     break;
 
