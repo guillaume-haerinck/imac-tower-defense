@@ -1,0 +1,9 @@
+@ITD 1++
+# ITD ameliore, pas besoin de donnees de graphes. Prend png a la place de ppm
+carte map-2.png
+energie 100
+chemin 255 255 255
+noeud 0 0 0
+construct 0 0 200
+in 0 200 0
+out 200 0 0

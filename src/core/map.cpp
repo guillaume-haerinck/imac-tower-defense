@@ -79,8 +79,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 			} else {
 				entityId = m_tileFactory.createLocked(position);
 			}
-			// FIXME saut au passage entre les colonnes
-			m_map.at(y * m_gridHeight + x) = entityId;
+			m_map.at(y * m_gridWidth + x) = entityId;
         }
     }
     stbi_image_free(image);
@@ -92,7 +91,7 @@ Map::~Map() {
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
 
 unsigned int Map::getTile(unsigned int x, unsigned int y) {
-    return m_map.at(y * m_gridHeight + x);
+    return m_map.at(y * m_gridWidth + x);
 }
 
 unsigned int Map::getGridWidth()  { return m_gridWidth; }

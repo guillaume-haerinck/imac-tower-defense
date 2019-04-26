@@ -6,9 +6,11 @@
 #pragma warning(push)
 #pragma warning(disable: 4307) // EnTT throws a warning with the hashing in VS2017
 
-namespace renderTag
-{
+namespace renderTag {
     TAG(Atlas);
     TAG(Single);
 };
 
+namespace tileTag {
+	TAG(Constructible);
+}
