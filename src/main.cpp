@@ -45,16 +45,12 @@
 
 static Noesis::IView* noeView;
 
-struct AnEvent { int value; };
-struct AnotherEvent {};
+struct MyEvent { int value; };
 
-struct Listener
-{
-	void receive(const AnEvent& evt) { 
-		spdlog::info("Event recieved with value {}", evt.value);
-	}
-	void method(const AnotherEvent&) {
-		spdlog::info("Another event recieved");
+struct MyEmitter : entt::Emitter<MyEmitter> {
+	// Helper functions
+	void logme() {
+		spdlog::info("Called !");
 	}
 };
 
@@ -104,27 +100,14 @@ int main(int argc, char** argv) {
     }
 
 	// Event
-	entt::Dispatcher dispatcher; // Designed to be used in a loop
-	Listener listener;
+	MyEmitter emitter{};
 
-	// Attach events
-	dispatcher.sink<AnEvent>().connect(&listener);
-	dispatcher.sink<AnotherEvent>().connect<Listener, & Listener::method>(&listener);
+	auto conn = emitter.on<MyEvent>([](const MyEvent &event, MyEmitter &emitter) {
+		spdlog::info("Asynchronious event recieved with value {}", event.value);
+		emitter.logme();
+	});
 
-	// Synchronious events
-	{
-		dispatcher.trigger<AnEvent>(42); // Event with value.
-		dispatcher.trigger<AnotherEvent>(); // Event with no value.
-	}
-
-	// Event in queue, asynchronious
-	{	
-		dispatcher.enqueue<AnEvent>(2);
-		dispatcher.enqueue<AnotherEvent>();
-		dispatcher.update<AnEvent>(); // Update only this type
-		dispatcher.update(); // Update all
-	}
-	
+	emitter.publish<MyEvent>(42);
     
 	// Map
 	// TODO use a service to pass the registry around ?
