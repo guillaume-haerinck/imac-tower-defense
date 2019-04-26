@@ -40,19 +40,13 @@
 #include "gui/start-menu.hpp"
 
 #include "components/transform.hpp"
+#include "events/click.hpp"
 
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
 static Noesis::IView* noeView;
 
-struct MyEvent { int value; };
-
-struct MyEmitter : entt::Emitter<MyEmitter> {
-	// Helper functions
-	void logme() {
-		spdlog::info("Called !");
-	}
-};
+struct MyEmitter : entt::Emitter<MyEmitter> {};
 
 int main(int argc, char** argv) {
     #ifdef _WIN32 // Check memory leaks
@@ -102,12 +96,11 @@ int main(int argc, char** argv) {
 	// Event
 	MyEmitter emitter{};
 
-	auto conn = emitter.on<MyEvent>([](const MyEvent &event, MyEmitter &emitter) {
-		spdlog::info("Asynchronious event recieved with value {}", event.value);
-		emitter.logme();
+	emitter.on<evnt::Click>([](const evnt::Click &event, MyEmitter &emitter) {
+		spdlog::info("Asynchronious event recieved with value {}", event.mousePos.x);
 	});
 
-	emitter.publish<MyEvent>(42);
+	
     
 	// Map
 	// TODO use a service to pass the registry around ?
@@ -202,6 +195,7 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
+					emitter.publish<evnt::Click>(glm::vec2(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y));
                     //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
 					/*
