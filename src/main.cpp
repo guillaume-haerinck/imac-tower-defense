@@ -45,6 +45,19 @@
 
 static Noesis::IView* noeView;
 
+struct AnEvent { int value; };
+struct AnotherEvent {};
+
+struct Listener
+{
+	void receive(const AnEvent& evt) { 
+		spdlog::info("Event recieved with value {}", evt.value);
+	}
+	void method(const AnotherEvent&) {
+		spdlog::info("Another event recieved");
+	}
+};
+
 int main(int argc, char** argv) {
     #ifdef _WIN32 // Check memory leaks
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -89,6 +102,29 @@ int main(int argc, char** argv) {
 		//towerFactory.create(1, 9);
 		//enemyFactory.create(50.0f, 50.0f);
     }
+
+	// Event
+	entt::Dispatcher dispatcher; // Designed to be used in a loop
+	Listener listener;
+
+	// Attach events
+	dispatcher.sink<AnEvent>().connect(&listener);
+	dispatcher.sink<AnotherEvent>().connect<Listener, & Listener::method>(&listener);
+
+	// Synchronious events
+	{
+		dispatcher.trigger<AnEvent>(42); // Event with value.
+		dispatcher.trigger<AnotherEvent>(); // Event with no value.
+	}
+
+	// Event in queue, asynchronious
+	{	
+		dispatcher.enqueue<AnEvent>(2);
+		dispatcher.enqueue<AnotherEvent>();
+		dispatcher.update<AnEvent>(); // Update only this type
+		dispatcher.update(); // Update all
+	}
+	
     
 	// Map
 	// TODO use a service to pass the registry around ?
@@ -185,14 +221,14 @@ int main(int argc, char** argv) {
                 case SDL_MOUSEBUTTONUP:
                     //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+					/*
 					{
 						glm::vec2 tilePosition = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
 						unsigned int entityId = map1.getTile(tilePosition.x, tilePosition.y);
 						cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
-						spdlog::info("EntityId {}", entityId);
-						spdlog::info("Transform {} {}", trans.position.x, trans.position.y);
 						enemyFactory.create(trans.position.x, trans.position.y);
 					}
+					*/
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
