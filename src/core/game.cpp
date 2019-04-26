@@ -17,9 +17,14 @@
 
 /* ------------------------ LIFETIME ------------------------ */
 
+bool Game::m_bInstanciated = false;
+
 Game::Game(entt::DefaultRegistry& registry)
-: m_registry(registry), isInit(false), m_window(nullptr), m_context(nullptr) 
-{}
+: m_registry(registry), m_bInit(false), m_window(nullptr), m_context(nullptr) 
+{
+	assert(!m_bInstanciated);
+	m_bInstanciated = true;
+}
 
 Game::~Game() {
 	// Delete OpenGL data
@@ -40,10 +45,12 @@ Game::~Game() {
     SDL_Quit();
     spdlog::drop_all();
     spdlog::shutdown();
+
+	m_bInstanciated = false;
 }
 
 int Game::init() {
-    if (isInit) {
+    if (m_bInit) {
         spdlog::error("[Game] The init function as already been called !");
         return EXIT_FAILURE;
     }
@@ -125,7 +132,7 @@ int Game::init() {
     Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
     Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
-    isInit = true;
+    m_bInit = true;
     return EXIT_SUCCESS;
 }
 

@@ -14,7 +14,8 @@ public:
     SDL_GLContext getContext();
 
 private:
-    bool isInit;
+    bool m_bInit;
+	static bool m_bInstanciated;
     SDL_Window* m_window;
     SDL_GLContext m_context;
 	entt::DefaultRegistry& m_registry;
