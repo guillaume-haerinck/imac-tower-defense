@@ -26,6 +26,7 @@
 
 #include "core/game.hpp"
 #include "core/map.hpp"
+#include "core/maths.hpp"
 #include "services/debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
@@ -41,6 +42,7 @@
 
 #include "components/transform.hpp"
 #include "events/click.hpp"
+#include "events/move.hpp"
 
 // #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
 
@@ -93,13 +95,16 @@ int main(int argc, char** argv) {
 		//enemyFactory.create(50.0f, 50.0f);
     }
 
-	// Event
+	// Event emitters
 	MyEmitter emitter{};
 
 	emitter.on<evnt::Click>([](const evnt::Click &event, MyEmitter &emitter) {
 		spdlog::info("Asynchronious event recieved with value {}", event.mousePos.x);
 	});
 
+	emitter.on<evnt::Move>([](const evnt::Move &event, MyEmitter &emitter) {
+		spdlog::info("Mouse at {};{}", event.mousePos.x, event.mousePos.y);
+	});
 	
     
 	// Map
@@ -195,7 +200,14 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
-					emitter.publish<evnt::Click>(glm::vec2(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y));
+					{
+						glm::vec2 normalizedPos = glm::vec2(
+							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+						);
+						emitter.publish<evnt::Click>(normalizedPos);
+					}
+					
                     //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
 					/*
@@ -211,6 +223,16 @@ int main(int argc, char** argv) {
                 case SDL_MOUSEBUTTONDOWN:
                     //noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
+
+				case SDL_MOUSEMOTION:
+					{
+						glm::vec2 normalizedPos = glm::vec2(
+							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+						);
+						emitter.publish<evnt::Move>(normalizedPos);
+					}
+					break;
                 
                 case SDL_KEYDOWN:
                     if (e.key.keysym.sym == 'q') { // Quit
