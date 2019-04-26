@@ -132,6 +132,7 @@ The project follows the **Entity Component System** design pattern.
 | `components`				| Struct of data for entities |
 | `component-factories`		| Creation of complex components |
 | `entity-factories`		| Classes used to build entities |
+| `events`					| Struct of data defining event types |
 | `graphics`				| Wrapper classes for OpenGL objects |
 | `gui`						| User interface logic |
 | `logger`					| Error and log handlers for the game |

@@ -174,14 +174,12 @@ int main(int argc, char** argv) {
 			// 0,0 en bas a gauche
 			// 100, 100 en haut a droite
 			// Suffit de mettre ca dans le update() de n'importe quel systeme
-			/*
 			{
 				debugDraw->setColor(255, 0, 0, 1);
 				debugDraw->line(0., 50., 50., 50.);
 				GLCall(glPointSize(13));
 				debugDraw->point(10., 10.);
 			}
-			*/
 
             renderSystem.update(registry, viewMat, projMat);
             physicWorld->DrawDebugData();
@@ -210,14 +208,14 @@ int main(int argc, char** argv) {
 					
                     //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-					/*
+					
 					{
 						glm::vec2 tilePosition = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
 						unsigned int entityId = map1.getTile(tilePosition.x, tilePosition.y);
 						cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
 						enemyFactory.create(trans.position.x, trans.position.y);
 					}
-					*/
+					
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
