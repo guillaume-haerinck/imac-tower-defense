@@ -25,6 +25,11 @@ private:
     float getNumberFromString(std::string line);
 	inline long rangeMapping(long x, long in_min, long in_max, long out_min, long out_max);
 
+	//For the graph construction :
+	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
+	bool isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
+	void lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int x, int y, int xDir, int yDir , int travelLength);
+
 private:
 	// .ITD file data
     glm::vec3 m_pathColor;

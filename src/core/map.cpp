@@ -9,6 +9,8 @@
 #include "constants.hpp"
 #include "maths.hpp"
 
+#include <iostream>
+
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 :	m_registry(registry),
 	m_tileFactory(registry),
@@ -72,6 +74,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 				entityId = m_tileFactory.createPath(position);
 			} else if (color == m_startColor) {
 				entityId = m_tileFactory.createSpawn(position);
+				lookForNodes(image, imgWidth, imgHeight, x, y, 0, 1, 1);
 			} else if (color == m_endColor) {
 				entityId = m_tileFactory.createArrival(position);
 			} else if (color == m_constructColor) {
@@ -167,4 +170,57 @@ glm::vec3 Map::getColorFromString(std::string line) {
     }
 
     return color;
+}
+
+	/* ----------------------- AUXILARY FUNCTIONS FOR GRAPH CONSTRUCTION ----------------- */
+
+bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
+	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
+	return x >= 0
+		&& x < imageWidth
+		&& y >= 0
+		&& y < imageHeight
+		&& (color == m_pathColor || color == m_startColor || color == m_endColor);
+}
+
+bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight , int x, int y) {
+	//bool isHorizontalLine = isPath(image, imageWidth, imageHeight, x - 1, y) && isPath(image, imageWidth, imageHeight, x + 1, y);
+	//bool isVerticalLine = isPath(image, imageWidth, imageHeight, x , y - 1) && isPath(image, imageWidth, imageHeight, x , y + 1);
+	//return isHorizontalLine != isVerticalLine;
+	return isPath(image, imageWidth, imageHeight, x - 1, y)
+		&& isPath(image, imageWidth, imageHeight, x + 1, y)
+		&& !isPath(image, imageWidth, imageHeight, x, y - 1)
+		&& !isPath(image, imageWidth, imageHeight, x, y + 1)
+		||
+		!isPath(image, imageWidth, imageHeight, x - 1, y)
+		&& !isPath(image, imageWidth, imageHeight, x + 1, y)
+		&& isPath(image, imageWidth, imageHeight, x, y - 1)
+		&& isPath(image, imageWidth, imageHeight, x, y + 1);
+}
+
+void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int x , int y , int xDir, int yDir ,int travelLength) {
+	if (isStraightLine(image, imageWidth, imageHeight, x, y)) {
+		lookForNodes(image, imageWidth, imageHeight, x + xDir, y + yDir, xDir, yDir , travelLength+1);
+	}
+	else {
+		//TODO : add a Node to the graph, and add a neighbour to the node that launched this "lookForNodes"
+		spdlog::info("Node at {};{}", x, y);
+
+		//check forward
+		if (isPath(image, imageWidth, imageHeight, x + xDir, y + yDir)) {
+			lookForNodes(image, imageWidth, imageHeight, x + xDir, y + yDir, xDir, yDir, 1);
+		}
+		//check left
+		int newXdir = -yDir;
+		int newYdir = xDir;
+		if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
+			lookForNodes(image, imageWidth, imageHeight, x + newXdir, y + newYdir, newXdir, newYdir, 1);
+		}
+		//check right
+		newXdir = yDir;
+		newYdir = -xDir;
+		if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
+			lookForNodes(image, imageWidth, imageHeight, x + newXdir, y + newYdir, newXdir, newYdir, 1);
+		}
+	}
 }
