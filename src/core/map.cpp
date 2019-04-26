@@ -9,8 +9,6 @@
 #include "constants.hpp"
 #include "maths.hpp"
 
-#include <iostream>
-
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 :	m_registry(registry),
 	m_tileFactory(registry),
