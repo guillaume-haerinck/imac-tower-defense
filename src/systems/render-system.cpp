@@ -76,7 +76,7 @@ void RenderSystem::update() {
     });
 }
 
-glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) {
+glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) const {
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(transform.position, transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));

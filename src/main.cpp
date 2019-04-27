@@ -68,7 +68,8 @@ int main(int argc, char** argv) {
     // View matrices, they are passed around a lot as well
 	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
-    glm::vec3 camPos = glm::vec3(0);
+	glm::vec2 viewTranslation = glm::vec2(0.0f);
+	float viewScale = 1.0f;
 
     // Init Physics
 	b2Vec2 gravity(0.0f, -10.0f);	
@@ -92,7 +93,7 @@ int main(int argc, char** argv) {
 	*/
     
 	// Map
-	Map map1(registry, "res/maps/map-2.itd", viewMat);
+	Map map1(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
 
     // Systems
     RenderSystem renderSystem(registry, viewMat, projMat);
@@ -138,8 +139,14 @@ int main(int argc, char** argv) {
 
         // Game updates
         {
-            // Update camera
-            viewMat = glm::translate(viewMat, camPos);
+			// Update view
+			viewMat = glm::mat4(1.0f);
+			viewMat = glm::translate(viewMat, glm::vec3(viewTranslation, 0.0f));
+			/*
+			viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+			viewMat = glm::scale(viewMat, glm::vec3(viewScale, viewScale, 0.0f));
+			viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+			*/
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -219,33 +226,32 @@ int main(int argc, char** argv) {
                         }
                         bWireframe = !bWireframe;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-                        camPos.y++;
+                        viewTranslation.y++;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-                        camPos.y--;
+						viewTranslation.y--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-                        camPos.x--;
+						viewTranslation.x--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-                        camPos.x++;
-                    } 
+						viewTranslation.x++;
+                    }
                     break;
 
 				case SDL_MOUSEWHEEL:
 					{
 						if (e.motion.x > 0.0f) {
 							// TODO ameliorer translation quand proche du bord
-							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+							viewScale += 0.1f;
+							
 						}
 						else if (e.motion.x < 0.0f) {
+							/*
 							const glm::vec2 invertNormMousePos = glm::vec2(
 								PROJ_WIDTH - normMousePos.x,
 								PROJ_HEIGHT - normMousePos.y
 							);
+							*/
 							// TODO réduire translation quand proche du bord
-							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
-							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
-							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
+							viewScale -= 0.05f;
 						}
 					}
 					break;

@@ -13,8 +13,8 @@
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
-Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::mat4& viewMat)
-:	m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewMat(viewMat)
+Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
+:	m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
@@ -104,12 +104,12 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::mat4& vi
 
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
 
-unsigned int Map::getTile(unsigned int x, unsigned int y) {
+unsigned int Map::getTile(unsigned int x, unsigned int y) const {
     return m_map.at(y * m_gridWidth + x);
 }
 
-unsigned int Map::getGridWidth()  { return m_gridWidth; }
-unsigned int Map::getGridHeight() { return m_gridHeight; }
+unsigned int Map::getGridWidth() const  { return m_gridWidth; }
+unsigned int Map::getGridHeight() const { return m_gridHeight; }
 
 glm::vec2 Map::windowToGrid(float x, float y) {
 	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
@@ -118,8 +118,13 @@ glm::vec2 Map::windowToGrid(float x, float y) {
 }
 
 glm::vec2 Map::projToGrid(float x, float y) {
-	unsigned int tileX = imac::rangeMapping(x * WIN_RATIO, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
-	unsigned int tileY = imac::rangeMapping(y, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
+	spdlog::info("scale is {}", m_viewScale);
+	spdlog::info("translation is {} {}", m_viewTranslation.x, m_viewTranslation.y);
+	float posX = (WIN_RATIO * x - m_viewTranslation.x) * m_viewScale;
+	float posY = (y - m_viewTranslation.y) * m_viewScale;
+
+	unsigned int tileX = imac::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
+	unsigned int tileY = imac::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
 	return glm::vec2(tileX, tileY);
 }
 

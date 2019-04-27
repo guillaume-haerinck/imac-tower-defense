@@ -14,7 +14,7 @@ public:
     void update();
 
 private:
-    glm::mat4 getModelMatrix(cmpt::Transform& transform);
-	glm::mat4& m_view;
-	glm::mat4& m_projection;
+    glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
+	const glm::mat4& m_view;
+	const glm::mat4& m_projection;
 };

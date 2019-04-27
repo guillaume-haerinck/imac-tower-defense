@@ -1,6 +1,10 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <string>
 #include <vector>
 
@@ -9,15 +13,15 @@
 
 class Map {
 public:
-    Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::mat4& viewMat);
+    Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale);
 
-    unsigned int Map::getTile(unsigned int x, unsigned int y);
+    unsigned int Map::getTile(unsigned int x, unsigned int y) const;
     glm::vec2 windowToGrid(float x, float y);
 	glm::vec2 projToGrid(float x, float y);
     glm::vec2 gridToProj(unsigned int x, unsigned int y);
 
-	unsigned int getGridWidth();
-	unsigned int getGridHeight();
+	unsigned int getGridWidth() const;
+	unsigned int getGridHeight() const;
 
 	void drawGraph();
 	void drawGrid();
@@ -26,7 +30,6 @@ private:
     glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
     glm::vec3 getColorFromString(std::string line);
     float getNumberFromString(std::string line);
-	inline long rangeMapping(long x, long in_min, long in_max, long out_min, long out_max);
 
 	//For the graph construction :
 	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
@@ -54,5 +57,6 @@ private:
 	TileFactory m_tileFactory;
 
 	// External info
-	glm::mat4& m_viewMat;
+	const glm::vec2& m_viewTranslation;
+	const float& m_viewScale;
 };
