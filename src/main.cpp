@@ -42,10 +42,8 @@
 #include "systems/construction-system.hpp"
 #include "systems/follow-system.hpp"
 #include "gui/start-menu.hpp"
-
-#include "components/transform.hpp"
-#include "events/click.hpp"
-#include "events/move.hpp"
+#include "events/left-click.hpp"
+#include "events/mouse-move.hpp"
 
 #pragma warning (disable : 26495) // Initialisation of a member missing in constructor of box2d and imgui
 
@@ -94,7 +92,7 @@ int main(int argc, char** argv) {
 	*/
     
 	// Map
-	Map map1(registry, "res/maps/map-1.itd");
+	Map map1(registry, "res/maps/map-2.itd");
 
     // Systems
     RenderSystem renderSystem(registry);
@@ -180,12 +178,12 @@ int main(int argc, char** argv) {
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
 					// Send click event
-					{
+					if (e.button.button == SDL_BUTTON_LEFT) {
 						normMousePos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
-						emitter.publish<evnt::Click>(normMousePos);
+						emitter.publish<evnt::LeftClick>(normMousePos);
 					}
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
@@ -201,7 +199,7 @@ int main(int argc, char** argv) {
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
-						emitter.publish<evnt::Move>(normMousePos);
+						emitter.publish<evnt::MouseMove>(normMousePos);
 					}
 					break;
                 

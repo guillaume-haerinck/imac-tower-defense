@@ -1,6 +1,7 @@
 #include "tile-factory.hpp"
 
 #include "core/constants.hpp"
+#include "core/tags.hpp"
 #include "components/transform.hpp"
 #include "components/primitive.hpp"
 
@@ -31,6 +32,7 @@ unsigned int TileFactory::createConstructible(glm::vec2 position) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Primitive>(myEntity, m_primitiveFactory.createRect(glm::vec4(0, 0, 1, 1), glm::vec2(TILE_SIZE)));
 	m_registry.assign<cmpt::Transform>(myEntity, position);
+	m_registry.assign<tileTag::Constructible>(myEntity);
 	return myEntity;
 }
 

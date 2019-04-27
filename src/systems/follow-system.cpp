@@ -8,14 +8,14 @@
 
 #include "core/maths.hpp"
 #include "core/constants.hpp"
-#include "events/move.hpp"
+#include "events/mouse-move.hpp"
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
 
 FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)
 {
-	m_emitter.on<evnt::Move>([this](const evnt::Move& event, EventEmitter& emitter) {
+	m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove& event, EventEmitter& emitter) {
 		this->m_mousePos = event.mousePos;
 		this->m_mousePos.x *= WIN_RATIO;
 	});
