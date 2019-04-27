@@ -13,8 +13,8 @@
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
-Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
-:	m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/")
+Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::mat4& viewMat)
+:	m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewMat(viewMat)
 {
     /* ---------------------------- Read ITD file ------------------------- */
     std::ifstream file(itdFilePath);
@@ -100,9 +100,6 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
         }
     }
     stbi_image_free(image);
-}
-
-Map::~Map() {
 }
 
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */

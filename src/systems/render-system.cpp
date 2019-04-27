@@ -9,15 +9,16 @@
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 
-RenderSystem::RenderSystem(entt::DefaultRegistry& registry) : System(registry) {}
+RenderSystem::RenderSystem(entt::DefaultRegistry& registry, glm::mat4& viewMat, glm::mat4& projMat)
+: System(registry), m_view(viewMat), m_projection(projMat) {}
 
-void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
+void RenderSystem::update() {
     /* 
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
 
-    m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
+    m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         // Binding
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
@@ -26,7 +27,7 @@ void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
         sprite.ib->bind();
 
         // Updates
-        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
+        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
@@ -38,7 +39,7 @@ void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
         sprite.shader->unbind();
     });
 
-    m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
+    m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
         // Binding
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
@@ -47,7 +48,7 @@ void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
         sprite.ib->bind();
 
         // Updates
-        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
+        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
         sprite.shader->setUniformMat4f("u_mvp", mvp);
         GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 
@@ -58,13 +59,13 @@ void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
         sprite.shader->unbind();
     });
 
-    m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this, projection, view](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
+    m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
         primitive.shader->bind();
         GLCall(glBindVertexArray(primitive.vaID));
 
         // Updates
-        glm::mat4 mvp = projection * view * this->getModelMatrix(transform);
+        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
         GLCall(glDrawArrays(primitive.type, 0, primitive.vertexCount));

@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     #endif
 
-	// Reference to these instances are passed auround a lot
+	// Reference to these instances are passed around a lot
 	entt::DefaultRegistry registry;
 	EventEmitter emitter{};
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    // View position
+    // View matrices, they are passed around a lot as well
 	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0);
@@ -92,10 +92,10 @@ int main(int argc, char** argv) {
 	*/
     
 	// Map
-	Map map1(registry, "res/maps/map-2.itd");
+	Map map1(registry, "res/maps/map-2.itd", viewMat);
 
     // Systems
-    RenderSystem renderSystem(registry);
+    RenderSystem renderSystem(registry, viewMat, projMat);
     AnimationSystem animationSystem(registry);
     PhysicSystem physicSystem(registry);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
@@ -140,7 +140,6 @@ int main(int argc, char** argv) {
         {
             // Update camera
             viewMat = glm::translate(viewMat, camPos);
-            debugDraw.setViewMat(viewMat);
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -155,13 +154,19 @@ int main(int argc, char** argv) {
             physicSystem.update(deltatime, physicWorld.get());
         }
 
-        // Render
-		// TODO render debugdraw here and not directly
-        {
+		// Render Debug
+		{
+			// TODO render debugdraw here and not directly
+			debugDraw.setProjMat(projMat);
+			debugDraw.setViewMat(viewMat);
 			map1.drawGraph();
 			map1.drawGrid();
 			physicWorld->DrawDebugData();
-            renderSystem.update(viewMat, projMat);
+		}
+
+        // Render
+        {
+            renderSystem.update();
             //noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

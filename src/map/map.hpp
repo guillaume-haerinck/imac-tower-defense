@@ -9,8 +9,7 @@
 
 class Map {
 public:
-    Map(entt::DefaultRegistry& registry, const char* itdFilePath);
-    ~Map();
+    Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::mat4& viewMat);
 
     unsigned int Map::getTile(unsigned int x, unsigned int y);
     glm::vec2 windowToGrid(float x, float y);
@@ -53,4 +52,7 @@ private:
 	// Aggregation
 	entt::DefaultRegistry& m_registry;
 	TileFactory m_tileFactory;
+
+	// External info
+	glm::mat4& m_viewMat;
 };

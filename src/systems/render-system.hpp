@@ -10,9 +10,11 @@
 
 class RenderSystem : public System {
 public:
-    RenderSystem(entt::DefaultRegistry& registry);
-    void update(glm::mat4& view, glm::mat4& projection);
+    RenderSystem(entt::DefaultRegistry& registry, glm::mat4& viewMat, glm::mat4& projMat);
+    void update();
 
 private:
     glm::mat4 getModelMatrix(cmpt::Transform& transform);
+	glm::mat4& m_view;
+	glm::mat4& m_projection;
 };
