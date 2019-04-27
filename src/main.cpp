@@ -71,7 +71,6 @@ int main(int argc, char** argv) {
 	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0);
-	float zoom = 1.0f;
 
     // Init Physics
 	b2Vec2 gravity(0.0f, -10.0f);	
@@ -82,7 +81,7 @@ int main(int argc, char** argv) {
 	debugDraw.setProjMat(projMat);
 	debugDraw.setViewMat(viewMat);
     physicWorld->SetDebugDraw(&debugDraw);
-    debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+    //debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
     
 	// Noesis GUI
 	/*
@@ -141,8 +140,9 @@ int main(int argc, char** argv) {
         // Game updates
         {
             // Update camera
-            viewMat = glm::translate(glm::mat4(1.0f), camPos);
+            viewMat = glm::translate(viewMat, camPos);
             debugDraw.setViewMat(viewMat);
+			debugDraw.setProjMat(projMat);
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -227,11 +227,9 @@ int main(int argc, char** argv) {
 
 				case SDL_MOUSEWHEEL:
 					if (e.motion.x > 0.0f) {
-						zoom += 0.1;
-						projMat = glm::ortho(0.0f, (PROJ_WIDTH * WIN_RATIO) / zoom, 0.0f, PROJ_HEIGHT / zoom, 0.0f, 100.0f);
+						viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
 					} else if (e.motion.x < 0.0f){
-						zoom -= 0.1;
-						projMat = glm::ortho(0.0f, (PROJ_WIDTH * WIN_RATIO) / zoom, 0.0f, PROJ_HEIGHT / zoom, 0.0f, 100.0f);
+						viewMat = glm::scale(viewMat, glm::vec3(0.9f, 0.9f, 0.0f));
 					}
 					break;
             }
