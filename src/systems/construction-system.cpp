@@ -1,23 +1,25 @@
 #include "construction-system.hpp"
 
 #include <spdlog/spdlog.h>
+#include <glm/glm.hpp>
 
+#include "core/constants.hpp"
 #include "events/click.hpp"
+#include "components/transform.hpp"
 
-ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: System(registry), m_emitter(emitter)
+ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map)
+: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry)
 {
-	m_emitter.on<evnt::Click>([](const evnt::Click & event, EventEmitter & emitter) {
-		spdlog::info("Asynchronious event recieved with value {}", event.mousePos.x);
-		/*
-		glm::vec2 tilePosition = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-		unsigned int entityId = map1.getTile(tilePosition.x, tilePosition.y);
-		cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
-		enemyFactory.create(trans.position.x, trans.position.y);
-		*/
+	m_emitter.on<evnt::Click>([this](const evnt::Click& event, EventEmitter& emitter) {
+		spdlog::info("Mouse pos is {} {}", event.mousePos.x, event.mousePos.y);
+
+		glm::vec2 tilePosition = this->m_map.projToGrid(event.mousePos.x, event.mousePos.y);
+
+		spdlog::info("Tile pos is {} {}", tilePosition.x, tilePosition.y);
+			
+		unsigned int entityId = this->m_map.getTile(tilePosition.x, tilePosition.y);
+		cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(entityId);
+		this->m_towerFactory.create(trans.position.x, trans.position.y);
 	});
 }
 
-void ConstructionSystem::update() {
-	
-}

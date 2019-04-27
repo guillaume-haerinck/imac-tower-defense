@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem(registry);
     AnimationSystem animationSystem(registry);
     PhysicSystem physicSystem(registry);
-	ConstructionSystem constructionSystem(registry, emitter);
+	ConstructionSystem constructionSystem(registry, emitter, map1);
 
     // Game loop
     bool bWireframe = false;
@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
 					// Send click event
 					{
 						glm::vec2 normalizedPos = glm::vec2(
-							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH * WIN_RATIO),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
 						emitter.publish<evnt::Click>(normalizedPos);

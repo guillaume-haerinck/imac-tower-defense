@@ -12,11 +12,10 @@ TowerFactory::TowerFactory(entt::DefaultRegistry& registry)
 
 TowerFactory::~TowerFactory() {}
 
-void TowerFactory::create(int tileX, int tileY) {
+void TowerFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();
-	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(1.0f)));
+	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(5.0f)));
 	m_registry.assign<renderTag::Single>(myEntity);
-	// TODO grid to window
-	// m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(tileX, tileY));
+	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
 }
 
