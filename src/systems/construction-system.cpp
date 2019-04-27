@@ -7,8 +7,8 @@
 #include "events/click.hpp"
 #include "components/transform.hpp"
 
-ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map)
-: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry)
+ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map, b2World& physicWorld)
+: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry, physicWorld)
 {
 	m_emitter.on<evnt::Click>([this](const evnt::Click& event, EventEmitter& emitter) {
 		glm::vec2 tilePosition = this->m_map.projToGrid(event.mousePos.x, event.mousePos.y);

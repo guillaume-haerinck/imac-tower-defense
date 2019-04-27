@@ -7,10 +7,10 @@
 
 class RigidBodyFactory {
 public:
-    RigidBodyFactory(b2World* physicWorld);
+    RigidBodyFactory(b2World& physicWorld);
 
     cmpt::RigidBody create(b2BodyType type, cmpt::Transform transform, b2FixtureDef* collider);
 
 private:
-    b2World* m_physicWorld;
+	b2World& m_physicWorld;
 };

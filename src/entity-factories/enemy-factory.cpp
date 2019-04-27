@@ -15,14 +15,3 @@ void EnemyFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
 }
-
-/*
-// Exemple setup physics
-b2PolygonShape myColliderShape1;
-myColliderShape1.SetAsBox(10.0f, 10.0f);
-b2FixtureDef* myCollider1 = new b2FixtureDef(); // TODO use smart pointer for collider deletion
-myCollider1->density = 1.0f;
-myCollider1->friction = 0.3f;
-myCollider1->shape = &myColliderShape1; // Will be cloned so can go out of scope
-registry.assign<cmpt::RigidBody>(myEntity, rigidBodyFactory.create(b2_staticBody, myTransform1, myCollider1));
-*/

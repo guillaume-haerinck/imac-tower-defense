@@ -1,6 +1,6 @@
 #include "rigid-body-factory.hpp"
 
-RigidBodyFactory::RigidBodyFactory(b2World* physicWorld) 
+RigidBodyFactory::RigidBodyFactory(b2World& physicWorld)
 : m_physicWorld(physicWorld) {}
 
 cmpt::RigidBody RigidBodyFactory::create(b2BodyType type, cmpt::Transform transform, b2FixtureDef* collider) {
@@ -8,7 +8,7 @@ cmpt::RigidBody RigidBodyFactory::create(b2BodyType type, cmpt::Transform transf
 	bodyDef.type = type;
 	bodyDef.position.Set(transform.position.x, transform.position.y);
     bodyDef.angle = transform.rotation;
-	b2Body* body = m_physicWorld->CreateBody(&bodyDef);
+	b2Body* body = m_physicWorld.CreateBody(&bodyDef);
     body->CreateFixture(collider->shape, 0.0f);
 
     cmpt::RigidBody rb(body, collider);

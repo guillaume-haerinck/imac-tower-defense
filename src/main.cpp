@@ -94,13 +94,13 @@ int main(int argc, char** argv) {
 	*/
     
 	// Map
-	Map map1(registry, "res/maps/map-2.itd");
+	Map map1(registry, "res/maps/map-1.itd");
 
     // Systems
     RenderSystem renderSystem(registry);
     AnimationSystem animationSystem(registry);
     PhysicSystem physicSystem(registry);
-	ConstructionSystem constructionSystem(registry, emitter, map1);
+	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
 	FollowSystem followSystem(registry, emitter);
 
     // Game loop
@@ -159,8 +159,9 @@ int main(int argc, char** argv) {
         // Render
 		// TODO render debugdraw here and not directly
         {
+			map1.drawGraph();
+			physicWorld->DrawDebugData();
             renderSystem.update(viewMat, projMat);
-            physicWorld->DrawDebugData();
             //noeView->GetRenderer()->Render();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
