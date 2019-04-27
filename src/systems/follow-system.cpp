@@ -11,6 +11,7 @@ FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 {
 	m_emitter.on<evnt::Move>([this](const evnt::Move& event, EventEmitter& emitter) {
 		spdlog::info("Mouse pos is at: {} {}", event.mousePos.x, event.mousePos.y);
+		this->m_mousePos = event.mousePos;
 	});
 }
 
@@ -20,7 +21,7 @@ void FollowSystem::update(double deltatime) {
 	transform.position.x = 0;
 	*/
 
-	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this](auto entity, cmpt::Transform & transform, cmpt::LookAt & lookAt) {
-		transform.position.x += 2;
+	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
+		transform.position.x += this->m_mousePos.x * 0.1;
 	});
 }

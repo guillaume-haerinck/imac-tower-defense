@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "system.hpp"
 #include "events/event-emitter.hpp"
 
@@ -10,4 +12,5 @@ public:
 
 private:
 	EventEmitter& m_emitter;
+	glm::vec2 m_mousePos;
 };
