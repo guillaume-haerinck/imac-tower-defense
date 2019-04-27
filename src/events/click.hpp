@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace evnt {
 	struct Click {
 		Click(glm::vec2 mousePos) : mousePos(mousePos) {}

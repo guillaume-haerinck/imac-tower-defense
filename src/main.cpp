@@ -46,11 +46,9 @@
 #include "events/click.hpp"
 #include "events/move.hpp"
 
-// #pragma warning (disable : 26495) // Initialisation of a member missing in constructor
+#pragma warning (disable : 26495) // Initialisation of a member missing in constructor of box2d and imgui
 
 static Noesis::IView* noeView;
-
-
 
 int main(int argc, char** argv) {
     #ifdef _WIN32 // Check memory leaks
@@ -93,24 +91,6 @@ int main(int argc, char** argv) {
 	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 	*/
-
-	// Entity factories
-	TowerFactory towerFactory(registry);
-	EnemyFactory enemyFactory(registry);
-
-    /* ----------------------- TESTING PLAYGROUND ------------------ */
-    {
-		//towerFactory.create(1, 9);
-		//enemyFactory.create(50.0f, 50.0f);
-    }
-
-	emitter.on<evnt::Click>([](const evnt::Click &event, EventEmitter &emitter) {
-		spdlog::info("Asynchronious event recieved with value {}", event.mousePos.x);
-	});
-
-	emitter.on<evnt::Move>([](const evnt::Move &event, EventEmitter &emitter) {
-		spdlog::info("Mouse at {};{}", event.mousePos.x, event.mousePos.y);
-	});
     
 	// Map
 	Map map1(registry, "res/maps/map-1.itd");
@@ -119,7 +99,7 @@ int main(int argc, char** argv) {
     RenderSystem renderSystem(registry);
     AnimationSystem animationSystem(registry);
     PhysicSystem physicSystem(registry);
-	ConstructionSystem constructionSystem(registry);
+	ConstructionSystem constructionSystem(registry, emitter);
 
     // Game loop
     bool bWireframe = false;
@@ -174,18 +154,8 @@ int main(int argc, char** argv) {
         }
 
         // Render
+		// TODO render debugdraw here and not directly
         {
-			// POUR JULES <3
-			// 0,0 en bas a gauche
-			// 100, 100 en haut a droite
-			// Suffit de mettre ca dans le update() de n'importe quel systeme
-			{
-				debugDraw.setColor(255, 0, 0, 1);
-				debugDraw.line(0., 50., 50., 50.);
-				GLCall(glPointSize(13));
-				debugDraw.point(10., 10.);
-			}
-
             renderSystem.update(viewMat, projMat);
             physicWorld->DrawDebugData();
             //noeView->GetRenderer()->Render();
@@ -203,6 +173,7 @@ int main(int argc, char** argv) {
             
             switch (e.type) {
                 case SDL_MOUSEBUTTONUP:
+					// Send click event
 					{
 						glm::vec2 normalizedPos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
@@ -210,17 +181,7 @@ int main(int argc, char** argv) {
 						);
 						emitter.publish<evnt::Click>(normalizedPos);
 					}
-					
-                    //printf("clic en (%d, %d)\n", e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-					
-					{
-						glm::vec2 tilePosition = map1.windowToGrid(e.button.x, (SDL_GetWindowSurface(game.getWindow())->h) - e.button.y);
-						unsigned int entityId = map1.getTile(tilePosition.x, tilePosition.y);
-						cmpt::Transform trans = registry.get<cmpt::Transform>(entityId);
-						enemyFactory.create(trans.position.x, trans.position.y);
-					}
-					
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -228,6 +189,7 @@ int main(int argc, char** argv) {
                     break;
 
 				case SDL_MOUSEMOTION:
+					// Send move event
 					{
 						glm::vec2 normalizedPos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
