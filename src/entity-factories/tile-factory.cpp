@@ -4,13 +4,7 @@
 #include "components/transform.hpp"
 #include "components/primitive.hpp"
 
-TileFactory::TileFactory(entt::DefaultRegistry& registry)
-: m_registry(registry)
-{
-}
-
-TileFactory::~TileFactory() {
-}
+TileFactory::TileFactory(entt::DefaultRegistry& registry) : Factory(registry) {}
 
 unsigned int TileFactory::createSpawn(glm::vec2 position) {
 	auto myEntity = m_registry.create();

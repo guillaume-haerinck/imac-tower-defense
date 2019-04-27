@@ -7,11 +7,7 @@
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
 
-TowerFactory::TowerFactory(entt::DefaultRegistry& registry)
-: m_registry(registry)
-{}
-
-TowerFactory::~TowerFactory() {}
+TowerFactory::TowerFactory(entt::DefaultRegistry& registry) : Factory(registry) {}
 
 void TowerFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();

@@ -1,12 +1,9 @@
 #pragma once
 
-class PipeFactory
-{
+#include "factory.hpp"
+
+class PipeFactory : public Factory {
 public:
-	PipeFactory();
-	~PipeFactory();
-
-private:
-
+	PipeFactory(entt::DefaultRegistry& registry);
 };
 

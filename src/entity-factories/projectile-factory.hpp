@@ -1,11 +1,9 @@
 #pragma once
 
-class ProjectileFactory {
+#include "factory.hpp"
+
+class ProjectileFactory : public Factory {
 public:
-	ProjectileFactory ();
-	~ProjectileFactory ();
-
-private:
-
+	ProjectileFactory(entt::DefaultRegistry& registry);
 };
 

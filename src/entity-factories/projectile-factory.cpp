@@ -1,7 +1,3 @@
 #include "projectile-factory.hpp"
 
-ProjectileFactory::ProjectileFactory() {
-}
-
-ProjectileFactory ::~ProjectileFactory() {
-}
+ProjectileFactory::ProjectileFactory(entt::DefaultRegistry& registry) : Factory(registry) {}

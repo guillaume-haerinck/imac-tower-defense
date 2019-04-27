@@ -6,11 +6,7 @@
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
 
-EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry)
-: m_registry(registry) {
-}
-
-EnemyFactory::~EnemyFactory() {}
+EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry) : Factory(registry) {}
 
 void EnemyFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();

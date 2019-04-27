@@ -1,7 +1,3 @@
 #include "pipe-factory.hpp"
 
-PipeFactory::PipeFactory() {
-}
-
-PipeFactory::~PipeFactory() {
-}
+PipeFactory::PipeFactory(entt::DefaultRegistry& registry) : Factory(registry) {}
