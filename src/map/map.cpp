@@ -6,6 +6,10 @@
 #include <spdlog/spdlog.h>
 #include <debugbreak/debugbreak.h>
 
+#include "services/locator.hpp"
+#include "services/debug-draw/i-debug-draw.hpp"
+#include "logger/gl-log-handler.hpp"
+
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
@@ -244,13 +248,14 @@ void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, in
 }
 
 void Map::drawGraph() {
-	debugDraw->setColor(255, 0, 100, 1);
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setColor(255, 0, 100, 1);
 	GLCall(glPointSize(13));
 	//Draw vertices
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x = m_graph.getNode(k).x*100. / m_gridWidth + 50. / m_gridWidth;
 		float y = m_graph.getNode(k).y*100. / m_gridHeight +  50. / m_gridHeight;
-		debugDraw->point(x, y);
+		debugDraw.point(x, y);
 	}
 	//Draw edges
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
@@ -260,7 +265,7 @@ void Map::drawGraph() {
 		while (list != nullptr) {
 			float x2 = m_graph.getNode(list->nodeIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
 			float y2 = m_graph.getNode(list->nodeIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
-			debugDraw->line(x1, y1, x2, y2);
+			debugDraw.line(x1, y1, x2, y2);
 			list = list->next;
 		}
 	}
