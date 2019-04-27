@@ -1,5 +1,17 @@
 # Imac Tower Defense Changelog
 
+## 27.04.19
+
+Service locator pattern.
+
+## 26.04.19
+
+Event dispatcher.
+
+## 25.04.19
+
+Show map on screen.
+
 ## 22.04.19
 
 Factories are not to be used as singleton anymore.
