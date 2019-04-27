@@ -39,6 +39,10 @@ Game::~Game() {
 		GLCall(glDeleteVertexArrays(1, &primitive.vaID));
 	});
 
+	// Delete services
+	locator::debugDraw::reset();
+	locator::audio::reset();
+
 	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
