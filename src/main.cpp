@@ -142,7 +142,6 @@ int main(int argc, char** argv) {
             // Update camera
             viewMat = glm::translate(viewMat, camPos);
             debugDraw.setViewMat(viewMat);
-			debugDraw.setProjMat(projMat);
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -227,9 +226,13 @@ int main(int argc, char** argv) {
 
 				case SDL_MOUSEWHEEL:
 					if (e.motion.x > 0.0f) {
+						viewMat = glm::translate(viewMat, glm::vec3(PROJ_WIDTH * WIN_RATIO / 2, PROJ_HEIGHT / 2, 0.0f));
 						viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-					} else if (e.motion.x < 0.0f){
+						viewMat = glm::translate(viewMat, glm::vec3(-(PROJ_WIDTH * WIN_RATIO / 2), -(PROJ_HEIGHT / 2), 0.0f));
+					} else if (e.motion.x < 0.0f) {
+						viewMat = glm::translate(viewMat, glm::vec3(PROJ_WIDTH * WIN_RATIO / 2, PROJ_HEIGHT / 2, 0.0f));
 						viewMat = glm::scale(viewMat, glm::vec3(0.9f, 0.9f, 0.0f));
+						viewMat = glm::translate(viewMat, glm::vec3(-(PROJ_WIDTH * WIN_RATIO / 2), -(PROJ_HEIGHT / 2), 0.0f));
 					}
 					break;
             }
