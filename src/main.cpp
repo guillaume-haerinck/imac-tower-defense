@@ -39,6 +39,7 @@
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
+#include "systems/construction-system.hpp"
 #include "gui/start-menu.hpp"
 
 #include "components/transform.hpp"
@@ -115,9 +116,10 @@ int main(int argc, char** argv) {
 	Map map1(registry, "res/maps/map-1.itd");
 
     // Systems
-    RenderSystem renderSystem;
-    AnimationSystem animationSystem;
-    PhysicSystem physicSystem;
+    RenderSystem renderSystem(registry);
+    AnimationSystem animationSystem(registry);
+    PhysicSystem physicSystem(registry);
+	ConstructionSystem constructionSystem(registry);
 
     // Game loop
     bool bWireframe = false;
@@ -161,14 +163,14 @@ int main(int argc, char** argv) {
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
-                animationSystem.update(registry, deltatime);
+                animationSystem.update(deltatime);
                 tempFrameCount = 0;
             }
             tempFrameCount++;
             
             // Update physics
             physicWorld->Step(1.0f / 60.0f, 6, 2);
-            physicSystem.update(registry, deltatime, physicWorld.get());
+            physicSystem.update(deltatime, physicWorld.get());
         }
 
         // Render
@@ -184,7 +186,7 @@ int main(int argc, char** argv) {
 				debugDraw.point(10., 10.);
 			}
 
-            renderSystem.update(registry, viewMat, projMat);
+            renderSystem.update(viewMat, projMat);
             physicWorld->DrawDebugData();
             //noeView->GetRenderer()->Render();
             ImGui::Render();

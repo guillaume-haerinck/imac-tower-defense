@@ -3,12 +3,10 @@
 #include <entt/entt.hpp>
 #include <Box2D/Box2D.h>
 
-class PhysicSystem {
-private:
+#include "system.hpp"
 
+class PhysicSystem : public System {
 public:
-    PhysicSystem();
-    ~PhysicSystem();
-
-    void update(entt::DefaultRegistry& registry, double deltatime, b2World* physicWorld);
+    PhysicSystem(entt::DefaultRegistry& registry);
+    void update(double deltatime, b2World* physicWorld);
 };

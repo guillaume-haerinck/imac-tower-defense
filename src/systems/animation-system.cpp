@@ -4,12 +4,10 @@
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
 
-AnimationSystem::AnimationSystem() {}
+AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry) : System(registry) {}
 
-AnimationSystem::~AnimationSystem() {}
-
-void AnimationSystem::update(entt::DefaultRegistry& registry, double deltatime) {
-    registry.view<cmpt::SpriteAnimation, cmpt::Sprite>().each([](auto entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
+void AnimationSystem::update(double deltatime) {
+    m_registry.view<cmpt::SpriteAnimation, cmpt::Sprite>().each([](auto entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
         if (animation.activeTile < animation.endTile) {
             animation.activeTile++;
         } else {

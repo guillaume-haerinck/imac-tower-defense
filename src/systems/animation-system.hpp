@@ -2,10 +2,10 @@
 
 #include <entt/entt.hpp>
 
-class AnimationSystem {
-public:
-    AnimationSystem();
-    ~AnimationSystem();
+#include "system.hpp"
 
-    void update(entt::DefaultRegistry& registry, double deltatime);
+class AnimationSystem : public System {
+public:
+    AnimationSystem(entt::DefaultRegistry& registry);
+    void update(double deltatime);
 };

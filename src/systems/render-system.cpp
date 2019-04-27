@@ -1,5 +1,7 @@
 #include "render-system.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "logger/gl-log-handler.hpp"
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
@@ -7,17 +9,15 @@
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 
-RenderSystem::RenderSystem() {}
+RenderSystem::RenderSystem(entt::DefaultRegistry& registry) : System(registry) {}
 
-RenderSystem::~RenderSystem() {}
-
-void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection) {
+void RenderSystem::update(glm::mat4& view, glm::mat4& projection) {
     /* 
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
 
-    registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
+    m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
         // Binding
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
@@ -38,7 +38,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         sprite.shader->unbind();
     });
 
-    registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
+    m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this, projection, view](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
         // Binding
         sprite.shader->bind();
         GLCall(glBindVertexArray(sprite.vaID));
@@ -58,7 +58,7 @@ void RenderSystem::update(entt::DefaultRegistry& registry, glm::mat4& view, glm:
         sprite.shader->unbind();
     });
 
-    registry.view<cmpt::Transform, cmpt::Primitive>().each([this, projection, view](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
+    m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this, projection, view](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
         primitive.shader->bind();
         GLCall(glBindVertexArray(primitive.vaID));

@@ -1,23 +1,17 @@
 #pragma once
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include "glm/glm.hpp"
-#include "glm/gtc/quaternion.hpp"
-#include "glm/gtx/quaternion.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/matrix_decompose.hpp"
+#include <glm/glm.hpp>
 #include <entt/entt.hpp>
 
+#include "system.hpp"
 #include "components/transform.hpp"
 
 /* TODO use framebuffer */
 
-class RenderSystem {
+class RenderSystem : public System {
 public:
-    RenderSystem();
-    ~RenderSystem();
-
-    void update(entt::DefaultRegistry& registry, glm::mat4& view, glm::mat4& projection);
+    RenderSystem(entt::DefaultRegistry& registry);
+    void update(glm::mat4& view, glm::mat4& projection);
 
 private:
     glm::mat4 getModelMatrix(cmpt::Transform& transform);

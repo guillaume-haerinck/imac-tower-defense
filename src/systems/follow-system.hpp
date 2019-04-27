@@ -1,12 +1,9 @@
 #pragma once
 
-class FollowSystem
-{
+#include "system.hpp"
+
+class FollowSystem : public System {
 public:
-	FollowSystem();
-	~FollowSystem();
-
-private:
-
+	FollowSystem(entt::DefaultRegistry& registry);
+	void update(double deltatime);
 };
-
