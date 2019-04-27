@@ -22,6 +22,6 @@ void FollowSystem::update(double deltatime) {
 	*/
 
 	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
-		transform.position.x += this->m_mousePos.x * 0.1;
+		transform.rotation += this->m_mousePos.x * 0.5;
 	});
 }
