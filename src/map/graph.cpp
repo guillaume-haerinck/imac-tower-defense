@@ -1,7 +1,5 @@
 #include "graph.hpp"
 
-#include <spdlog/spdlog.h>
-
 Graph::Graph() {
 
 }

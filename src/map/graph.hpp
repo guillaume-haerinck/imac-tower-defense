@@ -31,5 +31,3 @@ class Graph {
 		void addNeighbourTo(int node, int neighbour);
 		void addNeighbourTo(int node, int neighbour, bool checkRepetitions);
 };
-
-void printList(graphNodeList* list);

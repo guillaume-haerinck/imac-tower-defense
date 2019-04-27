@@ -20,6 +20,8 @@ public:
 	unsigned int getGridWidth();
 	unsigned int getGridHeight();
 
+	void drawGraph();
+
 private:
     glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
     glm::vec3 getColorFromString(std::string line);
