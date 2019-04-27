@@ -10,7 +10,6 @@ FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 : System(registry), m_emitter(emitter)
 {
 	m_emitter.on<evnt::Move>([this](const evnt::Move& event, EventEmitter& emitter) {
-		spdlog::info("Mouse pos is at: {} {}", event.mousePos.x, event.mousePos.y);
 		this->m_mousePos = event.mousePos;
 	});
 }

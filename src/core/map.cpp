@@ -99,13 +99,13 @@ unsigned int Map::getGridWidth()  { return m_gridWidth; }
 unsigned int Map::getGridHeight() { return m_gridHeight; }
 
 glm::vec2 Map::windowToGrid(float x, float y) {
-	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH * WIN_RATIO);
+	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
 	float projY = imac::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
 	return projToGrid(projX, projY);
 }
 
 glm::vec2 Map::projToGrid(float x, float y) {
-	unsigned int tileX = imac::rangeMapping(x, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
+	unsigned int tileX = imac::rangeMapping(x * WIN_RATIO, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
 	unsigned int tileY = imac::rangeMapping(y, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
 	return glm::vec2(tileX, tileY);
 }
