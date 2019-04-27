@@ -228,14 +228,20 @@ int main(int argc, char** argv) {
 				case SDL_MOUSEWHEEL:
 					{
 						if (e.motion.x > 0.0f) {
+							// TODO ameliorer translation quand proche du bord
 							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
 							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
 							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
 						}
 						else if (e.motion.x < 0.0f) {
-							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-							viewMat = glm::scale(viewMat, glm::vec3(0.9f, 0.9f, 0.0f));
-							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+							const glm::vec2 invertNormMousePos = glm::vec2(
+								PROJ_WIDTH - normMousePos.x,
+								PROJ_HEIGHT - normMousePos.y
+							);
+							// TODO réduire translation quand proche du bord
+							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
+							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
+							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
 						}
 					}
 					break;
