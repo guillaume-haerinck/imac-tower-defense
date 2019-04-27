@@ -27,6 +27,7 @@
 #include "core/game.hpp"
 #include "core/map.hpp"
 #include "core/maths.hpp"
+#include "events/event-emitter.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -48,15 +49,18 @@
 
 static Noesis::IView* noeView;
 
-struct MyEmitter : entt::Emitter<MyEmitter> {};
+
 
 int main(int argc, char** argv) {
     #ifdef _WIN32 // Check memory leaks
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     #endif
 
-	// Game start
+	// Reference to these instances are passed auround a lot
 	entt::DefaultRegistry registry;
+	EventEmitter emitter{};
+
+	// Game start
     Game game(registry);
     if (game.init() == EXIT_FAILURE) {
         debug_break();
@@ -72,6 +76,7 @@ int main(int argc, char** argv) {
 	b2Vec2 gravity(0.0f, -10.0f);	
     auto physicWorld = std::make_shared<b2World>(gravity);
 
+	// Link debug draw to physics
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setProjMat(projMat);
 	debugDraw.setViewMat(viewMat);
@@ -98,19 +103,15 @@ int main(int argc, char** argv) {
 		//enemyFactory.create(50.0f, 50.0f);
     }
 
-	// Event emitters
-	MyEmitter emitter{};
-
-	emitter.on<evnt::Click>([](const evnt::Click &event, MyEmitter &emitter) {
+	emitter.on<evnt::Click>([](const evnt::Click &event, EventEmitter &emitter) {
 		spdlog::info("Asynchronious event recieved with value {}", event.mousePos.x);
 	});
 
-	emitter.on<evnt::Move>([](const evnt::Move &event, MyEmitter &emitter) {
+	emitter.on<evnt::Move>([](const evnt::Move &event, EventEmitter &emitter) {
 		spdlog::info("Mouse at {};{}", event.mousePos.x, event.mousePos.y);
 	});
     
 	// Map
-	// TODO use a service to pass the registry around ?
 	Map map1(registry, "res/maps/map-1.itd");
 
     // Systems

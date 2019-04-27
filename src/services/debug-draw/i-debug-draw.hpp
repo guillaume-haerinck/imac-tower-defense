@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Box2D/Box2D.h>
+#include <glm/glm.hpp>
 
 class IDebugDraw : public b2Draw {
 public:
