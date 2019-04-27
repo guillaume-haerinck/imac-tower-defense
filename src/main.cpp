@@ -70,7 +70,8 @@ int main(int argc, char** argv) {
     // View position
 	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
-    glm::vec3 camPos = glm::vec3(0, 0, 0);
+    glm::vec3 camPos = glm::vec3(0);
+	float zoom = 1.0f;
 
     // Init Physics
 	b2Vec2 gravity(0.0f, -10.0f);	
@@ -221,12 +222,18 @@ int main(int argc, char** argv) {
                         camPos.x--;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
                         camPos.x++;
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_PAGEUP) {
-                        camPos.z--;
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_PAGEDOWN) {
-                        camPos.z++;
-                    }
+                    } 
                     break;
+
+				case SDL_MOUSEWHEEL:
+					if (e.motion.x > 0.0f) {
+						zoom += 0.1;
+						projMat = glm::ortho(0.0f, (PROJ_WIDTH * WIN_RATIO) / zoom, 0.0f, PROJ_HEIGHT / zoom, 0.0f, 100.0f);
+					} else if (e.motion.x < 0.0f){
+						zoom -= 0.1;
+						projMat = glm::ortho(0.0f, (PROJ_WIDTH * WIN_RATIO) / zoom, 0.0f, PROJ_HEIGHT / zoom, 0.0f, 100.0f);
+					}
+					break;
             }
         }
 
