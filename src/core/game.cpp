@@ -14,6 +14,8 @@
 #include "logger/noesis-log-handler.hpp"
 #include "components/sprite.hpp"
 #include "components/primitive.hpp"
+#include "services/locator.hpp"
+#include "services/debug-draw/debug-draw-service.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
 
@@ -131,6 +133,9 @@ int Game::init() {
     Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
     Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
     Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
+
+	/* Init Services */
+	locator::debugDraw::set<DebugDrawService>();
 
     m_bInit = true;
     return EXIT_SUCCESS;

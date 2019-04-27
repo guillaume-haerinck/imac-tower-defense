@@ -27,7 +27,8 @@
 #include "core/game.hpp"
 #include "core/map.hpp"
 #include "core/maths.hpp"
-#include "services/debug-draw.hpp"
+#include "services/locator.hpp"
+#include "services/debug-draw/i-debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
 #include "core/tags.hpp"
@@ -37,7 +38,6 @@
 #include "systems/render-system.hpp"
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
-#include "services/audio-service.hpp"
 #include "gui/start-menu.hpp"
 
 #include "components/transform.hpp"
@@ -71,9 +71,12 @@ int main(int argc, char** argv) {
     // Init Physics
 	b2Vec2 gravity(0.0f, -10.0f);	
     auto physicWorld = std::make_shared<b2World>(gravity);
-    auto debugDraw = std::make_shared<DebugDraw>(viewMat, projMat);
-    physicWorld->SetDebugDraw(debugDraw.get());
-    debugDraw->SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setProjMat(projMat);
+	debugDraw.setViewMat(viewMat);
+    physicWorld->SetDebugDraw(&debugDraw);
+    debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
     
 	// Noesis GUI
 	/*
@@ -105,7 +108,6 @@ int main(int argc, char** argv) {
 	emitter.on<evnt::Move>([](const evnt::Move &event, MyEmitter &emitter) {
 		spdlog::info("Mouse at {};{}", event.mousePos.x, event.mousePos.y);
 	});
-	
     
 	// Map
 	// TODO use a service to pass the registry around ?
@@ -154,7 +156,7 @@ int main(int argc, char** argv) {
         {
             // Update camera
             viewMat = glm::translate(glm::mat4(1.0f), camPos);
-            debugDraw->setViewMat(viewMat);
+            debugDraw.setViewMat(viewMat);
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
@@ -175,10 +177,10 @@ int main(int argc, char** argv) {
 			// 100, 100 en haut a droite
 			// Suffit de mettre ca dans le update() de n'importe quel systeme
 			{
-				debugDraw->setColor(255, 0, 0, 1);
-				debugDraw->line(0., 50., 50., 50.);
+				debugDraw.setColor(255, 0, 0, 1);
+				debugDraw.line(0., 50., 50., 50.);
 				GLCall(glPointSize(13));
-				debugDraw->point(10., 10.);
+				debugDraw.point(10., 10.);
 			}
 
             renderSystem.update(registry, viewMat, projMat);

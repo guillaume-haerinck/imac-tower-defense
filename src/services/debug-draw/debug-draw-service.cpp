@@ -1,4 +1,4 @@
-#include "debug-draw.hpp"
+#include "debug-draw-service.hpp"
 
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -8,7 +8,7 @@
 #include "logger/gl-log-handler.hpp"
 #include "core/constants.hpp"
 
-DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
+DebugDrawService::DebugDrawService(glm::mat4 viewMat, glm::mat4 projMat)
 :	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
 	m_vbMaxSize(32),
 	m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
@@ -34,7 +34,7 @@ DebugDraw::DebugDraw(glm::mat4 viewMat, glm::mat4 projMat)
     m_vb.unbind();
 }
 
-DebugDraw::~DebugDraw() {
+DebugDrawService::~DebugDrawService() {
     unsigned int vaId = m_va.getID();
     GLCall(glDeleteVertexArrays(1, &vaId));
     m_vb.~VertexBuffer();
@@ -42,7 +42,7 @@ DebugDraw::~DebugDraw() {
 
 /* ------------------------------- BOX2I API ------------------------------- */
 
-void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
+void DebugDrawService::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
     assert(vertexCount < m_vbMaxSize * 2);
     
     // Binding
@@ -72,7 +72,7 @@ void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2C
     m_shaderBasic.unbind();
 }
 
-void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
+void DebugDrawService::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
     assert(vertexCount < m_vbMaxSize * 2);
     
     // Binding
@@ -107,7 +107,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, cons
     m_shaderBasic.unbind();
 }
 
-void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) {
+void DebugDrawService::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color) {
     // Binding
     m_shaderBasic.bind();
     m_va.bind();
@@ -135,7 +135,7 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Color& 
     m_shaderBasic.unbind();
 }
 
-void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) {
+void DebugDrawService::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) {
     // Binding
     m_shaderBasic.bind();
     m_va.bind();
@@ -169,7 +169,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Ve
     DrawSegment(center, endpoint, color);
 }
 
-void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
+void DebugDrawService::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color) {
     // Binding
     m_shaderBasic.bind();
     m_va.bind();
@@ -194,7 +194,7 @@ void DebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& c
     m_shaderBasic.unbind();
 }
 
-void DebugDraw::DrawTransform(const b2Transform& xf) {
+void DebugDrawService::DrawTransform(const b2Transform& xf) {
     // Binding
     m_shaderBasic.bind();
     m_va.bind();
@@ -234,7 +234,7 @@ void DebugDraw::DrawTransform(const b2Transform& xf) {
     m_shaderBasic.unbind();
 }
 
-void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
+void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
     // Binding
     m_shaderBasic.bind();
     m_va.bind();
@@ -260,27 +260,27 @@ void DebugDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
 
 /* ---------------------------- PROCESSING-LIKE API --------------------------- */
 
-void DebugDraw::triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 
 }
 
-void DebugDraw::rect(float x1, float y1, float x2, float y2) {
+void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 
 }
 
-void DebugDraw::square(float x, float y, float extent) {
+void DebugDrawService::square(float x, float y, float extent) {
 
 }
 
-void DebugDraw::ellipse(float a, float b, float c, float d) {
+void DebugDrawService::ellipse(float a, float b, float c, float d) {
 
 }
 
-void DebugDraw::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+void DebugDrawService::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
 
 }
 
-void DebugDraw::line(float x1, float y1, float x2, float y2) {
+void DebugDrawService::line(float x1, float y1, float x2, float y2) {
 	// Binding
 	m_shaderBasic.bind();
 	m_va.bind();
@@ -305,7 +305,7 @@ void DebugDraw::line(float x1, float y1, float x2, float y2) {
 	m_shaderBasic.unbind();
 }
 
-void DebugDraw::point(float x, float y) {
+void DebugDrawService::point(float x, float y) {
 	// Binding
 	m_shaderBasic.bind();
 	m_va.bind();
@@ -327,12 +327,12 @@ void DebugDraw::point(float x, float y) {
 	m_shaderBasic.unbind();
 }
 
-void DebugDraw::shape(glm::vec2* vertices) {
+void DebugDrawService::shape(glm::vec2* vertices) {
 	// TODO
 }
 
 // ------------------------------ SETTERS ---------------------------
-void DebugDraw::setProjMat(glm::mat4 mat) { m_projMat = mat; }
-void DebugDraw::setViewMat(glm::mat4 mat) { m_viewMat = mat; }
-void DebugDraw::setColor(glm::vec4 color) { m_color = color; }
-void DebugDraw::setColor(float r, float g, float b, float a) { m_color = glm::vec4(r, g, b, a); }
+void DebugDrawService::setProjMat(glm::mat4 mat) { m_projMat = mat; }
+void DebugDrawService::setViewMat(glm::mat4 mat) { m_viewMat = mat; }
+void DebugDrawService::setColor(glm::vec4 color) { m_color = color; }
+void DebugDrawService::setColor(float r, float g, float b, float a) { m_color = glm::vec4(r, g, b, a); }

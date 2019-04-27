@@ -30,3 +30,12 @@ AudioService::AudioService() {
 
 AudioService::~AudioService() {
 }
+
+void AudioService::playSound(int soundID) {
+}
+
+void AudioService::stopSound(int soundID) {
+}
+
+void AudioService::stopAllSounds() {
+}

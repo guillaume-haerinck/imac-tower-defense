@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Box2D/Box2D.h>
 #include <glm/glm.hpp>
 
+#include "i-debug-draw.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/vertex-array.hpp"
 
@@ -17,10 +17,10 @@
     https://stackoverflow.com/questions/27810542/what-is-the-difference-between-glbufferstorage-and-glbufferdata
 */
 
-class DebugDraw : public b2Draw {
+class DebugDrawService : public IDebugDraw {
 public:
-    DebugDraw(glm::mat4 viewMat = glm::mat4(1.0f), glm::mat4 projMat = glm::mat4(1.0f));
-    ~DebugDraw();
+    DebugDrawService(glm::mat4 viewMat = glm::mat4(1.0f), glm::mat4 projMat = glm::mat4(1.0f));
+    ~DebugDrawService();
 
 	/* Box2d Draw API */
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
@@ -32,20 +32,20 @@ public:
 	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) override;
 
 	/* Processing-Like API */
-	void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
-	void rect(float x1, float y1, float x2, float y2);
-	void square(float x, float y, float extent);
-	void ellipse(float a, float b, float c, float d);
-	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
-	void line(float x1, float y1, float x2, float y2);
-	void point(float x, float y);
-	void shape(glm::vec2* vertices);
+	void triangle(float x1, float y1, float x2, float y2, float x3, float y3) override;
+	void rect(float x1, float y1, float x2, float y2) override;
+	void square(float x, float y, float extent) override;
+	void ellipse(float a, float b, float c, float d) override;
+	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) override;
+	void line(float x1, float y1, float x2, float y2) override;
+	void point(float x, float y) override;
+	void shape(glm::vec2* vertices) override;
 
 	/* Setters */
-	void setProjMat(glm::mat4 mat);
-	void setViewMat(glm::mat4 mat);
-	void setColor(glm::vec4 color);
-	void setColor(float r, float g, float b, float a);
+	void setProjMat(glm::mat4 mat) override;
+	void setViewMat(glm::mat4 mat) override;
+	void setColor(glm::vec4 color) override;
+	void setColor(float r, float g, float b, float a) override;
 
 private:
     Shader m_shaderBasic;
