@@ -5,7 +5,7 @@
 #include "system.hpp"
 #include "entity-factories/tower-factory.hpp"
 #include "events/event-emitter.hpp"
-#include "core/map.hpp"
+#include "map/map.hpp"
 
 class ConstructionSystem : public System {
 public:

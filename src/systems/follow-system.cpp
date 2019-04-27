@@ -1,7 +1,13 @@
 #include "follow-system.hpp"
 
-#include <spdlog/spdlog.h>
+#define _USE_MATH_DEFINES // for C++
+#include <cmath>
 
+#include <spdlog/spdlog.h>
+#include <math.h> 
+
+#include "core/maths.hpp"
+#include "core/constants.hpp"
 #include "events/move.hpp"
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
@@ -15,12 +21,8 @@ FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 }
 
 void FollowSystem::update(double deltatime) {
-	/*
-	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(myEntity);
-	transform.position.x = 0;
-	*/
-
 	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
-		transform.rotation += this->m_mousePos.x * 0.5;
+		glm::vec2 direction = transform.position - this->m_mousePos;
+		transform.rotation = -atan2(direction.x, direction.y) - M_PI / 2;
 	});
 }

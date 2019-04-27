@@ -25,15 +25,15 @@
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
-#include "core/map.hpp"
 #include "core/maths.hpp"
+#include "core/tags.hpp"
+#include "core/constants.hpp"
 #include "events/event-emitter.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
-#include "core/tags.hpp"
-#include "core/constants.hpp"
+#include "map/map.hpp"
 #include "entity-factories/tower-factory.hpp"
 #include "entity-factories/enemy-factory.hpp"
 #include "systems/render-system.hpp"
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 	*/
     
 	// Map
-	Map map1(registry, "res/maps/map-1.itd");
+	Map map1(registry, "res/maps/map-2.itd");
 
     // Systems
     RenderSystem renderSystem(registry);
@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
                 case SDL_MOUSEBUTTONUP:
 					// Send click event
 					{
-						glm::vec2 normalizedPos = glm::vec2(
+						const glm::vec2 normalizedPos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
 				case SDL_MOUSEMOTION:
 					// Send move event
 					{
-						glm::vec2 normalizedPos = glm::vec2(
+						const glm::vec2 normalizedPos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);

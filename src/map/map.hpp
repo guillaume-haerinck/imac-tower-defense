@@ -5,12 +5,11 @@
 #include <vector>
 
 #include "entity-factories/tile-factory.hpp"
-
 #include "graph.hpp"
 
 class Map {
 public:
-    Map(entt::DefaultRegistry& registry, const char* itdFilePath, Graph* graph);
+    Map(entt::DefaultRegistry& registry, const char* itdFilePath);
     ~Map();
 
     unsigned int Map::getTile(unsigned int x, unsigned int y);
@@ -30,7 +29,7 @@ private:
 	//For the graph construction :
 	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
 	bool isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
-	void lookForNodes(unsigned char* image, int imageWidth, int imageHeight, Graph* graph, int parentNodeIndex,  int x, int y, int xDir, int yDir , int travelLength);
+	void lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int parentNodeIndex,  int x, int y, int xDir, int yDir , int travelLength);
 
 private:
 	// .ITD file data
@@ -46,6 +45,7 @@ private:
     std::vector<unsigned int> m_map;
     unsigned int m_gridWidth;
     unsigned int m_gridHeight;
+	Graph m_graph;
 
 	// Aggregation
 	entt::DefaultRegistry& m_registry;
