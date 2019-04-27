@@ -40,6 +40,7 @@
 #include "systems/physic-system.hpp"
 #include "systems/animation-system.hpp"
 #include "systems/construction-system.hpp"
+#include "systems/follow-system.hpp"
 #include "gui/start-menu.hpp"
 
 #include "components/transform.hpp"
@@ -100,6 +101,7 @@ int main(int argc, char** argv) {
     AnimationSystem animationSystem(registry);
     PhysicSystem physicSystem(registry);
 	ConstructionSystem constructionSystem(registry, emitter, map1);
+	FollowSystem followSystem(registry, emitter);
 
     // Game loop
     bool bWireframe = false;
@@ -147,6 +149,7 @@ int main(int argc, char** argv) {
                 tempFrameCount = 0;
             }
             tempFrameCount++;
+			followSystem.update(deltatime);
             
             // Update physics
             physicWorld->Step(1.0f / 60.0f, 6, 2);
