@@ -9,7 +9,7 @@
 #include "constants.hpp"
 #include "maths.hpp"
 
-Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
+Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, Graph* graph)
 :	m_registry(registry),
 	m_tileFactory(registry),
 	m_mapPath("res/maps/")
@@ -58,7 +58,6 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
     m_gridHeight = imgHeight;
     m_map.resize(m_gridWidth * m_gridHeight);
 
-    // TODO construct adjency list from nodes, start and endpoints, with path color to know who is connected to who and in which order
     glm::vec3 color = glm::vec3(0);
     for (int y = 0; y < imgHeight; y++) {
         for (int x = 0; x < imgWidth; x++) {
@@ -72,9 +71,24 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath)
 				entityId = m_tileFactory.createPath(position);
 			} else if (color == m_startColor) {
 				entityId = m_tileFactory.createSpawn(position);
-				lookForNodes(image, imgWidth, imgHeight, x, y, 0, 1, 1);
 			} else if (color == m_endColor) {
 				entityId = m_tileFactory.createArrival(position);
+				//Constructs adjency list
+				//We start from the endpoint because there will always be only one on the map
+				graph->addNode(x, y);
+				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
+					lookForNodes(image, imgWidth, imgHeight, graph, 0, x+1, y, 1, 0, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x - 1, y)) {
+					lookForNodes(image, imgWidth, imgHeight, graph, 0, x-1, y, -1, 0, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x, y + 1)) {
+					lookForNodes(image, imgWidth, imgHeight, graph, 0, x, y+1, 0, 1, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x, y - 1)) {
+					lookForNodes(image, imgWidth, imgHeight, graph, 0, x, y-1, 0, -1, 1);
+				}
+				//
 			} else if (color == m_constructColor) {
 				entityId = m_tileFactory.createConstructible(position);
 			} else {
@@ -196,29 +210,37 @@ bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight ,
 		&& isPath(image, imageWidth, imageHeight, x, y + 1);
 }
 
-void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int x , int y , int xDir, int yDir ,int travelLength) {
+void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, Graph* graph, int parentNodeIndex, int x, int y, int xDir, int yDir, int travelLength) {
 	if (isStraightLine(image, imageWidth, imageHeight, x, y)) {
-		lookForNodes(image, imageWidth, imageHeight, x + xDir, y + yDir, xDir, yDir , travelLength+1);
+		lookForNodes(image, imageWidth, imageHeight, graph, parentNodeIndex, x + xDir, y + yDir, xDir, yDir, travelLength + 1);
 	}
 	else {
-		//TODO : add a Node to the graph, and add a neighbour to the node that launched this "lookForNodes"
-		spdlog::info("Node at {};{}", x, y);
+		int nodeIndex = graph->nodeIndex(x, y);
 
-		//check forward
-		if (isPath(image, imageWidth, imageHeight, x + xDir, y + yDir)) {
-			lookForNodes(image, imageWidth, imageHeight, x + xDir, y + yDir, xDir, yDir, 1);
+		if (nodeIndex == -1) { //New node
+
+			int newNodeIndex = graph->addNode(x, y);
+			graph->addNeighbouring(parentNodeIndex, newNodeIndex);
+
+			//check forward
+			if (isPath(image, imageWidth, imageHeight, x + xDir, y + yDir)) {
+				lookForNodes(image, imageWidth, imageHeight, graph, newNodeIndex, x + xDir, y + yDir, xDir, yDir, 1);
+			}
+			//check left
+			int newXdir = -yDir;
+			int newYdir = xDir;
+			if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
+				lookForNodes(image, imageWidth, imageHeight, graph, newNodeIndex, x + newXdir, y + newYdir, newXdir, newYdir, 1);
+			}
+			//check right
+			newXdir = yDir;
+			newYdir = -xDir;
+			if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
+				lookForNodes(image, imageWidth, imageHeight, graph, newNodeIndex, x + newXdir, y + newYdir, newXdir, newYdir, 1);
+			}
 		}
-		//check left
-		int newXdir = -yDir;
-		int newYdir = xDir;
-		if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
-			lookForNodes(image, imageWidth, imageHeight, x + newXdir, y + newYdir, newXdir, newYdir, 1);
-		}
-		//check right
-		newXdir = yDir;
-		newYdir = -xDir;
-		if (isPath(image, imageWidth, imageHeight, x + newXdir, y + newYdir)) {
-			lookForNodes(image, imageWidth, imageHeight, x + newXdir, y + newYdir, newXdir, newYdir, 1);
+		else { //Node already added
+			graph->addNeighbouring(parentNodeIndex, nodeIndex,true);
 		}
 	}
 }

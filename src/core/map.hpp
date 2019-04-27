@@ -6,9 +6,11 @@
 
 #include "entity-factories/tile-factory.hpp"
 
+#include "graph.hpp"
+
 class Map {
 public:
-    Map(entt::DefaultRegistry& registry, const char* itdFilePath);
+    Map(entt::DefaultRegistry& registry, const char* itdFilePath, Graph* graph);
     ~Map();
 
     unsigned int Map::getTile(unsigned int x, unsigned int y);
@@ -28,7 +30,7 @@ private:
 	//For the graph construction :
 	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
 	bool isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
-	void lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int x, int y, int xDir, int yDir , int travelLength);
+	void lookForNodes(unsigned char* image, int imageWidth, int imageHeight, Graph* graph, int parentNodeIndex,  int x, int y, int xDir, int yDir , int travelLength);
 
 private:
 	// .ITD file data
