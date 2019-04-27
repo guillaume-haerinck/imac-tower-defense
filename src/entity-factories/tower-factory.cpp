@@ -21,6 +21,8 @@ void TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::LookAt>(myEntity, 0);
 
 	// Setup physic
+	// Cannot both follow and have physic, create another entity here only dedicated to collision ?
+	/*
 	b2CircleShape colliderShape;
 	colliderShape.m_radius = 20.0f;
 	b2FixtureDef* collider = new b2FixtureDef(); // Use unique smart pointer ?
@@ -28,4 +30,5 @@ void TowerFactory::create(float posX, float posY) {
 	collider->friction = 0.3f;
 	collider->shape = &colliderShape; // Will be cloned so can go out of scope
 	m_registry.assign<cmpt::RigidBody>(myEntity, m_rigidBodyFactory.create(b2_staticBody, transform, collider));
+	*/
 }

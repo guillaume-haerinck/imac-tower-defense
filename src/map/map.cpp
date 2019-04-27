@@ -251,22 +251,38 @@ void Map::drawGraph() {
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setColor(255, 0, 100, 1);
 	GLCall(glPointSize(13));
-	//Draw vertices
+
+	// Draw vertices
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x = m_graph.getNode(k).x*100. / m_gridWidth + 50. / m_gridWidth;
 		float y = m_graph.getNode(k).y*100. / m_gridHeight +  50. / m_gridHeight;
 		debugDraw.point(x, y);
 	}
-	//Draw edges
+
+	// Draw edges
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x1 = m_graph.getNode(k).x*100.0f / m_gridHeight + 50. / m_gridHeight;
 		float y1 = m_graph.getNode(k).y*100.0f / m_gridHeight + 50. / m_gridHeight;
 		graphNodeList* list = m_graph.getNeighbours(k);
+
 		while (list != nullptr) {
 			float x2 = m_graph.getNode(list->nodeIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
 			float y2 = m_graph.getNode(list->nodeIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
 			debugDraw.line(x1, y1, x2, y2);
 			list = list->next;
 		}
+	}
+}
+
+void Map::drawGrid() {
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setColor(1, 1, 1, 1);
+
+	for (int x = 0; x <= PROJ_WIDTH_RAT; x += TILE_SIZE) {
+		debugDraw.line(x, 0, x, PROJ_HEIGHT);
+	}
+
+	for (int y = 0; y <= PROJ_HEIGHT; y += TILE_SIZE) {
+		debugDraw.line(0, y, PROJ_WIDTH_RAT, y);
 	}
 }

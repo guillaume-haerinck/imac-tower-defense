@@ -21,6 +21,7 @@ public:
 	unsigned int getGridHeight();
 
 	void drawGraph();
+	void drawGrid();
 
 private:
     glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);

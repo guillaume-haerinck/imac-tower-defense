@@ -3,6 +3,8 @@
 ## 27.04.19
 
 Service locator pattern.
+Map zoom.
+Construct graph from image.
 
 ## 26.04.19
 

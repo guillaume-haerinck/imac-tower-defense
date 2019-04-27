@@ -161,6 +161,7 @@ int main(int argc, char** argv) {
 		// TODO render debugdraw here and not directly
         {
 			map1.drawGraph();
+			map1.drawGrid();
 			physicWorld->DrawDebugData();
             renderSystem.update(viewMat, projMat);
             //noeView->GetRenderer()->Render();
