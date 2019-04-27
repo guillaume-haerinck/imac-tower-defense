@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     }
 
     // View position
-	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH * WIN_RATIO, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
+	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
     glm::vec3 camPos = glm::vec3(0);
 
@@ -104,6 +104,7 @@ int main(int argc, char** argv) {
 	FollowSystem followSystem(registry, emitter);
 
     // Game loop
+	glm::vec2 normMousePos = glm::vec2(0.0f);
     bool bWireframe = false;
     unsigned int tempFrameCount = 0;
     bool bQuit = false;
@@ -179,11 +180,11 @@ int main(int argc, char** argv) {
                 case SDL_MOUSEBUTTONUP:
 					// Send click event
 					{
-						const glm::vec2 normalizedPos = glm::vec2(
+						normMousePos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
-						emitter.publish<evnt::Click>(normalizedPos);
+						emitter.publish<evnt::Click>(normMousePos);
 					}
                     //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
                     break;
@@ -195,11 +196,11 @@ int main(int argc, char** argv) {
 				case SDL_MOUSEMOTION:
 					// Send move event
 					{
-						const glm::vec2 normalizedPos = glm::vec2(
+						normMousePos = glm::vec2(
 							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
 							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 						);
-						emitter.publish<evnt::Move>(normalizedPos);
+						emitter.publish<evnt::Move>(normMousePos);
 					}
 					break;
                 
@@ -225,14 +226,17 @@ int main(int argc, char** argv) {
                     break;
 
 				case SDL_MOUSEWHEEL:
-					if (e.motion.x > 0.0f) {
-						viewMat = glm::translate(viewMat, glm::vec3(PROJ_WIDTH * WIN_RATIO / 2, PROJ_HEIGHT / 2, 0.0f));
-						viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-						viewMat = glm::translate(viewMat, glm::vec3(-(PROJ_WIDTH * WIN_RATIO / 2), -(PROJ_HEIGHT / 2), 0.0f));
-					} else if (e.motion.x < 0.0f) {
-						viewMat = glm::translate(viewMat, glm::vec3(PROJ_WIDTH * WIN_RATIO / 2, PROJ_HEIGHT / 2, 0.0f));
-						viewMat = glm::scale(viewMat, glm::vec3(0.9f, 0.9f, 0.0f));
-						viewMat = glm::translate(viewMat, glm::vec3(-(PROJ_WIDTH * WIN_RATIO / 2), -(PROJ_HEIGHT / 2), 0.0f));
+					{
+						if (e.motion.x > 0.0f) {
+							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
+							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+						}
+						else if (e.motion.x < 0.0f) {
+							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+							viewMat = glm::scale(viewMat, glm::vec3(0.9f, 0.9f, 0.0f));
+							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+						}
 					}
 					break;
             }
