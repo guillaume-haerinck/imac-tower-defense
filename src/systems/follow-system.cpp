@@ -17,6 +17,7 @@ FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 {
 	m_emitter.on<evnt::Move>([this](const evnt::Move& event, EventEmitter& emitter) {
 		this->m_mousePos = event.mousePos;
+		this->m_mousePos.x *= WIN_RATIO;
 	});
 }
 
