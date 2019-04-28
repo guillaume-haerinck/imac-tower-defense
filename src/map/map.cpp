@@ -77,7 +77,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 				entityId = m_tileFactory.createArrival(position);
 				//Constructs adjency list
 				//We start from the endpoint because there will always be only one on the map
-				m_graph.addNode(x, y);
+				m_graph.addEndNode(m_graph.addNode(x, y));
 				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
 					lookForNodes(image, imgWidth, imgHeight, 0, x+1, y, 1, 0, 1);
 				}
@@ -211,9 +211,6 @@ bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, i
 }
 
 bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight , int x, int y) {
-	//bool isHorizontalLine = isPath(image, imageWidth, imageHeight, x - 1, y) && isPath(image, imageWidth, imageHeight, x + 1, y);
-	//bool isVerticalLine = isPath(image, imageWidth, imageHeight, x , y - 1) && isPath(image, imageWidth, imageHeight, x , y + 1);
-	//return isHorizontalLine != isVerticalLine;
 	return isPath(image, imageWidth, imageHeight, x - 1, y)
 		&& isPath(image, imageWidth, imageHeight, x + 1, y)
 		&& !isPath(image, imageWidth, imageHeight, x, y - 1)
@@ -226,17 +223,20 @@ bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight ,
 }
 
 void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int parentNodeIndex, int x, int y, int xDir, int yDir, int travelLength) {
-	if (isStraightLine(image, imageWidth, imageHeight, x, y)) {
+	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
+	if (isStraightLine(image, imageWidth, imageHeight, x, y) && color != m_startColor && color != m_endColor ) {
 		lookForNodes(image, imageWidth, imageHeight, parentNodeIndex, x + xDir, y + yDir, xDir, yDir, travelLength + 1);
 	}
 	else {
 		int nodeIndex = m_graph.nodeIndex(x, y);
 
-		if (nodeIndex == -1) { //New node
+		if (nodeIndex == -1) { //Node hasn't been added yet
 
 			int newNodeIndex = m_graph.addNode(x, y);
-			m_graph.addNeighbouring(parentNodeIndex, newNodeIndex);
-
+			m_graph.addNeighbouring(parentNodeIndex, newNodeIndex, travelLength);
+			if (color == m_startColor) {
+				m_graph.addStartNode(newNodeIndex);
+			}
 			//check forward
 			if (isPath(image, imageWidth, imageHeight, x + xDir, y + yDir)) {
 				lookForNodes(image, imageWidth, imageHeight, newNodeIndex, x + xDir, y + yDir, xDir, yDir, 1);
@@ -255,10 +255,13 @@ void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, in
 			}
 		}
 		else { //Node already added
-			m_graph.addNeighbouring(parentNodeIndex, nodeIndex,true);
+			m_graph.addNeighbouring(parentNodeIndex, nodeIndex, travelLength, true);
 		}
 	}
 }
+
+
+/* ----------------------- DRAW ----------------- */
 
 void Map::drawGraph() {
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
@@ -276,11 +279,11 @@ void Map::drawGraph() {
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x1 = m_graph.getNode(k).x*100.0f / m_gridHeight + 50. / m_gridHeight;
 		float y1 = m_graph.getNode(k).y*100.0f / m_gridHeight + 50. / m_gridHeight;
-		graphNodeList* list = m_graph.getNeighbours(k);
+		graphEdgeList* list = m_graph.getNeighbours(k);
 
 		while (list != nullptr) {
-			float x2 = m_graph.getNode(list->nodeIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
-			float y2 = m_graph.getNode(list->nodeIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
+			float x2 = m_graph.getNode(list->edge.neighbourIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
+			float y2 = m_graph.getNode(list->edge.neighbourIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
 			debugDraw.line(x1, y1, x2, y2);
 			list = list->next;
 		}
@@ -298,4 +301,18 @@ void Map::drawGrid() {
 	for (int y = 0; y <= PROJ_HEIGHT; y += TILE_SIZE) {
 		debugDraw.line(0, y, PROJ_WIDTH_RAT, y);
 	}
+}
+
+/* ----------------------- PATHFINDING ----------------- */
+
+std::vector<int> Map::trajectory() {
+	return m_graph.trajectory(m_graph.getStartNodes().at(0), m_graph.getEndNode());
+}
+
+std::vector<int> Map::trajectory(int node1) {
+	return m_graph.trajectory(node1, m_graph.getEndNode());
+}
+
+std::vector<int> Map::trajectory(int node1, int node2) {
+	return m_graph.trajectory(node1, node2);
 }

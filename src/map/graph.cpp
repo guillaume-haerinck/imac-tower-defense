@@ -1,4 +1,5 @@
 #include "graph.hpp"
+#include <limits>
 
 Graph::Graph() {
 
@@ -16,7 +17,7 @@ graphNode Graph::getNode(int nodeIndex) {
 	return nodes.at(nodeIndex);
 }
 
-graphNodeList* Graph::getNeighbours(int nodeIndex) {
+graphEdgeList* Graph::getNeighbours(int nodeIndex) {
 	return adjencyLists.at(nodeIndex);
 }
 
@@ -30,9 +31,9 @@ int Graph::nodeIndex(int x, int y) {
 }
 
 bool Graph::isNeighbourOf(int node, int potentialNeighbour) {
-	graphNodeList* list = adjencyLists.at(node);
+	graphEdgeList* list = adjencyLists.at(node);
 	while (list != nullptr) {
-		if (list->nodeIndex == potentialNeighbour) {
+		if (list->edge.neighbourIndex == potentialNeighbour) {
 			return true;
 		}
 		list = list->next;
@@ -47,10 +48,27 @@ int Graph::addNode(int x, int y) {
 	return getNodesCount()-1;
 }
 
-void Graph::addNodeToList(graphNodeList** list, int value) {
+void Graph::addStartNode(int nodeIndex) {
+	startNodeIndexes.push_back(nodeIndex);
+}
+
+void Graph::addEndNode(int nodeIndex) {
+	endNodeIndex = nodeIndex;
+}
+
+std::vector<int> Graph::getStartNodes() {
+	return startNodeIndexes;
+}
+
+int Graph::getEndNode() {
+	return endNodeIndex;
+}
+
+void Graph::addNodeToList(graphEdgeList** list, int value, float dist) {
 	//Create new cell
-	graphNodeList* newCell = (graphNodeList*)malloc(sizeof(graphNodeList));
-	newCell->nodeIndex = value;
+	graphEdgeList* newCell = (graphEdgeList*)malloc(sizeof(graphEdgeList));
+	newCell->edge.neighbourIndex = value;
+	newCell->edge.dist = dist;
 	//Add cell to list
 	if (*list == nullptr) {
 		newCell->next = nullptr;
@@ -62,22 +80,75 @@ void Graph::addNodeToList(graphNodeList** list, int value) {
 	}
 }
 
-void Graph::addNeighbourTo(int node, int neighbour) {
-	addNodeToList(&adjencyLists.at(node), neighbour);
+void Graph::addNeighbourTo(int node, int neighbour, float dist) {
+	addNodeToList(&adjencyLists.at(node), neighbour, dist);
 }
 
-void Graph::addNeighbourTo(int node, int neighbour, bool checkRepetitions) {
+void Graph::addNeighbourTo(int node, int neighbour, float dist, bool checkRepetitions) {
 	if (!(checkRepetitions && isNeighbourOf(node, neighbour))) {
-		addNodeToList(&adjencyLists.at(node), neighbour);
+		addNodeToList(&adjencyLists.at(node), neighbour, dist);
 	}
 }
 
-void Graph::addNeighbouring(int node1, int node2) {
-	addNeighbourTo(node1, node2);
-	addNeighbourTo(node2, node1);
+void Graph::addNeighbouring(int node1, int node2, float dist) {
+	addNeighbourTo(node1, node2, dist);
+	addNeighbourTo(node2, node1, dist);
 }
 
-void Graph::addNeighbouring(int node1, int node2, bool checkRepetitions) {
-	addNeighbourTo(node1, node2, checkRepetitions);
-	addNeighbourTo(node2, node1, checkRepetitions);
+void Graph::addNeighbouring(int node1, int node2, float dist, bool checkRepetitions) {
+	addNeighbourTo(node1, node2, dist, checkRepetitions);
+	addNeighbourTo(node2, node1, dist, checkRepetitions);
+}
+
+std::vector<int> Graph::trajectory(int startNode, int endNode) {
+	//Using Dijkstra algorithm
+	//We start at endNode because the path will be built backward at the end and we want it to start at startNode
+
+	//Initialize
+	std::vector<int> traj;
+	int N = getNodesCount();
+	float* dists = (float*)malloc(N * sizeof(float));
+	int* prevNode = (int*)malloc(N * sizeof(int));
+	bool* isDone = (bool*)malloc(N * sizeof(bool));
+	for (int k = 0; k < N; ++k) {
+		dists[k] = std::numeric_limits<float>::infinity();
+		prevNode[k] = -1;
+		isDone[k] = false;
+	}
+	dists[endNode] = 0;
+
+	//Loop: 
+	bool targetFound = false;
+	int currentNode;
+	while (!targetFound) {
+		//Look for node with min dist to endNode
+		currentNode = -1;
+		for (int k = 0; k < N; ++k) {
+			if (!isDone[k] && (currentNode == -1 || dists[k] < dists[currentNode])) {
+				currentNode = k;
+			}
+		}
+		isDone[currentNode] = true;
+		//Check if finished
+		targetFound = (currentNode == -1 || currentNode == startNode);
+		//
+		//Visit current node's neighbours
+		graphEdgeList* neighbours = getNeighbours(currentNode);
+		while (neighbours != nullptr) {
+			float distTest = dists[currentNode] + neighbours->edge.dist;
+			int neighbour = neighbours->edge.neighbourIndex;
+			if (distTest < dists[neighbour]) {
+				dists[neighbour] = distTest;
+				prevNode[neighbour] = currentNode;
+			}
+			neighbours = neighbours->next;
+		}
+	}
+	//Reconstruct shortest path
+	while (currentNode != -1) {
+		spdlog::info("Node at {} {}", getNode(currentNode).x, getNode(currentNode).y);
+		traj.push_back(currentNode);
+		currentNode = prevNode[currentNode];
+	}
+	return traj;
 }
