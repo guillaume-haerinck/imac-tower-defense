@@ -103,11 +103,16 @@ int main(int argc, char** argv) {
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
 	WaveSystem waveSystem(registry, emitter, map1);
 
+	// Timers
+	// TODO attention que ils ne dépassent par leur valeur
+	unsigned int animTimer = 0;
+	unsigned int waveTimer = 0;
+
     // Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
     bool bWireframe = false;
-    unsigned int tempFrameCount = 0;
     bool bQuit = false;
+	bool bStartWave = false;
     double deltatime = TARGET_DELTA_MS;
     Uint64 beginTicks = SDL_GetPerformanceCounter();
     while (!bQuit) {
@@ -141,15 +146,27 @@ int main(int argc, char** argv) {
         // Game updates
         {
             // Update animation
-            if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
+            if (animTimer >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
                 animationSystem.update(deltatime);
-                tempFrameCount = 0;
+				animTimer = 0;
             }
-            tempFrameCount++;
+			animTimer++;
             
             // Update physics
             physicWorld->Step(1.0f / 60.0f, 6, 2);
             movementSystem.update(deltatime);
+
+			// Start wave
+			waveTimer++;
+			if (bStartWave && waveTimer == 60) {
+				spdlog::info("Wave start in 2 seconds");
+			} else if (bStartWave && waveTimer == 60 * 2) {
+				spdlog::info("Wave start in 1 second");
+			} else if (bStartWave && waveTimer >= 60 * 3) {
+				emitter.publish<evnt::StartWave>(5);
+				waveTimer = 0;
+				bStartWave = false;
+			}
         }
 
 		// Render Debug
@@ -217,7 +234,8 @@ int main(int argc, char** argv) {
                         }
                         bWireframe = !bWireframe;
 					} else if (e.key.keysym.sym == 'w') {
-						emitter.publish<evnt::StartWave>(3);
+						bStartWave = true;
+						waveTimer = 0;
 					} else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
                         viewTranslation.y++;
 						viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
