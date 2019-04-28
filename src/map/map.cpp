@@ -105,7 +105,13 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
 
 unsigned int Map::getTile(unsigned int x, unsigned int y) const {
-    return m_map.at(y * m_gridWidth + x);
+	try {
+		return m_map.at(y * m_gridWidth + x);
+	}
+	catch (const std::out_of_range e) {
+		spdlog::warn("Tile out of map range");
+		debug_break();
+	}
 }
 
 unsigned int Map::getGridWidth() const  { return m_gridWidth; }

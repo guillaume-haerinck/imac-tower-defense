@@ -139,13 +139,6 @@ int main(int argc, char** argv) {
 
         // Game updates
         {
-			// Update view
-			viewMat = glm::mat4(1.0f);
-			viewMat = glm::translate(viewMat, glm::vec3(viewTranslation, 0.0f));
-			//viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-			viewMat = glm::scale(viewMat, glm::vec3(viewScale, viewScale, 0.0f));
-			//viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
-
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
                 animationSystem.update(deltatime);
@@ -225,12 +218,16 @@ int main(int argc, char** argv) {
                         bWireframe = !bWireframe;
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
                         viewTranslation.y++;
+						viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
 						viewTranslation.y--;
+						viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
 						viewTranslation.x--;
+						viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
 						viewTranslation.x++;
+						viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
                     }
                     break;
 
@@ -238,18 +235,21 @@ int main(int argc, char** argv) {
 					{
 						if (e.motion.x > 0.0f) {
 							// TODO ameliorer translation quand proche du bord
-							viewScale += 0.1f;
-							
+							viewScale *= 1.1f;
+							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
+							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
 						}
 						else if (e.motion.x < 0.0f) {
-							/*
 							const glm::vec2 invertNormMousePos = glm::vec2(
 								PROJ_WIDTH - normMousePos.x,
 								PROJ_HEIGHT - normMousePos.y
 							);
-							*/
 							// TODO réduire translation quand proche du bord
-							viewScale -= 0.05f;
+							viewScale *= 0.95f;
+							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
+							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
+							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
 						}
 					}
 					break;
