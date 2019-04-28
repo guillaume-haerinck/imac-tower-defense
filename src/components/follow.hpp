@@ -2,8 +2,8 @@
 
 namespace cmpt {
 	struct Follow {
-		Follow(unsigned int entityId) : entityId(entityId) {}
+		Follow(unsigned int targetId) : targetId(targetId) {}
 
-		unsigned int entityId
+		unsigned int targetId;
 	};
 }

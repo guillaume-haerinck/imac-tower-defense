@@ -13,6 +13,7 @@
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
 #include "components/trajectory.hpp"
+#include "components/follow.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)
@@ -44,6 +45,16 @@ void MovementSystem::update(double deltatime) {
 		}
 		else if( traj.currentTarget < traj.traj.size()-1){
 			traj.currentTarget++;
+		}
+	});
+
+	m_registry.view<cmpt::Transform, cmpt::Follow>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow) {
+		glm::vec2 direction = m_registry.get<cmpt::Transform>(follow.targetId).position - transform.position;
+		float norm = glm::length(direction);
+		spdlog::info("{} {}", transform.position.x, transform.position.y);
+		if (norm > 1) {
+			direction *= 0.5 / glm::length(direction);
+			transform.position += direction;
 		}
 	});
 }
