@@ -142,11 +142,9 @@ int main(int argc, char** argv) {
 			// Update view
 			viewMat = glm::mat4(1.0f);
 			viewMat = glm::translate(viewMat, glm::vec3(viewTranslation, 0.0f));
-			/*
-			viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+			//viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
 			viewMat = glm::scale(viewMat, glm::vec3(viewScale, viewScale, 0.0f));
-			viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
-			*/
+			//viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
 
             // Update animation
             if (tempFrameCount >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target

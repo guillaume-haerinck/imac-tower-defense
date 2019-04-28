@@ -120,8 +120,13 @@ glm::vec2 Map::windowToGrid(float x, float y) {
 glm::vec2 Map::projToGrid(float x, float y) {
 	spdlog::info("scale is {}", m_viewScale);
 	spdlog::info("translation is {} {}", m_viewTranslation.x, m_viewTranslation.y);
-	float posX = (WIN_RATIO * x - m_viewTranslation.x) * m_viewScale;
-	float posY = (y - m_viewTranslation.y) * m_viewScale;
+
+	float posX = WIN_RATIO * x - m_viewTranslation.x;
+	posX = imac::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE * m_viewScale, 0, m_gridWidth * TILE_SIZE);
+	float posY = y - m_viewTranslation.y;
+	posY = imac::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE * m_viewScale, 0, m_gridHeight * TILE_SIZE);
+
+	spdlog::info("posY is {}", posY);
 
 	unsigned int tileX = imac::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
 	unsigned int tileY = imac::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
