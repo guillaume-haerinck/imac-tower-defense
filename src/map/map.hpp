@@ -15,7 +15,7 @@ class Map {
 public:
     Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale);
 
-    unsigned int Map::getTile(unsigned int x, unsigned int y) const;
+    int Map::getTile(unsigned int x, unsigned int y) const;
     glm::vec2 windowToGrid(float x, float y);
 	glm::vec2 projToGrid(float x, float y);
     glm::vec2 gridToProj(unsigned int x, unsigned int y);

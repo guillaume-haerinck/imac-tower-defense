@@ -235,7 +235,8 @@ int main(int argc, char** argv) {
 					{
 						if (e.motion.x > 0.0f) {
 							// TODO ameliorer translation quand proche du bord
-							viewScale *= 1.1f;
+							viewScale += 0.1f;
+							viewTranslation = normMousePos;
 							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
 							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
 							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
@@ -246,7 +247,8 @@ int main(int argc, char** argv) {
 								PROJ_HEIGHT - normMousePos.y
 							);
 							// TODO réduire translation quand proche du bord
-							viewScale *= 0.95f;
+							viewScale -= 0.05f;
+							viewTranslation = invertNormMousePos;
 							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
 							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
 							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
