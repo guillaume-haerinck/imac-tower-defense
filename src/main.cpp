@@ -41,9 +41,11 @@
 #include "systems/animation-system.hpp"
 #include "systems/construction-system.hpp"
 #include "systems/follow-system.hpp"
+#include "systems/wave-system.hpp"
 #include "gui/start-menu.hpp"
 #include "events/left-click.hpp"
 #include "events/mouse-move.hpp"
+#include "events/start-wave.hpp"
 
 #pragma warning (disable : 26495) // Initialisation of a member missing in constructor of box2d and imgui
 
@@ -101,6 +103,7 @@ int main(int argc, char** argv) {
     PhysicSystem physicSystem(registry);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
 	FollowSystem followSystem(registry, emitter);
+	WaveSystem waveSystem(registry, emitter, map1);
 
     // Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
@@ -216,7 +219,9 @@ int main(int argc, char** argv) {
                             GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
                         }
                         bWireframe = !bWireframe;
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+					} else if (e.key.keysym.sym == 'w') {
+						emitter.publish<evnt::StartWave>(3);
+					} else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
                         viewTranslation.y++;
 						viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
                     } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
@@ -235,8 +240,9 @@ int main(int argc, char** argv) {
 					{
 						if (e.motion.x > 0.0f) {
 							// TODO ameliorer translation quand proche du bord
+							// FIXME liens avec grille pas bon
 							viewScale += 0.1f;
-							viewTranslation = normMousePos;
+							viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
 							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
 							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
 							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
@@ -247,8 +253,9 @@ int main(int argc, char** argv) {
 								PROJ_HEIGHT - normMousePos.y
 							);
 							// TODO réduire translation quand proche du bord
+							// FIXME liens avec grille pas bon
 							viewScale -= 0.05f;
-							viewTranslation = invertNormMousePos;
+							viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
 							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
 							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
 							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
