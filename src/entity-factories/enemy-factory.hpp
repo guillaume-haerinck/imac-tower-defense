@@ -9,7 +9,7 @@ class EnemyFactory : public Factory {
 public:
 	EnemyFactory(entt::DefaultRegistry& registry);
 
-	void create(float posX, float posY);
+	void create(std::vector<glm::vec2> traj);
 
 private:
 	SpriteFactory m_spriteFactory;

@@ -19,7 +19,6 @@ void TowerFactory::create(float posX, float posY) {
 	const cmpt::Transform transform(glm::vec2(posX, posY));
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
 	m_registry.assign<cmpt::LookAt>(myEntity, 0);
-
 	// Setup physic
 	// Cannot both follow and have physic, create another entity here only dedicated to collision ?
 	/*

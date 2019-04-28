@@ -12,6 +12,7 @@
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
+#include "components/trajectory.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)
@@ -30,7 +31,19 @@ void MovementSystem::update(double deltatime) {
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
-		glm::vec2 direction = transform.position - this->m_mousePos;
-		transform.rotation = -atan2(direction.x, direction.y) - M_PI / 2;
+		glm::vec2 direction =  this->m_mousePos - transform.position;
+		transform.rotation = atan2(direction.y, direction.x) ;
+	});
+
+	m_registry.view<cmpt::Transform, cmpt::Trajectory>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Trajectory& traj) {
+		glm::vec2 direction = traj.traj.at(traj.currentTarget) - transform.position;
+		float norm = glm::length(direction);
+		if (norm > 1) {
+			direction *= 0.5 / glm::length(direction);
+			transform.position += direction;
+		}
+		else if( traj.currentTarget < traj.traj.size()-1){
+			traj.currentTarget++;
+		}
 	});
 }

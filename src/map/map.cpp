@@ -305,14 +305,19 @@ void Map::drawGrid() {
 
 /* ----------------------- PATHFINDING ----------------- */
 
-std::vector<int> Map::trajectory() {
-	return m_graph.trajectory(m_graph.getStartNodes().at(0), m_graph.getEndNode());
+std::vector<glm::vec2> Map::trajectory() {
+	return trajectory(m_graph.getStartNodes().at(0), m_graph.getEndNode());
 }
 
-std::vector<int> Map::trajectory(int node1) {
-	return m_graph.trajectory(node1, m_graph.getEndNode());
+std::vector<glm::vec2> Map::trajectory(int node1) {
+	return trajectory(node1, m_graph.getEndNode());
 }
 
-std::vector<int> Map::trajectory(int node1, int node2) {
-	return m_graph.trajectory(node1, node2);
+std::vector<glm::vec2> Map::trajectory(int node1, int node2) {
+	std::vector<int> graphTraj = m_graph.trajectory(node1, node2);
+	std::vector<glm::vec2> traj(graphTraj.size());
+	for (int n = 0; n < traj.size(); ++n) {
+		traj.at(n) = gridToProj(m_graph.getNode(graphTraj.at(n)).x, m_graph.getNode(graphTraj.at(n)).y);
+	}
+	return traj;
 }
