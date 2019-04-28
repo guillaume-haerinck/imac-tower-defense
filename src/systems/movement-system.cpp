@@ -1,4 +1,4 @@
-#include "follow-system.hpp"
+#include "movement-system.hpp"
 
 #define _USE_MATH_DEFINES // for C++
 #include <cmath>
@@ -10,9 +10,10 @@
 #include "core/constants.hpp"
 #include "events/mouse-move.hpp"
 #include "components/transform.hpp"
+#include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
 
-FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
+MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)
 {
 	m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove& event, EventEmitter& emitter) {
@@ -21,7 +22,13 @@ FollowSystem::FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 	});
 }
 
-void FollowSystem::update(double deltatime) {
+void MovementSystem::update(double deltatime) {
+	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
+		transform.position.x = rigidbody.body->GetPosition().x;
+		transform.position.y = rigidbody.body->GetPosition().y;
+		transform.rotation = rigidbody.body->GetAngle();
+	});
+
 	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
 		glm::vec2 direction = transform.position - this->m_mousePos;
 		transform.rotation = -atan2(direction.x, direction.y) - M_PI / 2;

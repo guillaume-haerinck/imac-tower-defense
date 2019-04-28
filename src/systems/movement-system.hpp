@@ -1,13 +1,14 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <Box2D/Box2D.h>
 
 #include "system.hpp"
 #include "events/event-emitter.hpp"
 
-class FollowSystem : public System {
+class MovementSystem : public System {
 public:
-	FollowSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
+	MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
 	void update(double deltatime);
 
 private:

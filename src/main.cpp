@@ -37,10 +37,9 @@
 #include "entity-factories/tower-factory.hpp"
 #include "entity-factories/enemy-factory.hpp"
 #include "systems/render-system.hpp"
-#include "systems/physic-system.hpp"
+#include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
 #include "systems/construction-system.hpp"
-#include "systems/follow-system.hpp"
 #include "systems/wave-system.hpp"
 #include "gui/start-menu.hpp"
 #include "events/left-click.hpp"
@@ -100,9 +99,8 @@ int main(int argc, char** argv) {
     // Systems
     RenderSystem renderSystem(registry, viewMat, projMat);
     AnimationSystem animationSystem(registry);
-    PhysicSystem physicSystem(registry);
+    MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
-	FollowSystem followSystem(registry, emitter);
 	WaveSystem waveSystem(registry, emitter, map1);
 
     // Game loop
@@ -148,11 +146,10 @@ int main(int argc, char** argv) {
                 tempFrameCount = 0;
             }
             tempFrameCount++;
-			followSystem.update(deltatime);
             
             // Update physics
             physicWorld->Step(1.0f / 60.0f, 6, 2);
-            physicSystem.update(deltatime, physicWorld.get());
+            movementSystem.update(deltatime);
         }
 
 		// Render Debug
