@@ -1,5 +1,6 @@
 #include "graph.hpp"
 #include <limits>
+#include <time.h>
 
 Graph::Graph() {
 
@@ -105,6 +106,7 @@ std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	//We start at endNode because the path will be built backward at the end and we want it to start at startNode
 
 	//Initialize
+	srand(time(NULL));
 	std::vector<int> traj;
 	int N = getNodesCount();
 	float* dists = (float*)malloc(N * sizeof(float));
@@ -137,7 +139,7 @@ std::vector<int> Graph::trajectory(int startNode, int endNode) {
 		while (neighbours != nullptr) {
 			float distTest = dists[currentNode] + neighbours->edge.dist;
 			int neighbour = neighbours->edge.neighbourIndex;
-			if (distTest < dists[neighbour]) {
+			if (distTest < dists[neighbour] || (distTest==dists[neighbour] && static_cast <float> (rand()) / static_cast <float> (RAND_MAX) <0.5) ) {
 				dists[neighbour] = distTest;
 				prevNode[neighbour] = currentNode;
 			}
