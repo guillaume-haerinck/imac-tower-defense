@@ -31,6 +31,7 @@ public:
 	void addStartNode(int nodeIndex);
 	void addEndNode(int nodeIndex);
 	std::vector<int> getStartNodes();
+	int getStartNode();
 	int getEndNode();
 	void addNeighbourTo(int node, int neighbour, float dist);
 	void addNeighbourTo(int node, int neighbour, float dist, bool checkRepetitions);

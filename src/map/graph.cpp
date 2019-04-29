@@ -1,5 +1,8 @@
 #include "graph.hpp"
+
 #include <limits>
+
+#include "core/random.hpp"
 
 Graph::Graph() {
 
@@ -60,6 +63,10 @@ std::vector<int> Graph::getStartNodes() {
 	return startNodeIndexes;
 }
 
+int Graph::getStartNode() {
+	return startNodeIndexes.at(randInt(startNodeIndexes.size()));
+}
+
 int Graph::getEndNode() {
 	return endNodeIndex;
 }
@@ -113,7 +120,7 @@ int Graph::pickNextNode(int node) {
 	if (neighbours == nullptr) {
 		return -1;
 	}
-	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float r = random();
 	while (r > neighbours->edge.dist) {
 		r -= neighbours->edge.dist;
 		neighbours = neighbours->next;

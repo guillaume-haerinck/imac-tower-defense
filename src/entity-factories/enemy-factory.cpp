@@ -20,7 +20,7 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 }
 
 void EnemyFactory::create() {
-	int startNode = m_map.m_graph.getStartNodes().at(0);
+	int startNode = m_map.m_graph.getStartNode();
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196)));
 	m_registry.assign<renderTag::Atlas>(myEntity);
