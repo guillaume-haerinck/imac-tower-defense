@@ -41,7 +41,7 @@ public:
 	bool isNeighbourOf(int node, int potentialNeighbour);
 	float distEstimator(int node1);
 	float distEstimator(int node1, int node2);
-	int pickNextNode(int node); //WARNING : should only be used if it is a stochastic graph ! (i.e. wheights of edges starting from a given node always add up to 1)
+	int pickNextNode(int currentNode, int previousNode); //WARNING : should only be used if it is a stochastic graph ! (i.e. wheights of edges starting from a given node always add up to 1)
 	std::vector<int> trajectory(int startNode, int endNode);
 
 private:

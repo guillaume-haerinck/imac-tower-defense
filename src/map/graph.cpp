@@ -115,18 +115,53 @@ float Graph::distEstimator(int node1, int node2) {
 	return abs(getNode(node1).x - getNode(node2).x) + abs(getNode(node1).y - getNode(node2).y);
 }
 
-int Graph::pickNextNode(int node) {
-	graphEdgeList* neighbours = getNeighbours(node);
-	if (neighbours == nullptr) {
-		return -1;
-	}
+int Graph::pickNextNode(int currentNode, int previousNode) {
+	graphEdgeList* neighbours = getNeighbours(currentNode);
 	float r = random();
 	while (r > neighbours->edge.dist) {
 		r -= neighbours->edge.dist;
 		neighbours = neighbours->next;
 	}
-	return neighbours->edge.neighbourIndex;
+	if (neighbours->edge.neighbourIndex != previousNode || neighbours->edge.dist > 0.999) {
+		return neighbours->edge.neighbourIndex;
+	}
+	else {
+		return pickNextNode(currentNode, previousNode);
+		//I hate to do it this way, but it is easy. . .
+		//and it should be fine since there cannot be more than 4 neighbours and they (supposedely) will not have absurdely different weights
+	}
 }
+
+/*int Graph::pickNextNode(int currentNode, int previousNode) {
+	graphEdgeList* neighbours = getNeighbours(currentNode);
+	float r = random();
+	while ( r > neighbours->edge.dist && neighbours->edge.neighbourIndex != previousNode) {
+		r -= neighbours->edge.dist;
+		neighbours = neighbours->next;
+	}
+	if (neighbours->edge.neighbourIndex != previousNode) {
+		return neighbours->edge.neighbourIndex;
+	}
+	else {
+		float p = neighbours->edge.dist;
+		if (p > 0.999) {
+			return neighbours->edge.neighbourIndex;
+		}
+		else {
+			neighbours = getNeighbours(currentNode);
+			float scale = 1. / (1 - p);
+			r = random();
+			while (r > neighbours->edge.dist * scale || neighbours->edge.neighbourIndex != previousNode) {
+				spdlog::info("{}", r);
+				if (neighbours->edge.neighbourIndex != previousNode) {
+					r -= neighbours->edge.dist * scale;
+				}
+				neighbours = neighbours->next;
+			}
+			return neighbours->edge.neighbourIndex;
+		}
+	}
+}*/
 
 std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	//Using Dijkstra algorithm

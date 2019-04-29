@@ -60,7 +60,9 @@ void MovementSystem::update(double deltatime) {
 		transform.position += direction;
 		}
 		else if (pathfinding.currentTarget != map->m_graph.getEndNode()) {
-			pathfinding.currentTarget = map->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget);
+			int tmp = pathfinding.currentTarget;
+			pathfinding.currentTarget = map->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
+			pathfinding.previousNode = tmp;
 		}
 	});
 
