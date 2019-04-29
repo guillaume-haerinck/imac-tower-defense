@@ -13,6 +13,8 @@
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
+#include <array>
+
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
 	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
@@ -362,6 +364,10 @@ void Map::constructPathfindingGraph() {
 			neighbours = neighbours->next;
 		}
 	}
+	//I'm freeeeee !
+	free(dists);
+	free(prevNode);
+	free(isDone);
 }
 
 /* ----------------------- DRAW ----------------- */
