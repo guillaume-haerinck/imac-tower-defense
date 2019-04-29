@@ -1,7 +1,7 @@
 #ifdef _WIN32
-    #define _CRTDBG_MAP_ALLOC
-    #include <stdlib.h>
-    #include <crtdbg.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #endif
 
 #include <cstdlib>
@@ -51,38 +51,38 @@
 static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
-    #ifdef _WIN32 // Check memory leaks
-        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    #endif
+#ifdef _WIN32 // Check memory leaks
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
 	// Reference to these instances are passed around a lot
 	entt::DefaultRegistry registry;
 	EventEmitter emitter{};
 
 	// Game start
-    Game game(registry);
-    if (game.init() == EXIT_FAILURE) {
-        debug_break();
-        return EXIT_FAILURE;
-    }
+	Game game(registry);
+	if (game.init() == EXIT_FAILURE) {
+		debug_break();
+		return EXIT_FAILURE;
+	}
 
-    // View matrices, they are passed around a lot as well
+	// View matrices, they are passed around a lot as well
 	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
 	glm::vec2 viewTranslation = glm::vec2(0.0f);
 	float viewScale = 1.0f;
 
-    // Init Physics
-	b2Vec2 gravity(0.0f, -10.0f);	
-    auto physicWorld = std::make_shared<b2World>(gravity);
+	// Init Physics
+	b2Vec2 gravity(0.0f, -10.0f);
+	auto physicWorld = std::make_shared<b2World>(gravity);
 
 	// Link debug draw to physics
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setProjMat(projMat);
 	debugDraw.setViewMat(viewMat);
-    physicWorld->SetDebugDraw(&debugDraw);
-    //debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
-    
+	physicWorld->SetDebugDraw(&debugDraw);
+	//debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+
 	// Noesis GUI
 	/*
 	StartMenu startMenu;
@@ -92,14 +92,17 @@ int main(int argc, char** argv) {
 	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 	*/
-    
+
+	// Random
+	srand(time(NULL));
+
 	// Map
 	Map map1(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
 
-    // Systems
-    RenderSystem renderSystem(registry, viewMat, projMat);
-    AnimationSystem animationSystem(registry);
-    MovementSystem movementSystem(registry, emitter);
+	// Systems
+	RenderSystem renderSystem(registry, viewMat, projMat);
+	AnimationSystem animationSystem(registry);
+	MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
 	WaveSystem waveSystem(registry, emitter, map1);
 
@@ -108,66 +111,68 @@ int main(int argc, char** argv) {
 	unsigned int animTimer = 0;
 	unsigned int waveTimer = 0;
 
-    // Game loop
+	// Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
-    bool bWireframe = false;
-    bool bQuit = false;
+	bool bWireframe = false;
+	bool bQuit = false;
 	bool bStartWave = false;
-    double deltatime = TARGET_DELTA_MS;
-    Uint64 beginTicks = SDL_GetPerformanceCounter();
-    while (!bQuit) {
-        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	double deltatime = TARGET_DELTA_MS;
+	Uint64 beginTicks = SDL_GetPerformanceCounter();
+	while (!bQuit) {
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        // Imgui main debug window
+		// Imgui main debug window
 		{
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL2_NewFrame(game.getWindow());
-            ImGui::NewFrame();
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame(game.getWindow());
+			ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
-			    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
 
-        // Noesis update
+		// Noesis update
 		/*
-        {
-            // Noesis gui update
-            noeView->Update(SDL_GetTicks());
-            noeView->GetRenderer()->UpdateRenderTree();
-            noeView->GetRenderer()->RenderOffscreen();
+		{
+		// Noesis gui update
+		noeView->Update(SDL_GetTicks());
+		noeView->GetRenderer()->UpdateRenderTree();
+		noeView->GetRenderer()->RenderOffscreen();
 
-            // Need to restore the GPU state because noesis changes it
-            GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-            GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-            GLCall(glClearStencil(0));
-        }
+		// Need to restore the GPU state because noesis changes it
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
+		GLCall(glClearStencil(0));
+		}
 		*/
 
-        // Game updates
-        {
-            // Update animation
-            if (animTimer >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
-                animationSystem.update(deltatime);
+		// Game updates
+		{
+			// Update animation
+			if (animTimer >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
+				animationSystem.update(deltatime);
 				animTimer = 0;
-            }
+			}
 			animTimer++;
-            
-            // Update physics
-            physicWorld->Step(1.0f / 60.0f, 6, 2);
-            movementSystem.update(deltatime);
+
+			// Update physics
+			physicWorld->Step(1.0f / 60.0f, 6, 2);
+			movementSystem.update(deltatime);
 
 			// Start wave
 			waveTimer++;
-			if (bStartWave && waveTimer == 60) {
-				spdlog::info("Wave start in 2 seconds");
-			} else if (bStartWave && waveTimer == 60 * 2) {
-				spdlog::info("Wave start in 1 second");
-			} else if (bStartWave && waveTimer >= 60 * 3) {
-				emitter.publish<evnt::StartWave>(5);
-				waveTimer = 0;
-				bStartWave = false;
+			if (bStartWave && waveTimer >= 20) {
+				if (waveTimer <= 100) {
+					if (waveTimer % 8 == 0) {
+						emitter.publish<evnt::StartWave>(5);
+					}
+				}
+				else {
+					bStartWave = false;
+					waveTimer = 0;
+				}
 			}
-        }
+		}
 
 		// Render Debug
 		{
@@ -179,130 +184,137 @@ int main(int argc, char** argv) {
 			physicWorld->DrawDebugData();
 		}
 
-        // Render
-        {
-            renderSystem.update();
-            //noeView->GetRenderer()->Render();
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        }
+		// Render
+		{
+			renderSystem.update();
+			//noeView->GetRenderer()->Render();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 
-        /* Handle inputs */
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                bQuit = true;
-                break;
-            }
-            
-            switch (e.type) {
-                case SDL_MOUSEBUTTONUP:
-					// Send click event
-					if (e.button.button == SDL_BUTTON_LEFT) {
-						normMousePos = glm::vec2(
-							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
-						);
-						emitter.publish<evnt::LeftClick>(normMousePos);
+		/* Handle inputs */
+		SDL_Event e;
+		while (SDL_PollEvent(&e)) {
+			if (e.type == SDL_QUIT) {
+				bQuit = true;
+				break;
+			}
+
+			switch (e.type) {
+			case SDL_MOUSEBUTTONUP:
+				// Send click event
+				if (e.button.button == SDL_BUTTON_LEFT) {
+					normMousePos = glm::vec2(
+						imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+						imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+					);
+					emitter.publish<evnt::LeftClick>(normMousePos);
+				}
+				//noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				//noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				break;
+
+			case SDL_MOUSEMOTION:
+				// Send move event
+			{
+				normMousePos = glm::vec2(
+					imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+					imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+				);
+				emitter.publish<evnt::MouseMove>(normMousePos);
+			}
+			break;
+
+			case SDL_KEYDOWN:
+				if (e.key.keysym.sym == 'q') { // Quit
+					bQuit = true;
+				}
+				else if (e.key.keysym.sym == 'p') {
+					if (bWireframe) {
+						GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 					}
-                    //noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-                    break;
-
-                case SDL_MOUSEBUTTONDOWN:
-                    //noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
-                    break;
-
-				case SDL_MOUSEMOTION:
-					// Send move event
-					{
-						normMousePos = glm::vec2(
-							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
-						);
-						emitter.publish<evnt::MouseMove>(normMousePos);
+					else {
+						GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 					}
-					break;
-                
-                case SDL_KEYDOWN:
-                    if (e.key.keysym.sym == 'q') { // Quit
-                        bQuit = true;
-                    } else if (e.key.keysym.sym == 'p') {
-                        if (bWireframe) {
-                            GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-                        } else {
-                            GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
-                        }
-                        bWireframe = !bWireframe;
-					} else if (e.key.keysym.sym == 'w') {
-						bStartWave = true;
-						waveTimer = 0;
-					} else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-                        viewTranslation.y++;
-						viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-						viewTranslation.y--;
-						viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-						viewTranslation.x--;
-						viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
-                    } else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-						viewTranslation.x++;
-						viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
-                    }
-                    break;
+					bWireframe = !bWireframe;
+				}
+				else if (e.key.keysym.sym == 'w') {
+					bStartWave = true;
+					waveTimer = 0;
+				}
+				else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+					viewTranslation.y++;
+					viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
+				}
+				else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+					viewTranslation.y--;
+					viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
+				}
+				else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+					viewTranslation.x--;
+					viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
+				}
+				else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+					viewTranslation.x++;
+					viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				break;
 
-				case SDL_MOUSEWHEEL:
-					{
-						if (e.motion.x > 0.0f) {
-							// TODO ameliorer translation quand proche du bord
-							// FIXME liens avec grille pas bon
-							viewScale += 0.1f;
-							viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
-							viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-							viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-							viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
-						}
-						else if (e.motion.x < 0.0f) {
-							const glm::vec2 invertNormMousePos = glm::vec2(
-								PROJ_WIDTH - normMousePos.x,
-								PROJ_HEIGHT - normMousePos.y
-							);
-							// TODO réduire translation quand proche du bord
-							// FIXME liens avec grille pas bon
-							viewScale -= 0.05f;
-							viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
-							viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
-							viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
-							viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
-						}
-					}
-					break;
-            }
-        }
+			case SDL_MOUSEWHEEL:
+			{
+				if (e.motion.x > 0.0f) {
+					// TODO ameliorer translation quand proche du bord
+					// FIXME liens avec grille pas bon
+					viewScale += 0.1f;
+					viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
+					viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+					viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
+					viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+				}
+				else if (e.motion.x < 0.0f) {
+					const glm::vec2 invertNormMousePos = glm::vec2(
+						PROJ_WIDTH - normMousePos.x,
+						PROJ_HEIGHT - normMousePos.y
+					);
+					// TODO réduire translation quand proche du bord
+					// FIXME liens avec grille pas bon
+					viewScale -= 0.05f;
+					viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
+					viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
+					viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
+					viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
+				}
+			}
+			break;
+			}
+		}
 
-        // Update window
-        SDL_GL_SwapWindow(game.getWindow());
+		// Update window
+		SDL_GL_SwapWindow(game.getWindow());
 
-        // Check framerate
+		// Check framerate
 		// FIXME too rapid on portable computers
-        {
-            Uint64 endTicks = SDL_GetPerformanceCounter();
-            deltatime = (double) (endTicks - beginTicks) * 1000 / (double) SDL_GetPerformanceFrequency();
+		{
+			Uint64 endTicks = SDL_GetPerformanceCounter();
+			deltatime = (double)(endTicks - beginTicks) * 1000 / (double)SDL_GetPerformanceFrequency();
 
-            // If deltaTime too big, we must have resumed from a breakpoint
-            // So frame lock on the target framerate
-            if (deltatime > MAX_DELTA_MS) {
-                deltatime = TARGET_DELTA_MS; 
-            }
+			// If deltaTime too big, we must have resumed from a breakpoint
+			// So frame lock on the target framerate
+			if (deltatime > MAX_DELTA_MS) {
+				deltatime = TARGET_DELTA_MS;
+			}
 
-            // If deltaTime too small, wait to get to the target framerate
-            if (deltatime < TARGET_DELTA_MS) { 
-                SDL_Delay((Uint32) (TARGET_DELTA_MS - deltatime)); 
-            }
-            beginTicks = endTicks;
-        }
-    }
+			// If deltaTime too small, wait to get to the target framerate
+			if (deltatime < TARGET_DELTA_MS) {
+				SDL_Delay((Uint32)(TARGET_DELTA_MS - deltatime));
+			}
+			beginTicks = endTicks;
+		}
+	}
 
-    //noeView->GetRenderer()->Shutdown();
-    return EXIT_SUCCESS;
+	//noeView->GetRenderer()->Shutdown();
+	return EXIT_SUCCESS;
 }

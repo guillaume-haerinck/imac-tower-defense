@@ -14,9 +14,12 @@
 #include "components/look-at.hpp"
 #include "components/trajectory.hpp"
 #include "components/follow.hpp"
+#include "components/pathfinding.hpp"
+
+#include "map/graph.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: System(registry), m_emitter(emitter)
+	: System(registry), m_emitter(emitter)
 {
 	m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove& event, EventEmitter& emitter) {
 		this->m_mousePos = event.mousePos;
@@ -32,8 +35,8 @@ void MovementSystem::update(double deltatime) {
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
-		glm::vec2 direction =  this->m_mousePos - transform.position;
-		transform.rotation = atan2(direction.y, direction.x) ;
+		glm::vec2 direction = this->m_mousePos - transform.position;
+		transform.rotation = atan2(direction.y, direction.x);
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Trajectory>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Trajectory& traj) {
@@ -43,15 +46,27 @@ void MovementSystem::update(double deltatime) {
 			direction *= 0.5 / glm::length(direction);
 			transform.position += direction;
 		}
-		else if( traj.currentTarget < traj.traj.size()-1){
+		else if (traj.currentTarget < traj.traj.size() - 1) {
 			traj.currentTarget++;
+		}
+	});
+
+	m_registry.view<cmpt::Transform, cmpt::Pathfinding>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Pathfinding& pathfinding) {
+		Map* map = pathfinding.map;
+		glm::vec2 direction = map->getNodePosition(pathfinding.currentTarget) - transform.position;
+		float norm = glm::length(direction);
+		if (norm > 1) {
+		direction *= 0.5 / glm::length(direction);
+		transform.position += direction;
+		}
+		else if (pathfinding.currentTarget != map->m_graph.getEndNode()) {
+			pathfinding.currentTarget = map->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget);
 		}
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Follow>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow) {
 		glm::vec2 direction = m_registry.get<cmpt::Transform>(follow.targetId).position - transform.position;
 		float norm = glm::length(direction);
-		spdlog::info("{} {}", transform.position.x, transform.position.y);
 		if (norm > 1) {
 			direction *= 0.5 / glm::length(direction);
 			transform.position += direction;

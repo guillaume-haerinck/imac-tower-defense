@@ -1,6 +1,5 @@
 #include "graph.hpp"
 #include <limits>
-#include <time.h>
 
 Graph::Graph() {
 
@@ -46,7 +45,7 @@ bool Graph::isNeighbourOf(int node, int potentialNeighbour) {
 int Graph::addNode(int x, int y) {
 	nodes.push_back(graphNode(x, y));
 	adjencyLists.push_back(nullptr);
-	return getNodesCount()-1;
+	return getNodesCount() - 1;
 }
 
 void Graph::addStartNode(int nodeIndex) {
@@ -101,6 +100,27 @@ void Graph::addNeighbouring(int node1, int node2, float dist, bool checkRepetiti
 	addNeighbourTo(node2, node1, dist, checkRepetitions);
 }
 
+float Graph::distEstimator(int node1) {
+	return distEstimator(node1, getEndNode());
+}
+
+float Graph::distEstimator(int node1, int node2) {
+	return abs(getNode(node1).x - getNode(node2).x) + abs(getNode(node1).y - getNode(node2).y);
+}
+
+int Graph::pickNextNode(int node) {
+	graphEdgeList* neighbours = getNeighbours(node);
+	if (neighbours == nullptr) {
+		return -1;
+	}
+	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	while (r > neighbours->edge.dist) {
+		r -= neighbours->edge.dist;
+		neighbours = neighbours->next;
+	}
+	return neighbours->edge.neighbourIndex;
+}
+
 std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	//Using Dijkstra algorithm
 	//We start at endNode because the path will be built backward at the end and we want it to start at startNode
@@ -139,7 +159,7 @@ std::vector<int> Graph::trajectory(int startNode, int endNode) {
 		while (neighbours != nullptr) {
 			float distTest = dists[currentNode] + neighbours->edge.dist;
 			int neighbour = neighbours->edge.neighbourIndex;
-			if (distTest < dists[neighbour] || (distTest==dists[neighbour] && static_cast <float> (rand()) / static_cast <float> (RAND_MAX) <0.5) ) {
+			if (distTest < dists[neighbour] || (distTest == dists[neighbour] && static_cast <float> (rand()) / static_cast <float> (RAND_MAX) <0.5)) {
 				dists[neighbour] = distTest;
 				prevNode[neighbour] = currentNode;
 			}
@@ -148,7 +168,7 @@ std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	}
 	//Reconstruct shortest path
 	while (currentNode != -1) {
-		spdlog::info("Node at {} {}", getNode(currentNode).x, getNode(currentNode).y);
+		//spdlog::info("Node at {} {}", getNode(currentNode).x, getNode(currentNode).y);
 		traj.push_back(currentNode);
 		currentNode = prevNode[currentNode];
 	}

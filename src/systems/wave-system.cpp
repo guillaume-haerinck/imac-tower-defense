@@ -6,10 +6,9 @@
 #include "components/trajectory.hpp"
 
 WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map)
-: System(registry), m_emitter(emitter), m_map(map), m_enemyFactory(registry)
+: System(registry), m_emitter(emitter), m_map(map), m_enemyFactory(registry,map)
 {
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
-		spdlog::info("Wave started !");
-		m_enemyFactory.create(m_map.trajectory());
+		m_enemyFactory.create();
 	});
 }

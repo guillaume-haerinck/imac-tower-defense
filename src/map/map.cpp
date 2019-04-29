@@ -14,92 +14,109 @@
 #include "core/maths.hpp"
 
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
-:	m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
+	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
-    /* ---------------------------- Read ITD file ------------------------- */
-    std::ifstream file(itdFilePath);
-    if (file.is_open()) {
-        /* // TODO check first line to see if valid itd
-        if (.find("@ITD") != std::string::npos)
-        {
-            spdlog::error("[Error] File provided does not have @ITD");
-            break;
-        }
-        */
+	/* ---------------------------- Read ITD file ------------------------- */
+	std::ifstream file(itdFilePath);
+	if (file.is_open()) {
+		/* // TODO check first line to see if valid itd
+		if (.find("@ITD") != std::string::npos)
+		{
+		spdlog::error("[Error] File provided does not have @ITD");
+		break;
+		}
+		*/
 
-        // TODO increment count valid, related to itd version, if a field is missing say it
+		// TODO increment count valid, related to itd version, if a field is missing say it
 
-        std::string line;
-        while (std::getline(file, line)) {
-            if (line.find("#") != std::string::npos) { continue; } // Skip comments
-            else if (line.find("carte") != std::string::npos) {     m_mapPath += line.substr(6, line.size()); }
-            else if (line.find("energie") != std::string::npos) {   m_energy = getNumberFromString(line); }
-            else if (line.find("chemin") != std::string::npos) {    m_pathColor = getColorFromString(line); }
-            else if (line.find("noeud") != std::string::npos) {     m_nodeColor = getColorFromString(line); }
-            else if (line.find("construct") != std::string::npos) { m_constructColor = getColorFromString(line); }
-            else if (line.find("in") != std::string::npos) {        m_startColor = getColorFromString(line); }
-            else if (line.find("out") != std::string::npos) {       m_endColor = getColorFromString(line); }
-        }
-        file.close();
-    } else {
-        spdlog::critical("[ITD] Unable to open file");
-    }
+		std::string line;
+		while (std::getline(file, line)) {
+			if (line.find("#") != std::string::npos) { continue; } // Skip comments
+			else if (line.find("carte") != std::string::npos) { m_mapPath += line.substr(6, line.size()); }
+			else if (line.find("energie") != std::string::npos) { m_energy = getNumberFromString(line); }
+			else if (line.find("chemin") != std::string::npos) { m_pathColor = getColorFromString(line); }
+			else if (line.find("noeud") != std::string::npos) { m_nodeColor = getColorFromString(line); }
+			else if (line.find("construct") != std::string::npos) { m_constructColor = getColorFromString(line); }
+			else if (line.find("in") != std::string::npos) { m_startColor = getColorFromString(line); }
+			else if (line.find("out") != std::string::npos) { m_endColor = getColorFromString(line); }
+		}
+		file.close();
+	}
+	else {
+		spdlog::critical("[ITD] Unable to open file");
+	}
 
-    /* --------------------------- Read Png file ------------------------- */
-    int imgWidth, imgHeight, imgChannels;
+	/* --------------------------- Read Png file ------------------------- */
+	int imgWidth, imgHeight, imgChannels;
 	// Because 0,0 is bottom left in OpenGL
 	stbi_set_flip_vertically_on_load(true);
-    unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
-    if (nullptr == image) {
-        spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
-        debug_break();
-    }
+	unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
+	if (nullptr == image) {
+		spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
+		debug_break();
+	}
 	stbi_set_flip_vertically_on_load(false);
 
-    m_gridWidth = imgWidth;
-    m_gridHeight = imgHeight;
-    m_map.resize(m_gridWidth * m_gridHeight);
+	m_gridWidth = imgWidth;
+	m_gridHeight = imgHeight;
+	m_map.resize(m_gridWidth * m_gridHeight);
 
-    glm::vec3 color = glm::vec3(0);
-    for (int y = 0; y < imgHeight; y++) {
-        for (int x = 0; x < imgWidth; x++) {
-            color = getPixelColorFromImage(image, imgWidth, x, y);
+	glm::vec3 color = glm::vec3(0);
+	for (int y = 0; y < imgHeight; y++) {
+		for (int x = 0; x < imgWidth; x++) {
+			color = getPixelColorFromImage(image, imgWidth, x, y);
 			glm::vec2 position = gridToProj(x, y);
 			unsigned int entityId = 0;
 
 			if (color == m_pathColor) {
 				entityId = m_tileFactory.createPath(position);
-			} else if (color == m_nodeColor) {
+			}
+			else if (color == m_nodeColor) {
 				entityId = m_tileFactory.createPath(position);
-			} else if (color == m_startColor) {
+			}
+			else if (color == m_startColor) {
 				entityId = m_tileFactory.createSpawn(position);
-			} else if (color == m_endColor) {
+			}
+			else if (color == m_endColor) {
 				entityId = m_tileFactory.createArrival(position);
-				//Constructs adjency list
+				//Construct graph
 				//We start from the endpoint because there will always be only one on the map
 				m_graph.addEndNode(m_graph.addNode(x, y));
 				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x+1, y, 1, 0, 1);
+					lookForNodes(image, imgWidth, imgHeight, 0, x + 1, y, 1, 0, 1);
 				}
 				if (isPath(image, imgWidth, imgHeight, x - 1, y)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x-1, y, -1, 0, 1);
+					lookForNodes(image, imgWidth, imgHeight, 0, x - 1, y, -1, 0, 1);
 				}
 				if (isPath(image, imgWidth, imgHeight, x, y + 1)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x, y+1, 0, 1, 1);
+					lookForNodes(image, imgWidth, imgHeight, 0, x, y + 1, 0, 1, 1);
 				}
 				if (isPath(image, imgWidth, imgHeight, x, y - 1)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x, y-1, 0, -1, 1);
+					lookForNodes(image, imgWidth, imgHeight, 0, x, y - 1, 0, -1, 1);
+				}
+				//Construct pathfinfing graph
+				constructPathfindingGraph();
+				for (int n = 0; n < m_pathfindingGraph.getNodesCount(); ++n) {
+					//spdlog::info("Node {} {}", m_pathfindingGraph.getNode(n).x, m_pathfindingGraph.getNode(n).y);
+					graphEdgeList* neighbours = m_pathfindingGraph.getNeighbours(n);
+					while (neighbours != nullptr) {
+						int neighbour = neighbours->edge.neighbourIndex;
+						//spdlog::info("Neighbour {} {} {}", m_pathfindingGraph.getNode(neighbour).x, m_pathfindingGraph.getNode(neighbour).y, neighbours->edge.dist);
+						neighbours = neighbours->next;
+					}
 				}
 				//
-			} else if (color == m_constructColor) {
+			}
+			else if (color == m_constructColor) {
 				entityId = m_tileFactory.createConstructible(position);
-			} else {
+			}
+			else {
 				entityId = m_tileFactory.createLocked(position);
 			}
 			m_map.at(y * m_gridWidth + x) = entityId;
-        }
-    }
-    stbi_image_free(image);
+		}
+	}
+	stbi_image_free(image);
 }
 
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
@@ -114,7 +131,7 @@ int Map::getTile(unsigned int x, unsigned int y) const {
 	}
 }
 
-unsigned int Map::getGridWidth() const  { return m_gridWidth; }
+unsigned int Map::getGridWidth() const { return m_gridWidth; }
 unsigned int Map::getGridHeight() const { return m_gridHeight; }
 
 glm::vec2 Map::windowToGrid(float x, float y) {
@@ -145,61 +162,66 @@ glm::vec2 Map::gridToProj(unsigned int x, unsigned int y) {
 	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);
 }
 
+glm::vec2 Map::getNodePosition(int nodeIndex) {
+	return gridToProj(m_graph.getNode(nodeIndex).x, m_graph.getNode(nodeIndex).y);
+}
+
 /* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
 
 glm::vec3 Map::getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y) {
-    glm::vec3 pixel;
-    pixel.r = image[3 * (y * imageWidth + x) + 0];
-    pixel.g = image[3 * (y * imageWidth + x) + 1];
-    pixel.b = image[3 * (y * imageWidth + x) + 2];
-    return pixel;
+	glm::vec3 pixel;
+	pixel.r = image[3 * (y * imageWidth + x) + 0];
+	pixel.g = image[3 * (y * imageWidth + x) + 1];
+	pixel.b = image[3 * (y * imageWidth + x) + 2];
+	return pixel;
 }
 
 float Map::getNumberFromString(std::string line) {
-    std::string temp;
-    float data;
-    std::stringstream ss(line);
-    while (!ss.eof())
-    {
-        ss >> temp;
-        if (std::stringstream(temp) >> data)
-        {
-            return data;
-        }
-    }
+	std::string temp;
+	float data;
+	std::stringstream ss(line);
+	while (!ss.eof())
+	{
+		ss >> temp;
+		if (std::stringstream(temp) >> data)
+		{
+			return data;
+		}
+	}
 
-    spdlog::warn("[ITD] no valid data at : {}", line);
-    return 0.0f;
+	spdlog::warn("[ITD] no valid data at : {}", line);
+	return 0.0f;
 }
 
 glm::vec3 Map::getColorFromString(std::string line) {
-    std::string temp;
-    float data;
-    std::stringstream ss(line);
-    std::vector<float> tempData;
-    while (!ss.eof())
-    {
-        ss >> temp;
-        if (std::stringstream(temp) >> data)
-        {
-            tempData.push_back(data);
-        }
-    }
+	std::string temp;
+	float data;
+	std::stringstream ss(line);
+	std::vector<float> tempData;
+	while (!ss.eof())
+	{
+		ss >> temp;
+		if (std::stringstream(temp) >> data)
+		{
+			tempData.push_back(data);
+		}
+	}
 
-    // Save temp data
-    glm::vec3 color = glm::vec3(0);
-    if (tempData.size() == 3) {
-        color.r = tempData.data()[0];
-        color.g = tempData.data()[1];
-        color.b = tempData.data()[2];
-    } else {
-        spdlog::warn("[ITD] invalid colors at : {}", line);
-    }
+	// Save temp data
+	glm::vec3 color = glm::vec3(0);
+	if (tempData.size() == 3) {
+		color.r = tempData.data()[0];
+		color.g = tempData.data()[1];
+		color.b = tempData.data()[2];
+	}
+	else {
+		spdlog::warn("[ITD] invalid colors at : {}", line);
+	}
 
-    return color;
+	return color;
 }
 
-	/* ----------------------- AUXILARY FUNCTIONS FOR GRAPH CONSTRUCTION ----------------- */
+/* ----------------------- AUXILARY FUNCTIONS FOR GRAPH CONSTRUCTION ----------------- */
 
 bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
 	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
@@ -210,7 +232,7 @@ bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, i
 		&& (color == m_pathColor || color == m_startColor || color == m_endColor);
 }
 
-bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight , int x, int y) {
+bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
 	return isPath(image, imageWidth, imageHeight, x - 1, y)
 		&& isPath(image, imageWidth, imageHeight, x + 1, y)
 		&& !isPath(image, imageWidth, imageHeight, x, y - 1)
@@ -224,7 +246,7 @@ bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight ,
 
 void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int parentNodeIndex, int x, int y, int xDir, int yDir, int travelLength) {
 	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
-	if (isStraightLine(image, imageWidth, imageHeight, x, y) && color != m_startColor && color != m_endColor ) {
+	if (isStraightLine(image, imageWidth, imageHeight, x, y) && color != m_startColor && color != m_endColor) {
 		lookForNodes(image, imageWidth, imageHeight, parentNodeIndex, x + xDir, y + yDir, xDir, yDir, travelLength + 1);
 	}
 	else {
@@ -260,6 +282,87 @@ void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, in
 	}
 }
 
+/* ----------------------- PATHFINDING GRAPH ----------------- */
+
+void Map::constructPathfindingGraph() {
+	//Using Dijkstra algorithm
+
+	//Find all distances to endNode
+	//Initialize
+	int endNode = m_graph.getEndNode();
+	int N = m_graph.getNodesCount();
+	float* dists = (float*)malloc(N * sizeof(float));
+	int* prevNode = (int*)malloc(N * sizeof(int));
+	bool* isDone = (bool*)malloc(N * sizeof(bool));
+	for (int k = 0; k < N; ++k) {
+		dists[k] = std::numeric_limits<float>::infinity();
+		prevNode[k] = -1;
+		isDone[k] = false;
+	}
+	dists[endNode] = 0;
+
+	//Loop:
+	int currentNode = 0; //arbitrary initialization, just has to be != -1
+	while (currentNode != -1) {
+		//Look for node with min dist to endNode
+		currentNode = -1;
+		for (int k = 0; k < N; ++k) {
+			if (!isDone[k] && (currentNode == -1 || dists[k] < dists[currentNode])) {
+				currentNode = k;
+			}
+		}
+		if (currentNode != -1) {
+			isDone[currentNode] = true;
+			//
+			//Visit current node's neighbours
+			graphEdgeList* neighbours = m_graph.getNeighbours(currentNode);
+			while (neighbours != nullptr) {
+				float distTest = dists[currentNode] + neighbours->edge.dist;
+				int neighbour = neighbours->edge.neighbourIndex;
+				if (distTest < dists[neighbour]) {
+					dists[neighbour] = distTest;
+					prevNode[neighbour] = currentNode;
+				}
+				neighbours = neighbours->next;
+			}
+		}
+	}
+	//Construct new graph with stochastic weights
+	//Nodes
+	for (int n = 0; n < N; ++n) {
+		m_pathfindingGraph.addNode(m_graph.getNode(n).x, m_graph.getNode(n).y);
+		//spdlog::info("Node {} {} at dist {}", m_pathfindingGraph.getNode(n).x, m_pathfindingGraph.getNode(n).y, dists[n]);
+
+	}
+	//Edges
+	for (int n = 0; n < N; ++n) {
+		float dist = dists[n];
+		float neighboursDistSum = 0;
+		graphEdgeList* neighbours = m_graph.getNeighbours(n);
+		while (neighbours != nullptr) {
+			int neighbour = neighbours->edge.neighbourIndex;
+			float d = dists[neighbour];
+			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
+				neighboursDistSum += d;
+			}
+			neighbours = neighbours->next;
+		}
+		neighbours = m_graph.getNeighbours(n);
+		while (neighbours != nullptr) {
+			int neighbour = neighbours->edge.neighbourIndex;
+			float d = dists[neighbour];
+			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
+				if (neighboursDistSum == 0 || d == neighboursDistSum) {
+					m_pathfindingGraph.addNeighbourTo(n, neighbour, 1);
+				}
+				else {
+					m_pathfindingGraph.addNeighbourTo(n, neighbour, 1 - d / neighboursDistSum);
+				}
+			}
+			neighbours = neighbours->next;
+		}
+	}
+}
 
 /* ----------------------- DRAW ----------------- */
 
@@ -271,7 +374,7 @@ void Map::drawGraph() {
 	// Draw vertices
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x = m_graph.getNode(k).x*100. / m_gridWidth + 50. / m_gridWidth;
-		float y = m_graph.getNode(k).y*100. / m_gridHeight +  50. / m_gridHeight;
+		float y = m_graph.getNode(k).y*100. / m_gridHeight + 50. / m_gridHeight;
 		debugDraw.point(x, y);
 	}
 
