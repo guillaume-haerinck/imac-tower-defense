@@ -4,7 +4,7 @@
 #include <Box2D/Box2D.h>
 
 #include "system.hpp"
-#include "events/event-emitter.hpp"
+#include "events/handlers/event-emitter.hpp"
 
 class MovementSystem : public System {
 public:

@@ -7,12 +7,13 @@
 #include "components/trajectory.hpp"
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
+#include "components/rigid-body.hpp"
 #include "components/shoot-at.hpp"
 
 #include "core/random.hpp"
 
-EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
-: Factory(registry), m_map(map)
+EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map, b2World& physicWorld)
+: Factory(registry), m_map(map), m_rigidBodyFactory(physicWorld)
 {
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
 }
@@ -31,7 +32,8 @@ void EnemyFactory::create() {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
-	m_registry.assign<cmpt::Transform>(myEntity, m_map.getNodePosition(startNode));
+	cmpt::Transform transform(m_map.getNodePosition(startNode));
+	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
 
@@ -42,4 +44,13 @@ void EnemyFactory::create() {
 		}
 	});
 
+	// Setup physic
+	b2CircleShape colliderShape;
+	colliderShape.m_radius = 5.0f;
+	b2FixtureDef* collider = new b2FixtureDef(); // Use unique smart pointer ?
+	collider->isSensor = true;
+	//collider->filter.maskBits = 0x0001;
+	//collider->filter.categoryBits = 0x0001;
+	collider->shape = &colliderShape; // Will be cloned so can go out of scope
+	m_registry.assign<cmpt::RigidBody>(myEntity, m_rigidBodyFactory.create(b2_dynamicBody, transform, collider));
 }

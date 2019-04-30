@@ -1,6 +1,7 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <Box2D/Box2D.h>
 
 #include "factory.hpp"
 #include "component-factories/sprite-factory.hpp"

@@ -28,7 +28,6 @@
 #include "core/maths.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
-#include "events/event-emitter.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -43,6 +42,8 @@
 #include "systems/wave-system.hpp"
 #include "systems/focus-system.hpp"
 #include "gui/start-menu.hpp"
+#include "events/handlers/event-emitter.hpp"
+#include "events/handlers/contact-listener.hpp"
 #include "events/left-click.hpp"
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
@@ -76,8 +77,10 @@ int main(int argc, char** argv) {
 	float viewScale = 1.0f;
 
 	// Init Physics
-	b2Vec2 gravity(0.0f, -10.0f);
+	b2Vec2 gravity(0.0f, 0.0f);
 	auto physicWorld = std::make_shared<b2World>(gravity);
+	ContactListener contactListener(emitter);
+	physicWorld->SetContactListener(&contactListener);
 
 	// Link debug draw to physics
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
@@ -96,6 +99,7 @@ int main(int argc, char** argv) {
 	*/
 
 	// Random
+	// TODO put in services
 	initializeRandom();
 
 	// Map
@@ -106,20 +110,22 @@ int main(int argc, char** argv) {
 	AnimationSystem animationSystem(registry);
 	MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
-	WaveSystem waveSystem(registry, emitter, map1);
+	WaveSystem waveSystem(registry, emitter, map1, *physicWorld.get());
 	FocusSystem focusSystem(registry);
 
 	// Timers
-	// TODO attention que ils ne dépassent par leur valeur
 	unsigned int animTimer = 0;
-	unsigned int waveTimer = 0;
+	unsigned int waveTimer = 0; // TODO attention que ne dépasse pas taille max
+
+	// Debug Window
+	bool bDrawPhysic = false;
+	bool bClickEvent = true;
+	bool bStartWave = false;
+	bool bWireframe = false;
 
 	// Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
-	bool bClickEvent = true;
-	bool bWireframe = false;
 	bool bQuit = false;
-	bool bStartWave = false;
 	double deltatime = TARGET_DELTA_MS;
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
 	while (!bQuit) {
@@ -132,13 +138,21 @@ int main(int argc, char** argv) {
 			ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			if (ImGui::Button("Draw physic")) {
+
+			// Physic
+			ImGui::Checkbox("Draw physic", &bDrawPhysic);
+			if (bDrawPhysic) {
 				debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
-			}
-			if (ImGui::Button("Disable draw physic")) {
+			} else {
 				debugDraw.ClearFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
 			}
 
+			if (ImGui::Button("Toggle wave")) {
+				bStartWave = !bStartWave;
+				waveTimer = 0;
+			}
+
+			// Check cursor position
 			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
 				bClickEvent = false;
 			} else {
