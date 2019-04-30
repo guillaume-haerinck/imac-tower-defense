@@ -84,7 +84,6 @@ int main(int argc, char** argv) {
 	debugDraw.setProjMat(projMat);
 	debugDraw.setViewMat(viewMat);
 	physicWorld->SetDebugDraw(&debugDraw);
-	//debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
 
 	// Noesis GUI
 	/*
@@ -117,6 +116,7 @@ int main(int argc, char** argv) {
 
 	// Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
+	bool bClickEvent = true;
 	bool bWireframe = false;
 	bool bQuit = false;
 	bool bStartWave = false;
@@ -132,6 +132,18 @@ int main(int argc, char** argv) {
 			ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			if (ImGui::Button("Draw physic")) {
+				debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+			}
+			if (ImGui::Button("Disable draw physic")) {
+				debugDraw.ClearFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
+			}
+
+			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
+				bClickEvent = false;
+			} else {
+				bClickEvent = true;
+			}
 			ImGui::End();
 		}
 
@@ -215,12 +227,14 @@ int main(int argc, char** argv) {
 			switch (e.type) {
 			case SDL_MOUSEBUTTONUP:
 				// Send click event
-				if (e.button.button == SDL_BUTTON_LEFT) {
-					normMousePos = glm::vec2(
-						imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-						imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
-					);
-					emitter.publish<evnt::LeftClick>(normMousePos);
+				if (bClickEvent) {
+					if (e.button.button == SDL_BUTTON_LEFT) {
+						normMousePos = glm::vec2(
+							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+						);
+						emitter.publish<evnt::LeftClick>(normMousePos);
+					}
 				}
 				//noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
 				break;
@@ -280,11 +294,13 @@ int main(int argc, char** argv) {
 				if (e.motion.x > 0.0f) {
 					// TODO ameliorer translation quand proche du bord
 					// FIXME liens avec grille pas bon
+					/*
 					viewScale += 0.1f;
 					viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
 					viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
 					viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
 					viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+					*/
 				}
 				else if (e.motion.x < 0.0f) {
 					const glm::vec2 invertNormMousePos = glm::vec2(
@@ -293,11 +309,13 @@ int main(int argc, char** argv) {
 					);
 					// TODO réduire translation quand proche du bord
 					// FIXME liens avec grille pas bon
+					/*
 					viewScale -= 0.05f;
 					viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
 					viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
 					viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
 					viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
+					*/
 				}
 			}
 			break;
