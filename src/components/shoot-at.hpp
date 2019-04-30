@@ -6,6 +6,6 @@ namespace cmpt {
 		int loadingTime;
 		int timer;
 
-		ShootAt(int loadingTime) : loadingTime(loadingTime), timer(0) {}
+		ShootAt(int loadingTime) : loadingTime(loadingTime), timer(loadingTime-1) {}
 	};
 }

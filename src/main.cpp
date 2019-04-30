@@ -168,16 +168,21 @@ int main(int argc, char** argv) {
 
 			// Start wave
 			waveTimer++;
-			if (bStartWave && waveTimer >= 20) {
+			if (bStartWave && waveTimer % 120 == 0) {
+				emitter.publish<evnt::StartWave>(0);
+				waveTimer++;
+				/*
 				if (waveTimer <= 300) {
 					if (waveTimer % 2 == 0) {
 						emitter.publish<evnt::StartWave>(5);
+						bStartWave = false;
+						waveTimer = 0;
 					}
 				}
 				else {
 					bStartWave = false;
 					waveTimer = 0;
-				}
+				}*/
 			}
 		}
 
@@ -249,7 +254,7 @@ int main(int argc, char** argv) {
 					bWireframe = !bWireframe;
 				}
 				else if (e.key.keysym.sym == 'w') {
-					bStartWave = true;
+					bStartWave = !bStartWave;
 					waveTimer = 0;
 				}
 				else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {

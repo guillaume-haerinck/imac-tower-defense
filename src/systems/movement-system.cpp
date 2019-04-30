@@ -15,6 +15,7 @@
 #include "components/trajectory.hpp"
 #include "components/follow.hpp"
 #include "components/pathfinding.hpp"
+#include "components/targeting.hpp"
 
 #include "map/graph.hpp"
 
@@ -61,11 +62,11 @@ void MovementSystem::update(double deltatime) {
 		}
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::Follow>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow) {
-		glm::vec2 direction = m_registry.get<cmpt::Transform>(follow.targetId).position - transform.position;
+	m_registry.view<cmpt::Transform, cmpt::Follow, cmpt::Targeting>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow, cmpt::Targeting& targeting) {
+		glm::vec2 direction = m_registry.get<cmpt::Transform>(targeting.targetId).position - transform.position;
 		float norm = glm::length(direction);
 		if (norm > 1) {
-			direction *= 0.5 / glm::length(direction);
+			direction *= follow.velocity / glm::length(direction);
 			transform.position += direction;
 		}
 	});
