@@ -26,7 +26,7 @@ void TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
 	m_registry.assign<cmpt::LookAt>(myEntity);
 	m_registry.assign<cmpt::ShootAt>(myEntity,randInt(20,60));
-	m_registry.assign<cmpt::Targeting>(myEntity,0);
+	m_registry.assign<cmpt::Targeting>(myEntity,-1);
 	// Setup physic
 	// Cannot both follow and have physic, create another entity here only dedicated to collision ?
 	/*

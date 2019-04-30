@@ -60,14 +60,25 @@ void MovementSystem::update(double deltatime) {
 			pathfinding.currentTarget = map->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
 			pathfinding.previousNode = tmp;
 		}
+		else {
+			m_registry.destroy(entity);
+		}
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Follow, cmpt::Targeting>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow, cmpt::Targeting& targeting) {
-		glm::vec2 direction = m_registry.get<cmpt::Transform>(targeting.targetId).position - transform.position;
-		float norm = glm::length(direction);
-		if (norm > 1) {
-			direction *= follow.velocity / glm::length(direction);
-			transform.position += direction;
+		if (m_registry.valid(targeting.targetId)) {
+			glm::vec2 direction = m_registry.get<cmpt::Transform>(targeting.targetId).position - transform.position;
+			float norm = glm::length(direction);
+			if (norm > 1) {
+				direction *= follow.velocity / glm::length(direction);
+				transform.position += direction;
+			}
+			else {
+				m_registry.destroy(entity);
+			}
+		}
+		else {
+			m_registry.destroy(entity);
 		}
 	});
 }
