@@ -7,6 +7,9 @@
 #include "components/sprite-animation.hpp"
 #include "components/trajectory.hpp"
 #include "components/pathfinding.hpp"
+#include "components/targeting.hpp"
+
+#include "core/random.hpp"
 
 EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map) : Factory(registry), m_map(map) {}
 
@@ -27,4 +30,12 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Transform>(myEntity, m_map.getNodePosition(startNode));
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
+
+	//Temporary : all towers have a chance to pick focus on the latest enemy created
+	m_registry.view<cmpt::Targeting>().each([myEntity](auto entity, cmpt::Targeting & targeting) {
+		if (random() < 0.05) {
+			targeting.targetId = myEntity;
+		}
+	});
+
 }

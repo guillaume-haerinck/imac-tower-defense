@@ -34,11 +34,6 @@ void MovementSystem::update(double deltatime) {
 		transform.rotation = rigidbody.body->GetAngle();
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::LookAt>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::LookAt& lookAt) {
-		glm::vec2 direction = this->m_mousePos - transform.position;
-		transform.rotation = atan2(direction.y, direction.x);
-	});
-
 	m_registry.view<cmpt::Transform, cmpt::Trajectory>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Trajectory& traj) {
 		glm::vec2 direction = traj.traj.at(traj.currentTarget) - transform.position;
 		float norm = glm::length(direction);

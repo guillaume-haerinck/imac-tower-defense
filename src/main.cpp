@@ -41,6 +41,7 @@
 #include "systems/animation-system.hpp"
 #include "systems/construction-system.hpp"
 #include "systems/wave-system.hpp"
+#include "systems/focus-system.hpp"
 #include "gui/start-menu.hpp"
 #include "events/left-click.hpp"
 #include "events/mouse-move.hpp"
@@ -107,6 +108,7 @@ int main(int argc, char** argv) {
 	MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
 	WaveSystem waveSystem(registry, emitter, map1);
+	FocusSystem focusSystem(registry);
 
 	// Timers
 	// TODO attention que ils ne dépassent par leur valeur
@@ -160,6 +162,9 @@ int main(int argc, char** argv) {
 			// Update physics
 			physicWorld->Step(1.0f / 60.0f, 6, 2);
 			movementSystem.update(deltatime);
+
+			//Towers focusing
+			focusSystem.update();
 
 			// Start wave
 			waveTimer++;

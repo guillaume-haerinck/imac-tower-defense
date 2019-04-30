@@ -7,18 +7,24 @@
 #include "components/sprite.hpp"
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
+#include "components/shoot-at.hpp"
 #include "components/rigid-body.hpp"
+#include "components/targeting.hpp"
+
+#include "core/random.hpp"
 
 TowerFactory::TowerFactory(entt::DefaultRegistry& registry, b2World& physicWorld)
 : Factory(registry), m_rigidBodyFactory(physicWorld) {}
 
 void TowerFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();
-	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(8.0f)));
+	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createSingle("res/images/textures/arrow.png", glm::vec2(8.0f)));
 	m_registry.assign<renderTag::Single>(myEntity);
 	const cmpt::Transform transform(glm::vec2(posX, posY));
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
-	m_registry.assign<cmpt::LookAt>(myEntity, 0);
+	m_registry.assign<cmpt::LookAt>(myEntity);
+	m_registry.assign<cmpt::ShootAt>(myEntity,randInt(60,180));
+	m_registry.assign<cmpt::Targeting>(myEntity,0);
 	// Setup physic
 	// Cannot both follow and have physic, create another entity here only dedicated to collision ?
 	/*
