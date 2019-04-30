@@ -69,14 +69,15 @@ void MovementSystem::update(double deltatime) {
 
 	m_registry.view<cmpt::Transform, cmpt::Follow, cmpt::Targeting>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow, cmpt::Targeting& targeting) {
 		if (m_registry.valid(targeting.targetId)) {
-			glm::vec2 direction = m_registry.get<cmpt::Transform>(targeting.targetId).position - transform.position;
+			glm::vec2 targetPosition = m_registry.get<cmpt::Transform>(targeting.targetId).position;
+			glm::vec2 direction = targetPosition - transform.position;
 			float norm = glm::length(direction);
 			if (norm > 1) {
 				direction *= follow.velocity / glm::length(direction);
 				transform.position += direction;
 			}
 			else {
-				m_emitter.publish<evnt::ProjectileHit>(targeting.targetId,1.0f);
+				m_emitter.publish<evnt::ProjectileHit>(targeting.targetId, targetPosition,1.0f);
 				m_registry.destroy(entity);
 			}
 		}

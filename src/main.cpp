@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
 
 			// Start wave
 			waveTimer++;
-			if (bStartWave && waveTimer % 30 == 0) {
+			if (bStartWave && waveTimer % 15 == 0) {
 				emitter.publish<evnt::StartWave>(0);
 				waveTimer++;
 				/*
