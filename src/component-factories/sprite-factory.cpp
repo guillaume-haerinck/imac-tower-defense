@@ -96,3 +96,6 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
     cmpt::Sprite mySprite(texture.getID(), va.getID(), GL_TEXTURE_2D_ARRAY, &m_shaderTexArray, &m_ib);
     return mySprite;
 }
+
+
+// TODO ajouter fonctions "createAtlasInstanced" + "createSingleInstanced" pour des sprites partagés entre plusieurs entités (fonctions opengl spéciales)
