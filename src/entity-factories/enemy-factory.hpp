@@ -5,6 +5,7 @@
 #include "factory.hpp"
 #include "component-factories/sprite-factory.hpp"
 #include "entity-factories/projectile-factory.hpp"
+#include "components/sprite.hpp"
 
 #include "map/map.hpp"
 
@@ -17,6 +18,7 @@ public:
 
 public:
 	SpriteFactory m_spriteFactory;
+	cmpt::Sprite m_ennemySprite;
 	Map& m_map;
 };
 

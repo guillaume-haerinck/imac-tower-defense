@@ -5,6 +5,7 @@
 #include "factory.hpp"
 #include "component-factories/sprite-factory.hpp"
 #include "component-factories/rigid-body-factory.hpp"
+#include "components/sprite.hpp"
 
 class TowerFactory : public Factory {
 public:
@@ -15,4 +16,5 @@ public:
 private:
 	SpriteFactory m_spriteFactory;
 	RigidBodyFactory m_rigidBodyFactory;
+	cmpt::Sprite m_towerSprite;
 };

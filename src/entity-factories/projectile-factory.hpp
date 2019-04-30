@@ -2,6 +2,7 @@
 
 #include "factory.hpp"
 #include "component-factories/sprite-factory.hpp"
+#include "components/sprite.hpp"
 
 class ProjectileFactory : public Factory {
 public:
@@ -11,5 +12,6 @@ public:
 
 private:
 	SpriteFactory m_spriteFactory;
+	cmpt::Sprite m_projectileSprite;
 };
 

@@ -4,7 +4,6 @@
 #include <Box2D/Box2D.h>
 
 #include "core/tags.hpp"
-#include "components/sprite.hpp"
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
@@ -14,11 +13,14 @@
 #include "core/random.hpp"
 
 TowerFactory::TowerFactory(entt::DefaultRegistry& registry, b2World& physicWorld)
-: Factory(registry), m_rigidBodyFactory(physicWorld) {}
+: Factory(registry), m_rigidBodyFactory(physicWorld) 
+{
+	m_towerSprite = m_spriteFactory.createSingle("res/images/textures/arrow.png", glm::vec2(8.0f));
+}
 
 void TowerFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();
-	m_registry.assign<cmpt::Sprite>(myEntity, m_spriteFactory.createSingle("res/images/textures/arrow.png", glm::vec2(8.0f)));
+	m_registry.assign<cmpt::Sprite>(myEntity, m_towerSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	const cmpt::Transform transform(glm::vec2(posX, posY));
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
