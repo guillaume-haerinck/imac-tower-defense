@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 
 	// Systems
 	RenderSystem renderSystem(registry, viewMat, projMat);
-	AnimationSystem animationSystem(registry);
+	AnimationSystem animationSystem(registry, emitter);
 	MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1);
 	WaveSystem waveSystem(registry, emitter, map1);

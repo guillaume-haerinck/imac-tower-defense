@@ -16,7 +16,7 @@ public:
 	void create(std::vector<glm::vec2> traj);
 	void create();
 
-public:
+private:
 	SpriteFactory m_spriteFactory;
 	cmpt::Sprite m_ennemySprite;
 	Map& m_map;

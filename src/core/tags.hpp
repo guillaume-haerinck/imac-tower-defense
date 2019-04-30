@@ -8,6 +8,7 @@
 
 namespace renderTag {
     TAG(Atlas);
+	TAG(OneTimeAtlas);
     TAG(Single);
 };
 
