@@ -10,8 +10,9 @@ HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 : System(registry), m_emitter(emitter)
 {
 	m_emitter.on<evnt::ProjectileHit>([this](const evnt::ProjectileHit & event, EventEmitter & emitter) {
-		m_registry.get<cmpt::Health>(event.targetId).current -= event.damage;
-		if (m_registry.get<cmpt::Health>(event.targetId).current < 0) {
+		cmpt::Health& health = m_registry.get<cmpt::Health>(event.targetId);
+		health.current -= event.damage;
+		if (health.current < 0) {
 			m_registry.destroy(event.targetId);
 		}
 	});
