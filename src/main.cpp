@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
 	RenderSystem renderSystem(registry, viewMat, projMat);
 	AnimationSystem animationSystem(registry);
 	MovementSystem movementSystem(registry, emitter);
-	ConstructionSystem constructionSystem(registry, emitter, map1, *physicWorld.get());
-	WaveSystem waveSystem(registry, emitter, map1, *physicWorld.get());
+	ConstructionSystem constructionSystem(registry, emitter, map1);
+	WaveSystem waveSystem(registry, emitter, map1);
 	FocusSystem focusSystem(registry);
 
 	// Timers

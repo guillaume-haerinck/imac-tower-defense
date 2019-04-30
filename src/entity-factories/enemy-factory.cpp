@@ -7,13 +7,12 @@
 #include "components/trajectory.hpp"
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
-#include "components/rigid-body.hpp"
 #include "components/shoot-at.hpp"
 
 #include "core/random.hpp"
 
-EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map, b2World& physicWorld)
-: Factory(registry), m_map(map), m_rigidBodyFactory(physicWorld)
+EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
+: Factory(registry), m_map(map)
 {
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
 }
@@ -43,14 +42,4 @@ void EnemyFactory::create() {
 			targeting.targetId = myEntity;
 		}
 	});
-
-	// Setup physic
-	b2CircleShape colliderShape;
-	colliderShape.m_radius = 5.0f;
-	b2FixtureDef* collider = new b2FixtureDef(); // Use unique smart pointer ?
-	collider->isSensor = true;
-	//collider->filter.maskBits = 0x0001;
-	//collider->filter.categoryBits = 0x0001;
-	collider->shape = &colliderShape; // Will be cloned so can go out of scope
-	m_registry.assign<cmpt::RigidBody>(myEntity, m_rigidBodyFactory.create(b2_dynamicBody, transform, collider));
 }

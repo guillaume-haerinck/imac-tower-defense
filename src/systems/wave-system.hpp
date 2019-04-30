@@ -10,7 +10,7 @@
 
 class WaveSystem : public System {
 public:
-	WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map, b2World& physicWorld);
+	WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map);
 
 private:
 	EventEmitter& m_emitter;

@@ -20,7 +20,7 @@
 #include "map/graph.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-	: System(registry), m_emitter(emitter)
+: System(registry), m_emitter(emitter)
 {
 	m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove& event, EventEmitter& emitter) {
 		this->m_mousePos = event.mousePos;
@@ -30,14 +30,9 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 
 void MovementSystem::update(double deltatime) {
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
-		// We impose box2d position
-		rigidbody.body->SetTransform(b2Vec2(transform.position.x, transform.position.y), transform.rotation);
-
-		/* The opposite - Box2d say way to do
 		transform.position.x = rigidbody.body->GetPosition().x;
 		transform.position.y = rigidbody.body->GetPosition().y;
 		transform.rotation = rigidbody.body->GetAngle();
-		*/
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Trajectory>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Trajectory& traj) {

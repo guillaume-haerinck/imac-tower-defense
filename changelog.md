@@ -1,9 +1,16 @@
 # Imac Tower Defense Changelog
 
+## 30.04.19
+
+Trigger zone detection (without Box2d)
+
+## 28.04.19
+
+Pathfinding.
+
 ## 27.04.19
 
 Service locator pattern.
-Map zoom.
 Construct graph from image.
 
 ## 26.04.19

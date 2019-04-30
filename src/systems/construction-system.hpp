@@ -10,7 +10,7 @@
 
 class ConstructionSystem : public System {
 public:
-	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map, b2World& physicWorld);
+	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map);
 
 private:
 	EventEmitter& m_emitter;

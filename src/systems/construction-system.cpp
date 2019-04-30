@@ -8,8 +8,8 @@
 #include "events/left-click.hpp"
 #include "components/transform.hpp"
 
-ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map, b2World& physicWorld)
-: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry, physicWorld)
+ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map)
+: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry)
 {
 	m_emitter.on<evnt::LeftClick>([this](const evnt::LeftClick & event, EventEmitter& emitter) {
 		glm::vec2 tilePosition = this->m_map.projToGrid(event.mousePos.x, event.mousePos.y);
