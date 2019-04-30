@@ -49,11 +49,7 @@
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
 
-#include "core/random.hpp"
-
-#pragma warning (disable : 26495) // Initialisation of a member missing in constructor of box2d and imgui
-
-static Noesis::IView* noeView;
+// static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
@@ -98,10 +94,6 @@ int main(int argc, char** argv) {
 	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 	*/
-
-	// Random
-	// TODO put in services
-	initializeRandom();
 
 	// Map
 	Map map1(registry, "res/maps/map-3.itd", viewTranslation, viewScale);

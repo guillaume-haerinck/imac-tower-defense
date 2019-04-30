@@ -16,6 +16,7 @@
 #include "components/primitive.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/debug-draw-service.hpp"
+#include "services/random/random-service.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
 
@@ -42,6 +43,7 @@ Game::~Game() {
 	// Delete services
 	locator::debugDraw::reset();
 	locator::audio::reset();
+	locator::random::reset();
 
 	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
@@ -140,6 +142,7 @@ int Game::init() {
 
 	/* Init Services */
 	locator::debugDraw::set<DebugDrawService>();
+	locator::random::set<RandomService>();
 
     m_bInit = true;
     return EXIT_SUCCESS;

@@ -2,7 +2,8 @@
 
 #include <limits>
 
-#include "core/random.hpp"
+#include "services/locator.hpp"
+#include "services/random/i-random.hpp"
 
 Graph::Graph() {
 
@@ -64,7 +65,8 @@ std::vector<int> Graph::getStartNodes() {
 }
 
 int Graph::getStartNode() {
-	return startNodeIndexes.at(randInt(startNodeIndexes.size()));
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	return startNodeIndexes.at(randomService.randInt(startNodeIndexes.size()));
 }
 
 int Graph::getEndNode() {
@@ -117,7 +119,8 @@ float Graph::distEstimator(int node1, int node2) {
 
 int Graph::pickNextNode(int currentNode, int previousNode) {
 	graphEdgeList* neighbours = getNeighbours(currentNode);
-	float r = random();
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	float r = randomService.random();
 	while (r > neighbours->edge.dist) {
 		r -= neighbours->edge.dist;
 		neighbours = neighbours->next;

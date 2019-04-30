@@ -8,8 +8,8 @@
 #include "components/shoot-at.hpp"
 #include "components/rigid-body.hpp"
 #include "components/targeting.hpp"
-
-#include "core/random.hpp"
+#include "services/locator.hpp"
+#include "services/random/i-random.hpp"
 
 TowerFactory::TowerFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
@@ -17,11 +17,13 @@ TowerFactory::TowerFactory(entt::DefaultRegistry& registry) : Factory(registry)
 }
 
 void TowerFactory::create(float posX, float posY) {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_towerSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));
 	m_registry.assign<cmpt::LookAt>(myEntity);
-	m_registry.assign<cmpt::ShootAt>(myEntity,randInt(20, 60));
+	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 60));
 	m_registry.assign<cmpt::Targeting>(myEntity, -1);
 }

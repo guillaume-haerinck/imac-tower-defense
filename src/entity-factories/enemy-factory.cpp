@@ -9,8 +9,8 @@
 #include "components/targeting.hpp"
 #include "components/shoot-at.hpp"
 #include "components/health.hpp"
-
-#include "core/random.hpp"
+#include "services/locator.hpp"
+#include "services/random/i-random.hpp"
 
 EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
 : Factory(registry), m_map(map)
@@ -28,7 +28,9 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 }
 
 void EnemyFactory::create() {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	int startNode = m_map.m_graph.getStartNode();
+
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
@@ -39,8 +41,8 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 
 	//Temporary : all towers have a chance to pick focus on the latest enemy created
-	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {
-		if (random() < 0.25) {
+	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity, &randomService](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {
+		if (randomService.random() < 0.25) {
 			targeting.targetId = myEntity;
 		}
 	});
