@@ -17,6 +17,8 @@
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
 
+#include "events/projectile-hit.hpp"
+
 #include "map/graph.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
@@ -74,6 +76,7 @@ void MovementSystem::update(double deltatime) {
 				transform.position += direction;
 			}
 			else {
+				m_emitter.publish<evnt::ProjectileHit>(targeting.targetId,1.0f);
 				m_registry.destroy(entity);
 			}
 		}

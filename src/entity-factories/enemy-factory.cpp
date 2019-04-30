@@ -8,6 +8,7 @@
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
 #include "components/shoot-at.hpp"
+#include "components/health.hpp"
 
 #include "core/random.hpp"
 
@@ -35,6 +36,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
+	m_registry.assign<cmpt::Health>(myEntity, 5);
 
 	//Temporary : all towers have a chance to pick focus on the latest enemy created
 	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {

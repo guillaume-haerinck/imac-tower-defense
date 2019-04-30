@@ -41,6 +41,7 @@
 #include "systems/construction-system.hpp"
 #include "systems/wave-system.hpp"
 #include "systems/focus-system.hpp"
+#include "systems/health-system.hpp"
 #include "gui/start-menu.hpp"
 #include "events/handlers/event-emitter.hpp"
 #include "events/handlers/contact-listener.hpp"
@@ -112,6 +113,7 @@ int main(int argc, char** argv) {
 	ConstructionSystem constructionSystem(registry, emitter, map1);
 	WaveSystem waveSystem(registry, emitter, map1);
 	FocusSystem focusSystem(registry);
+	HealthSystem healthSystem(registry, emitter);
 
 	// Timers
 	unsigned int animTimer = 0;

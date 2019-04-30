@@ -2,9 +2,9 @@
 
 namespace cmpt {
 struct Health {
-    Health(int current, int max) : current(current), max(max) {}
+    Health(float maxHealth) : current(maxHealth), max(maxHealth) {}
 
-    int current;
-    int max;
+    float current;
+    float max;
 };
 }
