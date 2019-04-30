@@ -2,7 +2,11 @@
 
 #include "i-audio.hpp"
 
-class AudioService : IAudio {
+#include <vector>
+#include <fmod.hpp>
+#include <fmod_errors.h>
+
+class AudioService : public IAudio {
 public:
 	AudioService();
 	~AudioService();
@@ -12,5 +16,6 @@ public:
 	void stopAllSounds() override;
 
 private:
-
+	FMOD::System* m_fmodSystem;
+	std::vector<FMOD::Sound*> m_sounds;
 };

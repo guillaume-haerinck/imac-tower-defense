@@ -1,5 +1,9 @@
 #pragma once
 
+enum audioFiles {
+	CROWD_1
+};
+
 class IAudio {
 public:
 	virtual void playSound(int soundID) = 0;

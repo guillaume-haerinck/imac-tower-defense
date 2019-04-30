@@ -17,6 +17,7 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/debug-draw-service.hpp"
 #include "services/random/random-service.hpp"
+#include "services/audio/audio-service.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
 
@@ -143,6 +144,7 @@ int Game::init() {
 	/* Init Services */
 	locator::debugDraw::set<DebugDrawService>();
 	locator::random::set<RandomService>();
+	locator::audio::set<AudioService>();
 
     m_bInit = true;
     return EXIT_SUCCESS;

@@ -30,6 +30,7 @@
 #include "core/constants.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
+#include "services/audio/i-audio.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
 #include "map/map.hpp"
@@ -116,6 +117,10 @@ int main(int argc, char** argv) {
 	bool bClickEvent = true;
 	bool bStartWave = false;
 	bool bWireframe = false;
+
+	// Test audio service
+	IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
+	//audioService.playSound(audioFiles::CROWD_1);
 
 	// Game loop
 	glm::vec2 normMousePos = glm::vec2(0.0f);
