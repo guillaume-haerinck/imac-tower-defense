@@ -179,7 +179,7 @@ int main(int argc, char** argv) {
 		{
 			// Update animation
 			if (animTimer >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
-				animationSystem.update(deltatime);
+				animationSystem.update(deltatime/1000*6); //TODO create deltatima with this 6/1000 factor ? must check where it is used and why there is such a unit
 				animTimer = 0;
 			}
 			animTimer++;

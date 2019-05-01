@@ -18,14 +18,16 @@ EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
 }
 
+/* Old thing
 void EnemyFactory::create(std::vector<glm::vec2> traj) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(traj.at(0).x, traj.at(0).y));
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
+	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 4);
 	m_registry.assign<cmpt::Trajectory>(myEntity, traj);
 }
+*/
 
 void EnemyFactory::create() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
@@ -36,7 +38,7 @@ void EnemyFactory::create() {
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	cmpt::Transform transform(m_map.getNodePosition(startNode));
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 0);
+	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 

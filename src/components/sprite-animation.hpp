@@ -2,11 +2,14 @@
 
 namespace cmpt {
 struct SpriteAnimation {
-    SpriteAnimation(unsigned int startTile = 0, unsigned int endTile = 0, unsigned int activeTile = 0) 
-    : startTile(startTile), endTile(endTile), activeTile(activeTile) {}
+    SpriteAnimation(unsigned int startTile , unsigned int endTile , float duration) 
+    : startTile(startTile), endTile(endTile), activeTile(startTile), age(0), duration(duration) {}
 
     unsigned int startTile;
     unsigned int endTile;
     unsigned int activeTile;
+
+	float age;
+	float duration;
 };
 }
