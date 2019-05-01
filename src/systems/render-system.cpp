@@ -78,24 +78,51 @@ void RenderSystem::update() {
     });
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
-		// Binding
-		healthbar.background.shader->bind();
-		GLCall(glBindVertexArray(healthbar.background.vaID));
+		// Background
+		{
+			// Binding
+			healthbar.background.shader->bind();
+			GLCall(glBindVertexArray(healthbar.background.vaID));
 
-		// Update pos
-		cmpt::Transform healthTransform = transform;
-		healthTransform.position += healthbar.relativePos;
-		healthTransform.zIndex = 10;
+			// Update pos
+			cmpt::Transform healthTransform = transform;
+			healthTransform.position += healthbar.relativePos;
+			healthTransform.zIndex = 10;
 
-		// Updates
-		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
-		healthbar.background.shader->setUniformMat4f("u_mvp", mvp);
-		healthbar.background.shader->setUniform4f("u_color", healthbar.background.color.r, healthbar.background.color.g, healthbar.background.color.b, healthbar.background.color.a);
-		GLCall(glDrawArrays(healthbar.background.type, 0, healthbar.background.vertexCount));
+			// Updates
+			glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
+			healthbar.background.shader->setUniformMat4f("u_mvp", mvp);
+			healthbar.background.shader->setUniform4f("u_color", healthbar.background.color.r, healthbar.background.color.g, healthbar.background.color.b, healthbar.background.color.a);
+			GLCall(glDrawArrays(healthbar.background.type, 0, healthbar.background.vertexCount));
 
-		// Unbinding
-		GLCall(glBindVertexArray(0));
-		healthbar.background.shader->unbind();
+			// Unbinding
+			GLCall(glBindVertexArray(0));
+			healthbar.background.shader->unbind();
+		}
+
+		// Foreground
+		{
+			// Binding
+			healthbar.bar.shader->bind();
+			GLCall(glBindVertexArray(healthbar.bar.vaID));
+
+			// Update pos
+			cmpt::Transform healthTransform = transform;
+			healthTransform.position += healthbar.relativePos;
+			healthTransform.scale = glm::vec2(0.5f, 1.0f);
+			healthTransform.zIndex = 11;
+
+			// Updates
+			glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
+			healthbar.bar.shader->setUniformMat4f("u_mvp", mvp);
+			healthbar.bar.shader->setUniform4f("u_color", healthbar.bar.color.r, healthbar.bar.color.g, healthbar.bar.color.b, healthbar.bar.color.a);
+			GLCall(glDrawArrays(healthbar.bar.type, 0, healthbar.bar.vertexCount));
+
+			// Unbinding
+			GLCall(glBindVertexArray(0));
+			healthbar.background.shader->unbind();
+		}
+		
 	});
 }
 
