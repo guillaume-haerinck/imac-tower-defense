@@ -1,12 +1,13 @@
 # Imac Tower Defense Changelog
 
-## 30.04.19
+## 01.05.19
 
-Trigger zone detection (without Box2d)
+Health bar.
 
 ## 28.04.19
 
 Pathfinding.
+Explosions on enemy destroy.
 
 ## 27.04.19
 
