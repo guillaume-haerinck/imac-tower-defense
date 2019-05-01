@@ -6,6 +6,8 @@
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/primitive.hpp"
+#include "components/health.hpp"
+#include "components/health-bar.hpp"
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 
@@ -74,6 +76,26 @@ void RenderSystem::update() {
         GLCall(glBindVertexArray(0));
         primitive.shader->unbind();
     });
+
+	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
+		// Binding
+		healthbar.background.shader->bind();
+		GLCall(glBindVertexArray(healthbar.background.vaID));
+
+		// Update pos
+		cmpt::Transform healthTransform = transform;
+		healthTransform.position += healthbar.relativePos;
+
+		// Updates
+		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
+		healthbar.background.shader->setUniformMat4f("u_mvp", mvp);
+		healthbar.background.shader->setUniform4f("u_color", healthbar.background.color.r, healthbar.background.color.g, healthbar.background.color.b, healthbar.background.color.a);
+		GLCall(glDrawArrays(healthbar.background.type, 0, healthbar.background.vertexCount));
+
+		// Unbinding
+		GLCall(glBindVertexArray(0));
+		healthbar.background.shader->unbind();
+	});
 }
 
 glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) const {

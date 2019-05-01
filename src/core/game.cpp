@@ -32,6 +32,8 @@ Game::Game(entt::DefaultRegistry& registry)
 
 Game::~Game() {
 	// Delete OpenGL data
+	// FIXME fuites de mémoire si entité détruite avant ce moment, et qui possède ces composants (pour le moment les projectiles).
+	// Voir si moyen d'avoir un destructor pour les components, section "observe changes" de la doc ENTT
 	m_registry.view<cmpt::Sprite>().each([](auto entity, cmpt::Sprite& sprite) {
 		GLCall(glDeleteTextures(1, &sprite.textureID));
 		GLCall(glDeleteVertexArrays(1, &sprite.vaID));

@@ -6,6 +6,7 @@
 #include "component-factories/sprite-factory.hpp"
 #include "entity-factories/projectile-factory.hpp"
 #include "components/sprite.hpp"
+#include "components/primitive.hpp"
 
 #include "map/map.hpp"
 
@@ -18,7 +19,9 @@ public:
 
 private:
 	SpriteFactory m_spriteFactory;
+	PrimitiveFactory m_primitiveFactory;
 	cmpt::Sprite m_ennemySprite;
+	cmpt::Primitive m_healthBackground;
 	Map& m_map;
 };
 
