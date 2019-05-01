@@ -6,6 +6,7 @@
 #include "components/sprite-animation.hpp"
 #include "components/transform.hpp"
 #include "events/projectile-hit.hpp"
+#include "events/enemy-dead.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -13,7 +14,11 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 	: System(registry), m_emitter(emitter), m_explosionFactory(registry)
 {
 	m_emitter.on<evnt::ProjectileHit>([this](const evnt::ProjectileHit & event, EventEmitter & emitter) {
-		//m_explosionFactory.create(event.position);
+		
+	});
+
+	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+		m_explosionFactory.create(event.position);
 	});
 }
 
