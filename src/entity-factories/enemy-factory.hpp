@@ -22,6 +22,7 @@ private:
 	PrimitiveFactory m_primitiveFactory;
 	cmpt::Sprite m_ennemySprite;
 	cmpt::Primitive m_healthBackground;
+	cmpt::Primitive m_healthBar;
 	Map& m_map;
 };
 

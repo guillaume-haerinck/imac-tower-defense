@@ -19,7 +19,8 @@ EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
 : Factory(registry), m_map(map)
 {
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
-	m_healthBackground = m_primitiveFactory.createRect(glm::vec4(1, 0, 0, 1), glm::vec2(5.0f, 0.5f));
+	m_healthBackground = m_primitiveFactory.createRect(glm::vec4(0, 0, 0, 1), glm::vec2(6.0f, 1.0f));
+	m_healthBar = m_primitiveFactory.createRect(glm::vec4(1, 0, 0, 1), glm::vec2(6.0f, 1.0f));
 }
 
 /* Old thing
@@ -45,7 +46,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, 5);
-	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(0.0f, -10.0f), m_healthBackground, m_healthBackground);
+	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(0.0f, -8.0f), m_healthBackground, m_healthBackground);
 
 	//Temporary : all towers have a chance to pick focus on the latest enemy created
 	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity, &randomService](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {

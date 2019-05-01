@@ -85,6 +85,7 @@ void RenderSystem::update() {
 		// Update pos
 		cmpt::Transform healthTransform = transform;
 		healthTransform.position += healthbar.relativePos;
+		healthTransform.zIndex = 10;
 
 		// Updates
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);

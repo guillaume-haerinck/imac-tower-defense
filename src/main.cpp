@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 	}
 
 	// View matrices, they are passed around a lot as well
-	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, 0.0f, 100.0f);
+	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f);
 	glm::mat4 viewMat = glm::mat4(1.0f);
 	glm::vec2 viewTranslation = glm::vec2(0.0f);
 	float viewScale = 1.0f;
