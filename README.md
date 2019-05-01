@@ -30,16 +30,16 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 
 - [x] Integrate ECS system
 - [x] Load & play spritesheet
-- [ ] Load, validate and interpret .itd files
-- [ ] Load map as a grid
+- [x] Load, validate and interpret .itd files
+- [x] Load map as a grid
 - [ ] User interface
 - [x] Play audio
-- [ ] Object picking
-- [ ] Construction system
-- [ ] Monster path following
-- [ ] Attack system
-- [ ] Projectiles
-- [ ] Waves system
+- [x] Object picking
+- [x] Construction system
+- [x] Monster path following
+- [x] Attack system
+- [x] Projectiles
+- [x] Waves system
 - [ ] Monster state machine
 - [ ] Banking system
 - [ ] Upgrade system
