@@ -10,16 +10,9 @@ PrimitiveFactory::PrimitiveFactory()
 : m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag")
 {}
 
-cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize) {
-	displaySize /= 2;
-    float positions[] = {
-		-displaySize.x,  displaySize.y, // 0
-		 displaySize.x,  displaySize.y, // 1
-        -displaySize.x, -displaySize.y, // 2
-         displaySize.x, -displaySize.y  // 3
-	};
-    unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
+cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot) {
+	const std::array<float, 8> positions = getVertexPositions(displaySize, pivot);
+    VertexBuffer vb(positions.data(), positions.size() * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
 
@@ -41,16 +34,9 @@ cmpt::Primitive PrimitiveFactory::createRect(glm::vec4 color, glm::vec2 displayS
     return rectangle;
 }
 
-cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 displaySize) {
-	displaySize /= 2;
-    float positions[] = {
-		-displaySize.x,  displaySize.y, // 0
-		 displaySize.x,  displaySize.y, // 1
-         displaySize.x, -displaySize.y, // 2
-        -displaySize.x, -displaySize.y  // 3
-	};
-    unsigned int arraySize = sizeof(positions) / sizeof(float);
-    VertexBuffer vb(positions, arraySize * sizeof(float), GL_STATIC_DRAW);
+cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot) {
+	const std::array<float, 8> positions = getVertexPositions(displaySize, pivot);
+	VertexBuffer vb(positions.data(), positions.size() * sizeof(float), GL_STATIC_DRAW);
 	VertexBufferLayout vbLayout;
 	vbLayout.push<float>(2); // Pos (x, y)
 
@@ -71,3 +57,35 @@ cmpt::Primitive PrimitiveFactory::createRectOutline(glm::vec4 color, glm::vec2 d
     cmpt::Primitive rectangle(color, va.getID(), GL_LINE_LOOP, &m_shaderBasic, 4);
     return rectangle;
 }
+
+std::array<float, 8> PrimitiveFactory::getVertexPositions(glm::vec2 displaySize, PivotPoint pivot) {
+	displaySize /= 2;
+
+	switch (pivot) {
+		case MIDDLE_LEFT:
+		{
+			const std::array<float, 8> vertexPositions = {
+				 0,					 displaySize.y, // 0
+				 displaySize.x * 2,  displaySize.y,	// 1
+				 0,					-displaySize.y, // 2
+				 displaySize.x * 2, -displaySize.y	// 3
+			};
+			return vertexPositions;
+			break;
+		}
+
+		default:
+		// Center
+		{
+			const std::array<float, 8> vertexPositions = {
+				-displaySize.x,  displaySize.y, // 0
+				 displaySize.x,  displaySize.y, // 1
+				-displaySize.x, -displaySize.y, // 2
+				 displaySize.x, -displaySize.y  // 3
+			};
+			return vertexPositions;
+			break;
+		}
+	}
+}
+
