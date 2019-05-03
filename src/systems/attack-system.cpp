@@ -42,10 +42,11 @@ void AttackSystem::update() {
 
 		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
 			if (entity1 != entity2) {
-				const glm::vec2 pos = transform1.position - transform2.position;
-				const float distance = sqrt(pos.x * pos.x + pos.y * pos.y);
-				
-				if (distance <= trigger1.radius + trigger2.radius) {
+				const glm::vec2 pos = transform2.position - transform1.position;
+				const float distance = pos.x * pos.x + pos.y * pos.y;
+				const float radii = trigger1.radius + trigger2.radius;
+
+				if (distance <= radii * radii) {
 					spdlog::info("trigger entered !");
 				}
 			}
