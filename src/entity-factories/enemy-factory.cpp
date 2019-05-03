@@ -50,11 +50,4 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Trigger>(myEntity, 5.0f);
-
-	//Temporary : all towers have a chance to pick focus on the latest enemy created
-	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity, &randomService](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {
-		if (randomService.random() < 0.25) {
-			targeting.targetId = myEntity;
-		}
-	});
 }

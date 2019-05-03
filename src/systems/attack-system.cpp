@@ -36,18 +36,21 @@ void AttackSystem::update() {
 		}
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Tower>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Trigger & trigger1, auto) {
+	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Targeting>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Trigger & trigger1, cmpt::Targeting & targeting) {
 		IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
 		dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 
-		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
-			if (entity1 != entity2) {
-				const glm::vec2 pos = transform2.position - transform1.position;
-				const float distance = pos.x * pos.x + pos.y * pos.y;
-				const float radii = trigger1.radius + trigger2.radius;
+		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
+			const glm::vec2 pos = transform2.position - transform1.position;
+			const float distance = pos.x * pos.x + pos.y * pos.y;
+			const float radii = trigger1.radius + trigger2.radius;
 
-				if (distance <= radii * radii) {
-					spdlog::info("trigger entered !");
+			if (distance <= radii * radii) {
+				// TODO keep his target if still inside of the trigger
+				targeting.targetId = entity2;
+			} else {
+				if (targeting.targetId == entity2) {
+					targeting.targetId = -1;
 				}
 			}
 		});
