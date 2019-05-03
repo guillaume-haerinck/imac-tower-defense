@@ -41,7 +41,7 @@
 #include "systems/animation-system.hpp"
 #include "systems/construction-system.hpp"
 #include "systems/wave-system.hpp"
-#include "systems/focus-system.hpp"
+#include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
 #include "gui/start-menu.hpp"
 #include "events/handlers/event-emitter.hpp"
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 	MovementSystem movementSystem(registry, emitter);
 	ConstructionSystem constructionSystem(registry, emitter, map1);
 	WaveSystem waveSystem(registry, emitter, map1);
-	FocusSystem focusSystem(registry);
+	AttackSystem attackSystem(registry);
 	HealthSystem healthSystem(registry, emitter);
 
 	// Timers
@@ -188,8 +188,8 @@ int main(int argc, char** argv) {
 			physicWorld->Step(1.0f / 60.0f, 6, 2);
 			movementSystem.update(deltatime);
 
-			//Towers focusing
-			focusSystem.update();
+			// Towers attacks and focus
+			attackSystem.update();
 
 			// Start wave
 			waveTimer++;

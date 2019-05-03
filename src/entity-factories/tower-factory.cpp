@@ -8,6 +8,7 @@
 #include "components/shoot-at.hpp"
 #include "components/rigid-body.hpp"
 #include "components/targeting.hpp"
+#include "components/trigger.hpp"
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 
@@ -26,4 +27,5 @@ void TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::LookAt>(myEntity);
 	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 60));
 	m_registry.assign<cmpt::Targeting>(myEntity, -1);
+	m_registry.assign<cmpt::Trigger>(myEntity, 25.0f);
 }
