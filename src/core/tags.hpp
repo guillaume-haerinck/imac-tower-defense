@@ -15,3 +15,8 @@ namespace renderTag {
 namespace tileTag {
 	TAG(Constructible);
 }
+
+namespace entityTag {
+	TAG(Tower);
+	TAG(Enemy);
+}

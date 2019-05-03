@@ -21,6 +21,7 @@ void TowerFactory::create(float posX, float posY) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 
 	auto myEntity = m_registry.create();
+	m_registry.assign<entityTag::Tower>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_towerSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY));

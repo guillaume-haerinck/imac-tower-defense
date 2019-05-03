@@ -8,6 +8,7 @@
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
 #include "components/shoot-at.hpp"
+#include "components/trigger.hpp"
 #include "components/health-bar.hpp"
 #include "components/health.hpp"
 #include "services/locator.hpp"
@@ -39,6 +40,7 @@ void EnemyFactory::create() {
 	int startNode = m_map.m_graph.getStartNode();
 
 	auto myEntity = m_registry.create();
+	m_registry.assign<entityTag::Enemy>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	cmpt::Transform transform(m_map.getNodePosition(startNode));
@@ -47,6 +49,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
+	m_registry.assign<cmpt::Trigger>(myEntity, 5.0f);
 
 	//Temporary : all towers have a chance to pick focus on the latest enemy created
 	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([myEntity, &randomService](auto entity, cmpt::Targeting & targeting , cmpt::ShootAt & shootAt) {

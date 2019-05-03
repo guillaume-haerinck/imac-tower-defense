@@ -3,6 +3,7 @@
 #include <math.h>
 #include <spdlog/spdlog.h>
 
+#include "core/tags.hpp"
 #include "components/targeting.hpp"
 #include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
@@ -35,11 +36,11 @@ void AttackSystem::update() {
 		}
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::Trigger>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Trigger & trigger1) {
+	m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Tower>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Trigger & trigger1, auto) {
 		IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
 		dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 
-		m_registry.view<cmpt::Transform, cmpt::Trigger>().each([this, entity1, transform1, trigger1](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2) {
+		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
 			if (entity1 != entity2) {
 				const glm::vec2 pos = transform1.position - transform2.position;
 				const float distance = sqrt(pos.x * pos.x + pos.y * pos.y);
