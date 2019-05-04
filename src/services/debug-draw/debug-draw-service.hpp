@@ -20,7 +20,7 @@
 class DebugDrawService : public IDebugDraw {
 public:
     DebugDrawService(glm::mat4 viewMat = glm::mat4(1.0f), glm::mat4 projMat = glm::mat4(1.0f));
-    ~DebugDrawService();
+    virtual ~DebugDrawService();
 
 	/* Box2d Draw API */
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;

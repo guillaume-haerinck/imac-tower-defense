@@ -9,7 +9,7 @@
 class AudioService : public IAudio {
 public:
 	AudioService();
-	~AudioService();
+	virtual ~AudioService();
 
 	void playSound(int soundID) override;
 	void stopSound(int soundID) override;
