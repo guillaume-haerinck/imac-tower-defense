@@ -2,13 +2,6 @@
 
 #include "core/game.hpp"
 
-enum GameState {
-	WELCOME_SCREEN,
-	LEVEL,
-	CINEMATIC,
-	GAME_OVER
-};
-
 /*
 class IGameState {
 public:

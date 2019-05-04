@@ -26,7 +26,7 @@ bool Game::m_bInstanciated = false;
 bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
-:   m_window(nullptr), m_context(nullptr), emitter(emitter),
+:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::LEVEL),
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f)
@@ -171,11 +171,20 @@ int Game::init() {
 }
 
 void Game::update(float deltatime) {
-	//m_levelState.update();
-	animationSystem->update(deltatime / 1000 * 6);
-	movementSystem->update(deltatime);
-	attackSystem->update();
-	renderSystem->update();
+	switch (m_state) {
+	case WELCOME_SCREEN:
+		break;
+	case LEVEL:
+		// TODO pass "*this" instead as a parameter, but find how to fix circular inclusion
+		m_levelState.update(deltatime, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
+		break;
+	case CINEMATIC:
+		break;
+	case GAME_OVER:
+		break;
+	default:
+		break;
+	}
 }
 
 /* ----------------------- GETTERS AND SETTERS ---------------------- */

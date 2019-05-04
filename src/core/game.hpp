@@ -15,6 +15,13 @@
 #include "systems/health-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 
+enum GameState {
+	WELCOME_SCREEN,
+	LEVEL,
+	CINEMATIC,
+	GAME_OVER
+};
+
 class Game {
 public:
 	// Lifetime
@@ -56,9 +63,8 @@ private:
     SDL_GLContext m_context;
 
 	// State machine
-	//enum GameState m_gameState;
-	// TODO construct on state change and store only the interface ?
-	//LevelState m_levelState;
+	GameState m_state;
+	LevelState m_levelState;
 
 	// Camera
 	glm::mat4 m_projMat;

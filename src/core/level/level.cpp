@@ -61,6 +61,7 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 	m_grid.resize(m_gridWidth * m_gridHeight);
 
 	glm::vec3 color = glm::vec3(0);
+	// TODO fix décallage des tuiles
 	for (int y = 0; y < imgHeight; y++) {
 		for (int x = 0; x < imgWidth; x++) {
 			color = getPixelColorFromImage(image, imgWidth, x, y);
@@ -78,8 +79,8 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 			}
 			else if (color == m_endColor) {
 				entityId = m_tileFactory.createArrival(position);
-				//Construct graph
-				//We start from the endpoint because there will always be only one on the map
+				// Construct graph
+				// We start from the endpoint because there will always be only one on the map
 				m_graph.addEndNode(m_graph.addNode(x, y));
 				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
 					lookForNodes(image, imgWidth, imgHeight, 0, x + 1, y, 1, 0, 1);
@@ -93,9 +94,8 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 				if (isPath(image, imgWidth, imgHeight, x, y - 1)) {
 					lookForNodes(image, imgWidth, imgHeight, 0, x, y - 1, 0, -1, 1);
 				}
-				//Construct pathfinfing graph
+				// Construct pathfinfing graph
 				constructPathfindingGraph();
-				//
 			}
 			else if (color == m_constructColor) {
 				entityId = m_tileFactory.createConstructible(position);

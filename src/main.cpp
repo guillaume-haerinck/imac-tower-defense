@@ -152,10 +152,13 @@ int main(int argc, char** argv) {
 		*/
 
 		// Game update & render
-		game.update(deltatime);
-		//noeView->GetRenderer()->Render();
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		{
+			game.update(deltatime);
+			//noeView->GetRenderer()->Render();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
+		
 		
 		/* Handle inputs */
 		SDL_Event e;
