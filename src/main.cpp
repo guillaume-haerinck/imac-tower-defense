@@ -103,14 +103,14 @@ int main(int argc, char** argv) {
 	RenderSystem renderSystem(registry, viewMat, projMat);
 	AnimationSystem animationSystem(registry, emitter);
 	MovementSystem movementSystem(registry, emitter);
-	ConstructionSystem constructionSystem(registry, emitter, *map);
-	WaveSystem waveSystem(registry, emitter, *map);
+	ConstructionSystem constructionSystem(registry, emitter, map);
+	WaveSystem waveSystem(registry, emitter, map);
 	AttackSystem attackSystem(registry);
 	HealthSystem healthSystem(registry, emitter);
 
 	// Change map !
 	// TODO delete old one
-	map = new Map(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
+	//map = new Map(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
 
 	// Timers
 	unsigned int animTimer = 0;

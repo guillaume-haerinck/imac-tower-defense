@@ -16,7 +16,7 @@
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimisés en mémoire
 
-EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
+EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map* map)
 : Factory(registry), m_map(map)
 {
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
@@ -37,16 +37,16 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 
 void EnemyFactory::create() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-	int startNode = m_map.m_graph.getStartNode();
+	int startNode = m_map->m_graph.getStartNode();
 
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Enemy>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
-	cmpt::Transform transform(m_map.getNodePosition(startNode));
+	cmpt::Transform transform(m_map->getNodePosition(startNode));
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
-	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_map, startNode);
+	m_registry.assign<cmpt::Pathfinding>(myEntity, m_map, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Trigger>(myEntity, 5.0f);

@@ -10,10 +10,10 @@
 
 class WaveSystem : public System {
 public:
-	WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map);
+	WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map* map);
 
 private:
 	EventEmitter& m_emitter;
-	Map& m_map;
+	Map* m_map;
 	EnemyFactory m_enemyFactory;
 };
