@@ -10,7 +10,9 @@ Graph::Graph() {
 }
 
 Graph::~Graph() {
-
+	for (int i = 0; i < adjencyLists.size(); i++) {
+		delete adjencyLists.at(i);
+	}
 }
 
 int Graph::getNodesCount() {
