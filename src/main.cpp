@@ -97,7 +97,8 @@ int main(int argc, char** argv) {
 	*/
 
 	// Map
-	Map* map = new Map(registry, "res/maps/map-1.itd", viewTranslation, viewScale);
+	Map map(registry, "res/maps/map-1.itd", viewTranslation, viewScale);
+	// map.setLevel("res/maps/map-2.itd"); // TODO
 
 	// Systems
 	RenderSystem renderSystem(registry, viewMat, projMat);
@@ -107,10 +108,6 @@ int main(int argc, char** argv) {
 	WaveSystem waveSystem(registry, emitter, map);
 	AttackSystem attackSystem(registry);
 	HealthSystem healthSystem(registry, emitter);
-
-	// Change map !
-	// TODO delete old one
-	//map = new Map(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
 
 	// Timers
 	unsigned int animTimer = 0;
@@ -220,8 +217,8 @@ int main(int argc, char** argv) {
 			// TODO render debugdraw here and not directly
 			debugDraw.setProjMat(projMat);
 			debugDraw.setViewMat(viewMat);
-			map->drawGraph();
-			map->drawGrid();
+			map.drawGraph();
+			map.drawGrid();
 			physicWorld->DrawDebugData();
 		}
 

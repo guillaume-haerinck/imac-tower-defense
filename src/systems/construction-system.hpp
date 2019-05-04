@@ -10,10 +10,10 @@
 
 class ConstructionSystem : public System {
 public:
-	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map* map);
+	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map);
 
 private:
 	EventEmitter& m_emitter;
-	Map* m_map;
+	Map& m_map;
 	TowerFactory m_towerFactory;
 };

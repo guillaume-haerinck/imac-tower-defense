@@ -13,6 +13,9 @@
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
+// TODO use a public function to change the current map, and read the itd file
+// TODO rename MAP to Level for clear separation with world map
+
 Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
 	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
