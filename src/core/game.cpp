@@ -158,7 +158,7 @@ int Game::init() {
 	locator::audio::set<AudioService>();
 
 	// Level
-	level = new Level(registry, "res/maps/map-2.itd", m_viewTranslation, m_viewScale);
+	level = new Level(registry, "res/levels/level-2.itd", m_viewTranslation, m_viewScale);
 
 	// Systems
 	renderSystem = new RenderSystem(registry, m_viewMat, m_projMat);

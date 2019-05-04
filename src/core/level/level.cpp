@@ -13,7 +13,7 @@
 #include "core/maths.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
-	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
+	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/levels/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
 	// TODO put everything in private functions
 
