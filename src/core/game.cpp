@@ -5,10 +5,10 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include <glm/glm.hpp>
 #include <NsApp/LocalFontProvider.h>
 #include <NsApp/LocalTextureProvider.h>
 #include <NsApp/LocalXamlProvider.h>
-#include <glm/glm.hpp>
 
 #include "constants.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -52,6 +52,10 @@ Game::~Game() {
 
 	// Delete level manager
 	delete level;
+
+	// Delete states
+	delete m_levelState;
+	delete m_titleState;
 
 	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
@@ -169,20 +173,25 @@ int Game::init() {
 	attackSystem = new AttackSystem(registry);
 	healthSystem = new HealthSystem(registry, emitter);
 
+	// States
+	m_levelState = new LevelState();
+	m_titleState = new TitleScreenState();
+
     m_bInit = true;
     return EXIT_SUCCESS;
 }
 
 void Game::update(float deltatime) {
 	switch (m_state) {
-	case WELCOME_SCREEN:
+	case TITLE_SCREEN:
+		m_titleState->update();
 		break;
 
 	case LEVEL:
 		// TODO pass "*this" instead as a parameter, but find how to fix circular inclusion
+		m_levelState->update(deltatime, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
 		level->drawGraph();
 		level->drawGrid();
-		m_levelState.update(deltatime, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
 		break;
 
 	case CINEMATIC:

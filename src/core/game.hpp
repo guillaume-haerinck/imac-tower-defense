@@ -4,7 +4,8 @@
 #include <SDL2/SDL.h>
 #include <entt/entt.hpp>
 
-#include "game-state/level-state.hpp"
+#include "game-states/level-state.hpp"
+#include "game-states/title-screen-state.hpp"
 #include "level/level.hpp"
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
@@ -16,7 +17,7 @@
 #include "events/handlers/event-emitter.hpp"
 
 enum GameState {
-	WELCOME_SCREEN,
+	TITLE_SCREEN,
 	LEVEL,
 	CINEMATIC,
 	GAME_OVER
@@ -64,7 +65,8 @@ private:
 
 	// State machine
 	GameState m_state;
-	LevelState m_levelState;
+	LevelState* m_levelState;
+	TitleScreenState* m_titleState;
 
 	// Camera
 	glm::mat4 m_projMat;

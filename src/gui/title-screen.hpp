@@ -3,9 +3,9 @@
 #include <NsGui/StackPanel.h>
 #include <NsGui/IntegrationAPI.h>
 
-class StartMenu: public Noesis::StackPanel {
+class TitleScreen: public Noesis::StackPanel {
 public:
-    StartMenu();
+    TitleScreen();
 
 private:
     /* Events */
@@ -15,7 +15,7 @@ private:
 
     /* Init */
     void InitializeComponent();
-    NS_IMPLEMENT_INLINE_REFLECTION(StartMenu, StackPanel) {
-        NsMeta<Noesis::TypeId>("StartMenu");
+    NS_IMPLEMENT_INLINE_REFLECTION(TitleScreen, StackPanel) {
+        NsMeta<Noesis::TypeId>("TitleScreen");
     }
 };

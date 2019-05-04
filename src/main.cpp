@@ -43,14 +43,14 @@
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
-#include "gui/start-menu.hpp"
+#include "gui/title-screen.hpp"
 #include "events/handlers/event-emitter.hpp"
 #include "events/handlers/contact-listener.hpp"
 #include "events/left-click.hpp"
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
 
-// static Noesis::IView* noeView;
+static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
@@ -78,14 +78,12 @@ int main(int argc, char** argv) {
 	*/
 
 	// Noesis GUI
-	/*
-	StartMenu startMenu;
-	Noesis::Ptr<Noesis::FrameworkElement> xaml = startMenu;
+	TitleScreen titleScreen;
+	Noesis::Ptr<Noesis::FrameworkElement> xaml = titleScreen;
 	noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
 	noeView->SetIsPPAAEnabled(true);
 	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
-	*/
 
 	// Debug Window
 	bool bDrawPhysic = false;
@@ -123,7 +121,7 @@ int main(int argc, char** argv) {
 			}
 			*/
 
-			if (ImGui::Button("Start wave")) {
+			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);
 			}
 
@@ -137,7 +135,6 @@ int main(int argc, char** argv) {
 		}
 
 		// Noesis update
-		/*
 		{
 			// Noesis gui update
 			noeView->Update(SDL_GetTicks());
@@ -149,12 +146,11 @@ int main(int argc, char** argv) {
 			GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
 			GLCall(glClearStencil(0));
 		}
-		*/
 
 		// Game update & render
 		{
 			game.update(deltatime);
-			//noeView->GetRenderer()->Render();
+			noeView->GetRenderer()->Render();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -180,11 +176,11 @@ int main(int argc, char** argv) {
 						emitter.publish<evnt::LeftClick>(normMousePos);
 					}
 				}
-				//noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				//noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
 				break;
 
 			case SDL_MOUSEMOTION:
@@ -288,6 +284,6 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	//noeView->GetRenderer()->Shutdown();
+	noeView->GetRenderer()->Shutdown();
 	return EXIT_SUCCESS;
 }

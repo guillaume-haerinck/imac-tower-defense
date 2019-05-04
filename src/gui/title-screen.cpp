@@ -1,4 +1,4 @@
-#include "start-menu.hpp"
+#include "title-screen.hpp"
 
 #include <NsGui/Button.h>
 
@@ -8,24 +8,24 @@
     https://www.noesisengine.com/docs/Gui.Core.CustomControlTutorial.html
 */
 
-StartMenu::StartMenu() {
+TitleScreen::TitleScreen() {
     InitializeComponent();
 }
 
-void StartMenu::InitializeComponent() {
-    Noesis::GUI::LoadComponent(this, "start-menu.xaml");
+void TitleScreen::InitializeComponent() {
+    Noesis::GUI::LoadComponent(this, "title-screen.xaml");
 }
 
-bool StartMenu::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
+bool TitleScreen::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
     NS_CONNECT_EVENT(Noesis::Button, Click, OnButton1Click);
     NS_CONNECT_EVENT(Noesis::Button, Click, OnButton2Click);
     return false;
 }
 
-void StartMenu::OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+void TitleScreen::OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
     printf("Button1 was clicked\n");
 }
 
-void StartMenu::OnButton2Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+void TitleScreen::OnButton2Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
     printf("Button2 was clicked\n");
 }

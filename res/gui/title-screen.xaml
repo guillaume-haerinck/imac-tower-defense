@@ -1,7 +1,7 @@
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       VerticalAlignment="Center"
-      x:Class="StartMenu">
+      x:Class="TitleScreen">
   <Button Width="100" Content="Click me" Click="OnButton1Click"/>
   <Button Width="100" Content="Click me" Click="OnButton2Click"/>
 </StackPanel>
