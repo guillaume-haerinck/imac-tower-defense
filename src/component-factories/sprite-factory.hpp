@@ -6,19 +6,31 @@
 #include "graphics/index-buffer.hpp"
 #include "components/sprite.hpp"
 
+enum ShaderType {
+	BASIC_SINGLE,
+	BASIC_ATLAS,
+	EXPLOSION
+};
+
 class SpriteFactory {
 public:
     SpriteFactory();
 
     cmpt::Sprite createSingle(const std::string& textureFilepath, glm::vec2 displaySize);
-    cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize);
+    cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize, ShaderType shaderType);
+	cmpt::Sprite createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize);
     // TODO batch rendering with glTextureView ? https://learnopengl.com/Advanced-OpenGL/Instancing for all since they share vertex data
 
 private:
 	// TODO make shader static because shared among each instance
 	// -> Init problem because glad is not up at compile time to create the shader
 
+	IndexBuffer m_ib;    // All sprites shares the same index buffer
+	//Shaders
+	Shader& getShader(ShaderType shaderType);
+		//Basics
     Shader m_shaderTex;
     Shader m_shaderTexArray;
-    IndexBuffer m_ib;    // All sprites shares the same index buffer
+		//Custom
+	Shader m_explosionShader;
 };
