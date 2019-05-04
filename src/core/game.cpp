@@ -151,11 +151,14 @@ int Game::init() {
 
 	// Services
 	locator::debugDraw::set<DebugDrawService>();
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setProjMat(m_projMat);
+	debugDraw.setViewMat(m_viewMat);
 	locator::random::set<RandomService>();
 	locator::audio::set<AudioService>();
 
 	// Level
-	level = new Level(registry, "res/maps/map-1.itd", m_viewTranslation, m_viewScale);
+	level = new Level(registry, "res/maps/map-2.itd", m_viewTranslation, m_viewScale);
 
 	// Systems
 	renderSystem = new RenderSystem(registry, m_viewMat, m_projMat);
@@ -174,14 +177,20 @@ void Game::update(float deltatime) {
 	switch (m_state) {
 	case WELCOME_SCREEN:
 		break;
+
 	case LEVEL:
 		// TODO pass "*this" instead as a parameter, but find how to fix circular inclusion
+		level->drawGraph();
+		level->drawGrid();
 		m_levelState.update(deltatime, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
 		break;
+
 	case CINEMATIC:
 		break;
+
 	case GAME_OVER:
 		break;
+
 	default:
 		break;
 	}

@@ -15,6 +15,8 @@
 Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
 	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
+	// TODO put everything in private functions
+
 	/* ---------------------------- Read ITD file ------------------------- */
 	std::ifstream file(itdFilePath);
 	if (file.is_open()) {
@@ -109,7 +111,7 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 	stbi_image_free(image);
 }
 
-/* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
+/* ----------------------- PUBLIC GETTERS ----------------- */
 
 int Level::getTile(unsigned int x, unsigned int y) const {
 	try {
@@ -155,6 +157,12 @@ glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) {
 
 glm::vec2 Level::getNodePosition(int nodeIndex) {
 	return gridToProj(m_graph.getNode(nodeIndex).x, m_graph.getNode(nodeIndex).y);
+}
+
+/* ----------------------- PRIVATE SETTERS --------------------------------- */
+
+void setLevel(const char* itdFilePath) {
+	// TODO
 }
 
 /* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
