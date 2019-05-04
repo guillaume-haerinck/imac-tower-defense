@@ -20,47 +20,6 @@ void RenderSystem::update() {
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
 
-    m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) {
-        // Binding
-        sprite.shader->bind();
-        GLCall(glBindVertexArray(sprite.vaID));
-        GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
-        GLCall(glBindTexture(sprite.target, sprite.textureID));
-        sprite.ib->bind();
-
-        // Updates
-        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
-        sprite.shader->setUniformMat4f("u_mvp", mvp);
-        sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
-        GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
-
-        // Unbinding
-        sprite.ib->unbind();
-        GLCall(glBindTexture(sprite.target, 0));
-        GLCall(glBindVertexArray(0));
-        sprite.shader->unbind();
-    });
-
-    m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform& transform, cmpt::Sprite& sprite) {
-        // Binding
-        sprite.shader->bind();
-        GLCall(glBindVertexArray(sprite.vaID));
-        GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
-        GLCall(glBindTexture(sprite.target, sprite.textureID));
-        sprite.ib->bind();
-
-        // Updates
-        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
-        sprite.shader->setUniformMat4f("u_mvp", mvp);
-        GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
-
-        // Unbinding
-        sprite.ib->unbind();
-        GLCall(glBindTexture(sprite.target, 0));
-        GLCall(glBindVertexArray(0));
-        sprite.shader->unbind();
-    });
-
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
         primitive.shader->bind();
@@ -76,6 +35,47 @@ void RenderSystem::update() {
         GLCall(glBindVertexArray(0));
         primitive.shader->unbind();
     });
+
+	m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation) {
+		// Binding
+		sprite.shader->bind();
+		GLCall(glBindVertexArray(sprite.vaID));
+		GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
+		GLCall(glBindTexture(sprite.target, sprite.textureID));
+		sprite.ib->bind();
+
+		// Updates
+		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
+		sprite.shader->setUniformMat4f("u_mvp", mvp);
+		sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
+		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
+
+		// Unbinding
+		sprite.ib->unbind();
+		GLCall(glBindTexture(sprite.target, 0));
+		GLCall(glBindVertexArray(0));
+		sprite.shader->unbind();
+	});
+
+	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite) {
+		// Binding
+		sprite.shader->bind();
+		GLCall(glBindVertexArray(sprite.vaID));
+		GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
+		GLCall(glBindTexture(sprite.target, sprite.textureID));
+		sprite.ib->bind();
+
+		// Updates
+		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
+		sprite.shader->setUniformMat4f("u_mvp", mvp);
+		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
+
+		// Unbinding
+		sprite.ib->unbind();
+		GLCall(glBindTexture(sprite.target, 0));
+		GLCall(glBindVertexArray(0));
+		sprite.shader->unbind();
+	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
 		if (health.current != health.max) {
