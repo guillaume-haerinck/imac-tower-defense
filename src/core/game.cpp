@@ -26,7 +26,7 @@ bool Game::m_bInstanciated = false;
 bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
-:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::LEVEL),
+:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::TITLE_SCREEN),
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f)

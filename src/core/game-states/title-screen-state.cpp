@@ -1,21 +1,15 @@
 #include "title-screen-state.hpp"
 
-#include <NsRender/GLFactory.h>
-#include <NsGui/IntegrationAPI.h>
-#include <NsGui/IRenderer.h>
-#include <NsGui/Grid.h>
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
 #include <spdlog/spdlog.h>
 
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
-#include "gui/title-screen.hpp"
 
 TitleScreenState::TitleScreenState() {
-	TitleScreen titleScreen;
-	Noesis::Ptr<Noesis::FrameworkElement> xaml = titleScreen;
-	m_ui = Noesis::GUI::CreateView(xaml).GiveOwnership();
+	m_xaml = m_titleScreen;
+	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
@@ -31,7 +25,6 @@ TitleScreenState::~TitleScreenState() {
 
 void TitleScreenState::update() {
 	// Noesis gui update
-	// FIXME null pointer exeption thrown
 	m_ui->Update(SDL_GetTicks());
 	m_ui->GetRenderer()->UpdateRenderTree();
 	m_ui->GetRenderer()->RenderOffscreen();

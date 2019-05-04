@@ -1,8 +1,11 @@
 #pragma once
 
 #include <NsGui/IView.h>
+#include <NsRender/GLFactory.h>
+#include <NsGui/IntegrationAPI.h>
+#include <NsGui/IRenderer.h>
 
-static Noesis::IView* m_ui;
+#include "gui/title-screen.hpp"
 
 class TitleScreenState {
 public:
@@ -12,5 +15,7 @@ public:
 	void update();
 
 private:
-	
+	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
+	Noesis::IView* m_ui;
+	TitleScreen m_titleScreen;
 };

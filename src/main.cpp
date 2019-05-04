@@ -1,13 +1,12 @@
 #ifdef _WIN32
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
+	#include <crtdbg.h>
 #endif
 
 #include <cstdlib>
 #include <iostream>
 #include <glad/glad.h>
-#include <GL/glu.h>
 #include <debugbreak/debugbreak.h>
 #include <spdlog/spdlog.h>
 #include <SDL2/SDL.h>
@@ -16,41 +15,16 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <NsRender/GLFactory.h>
-#include <NsGui/IntegrationAPI.h>
-#include <NsGui/IRenderer.h>
-#include <NsGui/IView.h>
-#include <NsGui/Grid.h>
 #include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
 #include "core/maths.hpp"
-#include "core/tags.hpp"
 #include "core/constants.hpp"
-#include "services/locator.hpp"
-#include "services/debug-draw/i-debug-draw.hpp"
-#include "services/audio/i-audio.hpp"
 #include "logger/gl-log-handler.hpp"
-#include "logger/noesis-log-handler.hpp"
-
-#include "entity-factories/tower-factory.hpp"
-#include "entity-factories/enemy-factory.hpp"
-#include "systems/render-system.hpp"
-#include "systems/movement-system.hpp"
-#include "systems/animation-system.hpp"
-#include "systems/construction-system.hpp"
-#include "systems/wave-system.hpp"
-#include "systems/attack-system.hpp"
-#include "systems/health-system.hpp"
-#include "gui/title-screen.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "events/handlers/contact-listener.hpp"
 #include "events/left-click.hpp"
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
-
-static Noesis::IView* noeView;
 
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
@@ -76,14 +50,6 @@ int main(int argc, char** argv) {
 	debugDraw.setViewMat(viewMat);
 	physicWorld->SetDebugDraw(&debugDraw);
 	*/
-
-	// Noesis GUI
-	TitleScreen titleScreen;
-	Noesis::Ptr<Noesis::FrameworkElement> xaml = titleScreen;
-	noeView = Noesis::GUI::CreateView(xaml).GiveOwnership();
-	noeView->SetIsPPAAEnabled(true);
-	noeView->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
 	// Debug Window
 	bool bDrawPhysic = false;
@@ -134,27 +100,12 @@ int main(int argc, char** argv) {
 			ImGui::End();
 		}
 
-		// Noesis update
-		{
-			// Noesis gui update
-			noeView->Update(SDL_GetTicks());
-			noeView->GetRenderer()->UpdateRenderTree();
-			noeView->GetRenderer()->RenderOffscreen();
-
-			// Need to restore the GPU state because noesis changes it
-			GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-			GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-			GLCall(glClearStencil(0));
-		}
-
 		// Game update & render
 		{
 			game.update(deltatime);
-			noeView->GetRenderer()->Render();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
-		
 		
 		/* Handle inputs */
 		SDL_Event e;
@@ -176,11 +127,11 @@ int main(int argc, char** argv) {
 						emitter.publish<evnt::LeftClick>(normMousePos);
 					}
 				}
-				noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				//noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				//noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
 				break;
 
 			case SDL_MOUSEMOTION:
@@ -283,7 +234,5 @@ int main(int argc, char** argv) {
 			beginTicks = endTicks;
 		}
 	}
-
-	noeView->GetRenderer()->Shutdown();
 	return EXIT_SUCCESS;
 }
