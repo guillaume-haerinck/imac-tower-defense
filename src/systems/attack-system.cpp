@@ -42,10 +42,10 @@ void AttackSystem::update() {
 
 		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
 			const glm::vec2 pos = transform2.position - transform1.position;
-			const float distance = pos.x * pos.x + pos.y * pos.y;
+			const float distanceSq = pos.x * pos.x + pos.y * pos.y;
 			const float radii = trigger1.radius + trigger2.radius;
 
-			if (distance <= radii * radii) {
+			if (distanceSq <= radii * radii) {
 				// TODO keep his target if still inside of the trigger
 				targeting.targetId = entity2;
 			} else {
