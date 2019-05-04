@@ -1,5 +1,10 @@
 # Imac Tower Defense Changelog
 
+## 04.05.19
+
+Trigger collision detection.
+Change map at runtime.
+
 ## 01.05.19
 
 Health bar.

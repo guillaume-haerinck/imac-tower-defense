@@ -8,7 +8,7 @@
 #include "components/sprite.hpp"
 #include "components/primitive.hpp"
 
-#include "map/map.hpp"
+#include "core/map/map.hpp"
 
 class EnemyFactory : public Factory {
 public:

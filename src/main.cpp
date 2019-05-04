@@ -33,7 +33,7 @@
 #include "services/audio/i-audio.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
-#include "map/map.hpp"
+#include "core/map/map.hpp"
 #include "entity-factories/tower-factory.hpp"
 #include "entity-factories/enemy-factory.hpp"
 #include "systems/render-system.hpp"
@@ -97,16 +97,20 @@ int main(int argc, char** argv) {
 	*/
 
 	// Map
-	Map map1(registry, "res/maps/map-3.itd", viewTranslation, viewScale);
+	Map* map = new Map(registry, "res/maps/map-1.itd", viewTranslation, viewScale);
 
 	// Systems
 	RenderSystem renderSystem(registry, viewMat, projMat);
 	AnimationSystem animationSystem(registry, emitter);
 	MovementSystem movementSystem(registry, emitter);
-	ConstructionSystem constructionSystem(registry, emitter, map1);
-	WaveSystem waveSystem(registry, emitter, map1);
+	ConstructionSystem constructionSystem(registry, emitter, *map);
+	WaveSystem waveSystem(registry, emitter, *map);
 	AttackSystem attackSystem(registry);
 	HealthSystem healthSystem(registry, emitter);
+
+	// Change map !
+	// TODO delete old one
+	map = new Map(registry, "res/maps/map-2.itd", viewTranslation, viewScale);
 
 	// Timers
 	unsigned int animTimer = 0;
@@ -216,8 +220,8 @@ int main(int argc, char** argv) {
 			// TODO render debugdraw here and not directly
 			debugDraw.setProjMat(projMat);
 			debugDraw.setViewMat(viewMat);
-			map1.drawGraph();
-			map1.drawGrid();
+			map->drawGraph();
+			map->drawGrid();
 			physicWorld->DrawDebugData();
 		}
 

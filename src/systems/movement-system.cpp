@@ -19,7 +19,7 @@
 
 #include "events/projectile-hit.hpp"
 
-#include "map/graph.hpp"
+#include "core/map/graph.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)

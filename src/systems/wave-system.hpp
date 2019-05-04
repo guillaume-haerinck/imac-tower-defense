@@ -5,7 +5,7 @@
 
 #include "system.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "map/map.hpp"
+#include "core/map/map.hpp"
 #include "entity-factories/enemy-factory.hpp"
 
 class WaveSystem : public System {

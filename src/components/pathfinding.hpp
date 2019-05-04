@@ -1,6 +1,6 @@
 #pragma once
 
-#include "map/map.hpp"
+#include "core/map/map.hpp"
 
 namespace cmpt {
 	struct Pathfinding {

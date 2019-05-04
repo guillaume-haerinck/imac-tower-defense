@@ -43,6 +43,11 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [ ] Monster state machine
 - [ ] Banking system
 - [ ] Upgrade system
+- [ ] Ressource manager
+- [x] Switch levels
+- [ ] World map
+- [ ] Attack with raycasting
+- [ ] Mirror towers
 
 ## Getting Started
 
