@@ -87,9 +87,6 @@ int main(int argc, char** argv) {
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 	*/
 
-	// Timers
-	unsigned int waveTimer = 0; // TODO attention que ne dépasse pas taille max
-
 	// Debug Window
 	bool bDrawPhysic = false;
 	bool bClickEvent = true;
@@ -126,9 +123,8 @@ int main(int argc, char** argv) {
 			}
 			*/
 
-			if (ImGui::Button("Toggle wave")) {
-				bStartWave = !bStartWave;
-				waveTimer = 0;
+			if (ImGui::Button("Start wave")) {
+				emitter.publish<evnt::StartWave>(10);
 			}
 
 			// Check cursor position
@@ -156,7 +152,7 @@ int main(int argc, char** argv) {
 		*/
 
 		// Game update & render
-		game.update();
+		game.update(deltatime);
 		//noeView->GetRenderer()->Render();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -211,10 +207,6 @@ int main(int argc, char** argv) {
 						GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 					}
 					bWireframe = !bWireframe;
-				}
-				else if (e.key.keysym.sym == 'w') {
-					bStartWave = !bStartWave;
-					waveTimer = 0;
 				}
 				/*
 				else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {

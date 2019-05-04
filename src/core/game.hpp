@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <entt/entt.hpp>
 
-#include "game-state/i-game-state.hpp"
+#include "game-state/level-state.hpp"
 #include "level/level.hpp"
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
@@ -22,7 +22,7 @@ public:
     ~Game();
     int init();
 
-	void update();
+	void update(float deltatime);
 
 	// Getters
     SDL_Window* getWindow();
@@ -56,7 +56,9 @@ private:
     SDL_GLContext m_context;
 
 	// State machine
-	//GameState m_gameState;
+	//enum GameState m_gameState;
+	// TODO construct on state change and store only the interface ?
+	//LevelState m_levelState;
 
 	// Camera
 	glm::mat4 m_projMat;

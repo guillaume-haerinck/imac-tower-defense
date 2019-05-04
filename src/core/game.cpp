@@ -170,8 +170,12 @@ int Game::init() {
     return EXIT_SUCCESS;
 }
 
-void Game::update() {
-
+void Game::update(float deltatime) {
+	//m_levelState.update();
+	animationSystem->update(deltatime / 1000 * 6);
+	movementSystem->update(deltatime);
+	attackSystem->update();
+	renderSystem->update();
 }
 
 /* ----------------------- GETTERS AND SETTERS ---------------------- */

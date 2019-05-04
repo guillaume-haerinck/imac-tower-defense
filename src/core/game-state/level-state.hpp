@@ -1,12 +1,11 @@
 #pragma once
 
-#include "i-game-state.hpp"
 #include "core/game.hpp"
 
 class LevelState {
 public:
 	LevelState();
-	virtual ~LevelState();
+	~LevelState();
 
-	void update(Game& game, double deltatime);
+	void update();
 };
