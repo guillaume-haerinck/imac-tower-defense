@@ -41,8 +41,8 @@ void AttackSystem::update() {
 		dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 
 		m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
-			const glm::vec2 pos = transform2.position - transform1.position;
-			const float distanceSq = pos.x * pos.x + pos.y * pos.y;
+			const glm::vec2 deltaPos = transform2.position - transform1.position;
+			const float distanceSq = deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y;
 			const float radii = trigger1.radius + trigger2.radius;
 
 			if (distanceSq <= radii * radii) {
