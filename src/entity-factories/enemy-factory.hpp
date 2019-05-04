@@ -8,11 +8,11 @@
 #include "components/sprite.hpp"
 #include "components/primitive.hpp"
 
-#include "core/map/map.hpp"
+#include "core/level/level.hpp"
 
 class EnemyFactory : public Factory {
 public:
-	EnemyFactory(entt::DefaultRegistry& registry, Map& map);
+	EnemyFactory(entt::DefaultRegistry& registry, Level& level);
 	virtual ~EnemyFactory();
 
 	// void create(std::vector<glm::vec2> traj);
@@ -24,6 +24,6 @@ private:
 	cmpt::Sprite m_ennemySprite;
 	cmpt::Primitive m_healthBackground;
 	cmpt::Primitive m_healthBar;
-	Map& m_map;
+	Level& m_level;
 };
 

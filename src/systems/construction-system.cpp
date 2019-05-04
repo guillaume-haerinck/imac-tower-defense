@@ -8,12 +8,12 @@
 #include "events/left-click.hpp"
 #include "components/transform.hpp"
 
-ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map)
-: System(registry), m_emitter(emitter), m_map(map), m_towerFactory(registry)
+ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
+: System(registry), m_emitter(emitter), m_level(level), m_towerFactory(registry)
 {
 	m_emitter.on<evnt::LeftClick>([this](const evnt::LeftClick & event, EventEmitter& emitter) {
-		glm::vec2 tilePosition = this->m_map.projToGrid(event.mousePos.x, event.mousePos.y);
-		unsigned int entityId = this->m_map.getTile(tilePosition.x, tilePosition.y);
+		glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
+		unsigned int entityId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 		if (entityId != -1) {
 			if (this->m_registry.has<tileTag::Constructible>(entityId)) {
 				cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(entityId);

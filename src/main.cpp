@@ -33,7 +33,7 @@
 #include "services/audio/i-audio.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "logger/noesis-log-handler.hpp"
-#include "core/map/map.hpp"
+
 #include "entity-factories/tower-factory.hpp"
 #include "entity-factories/enemy-factory.hpp"
 #include "systems/render-system.hpp"
@@ -57,34 +57,25 @@ int main(int argc, char** argv) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	// Reference to these instances are passed around a lot
-	entt::DefaultRegistry registry;
+	// Game init
 	EventEmitter emitter{};
-
-	// Game start
-	Game game(registry);
+	Game game(emitter);
 	if (game.init() == EXIT_FAILURE) {
 		debug_break();
 		return EXIT_FAILURE;
 	}
 
-	// View matrices, they are passed around a lot as well
-	glm::mat4 projMat = glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f);
-	glm::mat4 viewMat = glm::mat4(1.0f);
-	glm::vec2 viewTranslation = glm::vec2(0.0f);
-	float viewScale = 1.0f;
-
 	// Init Physics
+	/*
 	b2Vec2 gravity(0.0f, 0.0f);
-	auto physicWorld = std::make_shared<b2World>(gravity);
-	ContactListener contactListener(emitter);
-	physicWorld->SetContactListener(&contactListener);
+	std::shared_ptr<b2World> physicWorld = std::make_shared<b2World>(gravity);
 
 	// Link debug draw to physics
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setProjMat(projMat);
 	debugDraw.setViewMat(viewMat);
 	physicWorld->SetDebugDraw(&debugDraw);
+	*/
 
 	// Noesis GUI
 	/*
@@ -96,21 +87,7 @@ int main(int argc, char** argv) {
 	noeView->SetSize(WIN_WIDTH, WIN_HEIGHT);
 	*/
 
-	// Map
-	Map map(registry, "res/maps/map-1.itd", viewTranslation, viewScale);
-	// map.setLevel("res/maps/map-2.itd"); // TODO
-
-	// Systems
-	RenderSystem renderSystem(registry, viewMat, projMat);
-	AnimationSystem animationSystem(registry, emitter);
-	MovementSystem movementSystem(registry, emitter);
-	ConstructionSystem constructionSystem(registry, emitter, map);
-	WaveSystem waveSystem(registry, emitter, map);
-	AttackSystem attackSystem(registry);
-	HealthSystem healthSystem(registry, emitter);
-
 	// Timers
-	unsigned int animTimer = 0;
 	unsigned int waveTimer = 0; // TODO attention que ne dépasse pas taille max
 
 	// Debug Window
@@ -120,7 +97,7 @@ int main(int argc, char** argv) {
 	bool bWireframe = false;
 
 	// Test audio service
-	IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
+	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 	//audioService.playSound(audioFiles::CROWD_1);
 
 	// Game loop
@@ -140,12 +117,14 @@ int main(int argc, char** argv) {
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 			// Physic
+			/*
 			ImGui::Checkbox("Draw physic", &bDrawPhysic);
 			if (bDrawPhysic) {
 				debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
 			} else {
 				debugDraw.ClearFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
 			}
+			*/
 
 			if (ImGui::Button("Toggle wave")) {
 				bStartWave = !bStartWave;
@@ -164,72 +143,24 @@ int main(int argc, char** argv) {
 		// Noesis update
 		/*
 		{
-		// Noesis gui update
-		noeView->Update(SDL_GetTicks());
-		noeView->GetRenderer()->UpdateRenderTree();
-		noeView->GetRenderer()->RenderOffscreen();
+			// Noesis gui update
+			noeView->Update(SDL_GetTicks());
+			noeView->GetRenderer()->UpdateRenderTree();
+			noeView->GetRenderer()->RenderOffscreen();
 
-		// Need to restore the GPU state because noesis changes it
-		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-		GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-		GLCall(glClearStencil(0));
+			// Need to restore the GPU state because noesis changes it
+			GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+			GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
+			GLCall(glClearStencil(0));
 		}
 		*/
 
-		// Game updates
-		{
-			// Update animation
-			if (animTimer >= 5) { // TODO use delatime or target framerate to have constant animation no matter the target
-				animationSystem.update(deltatime/1000*6); //TODO create deltatima with this 6/1000 factor ? must check where it is used and why there is such a unit
-				animTimer = 0;
-			}
-			animTimer++;
-
-			// Update physics
-			physicWorld->Step(1.0f / 60.0f, 6, 2);
-			movementSystem.update(deltatime);
-
-			// Towers attacks and focus
-			attackSystem.update();
-
-			// Start wave
-			waveTimer++;
-			if (bStartWave && waveTimer % 15 == 0) {
-				emitter.publish<evnt::StartWave>(0);
-				waveTimer++;
-				/*
-				if (waveTimer <= 300) {
-					if (waveTimer % 2 == 0) {
-						emitter.publish<evnt::StartWave>(5);
-						bStartWave = false;
-						waveTimer = 0;
-					}
-				}
-				else {
-					bStartWave = false;
-					waveTimer = 0;
-				}*/
-			}
-		}
-
-		// Render Debug
-		{
-			// TODO render debugdraw here and not directly
-			debugDraw.setProjMat(projMat);
-			debugDraw.setViewMat(viewMat);
-			map.drawGraph();
-			map.drawGrid();
-			physicWorld->DrawDebugData();
-		}
-
-		// Render
-		{
-			renderSystem.update();
-			//noeView->GetRenderer()->Render();
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		}
-
+		// Game update & render
+		game.update();
+		//noeView->GetRenderer()->Render();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
 		/* Handle inputs */
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
@@ -285,6 +216,7 @@ int main(int argc, char** argv) {
 					bStartWave = !bStartWave;
 					waveTimer = 0;
 				}
+				/*
 				else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
 					viewTranslation.y++;
 					viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -301,6 +233,7 @@ int main(int argc, char** argv) {
 					viewTranslation.x++;
 					viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
 				}
+				*/
 				break;
 
 			case SDL_MOUSEWHEEL:
@@ -317,13 +250,14 @@ int main(int argc, char** argv) {
 					*/
 				}
 				else if (e.motion.x < 0.0f) {
+					/*
 					const glm::vec2 invertNormMousePos = glm::vec2(
 						PROJ_WIDTH - normMousePos.x,
 						PROJ_HEIGHT - normMousePos.y
 					);
 					// TODO réduire translation quand proche du bord
 					// FIXME liens avec grille pas bon
-					/*
+					
 					viewScale -= 0.05f;
 					viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
 					viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));

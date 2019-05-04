@@ -1,7 +1,8 @@
 #pragma once
 
-#include "logger/gl-log-handler.hpp"
+#include <glad/glad.h>
 #include <string>
+#include "logger/gl-log-handler.hpp"
 
 class TextureArray {
 private:

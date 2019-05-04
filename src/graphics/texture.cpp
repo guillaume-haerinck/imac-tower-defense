@@ -1,6 +1,7 @@
 #include "texture.hpp"
 
 #include <iostream>
+#include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include "stb_image/stb_image.h"
 

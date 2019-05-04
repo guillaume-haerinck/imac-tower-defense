@@ -6,14 +6,14 @@
 #include "system.hpp"
 #include "entity-factories/tower-factory.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "core/map/map.hpp"
+#include "core/level/level.hpp"
 
 class ConstructionSystem : public System {
 public:
-	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Map& map);
+	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level);
 
 private:
 	EventEmitter& m_emitter;
-	Map& m_map;
+	Level& m_level;
 	TowerFactory m_towerFactory;
 };

@@ -1,4 +1,6 @@
 #include "vertex-array.hpp"
+
+#include <glad/glad.h>
 #include "logger/gl-log-handler.hpp"
 
 VertexArray::VertexArray() {

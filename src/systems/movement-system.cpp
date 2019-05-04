@@ -1,6 +1,6 @@
 #include "movement-system.hpp"
 
-#define _USE_MATH_DEFINES // for C++
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include <spdlog/spdlog.h>
@@ -8,6 +8,7 @@
 
 #include "core/maths.hpp"
 #include "core/constants.hpp"
+#include "core/level/graph.hpp"
 #include "events/mouse-move.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
@@ -16,10 +17,7 @@
 #include "components/follow.hpp"
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
-
 #include "events/projectile-hit.hpp"
-
-#include "core/map/graph.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : System(registry), m_emitter(emitter)
@@ -50,16 +48,16 @@ void MovementSystem::update(double deltatime) {
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Pathfinding>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Pathfinding& pathfinding) {
-		Map* map = pathfinding.map;
-		glm::vec2 direction = map->getNodePosition(pathfinding.currentTarget) - transform.position;
+		Level* level = pathfinding.level;
+		glm::vec2 direction = level->getNodePosition(pathfinding.currentTarget) - transform.position;
 		float norm = glm::length(direction);
 		if (norm > 1) {
 		direction *= 0.5 / glm::length(direction);
 		transform.position += direction;
 		}
-		else if (pathfinding.currentTarget != map->m_graph.getEndNode()) {
+		else if (pathfinding.currentTarget != level->m_graph.getEndNode()) {
 			int tmp = pathfinding.currentTarget;
-			pathfinding.currentTarget = map->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
+			pathfinding.currentTarget = level->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
 			pathfinding.previousNode = tmp;
 		}
 		else {

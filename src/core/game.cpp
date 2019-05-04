@@ -8,6 +8,7 @@
 #include <NsApp/LocalFontProvider.h>
 #include <NsApp/LocalTextureProvider.h>
 #include <NsApp/LocalXamlProvider.h>
+#include <glm/glm.hpp>
 
 #include "constants.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -22,9 +23,13 @@
 /* ------------------------ LIFETIME ------------------------ */
 
 bool Game::m_bInstanciated = false;
+bool Game::m_bInit = false;
 
-Game::Game(entt::DefaultRegistry& registry)
-: m_registry(registry), m_bInit(false), m_window(nullptr), m_context(nullptr) 
+Game::Game(EventEmitter& emitter)
+:   m_window(nullptr), m_context(nullptr), emitter(emitter),
+	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
+	m_viewMat(glm::mat4(1.0f)),
+	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f)
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
@@ -35,6 +40,18 @@ Game::~Game() {
 	locator::debugDraw::reset();
 	locator::audio::reset();
 	locator::random::reset();
+
+	// Delete systems
+	delete renderSystem;
+	delete animationSystem;
+	delete movementSystem;
+	delete constructionSystem;
+	delete waveSystem;
+	delete attackSystem;
+	delete healthSystem;
+
+	// Delete level manager
+	delete level;
 
 	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
@@ -55,10 +72,10 @@ int Game::init() {
         return EXIT_FAILURE;
     }
 
-    /* Init logger */
+    // Init logger
     spdlog::set_pattern("[%l] %^ %v %$");
 
-    /* Init SDL */
+    // Init SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         spdlog::critical("[SDL2] Unable to initialize SDL: {}", SDL_GetError());
         debug_break();
@@ -74,7 +91,7 @@ int Game::init() {
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
     SDL_GL_SetSwapInterval(1);
 
-    /* Create Window */
+    // Create Window
     m_window = SDL_CreateWindow(
         "IMAC Tower Defense",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -87,7 +104,7 @@ int Game::init() {
         return EXIT_FAILURE;
     }
 
-    /* Create OpenGl context */
+    // Create OpenGl context
     m_context = SDL_GL_CreateContext(m_window);
     if (m_context == nullptr) {
         spdlog::critical("[SDL2] OpenGL context is null: {}",  SDL_GetError());
@@ -113,12 +130,12 @@ int Game::init() {
     glDebugMessageCallback(gllog::messageCallback, 0);
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
-    /* Enable blending & Z-Buffer */
+    // Enable blending & Z-Buffer
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_DEPTH_TEST));
 
-    /* Init ImGui */
+    // ImGui
     IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -126,19 +143,35 @@ int Game::init() {
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGui::StyleColorsDark();
 
-    /* Init Noesis GUI */
+    // Noesis GUI
     Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
     Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
     Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
     Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
-	/* Init Services */
+	// Services
 	locator::debugDraw::set<DebugDrawService>();
 	locator::random::set<RandomService>();
 	locator::audio::set<AudioService>();
 
+	// Level
+	level = new Level(registry, "res/maps/map-1.itd", m_viewTranslation, m_viewScale);
+
+	// Systems
+	renderSystem = new RenderSystem(registry, m_viewMat, m_projMat);
+	animationSystem = new AnimationSystem(registry, emitter);
+	movementSystem = new MovementSystem(registry, emitter);
+	constructionSystem = new ConstructionSystem(registry, emitter, *level);
+	waveSystem = new WaveSystem(registry, emitter, *level);
+	attackSystem = new AttackSystem(registry);
+	healthSystem = new HealthSystem(registry, emitter);
+
     m_bInit = true;
     return EXIT_SUCCESS;
+}
+
+void Game::update() {
+
 }
 
 /* ----------------------- GETTERS AND SETTERS ---------------------- */

@@ -1,4 +1,4 @@
-#include "map.hpp"
+#include "level.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -9,14 +9,10 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "logger/gl-log-handler.hpp"
-
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
-// TODO use a public function to change the current map, and read the itd file
-// TODO rename MAP to Level for clear separation with world map
-
-Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
+Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
 	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/maps/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
 {
 	/* ---------------------------- Read ITD file ------------------------- */
@@ -62,7 +58,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 
 	m_gridWidth = imgWidth;
 	m_gridHeight = imgHeight;
-	m_map.resize(m_gridWidth * m_gridHeight);
+	m_grid.resize(m_gridWidth * m_gridHeight);
 
 	glm::vec3 color = glm::vec3(0);
 	for (int y = 0; y < imgHeight; y++) {
@@ -107,7 +103,7 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 			else {
 				entityId = m_tileFactory.createLocked(position);
 			}
-			m_map.at(y * m_gridWidth + x) = entityId;
+			m_grid.at(y * m_gridWidth + x) = entityId;
 		}
 	}
 	stbi_image_free(image);
@@ -115,9 +111,9 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 
 /* ----------------------- PUBLIC GETTERS & SETTERS ----------------- */
 
-int Map::getTile(unsigned int x, unsigned int y) const {
+int Level::getTile(unsigned int x, unsigned int y) const {
 	try {
-		return m_map.at(y * m_gridWidth + x);
+		return m_grid.at(y * m_gridWidth + x);
 	}
 	catch (const std::out_of_range e) {
 		spdlog::warn("Tile out of map range");
@@ -125,16 +121,16 @@ int Map::getTile(unsigned int x, unsigned int y) const {
 	}
 }
 
-unsigned int Map::getGridWidth() const { return m_gridWidth; }
-unsigned int Map::getGridHeight() const { return m_gridHeight; }
+unsigned int Level::getGridWidth() const { return m_gridWidth; }
+unsigned int Level::getGridHeight() const { return m_gridHeight; }
 
-glm::vec2 Map::windowToGrid(float x, float y) {
+glm::vec2 Level::windowToGrid(float x, float y) {
 	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
 	float projY = imac::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
 	return projToGrid(projX, projY);
 }
 
-glm::vec2 Map::projToGrid(float x, float y) {
+glm::vec2 Level::projToGrid(float x, float y) {
 	// TODO Fixme
 	//spdlog::info("scale is {}", m_viewScale);
 	//spdlog::info("translation is {} {}", m_viewTranslation.x, m_viewTranslation.y);
@@ -151,19 +147,19 @@ glm::vec2 Map::projToGrid(float x, float y) {
 	return glm::vec2(tileX, tileY);
 }
 
-glm::vec2 Map::gridToProj(unsigned int x, unsigned int y) {
+glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) {
 	float posX = imac::rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
 	float posY = imac::rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
 	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);
 }
 
-glm::vec2 Map::getNodePosition(int nodeIndex) {
+glm::vec2 Level::getNodePosition(int nodeIndex) {
 	return gridToProj(m_graph.getNode(nodeIndex).x, m_graph.getNode(nodeIndex).y);
 }
 
 /* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
 
-glm::vec3 Map::getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y) {
+glm::vec3 Level::getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y) {
 	glm::vec3 pixel;
 	pixel.r = image[3 * (y * imageWidth + x) + 0];
 	pixel.g = image[3 * (y * imageWidth + x) + 1];
@@ -171,7 +167,7 @@ glm::vec3 Map::getPixelColorFromImage(unsigned char* image, int imageWidth, int 
 	return pixel;
 }
 
-float Map::getNumberFromString(std::string line) {
+float Level::getNumberFromString(std::string line) {
 	std::string temp;
 	float data;
 	std::stringstream ss(line);
@@ -188,7 +184,7 @@ float Map::getNumberFromString(std::string line) {
 	return 0.0f;
 }
 
-glm::vec3 Map::getColorFromString(std::string line) {
+glm::vec3 Level::getColorFromString(std::string line) {
 	std::string temp;
 	float data;
 	std::stringstream ss(line);
@@ -218,7 +214,7 @@ glm::vec3 Map::getColorFromString(std::string line) {
 
 /* ----------------------- AUXILARY FUNCTIONS FOR GRAPH CONSTRUCTION ----------------- */
 
-bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
+bool Level::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
 	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
 	return x >= 0
 		&& x < imageWidth
@@ -227,7 +223,7 @@ bool Map::isPath(unsigned char* image, int imageWidth, int imageHeight, int x, i
 		&& (color == m_pathColor || color == m_startColor || color == m_endColor);
 }
 
-bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
+bool Level::isStraightLine(unsigned char* image, int imageWidth, int imageHeight, int x, int y) {
 	return isPath(image, imageWidth, imageHeight, x - 1, y)
 		&& isPath(image, imageWidth, imageHeight, x + 1, y)
 		&& !isPath(image, imageWidth, imageHeight, x, y - 1)
@@ -239,7 +235,7 @@ bool Map::isStraightLine(unsigned char* image, int imageWidth, int imageHeight, 
 		&& isPath(image, imageWidth, imageHeight, x, y + 1);
 }
 
-void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int parentNodeIndex, int x, int y, int xDir, int yDir, int travelLength) {
+void Level::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, int parentNodeIndex, int x, int y, int xDir, int yDir, int travelLength) {
 	glm::vec3 color = getPixelColorFromImage(image, imageWidth, x, y);
 	if (isStraightLine(image, imageWidth, imageHeight, x, y) && color != m_startColor && color != m_endColor) {
 		lookForNodes(image, imageWidth, imageHeight, parentNodeIndex, x + xDir, y + yDir, xDir, yDir, travelLength + 1);
@@ -279,7 +275,7 @@ void Map::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, in
 
 /* ----------------------- PATHFINDING GRAPH ----------------- */
 
-void Map::constructPathfindingGraph() {
+void Level::constructPathfindingGraph() {
 	//Using Dijkstra algorithm
 
 	//Find all distances to endNode
@@ -359,7 +355,7 @@ void Map::constructPathfindingGraph() {
 
 /* ----------------------- DRAW ----------------- */
 
-void Map::drawGraph() {
+void Level::drawGraph() {
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setColor(255, 0, 100, 1);
 	GLCall(glPointSize(13));
@@ -385,7 +381,7 @@ void Map::drawGraph() {
 	}
 }
 
-void Map::drawGrid() {
+void Level::drawGrid() {
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
 	debugDraw.setColor(1, 1, 1, 1);
 
@@ -400,15 +396,15 @@ void Map::drawGrid() {
 
 /* ----------------------- PATHFINDING ----------------- */
 
-/*std::vector<glm::vec2> Map::trajectory() {
+/*std::vector<glm::vec2> Level::trajectory() {
 	return trajectory(m_graph.getStartNodes().at(0), m_graph.getEndNode());
 }
 
-std::vector<glm::vec2> Map::trajectory(int node1) {
+std::vector<glm::vec2> Level::trajectory(int node1) {
 	return trajectory(node1, m_graph.getEndNode());
 }
 
-std::vector<glm::vec2> Map::trajectory(int node1, int node2) {
+std::vector<glm::vec2> Level::trajectory(int node1, int node2) {
 	std::vector<int> graphTraj = m_graph.trajectory(node1, node2);
 	std::vector<glm::vec2> traj(graphTraj.size());
 	for (int n = 0; n < traj.size(); ++n) {
