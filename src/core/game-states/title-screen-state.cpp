@@ -6,17 +6,23 @@
 
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
+#include "events/left-click-down.hpp"
+#include "events/left-click-up.hpp"
 
-TitleScreenState::TitleScreenState() {
+TitleScreenState::TitleScreenState(EventEmitter& emitter) : m_emitter(emitter) {
 	m_xaml = m_titleScreen;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
-	// TODO listen to .. via event emitter
-	// m_ui->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
-	// m_ui->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+	m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+	});
+
+	m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+	});
 }
 
 TitleScreenState::~TitleScreenState() {

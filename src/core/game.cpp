@@ -26,13 +26,37 @@ bool Game::m_bInstanciated = false;
 bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
-:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::LEVEL),
+:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::TITLE_SCREEN),
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f)
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
+
+	/* TODO listen to event here ? Or use a camera class, or even a camera service
+		else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+			viewTranslation.y++;
+			viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
+		} else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+			viewTranslation.y--;
+			viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
+		} else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+			viewTranslation.x--;
+			viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
+		} else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+			viewTranslation.x++;
+			viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+
+		// TODO ameliorer translation quand proche du bord
+		// FIXME
+		viewScale += 0.1f;
+		viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
+		viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+		viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
+		viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+	*/
 }
 
 Game::~Game() {
@@ -161,6 +185,18 @@ int Game::init() {
 	locator::random::set<RandomService>();
 	locator::audio::set<AudioService>();
 
+	// Init Physics
+	/*
+	b2Vec2 gravity(0.0f, 0.0f);
+	std::shared_ptr<b2World> physicWorld = std::make_shared<b2World>(gravity);
+
+	// Link debug draw to physics
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setProjMat(projMat);
+	debugDraw.setViewMat(viewMat);
+	physicWorld->SetDebugDraw(&debugDraw);
+	*/
+
 	// Level
 	level = new Level(registry, "res/levels/level-2.itd", m_viewTranslation, m_viewScale);
 
@@ -175,7 +211,7 @@ int Game::init() {
 
 	// States
 	m_levelState = new LevelState();
-	m_titleState = new TitleScreenState();
+	m_titleState = new TitleScreenState(emitter);
 
     m_bInit = true;
     return EXIT_SUCCESS;
@@ -188,10 +224,9 @@ void Game::update(float deltatime) {
 		break;
 
 	case LEVEL:
-		// TODO pass "*this" instead as a parameter, but find how to fix circular inclusion
 		m_levelState->update(deltatime, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
-		//level->drawGraph();
-		//level->drawGrid();
+		level->drawGraph();
+		level->drawGrid();
 		break;
 
 	case CINEMATIC:
@@ -205,7 +240,17 @@ void Game::update(float deltatime) {
 	}
 }
 
-/* ----------------------- GETTERS AND SETTERS ---------------------- */
+/* ----------------------- GETTERS ---------------------- */
 
 SDL_Window* Game::getWindow() { return m_window; }
 SDL_GLContext Game::getContext() { return m_context; }
+GameState Game::getState() { return m_state; }
+
+/* ----------------------- SETTERS --------------------- */
+
+void Game::setState(GameState state) {
+	// TODO handle level number
+	// TODO empty registry ?
+	// TODO use multiple functions ? (nextLevel, gameover, pause, options ...)
+	m_state = state;
+}

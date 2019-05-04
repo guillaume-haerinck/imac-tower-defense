@@ -35,9 +35,10 @@ public:
 	// Getters
     SDL_Window* getWindow();
     SDL_GLContext getContext();
+	GameState getState();
 
 	// Setters
-	//void setState(GameState state);
+	void setState(GameState state);
 
 public:
 	// Game structure

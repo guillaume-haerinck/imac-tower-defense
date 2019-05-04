@@ -5,13 +5,13 @@
 
 #include "core/constants.hpp"
 #include "core/tags.hpp"
-#include "events/left-click.hpp"
+#include "events/left-click-up.hpp"
 #include "components/transform.hpp"
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
 : System(registry), m_emitter(emitter), m_level(level), m_towerFactory(registry)
 {
-	m_emitter.on<evnt::LeftClick>([this](const evnt::LeftClick & event, EventEmitter& emitter) {
+	m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter& emitter) {
 		glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 		unsigned int entityId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 		if (entityId != -1) {

@@ -22,7 +22,10 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "events/left-click.hpp"
+#include "events/left-click-up.hpp"
+#include "events/left-click-down.hpp"
+#include "events/translate-view.hpp"
+#include "events/scale-view.hpp"
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
 
@@ -39,22 +42,9 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	// Init Physics
-	/*
-	b2Vec2 gravity(0.0f, 0.0f);
-	std::shared_ptr<b2World> physicWorld = std::make_shared<b2World>(gravity);
-
-	// Link debug draw to physics
-	IDebugDraw& debugDraw = locator::debugDraw::ref();
-	debugDraw.setProjMat(projMat);
-	debugDraw.setViewMat(viewMat);
-	physicWorld->SetDebugDraw(&debugDraw);
-	*/
-
 	// Debug Window
 	bool bDrawPhysic = false;
-	bool bClickEvent = true;
-	bool bStartWave = false;
+	bool bAllowClickEvent = true;
 	bool bWireframe = false;
 
 	// Test audio service
@@ -62,7 +52,6 @@ int main(int argc, char** argv) {
 	//audioService.playSound(audioFiles::CROWD_1);
 
 	// Game loop
-	glm::vec2 normMousePos = glm::vec2(0.0f);
 	bool bQuit = false;
 	double deltatime = TARGET_DELTA_MS;
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
@@ -77,25 +66,16 @@ int main(int argc, char** argv) {
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-			// Physic
-			/*
-			ImGui::Checkbox("Draw physic", &bDrawPhysic);
-			if (bDrawPhysic) {
-				debugDraw.SetFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
-			} else {
-				debugDraw.ClearFlags(b2Draw::e_shapeBit + b2Draw::e_centerOfMassBit + b2Draw::e_aabbBit + b2Draw::e_jointBit + b2Draw::e_pairBit);
-			}
-			*/
-
+			// TODO allow only when game is in level state
 			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);
 			}
 
 			// Check cursor position
 			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
-				bClickEvent = false;
+				bAllowClickEvent = false;
 			} else {
-				bClickEvent = true;
+				bAllowClickEvent = true;
 			}
 			ImGui::End();
 		}
@@ -107,9 +87,14 @@ int main(int argc, char** argv) {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 		
-		/* Handle inputs */
+		// Handle inputs
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
+			const glm::vec2 normMousePos = glm::vec2(
+				imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+				imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+			);
+
 			if (e.type == SDL_QUIT) {
 				bQuit = true;
 				break;
@@ -117,98 +102,45 @@ int main(int argc, char** argv) {
 
 			switch (e.type) {
 			case SDL_MOUSEBUTTONUP:
-				// Send click event
-				if (bClickEvent) {
-					if (e.button.button == SDL_BUTTON_LEFT) {
-						normMousePos = glm::vec2(
-							imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-							imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
-						);
-						emitter.publish<evnt::LeftClick>(normMousePos);
-					}
-				}
-				//noeView->MouseButtonUp(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				if (bAllowClickEvent && e.button.button == SDL_BUTTON_LEFT)
+					emitter.publish<evnt::LeftClickUp>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				//noeView->MouseButtonDown(e.button.x, e.button.y, Noesis::MouseButton_Left);
+				if (bAllowClickEvent && e.button.button == SDL_BUTTON_LEFT)
+					emitter.publish<evnt::LeftClickDown>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 
 			case SDL_MOUSEMOTION:
-				// Send move event
-			{
-				normMousePos = glm::vec2(
-					imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-					imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
-				);
 				emitter.publish<evnt::MouseMove>(normMousePos);
-			}
-			break;
-
+				break;
+			
 			case SDL_KEYDOWN:
-				if (e.key.keysym.sym == 'q') { // Quit
-					bQuit = true;
-				}
-				else if (e.key.keysym.sym == 'p') {
+				if (e.key.keysym.sym == 'p') {
 					if (bWireframe) {
 						GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-					}
-					else {
+					} else {
 						GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 					}
 					bWireframe = !bWireframe;
+				} else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+					emitter.publish<evnt::TranslateView>(0.0f, 1.0f);
+				} else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+					emitter.publish<evnt::TranslateView>(0.0f, -1.0f);
+				} else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+					emitter.publish<evnt::TranslateView>(-1.0f, 0.0f);
+				} else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+					emitter.publish<evnt::TranslateView>(1.0f, 0.0f);
 				}
-				/*
-				else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-					viewTranslation.y++;
-					viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
-				}
-				else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-					viewTranslation.y--;
-					viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
-				}
-				else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-					viewTranslation.x--;
-					viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
-				}
-				else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-					viewTranslation.x++;
-					viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
-				}
-				*/
 				break;
 
 			case SDL_MOUSEWHEEL:
-			{
 				if (e.motion.x > 0.0f) {
-					// TODO ameliorer translation quand proche du bord
-					// FIXME liens avec grille pas bon
-					/*
-					viewScale += 0.1f;
-					viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
-					viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-					viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-					viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
-					*/
+					emitter.publish<evnt::ScaleView>(1.0f);
+				} else {
+					emitter.publish<evnt::ScaleView>(-1.0f);
 				}
-				else if (e.motion.x < 0.0f) {
-					/*
-					const glm::vec2 invertNormMousePos = glm::vec2(
-						PROJ_WIDTH - normMousePos.x,
-						PROJ_HEIGHT - normMousePos.y
-					);
-					// TODO réduire translation quand proche du bord
-					// FIXME liens avec grille pas bon
-					
-					viewScale -= 0.05f;
-					viewTranslation = glm::vec2(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y);
-					viewMat = glm::translate(viewMat, glm::vec3(invertNormMousePos.x * WIN_RATIO, invertNormMousePos.y, 0.0f));
-					viewMat = glm::scale(viewMat, glm::vec3(0.95f, 0.95f, 0.0f));
-					viewMat = glm::translate(viewMat, glm::vec3(-invertNormMousePos.x * WIN_RATIO, -invertNormMousePos.y, 0.0f));
-					*/
-				}
-			}
-			break;
+				break;
 			}
 		}
 
