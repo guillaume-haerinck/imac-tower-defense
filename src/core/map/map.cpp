@@ -99,15 +99,6 @@ Map::Map(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& vi
 				}
 				//Construct pathfinfing graph
 				constructPathfindingGraph();
-				for (int n = 0; n < m_pathfindingGraph.getNodesCount(); ++n) {
-					//spdlog::info("Node {} {}", m_pathfindingGraph.getNode(n).x, m_pathfindingGraph.getNode(n).y);
-					graphEdgeList* neighbours = m_pathfindingGraph.getNeighbours(n);
-					while (neighbours != nullptr) {
-						int neighbour = neighbours->edge.neighbourIndex;
-						//spdlog::info("Neighbour {} {} {}", m_pathfindingGraph.getNode(neighbour).x, m_pathfindingGraph.getNode(neighbour).y, neighbours->edge.dist);
-						neighbours = neighbours->next;
-					}
-				}
 				//
 			}
 			else if (color == m_constructColor) {
@@ -319,15 +310,14 @@ void Map::constructPathfindingGraph() {
 			isDone[currentNode] = true;
 			//
 			//Visit current node's neighbours
-			graphEdgeList* neighbours = m_graph.getNeighbours(currentNode);
-			while (neighbours != nullptr) {
-				float distTest = dists[currentNode] + neighbours->edge.dist;
-				int neighbour = neighbours->edge.neighbourIndex;
+			std::vector<graphEdge>* neighbours = m_graph.getNeighbours(currentNode);
+			for( int i = 0 ; i < neighbours->size() ; ++i ) {
+				float distTest = dists[currentNode] + neighbours->at(i).dist;
+				int neighbour = neighbours->at(i).neighbourIndex;
 				if (distTest < dists[neighbour]) {
 					dists[neighbour] = distTest;
 					prevNode[neighbour] = currentNode;
 				}
-				neighbours = neighbours->next;
 			}
 		}
 	}
@@ -335,25 +325,21 @@ void Map::constructPathfindingGraph() {
 	//Nodes
 	for (int n = 0; n < N; ++n) {
 		m_pathfindingGraph.addNode(m_graph.getNode(n).x, m_graph.getNode(n).y);
-		//spdlog::info("Node {} {} at dist {}", m_pathfindingGraph.getNode(n).x, m_pathfindingGraph.getNode(n).y, dists[n]);
-
 	}
 	//Edges
 	for (int n = 0; n < N; ++n) {
 		float dist = dists[n];
 		float neighboursDistSum = 0;
-		graphEdgeList* neighbours = m_graph.getNeighbours(n);
-		while (neighbours != nullptr) {
-			int neighbour = neighbours->edge.neighbourIndex;
+		std::vector<graphEdge>* neighbours = m_graph.getNeighbours(n);
+		for (int i = 0; i < neighbours->size(); ++i) {
+			int neighbour = neighbours->at(i).neighbourIndex;
 			float d = dists[neighbour];
 			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
 				neighboursDistSum += d;
 			}
-			neighbours = neighbours->next;
 		}
-		neighbours = m_graph.getNeighbours(n);
-		while (neighbours != nullptr) {
-			int neighbour = neighbours->edge.neighbourIndex;
+		for (int i = 0; i < neighbours->size(); ++i) {
+			int neighbour = neighbours->at(i).neighbourIndex;
 			float d = dists[neighbour];
 			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
 				if (neighboursDistSum == 0 || d == neighboursDistSum) {
@@ -363,7 +349,6 @@ void Map::constructPathfindingGraph() {
 					m_pathfindingGraph.addNeighbourTo(n, neighbour, 1 - d / neighboursDistSum);
 				}
 			}
-			neighbours = neighbours->next;
 		}
 	}
 	//I'm freeeeee !
@@ -390,13 +375,12 @@ void Map::drawGraph() {
 	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
 		float x1 = m_graph.getNode(k).x*100.0f / m_gridHeight + 50. / m_gridHeight;
 		float y1 = m_graph.getNode(k).y*100.0f / m_gridHeight + 50. / m_gridHeight;
-		graphEdgeList* list = m_graph.getNeighbours(k);
+		std::vector<graphEdge>* neighbours = m_graph.getNeighbours(k);
 
-		while (list != nullptr) {
-			float x2 = m_graph.getNode(list->edge.neighbourIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
-			float y2 = m_graph.getNode(list->edge.neighbourIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
+		for( int i = 0 ; i < neighbours->size() ; ++i ){
+			float x2 = m_graph.getNode(neighbours->at(i).neighbourIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
+			float y2 = m_graph.getNode(neighbours->at(i).neighbourIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
 			debugDraw.line(x1, y1, x2, y2);
-			list = list->next;
 		}
 	}
 }
@@ -416,7 +400,7 @@ void Map::drawGrid() {
 
 /* ----------------------- PATHFINDING ----------------- */
 
-std::vector<glm::vec2> Map::trajectory() {
+/*std::vector<glm::vec2> Map::trajectory() {
 	return trajectory(m_graph.getStartNodes().at(0), m_graph.getEndNode());
 }
 
@@ -431,4 +415,4 @@ std::vector<glm::vec2> Map::trajectory(int node1, int node2) {
 		traj.at(n) = gridToProj(m_graph.getNode(graphTraj.at(n)).x, m_graph.getNode(graphTraj.at(n)).y);
 	}
 	return traj;
-}
+}*/

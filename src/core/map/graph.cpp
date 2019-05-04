@@ -21,7 +21,7 @@ graphNode Graph::getNode(int nodeIndex) {
 	return nodes.at(nodeIndex);
 }
 
-graphEdgeList* Graph::getNeighbours(int nodeIndex) {
+std::vector<graphEdge>* Graph::getNeighbours(int nodeIndex) {
 	return adjencyLists.at(nodeIndex);
 }
 
@@ -35,12 +35,11 @@ int Graph::nodeIndex(int x, int y) {
 }
 
 bool Graph::isNeighbourOf(int node, int potentialNeighbour) {
-	graphEdgeList* list = adjencyLists.at(node);
-	while (list != nullptr) {
-		if (list->edge.neighbourIndex == potentialNeighbour) {
+	std::vector<graphEdge>* list = adjencyLists.at(node);
+	for (int i = 0; i < list->size(); ++i) {
+		if ( list->at(i).neighbourIndex == potentialNeighbour) {
 			return true;
 		}
-		list = list->next;
 	}
 	return false;
 }
@@ -48,7 +47,7 @@ bool Graph::isNeighbourOf(int node, int potentialNeighbour) {
 //Returns the index at which the node was inserted
 int Graph::addNode(int x, int y) {
 	nodes.push_back(graphNode(x, y));
-	adjencyLists.push_back(nullptr);
+	adjencyLists.push_back( new std::vector<graphEdge> );
 	return getNodesCount() - 1;
 }
 
@@ -64,7 +63,7 @@ std::vector<int> Graph::getStartNodes() {
 	return startNodeIndexes;
 }
 
-int Graph::getStartNode() {
+int Graph::getStartNodeRandom() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	return startNodeIndexes.at(randomService.randInt(startNodeIndexes.size()));
 }
@@ -73,7 +72,7 @@ int Graph::getEndNode() {
 	return endNodeIndex;
 }
 
-void Graph::addNodeToList(graphEdgeList** list, int value, float dist) {
+/*void Graph::addNodeToList(graphEdgeList** list, int value, float dist) {
 	//Create new cell
 	graphEdgeList* newCell = (graphEdgeList*)malloc(sizeof(graphEdgeList));
 	newCell->edge.neighbourIndex = value;
@@ -87,15 +86,15 @@ void Graph::addNodeToList(graphEdgeList** list, int value, float dist) {
 		newCell->next = (*list)->next;
 		(*list)->next = newCell;
 	}
-}
+}*/
 
 void Graph::addNeighbourTo(int node, int neighbour, float dist) {
-	addNodeToList(&adjencyLists.at(node), neighbour, dist);
+	adjencyLists.at(node)->push_back(graphEdge(neighbour, dist));
 }
 
 void Graph::addNeighbourTo(int node, int neighbour, float dist, bool checkRepetitions) {
-	if (!(checkRepetitions && isNeighbourOf(node, neighbour))) {
-		addNodeToList(&adjencyLists.at(node), neighbour, dist);
+	if (!checkRepetitions || !isNeighbourOf(node, neighbour)) {
+		addNeighbourTo(node, neighbour, dist);
 	}
 }
 
@@ -118,15 +117,16 @@ float Graph::distEstimator(int node1, int node2) {
 }
 
 int Graph::pickNextNode(int currentNode, int previousNode) {
-	graphEdgeList* neighbours = getNeighbours(currentNode);
+	std::vector<graphEdge>* neighbours = getNeighbours(currentNode);
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	float r = randomService.random();
-	while (r > neighbours->edge.dist) {
-		r -= neighbours->edge.dist;
-		neighbours = neighbours->next;
+	int i = 0;
+	while (r > neighbours->at(i).dist) {
+		r -= neighbours->at(i).dist;
+		i++;
 	}
-	if (neighbours->edge.neighbourIndex != previousNode || neighbours->edge.dist > 0.999) {
-		return neighbours->edge.neighbourIndex;
+	if (neighbours->at(i).neighbourIndex != previousNode || neighbours->at(i).dist > 0.999) {
+		return neighbours->at(i).neighbourIndex;
 	}
 	else {
 		return pickNextNode(currentNode, previousNode);
@@ -166,7 +166,7 @@ int Graph::pickNextNode(int currentNode, int previousNode) {
 	}
 }*/
 
-std::vector<int> Graph::trajectory(int startNode, int endNode) {
+/*std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	//Using Dijkstra algorithm
 	//We start at endNode because the path will be built backward at the end and we want it to start at startNode
 
@@ -219,3 +219,4 @@ std::vector<int> Graph::trajectory(int startNode, int endNode) {
 	}
 	return traj;
 }
+*/

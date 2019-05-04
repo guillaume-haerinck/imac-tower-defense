@@ -14,40 +14,36 @@ struct graphEdge {
 	float dist;
 };
 
-struct graphEdgeList {
-	graphEdgeList(graphEdge edge) : edge(edge), next(nullptr) {}
-	graphEdge edge;
-	graphEdgeList* next;
-};
-
 class Graph {
 public:
 	Graph();
 	~Graph();
+	//Getters
 	int getNodesCount();
 	graphNode getNode(int nodeIndex);
-	graphEdgeList* getNeighbours(int nodeIndex);
-	int addNode(int x, int y);
+	int nodeIndex(int x, int y);
+	std::vector<int> getStartNodes();
+	int getStartNodeRandom();
+	int getEndNode();
+	std::vector<graphEdge>* getNeighbours(int nodeIndex);
+	//Setters
+	int addNode(int x, int y); //Returns the index at which the node was inserted
 	void addStartNode(int nodeIndex);
 	void addEndNode(int nodeIndex);
-	std::vector<int> getStartNodes();
-	int getStartNode();
-	int getEndNode();
 	void addNeighbourTo(int node, int neighbour, float dist);
 	void addNeighbourTo(int node, int neighbour, float dist, bool checkRepetitions);
 	void addNeighbouring(int node1, int node2, float dist);
 	void addNeighbouring(int node1, int node2, float dist, bool checkRepetitions);
-	int nodeIndex(int x, int y);
 	bool isNeighbourOf(int node, int potentialNeighbour);
 	float distEstimator(int node1);
 	float distEstimator(int node1, int node2);
 	int pickNextNode(int currentNode, int previousNode); //WARNING : should only be used if it is a stochastic graph ! (i.e. wheights of edges starting from a given node always add up to 1)
-	std::vector<int> trajectory(int startNode, int endNode);
+	//std::vector<int> trajectory(int startNode, int endNode);
 
 private:
 	std::vector<graphNode> nodes;
 	std::vector<int> startNodeIndexes;
 	int endNodeIndex;
-	std::vector<graphEdgeList*> adjencyLists;
-	void addNodeToList(graphEdgeList** list, int value, float dist);
+	std::vector<std::vector<graphEdge>*> adjencyLists;
+	//void addNodeToList(graphEdgeList** list, int value, float dist);
 };

@@ -24,9 +24,9 @@ public:
 	unsigned int getGridWidth() const;
 	unsigned int getGridHeight() const;
 
-	std::vector<glm::vec2> trajectory(); //From start to end
+	/*std::vector<glm::vec2> trajectory(); //From start to end
 	std::vector<glm::vec2> trajectory(int node1); //From node1 to end
-	std::vector<glm::vec2> trajectory(int node1, int node2); //From node1 to node2
+	std::vector<glm::vec2> trajectory(int node1, int node2); //From node1 to node2*/
 
 
 	Graph m_graph;
