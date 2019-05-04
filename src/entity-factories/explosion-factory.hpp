@@ -9,6 +9,7 @@
 class ExplosionFactory : public Factory {
 public:
 	ExplosionFactory(entt::DefaultRegistry& registry);
+	virtual ~ExplosionFactory();
 
 	void create(glm::vec2 pos);
 

@@ -1,12 +1,20 @@
 #include "projectile-factory.hpp"
 
+#include <glad/glad.h>
+
 #include "core/tags.hpp"
+#include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/follow.hpp"
 #include "components/targeting.hpp"
 
 ProjectileFactory::ProjectileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
 	m_projectileSprite = m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(2.0f));
+}
+
+ProjectileFactory::~ProjectileFactory() {
+	GLCall(glDeleteTextures(1, &m_projectileSprite.textureID));
+	GLCall(glDeleteVertexArrays(1, &m_projectileSprite.vaID));
 }
 
 void ProjectileFactory::create(glm::vec2 initialPos, unsigned int targetId) {

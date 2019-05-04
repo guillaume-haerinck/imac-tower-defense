@@ -7,6 +7,7 @@
 class ProjectileFactory : public Factory {
 public:
 	ProjectileFactory(entt::DefaultRegistry& registry);
+	virtual ~ProjectileFactory();
 
 	void create(glm::vec2 initialPos, unsigned int targetId);
 

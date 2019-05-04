@@ -1,8 +1,10 @@
 #include "tower-factory.hpp"
 
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 
 #include "core/tags.hpp"
+#include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
@@ -15,6 +17,11 @@
 TowerFactory::TowerFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
 	m_towerSprite = m_spriteFactory.createSingle("res/images/textures/arrow.png", glm::vec2(8.0f));
+}
+
+TowerFactory::~TowerFactory() {
+	GLCall(glDeleteTextures(1, &m_towerSprite.textureID));
+	GLCall(glDeleteVertexArrays(1, &m_towerSprite.vaID));
 }
 
 void TowerFactory::create(float posX, float posY) {

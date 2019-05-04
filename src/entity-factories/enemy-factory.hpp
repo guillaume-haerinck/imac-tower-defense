@@ -13,6 +13,7 @@
 class EnemyFactory : public Factory {
 public:
 	EnemyFactory(entt::DefaultRegistry& registry, Map& map);
+	virtual ~EnemyFactory();
 
 	// void create(std::vector<glm::vec2> traj);
 	void create();

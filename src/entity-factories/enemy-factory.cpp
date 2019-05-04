@@ -1,7 +1,10 @@
 #include "enemy-factory.hpp"
 
+#include <glad/glad.h>
+
 #include "core/tags.hpp"
 #include "core/constants.hpp"
+#include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/trajectory.hpp"
@@ -22,6 +25,13 @@ EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Map& map)
 	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
 	m_healthBackground = m_primitiveFactory.createRect(glm::vec4(0, 0, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
 	m_healthBar = m_primitiveFactory.createRect(glm::vec4(0, 1, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
+}
+
+EnemyFactory::~EnemyFactory() {
+	GLCall(glDeleteTextures(1, &m_ennemySprite.textureID));
+	GLCall(glDeleteVertexArrays(1, &m_ennemySprite.vaID));
+	GLCall(glDeleteVertexArrays(1, &m_healthBackground.vaID));
+	GLCall(glDeleteVertexArrays(1, &m_healthBar.vaID));
 }
 
 /* Old thing

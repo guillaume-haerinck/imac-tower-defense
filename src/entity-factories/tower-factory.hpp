@@ -9,6 +9,7 @@
 class TowerFactory : public Factory {
 public:
 	TowerFactory(entt::DefaultRegistry& registry);
+	virtual ~TowerFactory();
 
 	void create(float posX, float posY);
 
