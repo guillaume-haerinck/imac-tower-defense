@@ -47,7 +47,7 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 
 void EnemyFactory::create() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-	int startNode = m_map.m_graph.getStartNode();
+	int startNode = m_map.m_graph.getStartNodeRandom();
 
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Enemy>(myEntity);
