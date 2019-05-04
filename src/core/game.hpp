@@ -4,6 +4,13 @@
 #include <SDL2/SDL.h>
 #include <entt/entt.hpp>
 
+enum GameState {
+	WELCOME_SCREEN,
+	LEVEL,
+	CINEMATIC,
+	GAME_OVER
+};
+
 class Game {
 public:
     Game(entt::DefaultRegistry& registry);

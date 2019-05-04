@@ -45,6 +45,7 @@ Game::~Game() {
     spdlog::drop_all();
     spdlog::shutdown();
 
+	m_bInit = false;
 	m_bInstanciated = false;
 }
 
