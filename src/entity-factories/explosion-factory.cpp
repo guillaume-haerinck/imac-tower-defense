@@ -11,7 +11,7 @@
 ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
 : Factory(registry)
 {
-	m_explosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100));
+	m_explosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100),EXPLOSION);
 }
 
 ExplosionFactory::~ExplosionFactory() {
@@ -24,6 +24,6 @@ void ExplosionFactory::create(glm::vec2 pos) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_explosionSprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 6);
+	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2.5);
 	m_registry.assign<cmpt::Transform>(myEntity, pos);
 }
