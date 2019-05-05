@@ -249,7 +249,7 @@ void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& c
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
-    GLCall(glDrawArrays(GL_POINTS, 0, 1));
+    GLCall(glDrawArrays(GL_POINTS, 0, 2));
 
     // Unbinding
     GLCall(glPointSize(1));
@@ -265,7 +265,33 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 }
 
 void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
+	// Binding
+	m_shaderBasic.bind();
+	m_va.bind();
+	m_vb.bind();
 
+	// Update
+	float data[] = {
+		 x1, y1,	// Bottom left
+		 x1, y2,	// Top left
+		 x2, y1,	// Bottom right --- First triangle done
+		 x2, y2,	// Top right
+		 x1, y2,	// Top left
+		 x2, y1,	// Bottom right --- Second triangle done
+		 
+	};
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), &data, GL_DYNAMIC_DRAW));
+
+	// Render
+	glm::mat4 mvp = m_projMat * m_viewMat;
+	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 12));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderBasic.unbind();
 }
 
 void DebugDrawService::square(float x, float y, float extent) {
