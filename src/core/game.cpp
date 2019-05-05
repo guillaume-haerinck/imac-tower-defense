@@ -268,9 +268,10 @@ int Game::init() {
 	healthSystem = new HealthSystem(registry, emitter);
 
 	// States
-	m_levelState = new LevelState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
-	m_titleState = new TitleScreenState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
-	m_gameOverState = new GameOverState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
+	// TODO find a way to pass only *this (circular inclusion problem)
+	m_levelState = new LevelState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
+	m_titleState = new TitleScreenState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
+	m_gameOverState = new GameOverState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
 
     m_bInit = true;
     return EXIT_SUCCESS;

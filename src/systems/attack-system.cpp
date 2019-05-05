@@ -7,14 +7,12 @@
 #include "components/targeting.hpp"
 #include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
-
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry) : System(registry), m_projectileFactory(registry) {}
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry) : ISystem(registry), m_projectileFactory(registry) {}
 
-void AttackSystem::update() {
-
+void AttackSystem::update(float deltatime) {
 	//Look at target
 	m_registry.view<cmpt::Targeting, cmpt::Transform , cmpt::LookAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::LookAt lookAt) {
 		if ( m_registry.valid(targeting.targetId) ) {
@@ -52,6 +50,13 @@ void AttackSystem::update() {
 	});
 }
 
+void AttackSystem::connectEvents() {
+
+}
+
+void AttackSystem::disconnectEvents() {
+
+}
 
 bool AttackSystem::isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, cmpt::Transform transform2, cmpt::Trigger trigger2) {
 	const glm::vec2 deltaPos = transform2.position - transform1.position;

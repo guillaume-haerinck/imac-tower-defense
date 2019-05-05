@@ -2,8 +2,22 @@
 
 #include <spdlog/spdlog.h>
 
-LevelState::LevelState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
-: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem)
+LevelState::LevelState(EventEmitter& emitter,
+	AnimationSystem& animationSystem,
+	AttackSystem& attackSystem,
+	ConstructionSystem& constructionSystem,
+	HealthSystem& healthSystem,
+	MovementSystem& movementSystem,
+	RenderSystem& renderSystem,
+	WaveSystem& waveSystem)
+: IGameState(emitter,
+		animationSystem,
+		attackSystem,
+		constructionSystem,
+		healthSystem,
+		movementSystem,
+		renderSystem,
+		waveSystem)
 {}
 
 void LevelState::update(float deltatime) {
@@ -11,8 +25,8 @@ void LevelState::update(float deltatime) {
 	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
 	m_animationSystem.update(deltatime / 1000 * 6); 
 	m_movementSystem.update(deltatime);
-	m_attackSystem.update();
-	m_renderSystem.update();
+	m_attackSystem.update(deltatime);
+	m_renderSystem.update(deltatime);
 }
 
 void LevelState::onEnter() {

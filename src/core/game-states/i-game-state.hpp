@@ -18,8 +18,22 @@ enum GameState {
 
 class IGameState {
 public:
-	IGameState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
-	: m_emitter(emitter), m_animationSystem(animationSystem), m_movementSystem(movementSystem), m_attackSystem(attackSystem), m_renderSystem(renderSystem)
+	IGameState(EventEmitter& emitter,
+		AnimationSystem& animationSystem,
+		AttackSystem& attackSystem,
+		ConstructionSystem& constructionSystem,
+		HealthSystem& healthSystem,
+		MovementSystem& movementSystem,
+		RenderSystem& renderSystem,
+		WaveSystem& waveSystem)
+	: m_emitter(emitter),
+		m_animationSystem(animationSystem),
+		m_attackSystem(attackSystem),
+		m_constructionSystem(constructionSystem),
+		m_healthSystem(healthSystem),
+		m_movementSystem(movementSystem),
+		m_renderSystem(renderSystem),
+		m_waveSystem(waveSystem)
 	{}
 	
 	virtual void onEnter() = 0;
@@ -29,7 +43,10 @@ public:
 protected:
 	EventEmitter& m_emitter;
 	AnimationSystem& m_animationSystem;
-	MovementSystem& m_movementSystem;
 	AttackSystem& m_attackSystem;
+	ConstructionSystem& m_constructionSystem;
+	HealthSystem& m_healthSystem;
+	MovementSystem& m_movementSystem;
 	RenderSystem& m_renderSystem;
+	WaveSystem& m_waveSystem;
 };

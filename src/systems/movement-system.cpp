@@ -9,7 +9,7 @@
 #include "core/maths.hpp"
 #include "core/constants.hpp"
 #include "core/level/graph.hpp"
-#include "events/mouse-move.hpp"
+#include "events/projectile-hit.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
@@ -17,18 +17,20 @@
 #include "components/follow.hpp"
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
-#include "events/projectile-hit.hpp"
+
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: System(registry), m_emitter(emitter)
-{
-	m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove& event, EventEmitter& emitter) {
-		this->m_mousePos = event.mousePos;
-		this->m_mousePos.x *= WIN_RATIO;
-	});
+: ISystem(registry), m_emitter(emitter) {}
+
+void MovementSystem::connectEvents() {
+
 }
 
-void MovementSystem::update(double deltatime) {
+void MovementSystem::disconnectEvents() {
+
+}
+
+void MovementSystem::update(float deltatime) {
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
 		transform.position.x = rigidbody.body->GetPosition().x;
 		transform.position.y = rigidbody.body->GetPosition().y;

@@ -12,9 +12,17 @@
 #include "core/maths.hpp"
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, glm::mat4& viewMat, glm::mat4& projMat)
-: System(registry), m_view(viewMat), m_projection(projMat) {}
+: ISystem(registry), m_view(viewMat), m_projection(projMat) {}
 
-void RenderSystem::update() {
+void RenderSystem::connectEvents() {
+
+}
+
+void RenderSystem::disconnectEvents() {
+
+}
+
+void RenderSystem::update(float deltatime) {
     /* 
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096

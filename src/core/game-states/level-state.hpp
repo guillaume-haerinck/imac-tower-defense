@@ -12,7 +12,14 @@
 
 class LevelState : public IGameState {
 public:
-	LevelState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem);
+	LevelState(EventEmitter& emitter,
+		AnimationSystem& animationSystem,
+		AttackSystem& attackSystem,
+		ConstructionSystem& constructionSystem,
+		HealthSystem& healthSystem,
+		MovementSystem& movementSystem,
+		RenderSystem& renderSystem,
+		WaveSystem& waveSystem);
 
 	void onEnter() override;
 	void update(float deltatime) override;

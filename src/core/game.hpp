@@ -41,7 +41,7 @@ public:
 	EventEmitter& emitter;
 	Level* level;
 
-	// System
+	// ISystem
 	RenderSystem* renderSystem;
 	AnimationSystem* animationSystem;
 	MovementSystem* movementSystem;

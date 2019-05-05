@@ -7,8 +7,23 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 
-GameOverState::GameOverState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
-: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_gameOver(emitter)
+GameOverState::GameOverState(EventEmitter& emitter,
+	AnimationSystem& animationSystem,
+	AttackSystem& attackSystem,
+	ConstructionSystem& constructionSystem,
+	HealthSystem& healthSystem,
+	MovementSystem& movementSystem,
+	RenderSystem& renderSystem,
+	WaveSystem& waveSystem)
+: IGameState(emitter,
+	animationSystem,
+	attackSystem,
+	constructionSystem,
+	healthSystem,
+	movementSystem,
+	renderSystem,
+	waveSystem),
+	m_gameOver(emitter)
 {
 	m_xaml = m_gameOver;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();

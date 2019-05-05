@@ -6,24 +6,25 @@
 #include "components/sprite-animation.hpp"
 #include "components/transform.hpp"
 #include "events/projectile-hit.hpp"
-#include "events/enemy-dead.hpp"
 
 #include <spdlog/spdlog.h>
 
 AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-	: System(registry), m_emitter(emitter), m_explosionFactory(registry)
-{
-	m_emitter.on<evnt::ProjectileHit>([this](const evnt::ProjectileHit & event, EventEmitter & emitter) {
-		
-	});
+: ISystem(registry), m_emitter(emitter), m_explosionFactory(registry) {}
 
-	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+void AnimationSystem::connectEvents() {
+	auto connection = m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
 		m_explosionFactory.create(event.position);
 	});
+	m_enemyDeadCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::EnnemyDead>>(connection);
 }
 
+void AnimationSystem::disconnectEvents() {
+	m_emitter.erase(*m_enemyDeadCon);
+	m_enemyDeadCon.reset();
+}
 
-void AnimationSystem::update(double deltatime) {
+void AnimationSystem::update(float deltatime) {
     m_registry.view<cmpt::SpriteAnimation, cmpt::Sprite>().each([this,deltatime](auto entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
 		animation.age += deltatime;
         if (animation.age < animation.duration) {

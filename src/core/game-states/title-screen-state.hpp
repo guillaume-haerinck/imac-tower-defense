@@ -21,7 +21,14 @@
 
 class TitleScreenState : public IGameState {
 public:
-	TitleScreenState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem);
+	TitleScreenState(EventEmitter& emitter,
+		AnimationSystem& animationSystem,
+		AttackSystem& attackSystem,
+		ConstructionSystem& constructionSystem,
+		HealthSystem& healthSystem,
+		MovementSystem& movementSystem,
+		RenderSystem& renderSystem,
+		WaveSystem& waveSystem);
 	virtual ~TitleScreenState();
 
 	void onEnter() override;

@@ -3,13 +3,15 @@
 #include <glm/glm.hpp>
 #include <Box2D/Box2D.h>
 
-#include "system.hpp"
+#include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 
-class MovementSystem : public System {
+class MovementSystem : public ISystem {
 public:
 	MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
-	void update(double deltatime);
+	void update(float deltatime) override;
+	void connectEvents() override;
+	void disconnectEvents() override;
 
 private:
 	EventEmitter& m_emitter;

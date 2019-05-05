@@ -21,7 +21,14 @@
 
 class GameOverState : public IGameState {
 public:
-	GameOverState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem);
+	GameOverState(EventEmitter& emitter,
+		AnimationSystem& animationSystem,
+		AttackSystem& attackSystem,
+		ConstructionSystem& constructionSystem,
+		HealthSystem& healthSystem,
+		MovementSystem& movementSystem,
+		RenderSystem& renderSystem,
+		WaveSystem& waveSystem);
 	virtual ~GameOverState();
 
 	void onEnter() override;
