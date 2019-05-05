@@ -13,6 +13,7 @@ set(
     NOESIS_INCLUDE_DIRS 
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/App/Display/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/App/Providers/Include;
+	${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/App/ApplicationLauncher/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Src/Packages/Render/GLRenderDevice/Include;
     ${CMAKE_SOURCE_DIR}/lib/NoesisGUI-2.2.0/Include;
 )
