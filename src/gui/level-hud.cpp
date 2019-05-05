@@ -13,10 +13,6 @@ void LevelHud::InitializeComponent() {
 }
 
 bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
-	NS_CONNECT_EVENT(Noesis::Button, Click, OnButton1Click);
 	return false;
 }
 
-void LevelHud::OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	printf("level HUD : Button1 was clicked\n");
-}

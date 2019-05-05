@@ -12,7 +12,6 @@ public:
 
 private:
 	// Events
-	void OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	bool ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) override;
 
 	// Init 
