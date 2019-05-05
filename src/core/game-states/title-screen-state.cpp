@@ -9,7 +9,9 @@
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
 
-TitleScreenState::TitleScreenState(EventEmitter& emitter) : m_emitter(emitter) {
+TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
+: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem)
+{
 	m_xaml = m_titleScreen;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
@@ -29,7 +31,7 @@ TitleScreenState::~TitleScreenState() {
 	m_ui->GetRenderer()->Shutdown();
 }
 
-void TitleScreenState::update() {
+void TitleScreenState::update(float deltatime) {
 	// Noesis gui update
 	m_ui->Update(SDL_GetTicks());
 	m_ui->GetRenderer()->UpdateRenderTree();
@@ -42,4 +44,12 @@ void TitleScreenState::update() {
 
 	// Render
 	m_ui->GetRenderer()->Render();
+}
+
+void TitleScreenState::onEnter() {
+
+}
+
+void TitleScreenState::onExit() {
+
 }

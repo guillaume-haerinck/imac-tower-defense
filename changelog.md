@@ -4,6 +4,7 @@
 
 Trigger collision detection.
 Change map at runtime.
+Game class as a basic state machine (circular inclusion problem encountered, and resolved via events and dependency injection)
 
 ## 01.05.19
 

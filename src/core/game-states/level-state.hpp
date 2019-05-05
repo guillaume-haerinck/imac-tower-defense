@@ -7,11 +7,14 @@
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
+#include "events/handlers/event-emitter.hpp"
+#include "i-game-state.hpp"
 
-class LevelState {
+class LevelState : public IGameState {
 public:
-	LevelState();
-	~LevelState();
+	LevelState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem);
 
-	void update(float deltatime, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem);
+	void onEnter() override;
+	void update(float deltatime) override;
+	void onExit() override;
 };
