@@ -13,15 +13,21 @@
 #include <spdlog/spdlog.h>
 
 LaserSystem::LaserSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-	: System(registry), m_emitter(emitter)
-{
-}
+: ISystem(registry), m_emitter(emitter) {}
 
 
-void LaserSystem::update(double deltatime) {
+void LaserSystem::update(float deltatime) {
     m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this,deltatime](auto entity, cmpt::ShootLaser& laser, cmpt::Transform& transform) {
 		shootLaser(transform.position, transform.rotation,4);
     });
+}
+
+void LaserSystem::connectEvents() {
+
+}
+
+void LaserSystem::disconnectEvents() {
+
 }
 
 void LaserSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
