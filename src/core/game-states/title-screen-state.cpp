@@ -6,8 +6,6 @@
 
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
-#include "events/left-click-down.hpp"
-#include "events/left-click-up.hpp"
 
 TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
 : IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_titleScreen(emitter)
@@ -17,14 +15,6 @@ TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& anima
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
-
-	m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-
-	m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
 }
 
 TitleScreenState::~TitleScreenState() {
@@ -32,7 +22,16 @@ TitleScreenState::~TitleScreenState() {
 }
 
 void TitleScreenState::onEnter() {
+	// Listen to event and copy connection object
+	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+	});
+	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
 
+	auto connectionUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+	});
+	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
 }
 
 void TitleScreenState::update(float deltatime) {
@@ -51,5 +50,9 @@ void TitleScreenState::update(float deltatime) {
 }
 
 void TitleScreenState::onExit() {
-
+	// Remove event listenner
+	m_emitter.erase(*m_clickUpCon);
+	m_emitter.erase(*m_clickDownCon);
+	m_clickUpCon.reset();
+	m_clickDownCon.reset();
 }
