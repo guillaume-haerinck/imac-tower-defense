@@ -7,6 +7,7 @@
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
+#include "core/progression.hpp"
 #include "events/handlers/event-emitter.hpp"
 
 enum GameState {
@@ -18,7 +19,8 @@ enum GameState {
 
 class IGameState {
 public:
-	IGameState(EventEmitter& emitter,
+	IGameState(Progression& progression,
+		EventEmitter& emitter,
 		AnimationSystem& animationSystem,
 		AttackSystem& attackSystem,
 		ConstructionSystem& constructionSystem,
@@ -26,7 +28,8 @@ public:
 		MovementSystem& movementSystem,
 		RenderSystem& renderSystem,
 		WaveSystem& waveSystem)
-	: m_emitter(emitter),
+	:   m_progression(progression),
+		m_emitter(emitter),
 		m_animationSystem(animationSystem),
 		m_attackSystem(attackSystem),
 		m_constructionSystem(constructionSystem),
@@ -41,6 +44,7 @@ public:
 	virtual void onExit() = 0;
 
 protected:
+	Progression& m_progression;
 	EventEmitter& m_emitter;
 	AnimationSystem& m_animationSystem;
 	AttackSystem& m_attackSystem;

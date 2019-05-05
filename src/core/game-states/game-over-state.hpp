@@ -16,12 +16,14 @@
 #include "events/handlers/event-emitter.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
+#include "core/progression.hpp"
 #include "i-game-state.hpp"
 #include "gui/game-over.hpp"
 
 class GameOverState : public IGameState {
 public:
-	GameOverState(EventEmitter& emitter,
+	GameOverState(Progression& progression,
+		EventEmitter& emitter,
 		AnimationSystem& animationSystem,
 		AttackSystem& attackSystem,
 		ConstructionSystem& constructionSystem,

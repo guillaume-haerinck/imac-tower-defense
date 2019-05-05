@@ -7,7 +7,8 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 
-TitleScreenState::TitleScreenState(EventEmitter& emitter,
+TitleScreenState::TitleScreenState(Progression& progression,
+	EventEmitter& emitter,
 	AnimationSystem& animationSystem,
 	AttackSystem& attackSystem,
 	ConstructionSystem& constructionSystem,
@@ -15,7 +16,8 @@ TitleScreenState::TitleScreenState(EventEmitter& emitter,
 	MovementSystem& movementSystem,
 	RenderSystem& renderSystem,
 	WaveSystem& waveSystem)
-: IGameState(emitter,
+: IGameState(progression,
+		emitter,
 		animationSystem,
 		attackSystem,
 		constructionSystem,

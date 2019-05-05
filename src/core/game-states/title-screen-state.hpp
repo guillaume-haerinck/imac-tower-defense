@@ -16,12 +16,14 @@
 #include "events/handlers/event-emitter.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
+#include "core/progression.hpp"
 #include "i-game-state.hpp"
 #include "gui/title-screen.hpp"
 
 class TitleScreenState : public IGameState {
 public:
-	TitleScreenState(EventEmitter& emitter,
+	TitleScreenState(Progression& progression,
+		EventEmitter& emitter,
 		AnimationSystem& animationSystem,
 		AttackSystem& attackSystem,
 		ConstructionSystem& constructionSystem,

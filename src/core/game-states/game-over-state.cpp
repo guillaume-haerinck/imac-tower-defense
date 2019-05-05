@@ -7,7 +7,8 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 
-GameOverState::GameOverState(EventEmitter& emitter,
+GameOverState::GameOverState(Progression& progression,
+	EventEmitter& emitter,
 	AnimationSystem& animationSystem,
 	AttackSystem& attackSystem,
 	ConstructionSystem& constructionSystem,
@@ -15,7 +16,8 @@ GameOverState::GameOverState(EventEmitter& emitter,
 	MovementSystem& movementSystem,
 	RenderSystem& renderSystem,
 	WaveSystem& waveSystem)
-: IGameState(emitter,
+: IGameState(progression,
+	emitter,
 	animationSystem,
 	attackSystem,
 	constructionSystem,
