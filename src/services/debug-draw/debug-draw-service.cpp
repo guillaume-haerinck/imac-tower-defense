@@ -261,7 +261,29 @@ void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& c
 /* ---------------------------- PROCESSING-LIKE API --------------------------- */
 
 void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+	// Binding
+	m_shaderBasic.bind();
+	m_va.bind();
+	m_vb.bind();
 
+	// Update
+	float data[] = {
+		 x1, y1,
+		 x2, y2,
+		 x3, y3
+	};
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), &data, GL_DYNAMIC_DRAW));
+
+	// Render
+	glm::mat4 mvp = m_projMat * m_viewMat;
+	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderBasic.unbind();
 }
 
 void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
