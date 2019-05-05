@@ -1,6 +1,8 @@
 #include "title-screen.hpp"
 
 #include <NsGui/Button.h>
+#include "events/change-game-state.hpp"
+#include "core/game-states/i-game-state.hpp"
 
 /* TODO Data binding
     https://www.noesisengine.com/docs/Gui.Core.DataBindingTutorial.html
@@ -8,7 +10,7 @@
     https://www.noesisengine.com/docs/Gui.Core.CustomControlTutorial.html
 */
 
-TitleScreen::TitleScreen() {
+TitleScreen::TitleScreen(EventEmitter& emitter) : m_emitter(emitter) {
     InitializeComponent();
 }
 
@@ -24,6 +26,7 @@ bool TitleScreen::ConnectEvent(Noesis::BaseComponent* source, const char* event,
 
 void TitleScreen::OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
     printf("Button1 was clicked\n");
+	m_emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 1);
 }
 
 void TitleScreen::OnButton2Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {

@@ -10,7 +10,7 @@
 #include "events/left-click-up.hpp"
 
 TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
-: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem)
+: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_titleScreen(emitter)
 {
 	m_xaml = m_titleScreen;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
@@ -43,7 +43,8 @@ void TitleScreenState::update(float deltatime) {
 	GLCall(glClearStencil(0));
 
 	// Render
-	m_ui->GetRenderer()->Render();
+	// FIXME efface tout, et ne laisse rien passer
+	//m_ui->GetRenderer()->Render();
 }
 
 void TitleScreenState::onEnter() {

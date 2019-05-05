@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <entt/entt.hpp>
 
+#include "game-states/i-game-state.hpp"
 #include "game-states/level-state.hpp"
 #include "game-states/title-screen-state.hpp"
 #include "level/level.hpp"
@@ -15,13 +16,6 @@
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
 #include "events/handlers/event-emitter.hpp"
-
-enum GameState {
-	TITLE_SCREEN,
-	LEVEL,
-	CINEMATIC,
-	GAME_OVER
-};
 
 class Game {
 public:

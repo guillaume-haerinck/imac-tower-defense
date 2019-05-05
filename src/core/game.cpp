@@ -19,6 +19,7 @@
 #include "services/debug-draw/debug-draw-service.hpp"
 #include "services/random/random-service.hpp"
 #include "services/audio/audio-service.hpp"
+#include "events/change-game-state.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
 
@@ -29,10 +30,21 @@ Game::Game(EventEmitter& emitter)
 :   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::LEVEL),
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
 	m_viewMat(glm::mat4(1.0f)),
-	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f)
+	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f),
+	renderSystem(nullptr),
+	animationSystem(nullptr),
+	movementSystem(nullptr),
+	constructionSystem(nullptr),
+	waveSystem(nullptr),
+	attackSystem(nullptr),
+	healthSystem(nullptr)
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
+
+	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
+		this->m_state = event.state;
+	});
 
 	/* TODO listen to event here ? Or use a camera class, or even a camera service
 		else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {

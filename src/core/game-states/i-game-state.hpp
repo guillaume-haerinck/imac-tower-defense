@@ -9,6 +9,13 @@
 #include "systems/health-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 
+enum GameState {
+	TITLE_SCREEN,
+	LEVEL,
+	CINEMATIC,
+	GAME_OVER
+};
+
 class IGameState {
 public:
 	IGameState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)

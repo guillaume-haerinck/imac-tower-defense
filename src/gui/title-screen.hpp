@@ -3,9 +3,11 @@
 #include <NsGui/StackPanel.h>
 #include <NsGui/IntegrationAPI.h>
 
+#include "events/handlers/event-emitter.hpp"
+
 class TitleScreen: public Noesis::StackPanel {
 public:
-    TitleScreen();
+    TitleScreen(EventEmitter& emitter);
 
 private:
     // Events
@@ -18,4 +20,7 @@ private:
     NS_IMPLEMENT_INLINE_REFLECTION(TitleScreen, StackPanel) {
         NsMeta<Noesis::TypeId>("TitleScreen");
     }
+
+private:
+	EventEmitter& m_emitter;
 };

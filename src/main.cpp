@@ -20,6 +20,7 @@
 #include "core/game.hpp"
 #include "core/maths.hpp"
 #include "core/constants.hpp"
+#include "core/game-states/i-game-state.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "events/handlers/event-emitter.hpp"
 #include "events/left-click-up.hpp"
@@ -28,6 +29,7 @@
 #include "events/scale-view.hpp"
 #include "events/mouse-move.hpp"
 #include "events/start-wave.hpp"
+#include "events/change-game-state.hpp"
 
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
@@ -69,6 +71,14 @@ int main(int argc, char** argv) {
 			// TODO allow only when game is in level state
 			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);
+			}
+
+			if (ImGui::Button("Load level 1")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 1);
+			}
+
+			if (ImGui::Button("Load title screen")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN, 1);
 			}
 
 			// Check cursor position
