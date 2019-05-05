@@ -37,6 +37,15 @@ TitleScreenState::~TitleScreenState() {
 }
 
 void TitleScreenState::onEnter() {
+	// Remove subscription for unsused systems
+	m_animationSystem.disconnectEvents();
+	m_attackSystem.disconnectEvents();
+	m_constructionSystem.disconnectEvents();
+	m_healthSystem.disconnectEvents();
+	m_movementSystem.disconnectEvents();
+	m_renderSystem.disconnectEvents();
+	m_waveSystem.disconnectEvents();
+
 	// Listen to event and copy connection object
 	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);

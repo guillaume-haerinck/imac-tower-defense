@@ -42,9 +42,8 @@ Game::Game(EventEmitter& emitter)
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
 
+	// Handle state changes
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
-		// TODO use the interface to do this in 2 lines
-
 		// Exit current state
 		switch (this->m_state) {
 		case TITLE_SCREEN:
@@ -268,10 +267,27 @@ int Game::init() {
 	healthSystem = new HealthSystem(registry, emitter);
 
 	// States
-	// TODO find a way to pass only *this (circular inclusion problem)
 	m_levelState = new LevelState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
 	m_titleState = new TitleScreenState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
 	m_gameOverState = new GameOverState(emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
+
+	// Init current state
+	switch (this->m_state) {
+	case TITLE_SCREEN:
+		m_titleState->onEnter();
+		break;
+
+	case LEVEL:
+		m_levelState->onEnter();
+		break;
+
+	case CINEMATIC:
+		break;
+
+	case GAME_OVER:
+		m_gameOverState->onEnter();
+		break;
+	}
 
     m_bInit = true;
     return EXIT_SUCCESS;
@@ -307,11 +323,3 @@ SDL_Window* Game::getWindow() { return m_window; }
 SDL_GLContext Game::getContext() { return m_context; }
 GameState Game::getState() { return m_state; }
 
-/* ----------------------- SETTERS --------------------- */
-
-void Game::setState(GameState state) {
-	// TODO handle level number
-	// TODO empty registry ?
-	// TODO use multiple functions ? (nextLevel, gameover, pause, options ...)
-	m_state = state;
-}

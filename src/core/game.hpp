@@ -32,9 +32,6 @@ public:
     SDL_GLContext getContext();
 	GameState getState();
 
-	// Setters
-	void setState(GameState state);
-
 public:
 	// Game structure
 	entt::DefaultRegistry registry;

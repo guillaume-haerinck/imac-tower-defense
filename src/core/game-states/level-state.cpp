@@ -30,7 +30,14 @@ void LevelState::update(float deltatime) {
 }
 
 void LevelState::onEnter() {
-
+	// Set event subscription for used systems 
+	m_animationSystem.connectEvents();
+	m_attackSystem.connectEvents();
+	m_constructionSystem.connectEvents();
+	m_healthSystem.connectEvents();
+	m_movementSystem.connectEvents();
+	m_renderSystem.connectEvents();
+	m_waveSystem.connectEvents();
 }
 
 void LevelState::onExit() {
