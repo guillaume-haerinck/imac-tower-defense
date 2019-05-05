@@ -6,8 +6,8 @@
 #include "components/health.hpp"
 #include "components/transform.hpp"
 
-HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: ISystem(registry), m_emitter(emitter) {}
+HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression)
+: ISystem(registry), m_emitter(emitter), m_progression(progression) {}
 
 void HealthSystem::connectEvents() {
 	if (m_bConnected == false) {
@@ -17,6 +17,7 @@ void HealthSystem::connectEvents() {
 			if (health.current <= 0.01f) {
 				m_emitter.publish<evnt::EnnemyDead>(event.position);
 				m_registry.destroy(event.targetId);
+				m_progression.addToMoney(2);
 			}
 			});
 		m_projectileCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::ProjectileHit>>(connection);
