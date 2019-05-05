@@ -92,6 +92,7 @@ Game::~Game() {
 	// Delete states
 	delete m_levelState;
 	delete m_titleState;
+	delete m_gameOverState;
 
 	// Shutdown 
     ImGui_ImplOpenGL3_Shutdown();
