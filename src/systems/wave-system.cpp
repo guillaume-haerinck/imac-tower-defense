@@ -7,18 +7,24 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 : ISystem(registry), m_emitter(emitter), m_enemyFactory(registry, level) {}
 
 void WaveSystem::connectEvents() {
-	// TODO check if subscription exists before or it might crash
-	auto connection = m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
-		// TODO handle the number of enemies from the number in the event
-		this->m_enemyFactory.create();
-	});
-	m_waveCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::StartWave>>(connection);
+	if (m_bConnected == false) {
+		auto connection = m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
+			// TODO handle the number of enemies from the number in the event
+			this->m_enemyFactory.create();
+		});
+		m_waveCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::StartWave>>(connection);
+
+		m_bConnected = true;
+	}
 }
 
 void WaveSystem::disconnectEvents() {
-	// TODO check if subscription as already been reset
-	m_emitter.erase(*m_waveCon);
-	m_waveCon.reset();
+	if (m_bConnected == true) {
+		m_emitter.erase(*m_waveCon);
+		m_waveCon.reset();
+
+		m_bConnected = false;
+	}
 }
 
 void WaveSystem::update(float deltatime) {

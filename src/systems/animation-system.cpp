@@ -13,17 +13,23 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 : ISystem(registry), m_emitter(emitter), m_explosionFactory(registry) {}
 
 void AnimationSystem::connectEvents() {
-	// TODO check if subscription exists before or it might crash
-	auto connection = m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
-		m_explosionFactory.create(event.position);
-	});
-	m_enemyDeadCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::EnnemyDead>>(connection);
+	if (m_bConnected == false) {
+		auto connection = m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+			m_explosionFactory.create(event.position);
+		});
+		m_enemyDeadCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::EnnemyDead>>(connection);
+
+		m_bConnected = true;
+	}
 }
 
 void AnimationSystem::disconnectEvents() {
-	// TODO check if subscription as already been reset
-	m_emitter.erase(*m_enemyDeadCon);
-	m_enemyDeadCon.reset();
+	if (m_bConnected == true) {
+		m_emitter.erase(*m_enemyDeadCon);
+		m_enemyDeadCon.reset();
+
+		m_bConnected = false;
+	}
 }
 
 void AnimationSystem::update(float deltatime) {

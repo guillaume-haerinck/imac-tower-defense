@@ -9,6 +9,7 @@ public:
 	virtual void update(float deltatime) = 0;
 
 protected:
-	ISystem(entt::DefaultRegistry& registry) : m_registry(registry) {}
+	ISystem(entt::DefaultRegistry& registry) : m_registry(registry), m_bConnected(false) {}
 	entt::DefaultRegistry& m_registry;
+	bool m_bConnected;
 };
