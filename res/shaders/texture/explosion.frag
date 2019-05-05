@@ -18,5 +18,8 @@ void main() {
 		texColor *= (texColor.a-gradStart)/(gradEnd-gradStart);
 		texColor.a = 1 ;
 	}
+	else{
+		texColor.a = 1 ;
+	}
 	color = texColor;
 }
