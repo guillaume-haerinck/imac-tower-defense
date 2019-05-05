@@ -15,7 +15,8 @@ void main() {
 		discard;
 	}
 	else if( gradStart < texColor.a && texColor.a < gradEnd ){
-		texColor *= (texColor.a-gradStart)/(gradEnd-gradStart); 
+		texColor *= (texColor.a-gradStart)/(gradEnd-gradStart);
+		texColor.a = 1 ;
 	}
 	color = texColor;
 }
