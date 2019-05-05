@@ -32,7 +32,7 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [x] Load & play spritesheet
 - [x] Load, validate and interpret .itd files
 - [x] Load map as a grid
-- [ ] User interface
+- [x] User interface
 - [x] Play audio
 - [x] Object picking
 - [x] Construction system
@@ -40,11 +40,10 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [x] Attack system
 - [x] Projectiles
 - [x] Waves system
-- [ ] Monster state machine
-- [ ] Banking system
-- [ ] Upgrade system
-- [ ] Ressource manager
+- [x] Banking system
 - [x] Switch levels
+- [ ] Ressource manager
+- [ ] Upgrade system
 - [ ] World map
 - [ ] Attack with raycasting
 - [ ] Mirror towers

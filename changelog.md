@@ -2,7 +2,8 @@
 
 ## 05.05.19
 
-Handles event unsubcription (deal with connection invalid constructor by making a copy of instanciated object in memory)
+Handles event unsubcription (deal with connection invalid constructor by making a copy of instanciated object in memory).
+Bank.
 
 ## 04.05.19
 
