@@ -6,6 +6,7 @@
 
 #include "game-states/i-game-state.hpp"
 #include "game-states/level-state.hpp"
+#include "game-states/game-over-state.hpp"
 #include "game-states/title-screen-state.hpp"
 #include "level/level.hpp"
 #include "systems/render-system.hpp"
@@ -62,6 +63,7 @@ private:
 	GameState m_state;
 	LevelState* m_levelState;
 	TitleScreenState* m_titleState;
+	GameOverState* m_gameOverState;
 
 	// Camera
 	glm::mat4 m_projMat;

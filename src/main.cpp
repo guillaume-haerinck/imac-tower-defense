@@ -81,6 +81,10 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN, 1);
 			}
 
+			if (ImGui::Button("Load Game over screen")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER, 1);
+			}
+
 			// Check cursor position
 			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
 				bAllowClickEvent = false;

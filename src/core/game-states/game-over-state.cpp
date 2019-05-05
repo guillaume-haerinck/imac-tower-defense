@@ -1,4 +1,4 @@
-#include "title-screen-state.hpp"
+#include "game-over-state.hpp"
 
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
@@ -9,10 +9,10 @@
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
 
-TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
-: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_titleScreen(emitter)
+GameOverState::GameOverState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
+: IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_gameOver(emitter)
 {
-	m_xaml = m_titleScreen;
+	m_xaml = m_gameOver;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
@@ -27,15 +27,15 @@ TitleScreenState::TitleScreenState(EventEmitter& emitter, AnimationSystem& anima
 	});
 }
 
-TitleScreenState::~TitleScreenState() {
+GameOverState::~GameOverState() {
 	m_ui->GetRenderer()->Shutdown();
 }
 
-void TitleScreenState::onEnter() {
+void GameOverState::onEnter() {
 
 }
 
-void TitleScreenState::update(float deltatime) {
+void GameOverState::update(float deltatime) {
 	// Noesis gui update
 	m_ui->Update(SDL_GetTicks());
 	m_ui->GetRenderer()->UpdateRenderTree();
@@ -50,6 +50,5 @@ void TitleScreenState::update(float deltatime) {
 	m_ui->GetRenderer()->Render();
 }
 
-void TitleScreenState::onExit() {
-
+void GameOverState::onExit() {
 }

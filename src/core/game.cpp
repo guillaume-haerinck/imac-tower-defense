@@ -224,6 +224,7 @@ int Game::init() {
 	// States
 	m_levelState = new LevelState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
 	m_titleState = new TitleScreenState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
+	m_gameOverState = new GameOverState(emitter, *animationSystem, *movementSystem, *attackSystem, *renderSystem);
 
     m_bInit = true;
     return EXIT_SUCCESS;
@@ -245,6 +246,7 @@ void Game::update(float deltatime) {
 		break;
 
 	case GAME_OVER:
+		m_gameOverState->update(deltatime);
 		break;
 
 	default:

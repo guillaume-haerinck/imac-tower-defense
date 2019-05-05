@@ -25,10 +25,10 @@ bool TitleScreen::ConnectEvent(Noesis::BaseComponent* source, const char* event,
 }
 
 void TitleScreen::OnButton1Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-    printf("Button1 was clicked\n");
+    printf("Title screen : Button1 was clicked\n");
 	m_emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 1);
 }
 
 void TitleScreen::OnButton2Click(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-    printf("Button2 was clicked\n");
+    printf("Title screen : Button2 was clicked\n");
 }
