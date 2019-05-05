@@ -27,12 +27,12 @@ void GameOverState::onEnter() {
 	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 		});
-	m_clickDownCon = new entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>(connectionDown);
+	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
 
 	auto connectionUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 		});
-	m_clickUpCon = new entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>(connectionUp);
+	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
 }
 
 void GameOverState::update(float deltatime) {
@@ -54,6 +54,6 @@ void GameOverState::onExit() {
 	// Remove event listenner
 	m_emitter.erase(*m_clickUpCon);
 	m_emitter.erase(*m_clickDownCon);
-	delete m_clickUpCon;
-	delete m_clickDownCon;
+	m_clickUpCon.reset();
+	m_clickDownCon.reset();
 }

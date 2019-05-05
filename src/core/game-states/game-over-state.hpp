@@ -4,6 +4,7 @@
 #include <NsRender/GLFactory.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsGui/IRenderer.h>
+#include <memory>
 
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
@@ -32,6 +33,6 @@ private:
 	Noesis::IView* m_ui;
 	GameOver m_gameOver;
 
-	entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>* m_clickDownCon;
-	entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>* m_clickUpCon;
+	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>> m_clickDownCon;
+	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>> m_clickUpCon;
 };

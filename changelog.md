@@ -1,5 +1,9 @@
 # Imac Tower Defense Changelog
 
+## 05.05.19
+
+Handles event unsubcription (deal with connection invalid constructor by making a copy of instanciated object in memory)
+
 ## 04.05.19
 
 Trigger collision detection.
