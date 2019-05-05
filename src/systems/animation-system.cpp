@@ -13,6 +13,7 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 : ISystem(registry), m_emitter(emitter), m_explosionFactory(registry) {}
 
 void AnimationSystem::connectEvents() {
+	// TODO check if subscription exists before or it might crash
 	auto connection = m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
 		m_explosionFactory.create(event.position);
 	});
@@ -20,6 +21,7 @@ void AnimationSystem::connectEvents() {
 }
 
 void AnimationSystem::disconnectEvents() {
+	// TODO check if subscription as already been reset
 	m_emitter.erase(*m_enemyDeadCon);
 	m_enemyDeadCon.reset();
 }
