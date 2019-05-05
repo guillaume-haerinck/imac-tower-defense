@@ -43,8 +43,7 @@ void TitleScreenState::update(float deltatime) {
 	GLCall(glClearStencil(0));
 
 	// Render
-	// FIXME efface tout, et ne laisse rien passer
-	//m_ui->GetRenderer()->Render();
+	m_ui->GetRenderer()->Render();
 }
 
 void TitleScreenState::onEnter() {

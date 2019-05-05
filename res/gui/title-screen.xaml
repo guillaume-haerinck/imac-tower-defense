@@ -2,6 +2,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       VerticalAlignment="Center"
       x:Class="TitleScreen">
-  <Button Width="100" Content="Launch level 1" Click="OnButton1Click"/>
+  <Button Width="100" Content="Click me" Click="OnButton1Click"/>
   <Button Width="100" Content="Click me" Click="OnButton2Click"/>
 </StackPanel>
