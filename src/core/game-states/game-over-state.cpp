@@ -6,8 +6,6 @@
 
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
-#include "events/left-click-down.hpp"
-#include "events/left-click-up.hpp"
 
 GameOverState::GameOverState(EventEmitter& emitter, AnimationSystem& animationSystem, MovementSystem& movementSystem, AttackSystem& attackSystem, RenderSystem& renderSystem)
 : IGameState(emitter, animationSystem, movementSystem, attackSystem, renderSystem), m_gameOver(emitter)
@@ -17,14 +15,6 @@ GameOverState::GameOverState(EventEmitter& emitter, AnimationSystem& animationSy
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
-
-	m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-
-	m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
 }
 
 GameOverState::~GameOverState() {
@@ -32,7 +22,17 @@ GameOverState::~GameOverState() {
 }
 
 void GameOverState::onEnter() {
+	// Listen to event and keep connection pointer
+	// TODO use smart pointer
+	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+		});
+	m_clickDownCon = new entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>(connectionDown);
 
+	auto connectionUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
+		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+		});
+	m_clickUpCon = new entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>(connectionUp);
 }
 
 void GameOverState::update(float deltatime) {
@@ -51,4 +51,9 @@ void GameOverState::update(float deltatime) {
 }
 
 void GameOverState::onExit() {
+	// Remove event listenner
+	m_emitter.erase(*m_clickUpCon);
+	m_emitter.erase(*m_clickDownCon);
+	delete m_clickUpCon;
+	delete m_clickDownCon;
 }

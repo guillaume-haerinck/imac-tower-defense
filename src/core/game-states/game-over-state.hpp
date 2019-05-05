@@ -13,6 +13,8 @@
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
 #include "events/handlers/event-emitter.hpp"
+#include "events/left-click-down.hpp"
+#include "events/left-click-up.hpp"
 #include "i-game-state.hpp"
 #include "gui/game-over.hpp"
 
@@ -29,4 +31,7 @@ private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
 	GameOver m_gameOver;
+
+	entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>* m_clickDownCon;
+	entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>* m_clickUpCon;
 };

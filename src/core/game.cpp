@@ -43,6 +43,51 @@ Game::Game(EventEmitter& emitter)
 	m_bInstanciated = true;
 
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
+		// TODO use the interface to do this in 2 lines
+
+		// Exit current state
+		switch (this->m_state) {
+		case TITLE_SCREEN:
+			m_titleState->onExit();
+			break;
+
+		case LEVEL:
+			m_levelState->onExit();
+			break;
+
+		case CINEMATIC:
+			break;
+
+		case GAME_OVER:
+			m_gameOverState->onExit();
+			break;
+
+		default:
+			break;
+		}
+
+		// Enter new state
+		switch (event.state) {
+		case TITLE_SCREEN:
+			m_titleState->onEnter();
+			break;
+
+		case LEVEL:
+			m_levelState->onEnter();
+			break;
+
+		case CINEMATIC:
+			break;
+
+		case GAME_OVER:
+			m_gameOverState->onEnter();
+			break;
+
+		default:
+			break;
+		}
+
+		// Update state
 		this->m_state = event.state;
 	});
 
