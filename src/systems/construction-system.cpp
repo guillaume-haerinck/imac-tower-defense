@@ -7,8 +7,8 @@
 #include "core/tags.hpp"
 #include "components/transform.hpp"
 
-ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
-: ISystem(registry), m_emitter(emitter), m_level(level), m_towerFactory(registry) {}
+ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
+: ISystem(registry), m_emitter(emitter), m_level(level), m_towerFactory(registry), m_progression(progression) {}
 
 void ConstructionSystem::connectEvents() {
 	if (m_bConnected == false) {
@@ -16,10 +16,11 @@ void ConstructionSystem::connectEvents() {
 			glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 			unsigned int entityId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 			if (entityId != -1) {
-				if (this->m_registry.has<tileTag::Constructible>(entityId)) {
+				if (this->m_registry.has<tileTag::Constructible>(entityId) && m_progression.getMoney() >= 10) {
 					cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(entityId);
 					this->m_towerFactory.create(trans.position.x, trans.position.y);
 					this->m_registry.remove<tileTag::Constructible>(entityId);
+					m_progression.addToMoney(-10);
 				}
 			}
 			});

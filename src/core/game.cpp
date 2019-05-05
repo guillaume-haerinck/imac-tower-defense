@@ -27,17 +27,27 @@ bool Game::m_bInstanciated = false;
 bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
-:   m_window(nullptr), m_context(nullptr), emitter(emitter), m_state(GameState::LEVEL),
+:   m_window(nullptr), m_context(nullptr), emitter(emitter),
+	level(nullptr), m_state(GameState::LEVEL),
+
+	// Camera
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f),
+
+	// Systems
 	renderSystem(nullptr),
 	animationSystem(nullptr),
 	movementSystem(nullptr),
 	constructionSystem(nullptr),
 	waveSystem(nullptr),
 	attackSystem(nullptr),
-	healthSystem(nullptr)
+	healthSystem(nullptr),
+
+	// States
+	m_gameOverState(nullptr),
+	m_levelState(nullptr),
+	m_titleState(nullptr)
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
@@ -261,7 +271,7 @@ int Game::init() {
 	renderSystem = new RenderSystem(registry, m_viewMat, m_projMat);
 	animationSystem = new AnimationSystem(registry, emitter);
 	movementSystem = new MovementSystem(registry, emitter);
-	constructionSystem = new ConstructionSystem(registry, emitter, *level);
+	constructionSystem = new ConstructionSystem(registry, emitter, *level, progression);
 	waveSystem = new WaveSystem(registry, emitter, *level);
 	attackSystem = new AttackSystem(registry);
 	healthSystem = new HealthSystem(registry, emitter);

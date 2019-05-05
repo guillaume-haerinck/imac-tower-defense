@@ -5,6 +5,12 @@ public:
 	Progression();
 	~Progression();
 
-private:
+	// Getters
+	unsigned int getMoney();
 
+	// Setters
+	void addToMoney(int amount);
+
+private:
+	unsigned int m_money;
 };

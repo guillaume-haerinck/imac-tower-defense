@@ -9,6 +9,7 @@
 #include "game-states/game-over-state.hpp"
 #include "game-states/title-screen-state.hpp"
 #include "level/level.hpp"
+#include "progression.hpp"
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
@@ -35,6 +36,7 @@ public:
 public:
 	// Game structure
 	entt::DefaultRegistry registry;
+	Progression progression;
 	EventEmitter& emitter;
 	Level* level;
 
