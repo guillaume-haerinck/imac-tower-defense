@@ -10,6 +10,8 @@
 #include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
 #include "components/shoot-laser.hpp"
+#include "components/health.hpp"
+#include "events/enemy-damaged.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 
@@ -138,6 +140,15 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 		}
 	}
 
+	//Damage enemies
+	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
+	normal /= glm::length(normal);
+	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Health, entityTag::Enemy>().each([this, normal](auto entity, cmpt::Transform & enemyTransform, cmpt::Trigger& enemyTrigger, cmpt::Health& enemyHealth, auto) {
+		float dist = abs(normal.x*enemyTransform.position.x + normal.y*enemyTransform.position.y);
+		if (dist < enemyTrigger.radius) {
+			m_emitter.publish<evnt::EnemyDamaged>(entity, enemyTransform.position, 0.2f);
+		}
+	});
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
 	debugDraw.setColor(255, 0, 0, 1);

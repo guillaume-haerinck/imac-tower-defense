@@ -10,5 +10,9 @@ uniform float halfWidth;
 void main() {
 	float dist = abs(normal.x*(gl_FragCoord.x-startPos.x) + normal.y*(gl_FragCoord.y-startPos.y));
 	float attenuation = 1-dist/halfWidth ;
-	color = vec4(u_color.r*attenuation , u_color.g*attenuation , u_color.b*attenuation , attenuation );
+	float overflow = max( 1.12-1-dist/halfWidth ,0);
+	color = u_color;
+	color *= attenuation ;
+	color += vec4( vec3(overflow) , 0 );
+	//color = vec4(u_color.r*attenuation+overflow , u_color.g*attenuation+overflow , u_color.b*attenuation+overflow , attenuation );
 }

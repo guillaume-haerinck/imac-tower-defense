@@ -9,7 +9,7 @@
 #include "core/maths.hpp"
 #include "core/constants.hpp"
 #include "core/level/graph.hpp"
-#include "events/projectile-hit.hpp"
+#include "events/enemy-damaged.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
@@ -77,7 +77,7 @@ void MovementSystem::update(float deltatime) {
 				transform.position += direction;
 			}
 			else {
-				m_emitter.publish<evnt::ProjectileHit>(targeting.targetId, targetPosition,1.0f);
+				m_emitter.publish<evnt::EnemyDamaged>(targeting.targetId, targetPosition,1.0f);
 				m_registry.destroy(entity);
 			}
 		}

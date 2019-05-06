@@ -6,7 +6,7 @@
 #include "i-system.hpp"
 #include "core/progression.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "events/projectile-hit.hpp"
+#include "events/enemy-damaged.hpp"
 
 class HealthSystem : public ISystem {
 public:
@@ -18,5 +18,5 @@ public:
 private:
 	EventEmitter& m_emitter;
 	Progression& m_progression;
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::ProjectileHit>> m_projectileCon;
+	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::EnemyDamaged>> m_damagedCon;
 };
