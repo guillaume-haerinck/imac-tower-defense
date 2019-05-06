@@ -13,7 +13,8 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry), m_projectileFactory(registry), m_emitter(emitter) {}
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry), m_projectileFactory(registry), m_emitter(emitter) {
+}
 
 void AttackSystem::connectEvents() {
 	if (m_bConnected == false) {
@@ -77,9 +78,11 @@ void AttackSystem::update(float deltatime) {
 	});
 
 	// Shoot laser
+	glLineWidth(10);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		shootLaser(transform.position, transform.rotation, 4);
+		shootLaser(transform.position, transform.rotation, 3);
 	});
+	glLineWidth(1);
 }
 
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
