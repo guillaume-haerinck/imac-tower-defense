@@ -80,7 +80,7 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(10);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		shootLaser(transform.position, transform.rotation, 3);
+		shootLaser(transform.position, transform.rotation, 15);
 	});
 	glLineWidth(1);
 }
@@ -104,25 +104,6 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 	glm::vec2 laserEnd;
 	float surfaceAngle;
 
-	//Walls
-
-	if (0 <= topInter.y && topInter.y <= 1 && topInter.x >= 0) {
-		laserEnd = tlCorner + topInter.y * (trCorner - tlCorner);
-		surfaceAngle = 0;
-	}
-	if (0 <= rightInter.y && rightInter.y <= 1 && rightInter.x >= 0) {
-		laserEnd = trCorner + rightInter.y * (brCorner - trCorner);
-		surfaceAngle = imac::TAU / 4;
-	}
-	if (0 <= botInter.y && botInter.y <= 1 && botInter.x >= 0) {
-		laserEnd = brCorner + botInter.y * (blCorner - brCorner);
-		surfaceAngle = 0;
-	}
-	if (0 <= leftInter.y && leftInter.y <= 1 && leftInter.x >= 0) {
-		laserEnd = blCorner + leftInter.y * (tlCorner - blCorner);
-		surfaceAngle = imac::TAU / 4;
-	}
-
 	float t = std::numeric_limits<float>::infinity();
 	//Mirrors
 	m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector](auto entity, cmpt::Transform & mirrorTransform, cmpt::Trigger& trigger, auto) {
@@ -135,6 +116,27 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 			surfaceAngle = mirrorTransform.rotation;
 		}
 	});
+
+	if (t == std::numeric_limits<float>::infinity()) {
+		nbBounce = 0;
+		//Walls
+		if (0 <= topInter.y && topInter.y <= 1 && topInter.x >= 0) {
+			laserEnd = tlCorner + topInter.y * (trCorner - tlCorner);
+			surfaceAngle = 0;
+		}
+		if (0 <= rightInter.y && rightInter.y <= 1 && rightInter.x >= 0) {
+			laserEnd = trCorner + rightInter.y * (brCorner - trCorner);
+			surfaceAngle = imac::TAU / 4;
+		}
+		if (0 <= botInter.y && botInter.y <= 1 && botInter.x >= 0) {
+			laserEnd = brCorner + botInter.y * (blCorner - brCorner);
+			surfaceAngle = 0;
+		}
+		if (0 <= leftInter.y && leftInter.y <= 1 && leftInter.x >= 0) {
+			laserEnd = blCorner + leftInter.y * (tlCorner - blCorner);
+			surfaceAngle = imac::TAU / 4;
+		}
+	}
 
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
