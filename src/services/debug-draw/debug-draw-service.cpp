@@ -157,7 +157,7 @@ void DebugDrawService::DrawSolidCircle(const b2Vec2& center, float32 radius, con
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, color.a * 0.5f);
-    GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
+    GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 1));
 
     // Unbinding
     m_vb.unbind();
@@ -186,7 +186,7 @@ void DebugDrawService::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2C
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
-    GLCall(glDrawArrays(GL_LINES, 0, 4));
+    GLCall(glDrawArrays(GL_LINES, 0, 2));
     
     // Unbinding
     m_vb.unbind();
@@ -208,7 +208,7 @@ void DebugDrawService::DrawTransform(const b2Transform& xf) {
         origin.x,   origin.y,
         endPoint.x, endPoint.y
     };
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &yAxis, GL_DYNAMIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &yAxis, GL_DYNAMIC_DRAW));
     
     // Render Y axis
     glm::mat4 mvp = m_projMat * m_viewMat;
@@ -226,7 +226,7 @@ void DebugDrawService::DrawTransform(const b2Transform& xf) {
 
     // Render X axis
     m_shaderBasic.setUniform4f("u_color", 1.0f, 0.0f, 0.0f, 1.0f); // X axis in Red
-    GLCall(glDrawArrays(GL_LINES, 0, 4));
+    GLCall(glDrawArrays(GL_LINES, 0, 2));
     
     // Unbinding
     m_vb.unbind();
@@ -249,7 +249,7 @@ void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& c
     glm::mat4 mvp = m_projMat * m_viewMat;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
-    GLCall(glDrawArrays(GL_POINTS, 0, 2));
+    GLCall(glDrawArrays(GL_POINTS, 0, 1));
 
     // Unbinding
     GLCall(glPointSize(1));
@@ -278,7 +278,7 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
 
 	// Unbinding
 	m_vb.unbind();
@@ -308,7 +308,7 @@ void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, 12));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 
 	// Unbinding
 	m_vb.unbind();
@@ -345,7 +345,7 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2) {
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
-	GLCall(glDrawArrays(GL_LINES, 0, 4));
+	GLCall(glDrawArrays(GL_LINES, 0, 2));
 
 	// Unbinding
 	m_vb.unbind();
