@@ -348,8 +348,10 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2, BasicShaderT
 	shader.setUniformMat4f("u_mvp", mvp);
 	shader.setUniform4f("u_color", m_color.r/255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	if (shaderType == BasicShaderType::LASER) {
-		float halfWidth = 5;
-		shader.setUniform2f("normal", (y1-y2)/halfWidth, (x2-x1)/halfWidth );
+		float halfWidth = LASER_WIDTH/2;
+		float dist = sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+		shader.setUniform2f("normal", (y1-y2)/ dist, (x2-x1)/ dist);
+		shader.setUniform2f("startPos", x1/100/WIN_RATIO* WIN_WIDTH,y1/100*WIN_HEIGHT);
 		shader.setUniform1f("halfWidth", halfWidth);
 	}
 	GLCall(glDrawArrays(GL_LINES, 0, 2));
