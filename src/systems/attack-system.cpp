@@ -140,7 +140,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
-	debugDraw.setColor(255, 0, 0, 1);
+	debugDraw.setColor(255, 255, 0, 1);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
 		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1);

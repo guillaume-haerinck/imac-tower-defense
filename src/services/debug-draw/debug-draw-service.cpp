@@ -278,7 +278,7 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 	// Render
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
 
 	// Unbinding
@@ -308,7 +308,7 @@ void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 	// Render
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
 
 	// Unbinding
@@ -346,7 +346,12 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2, BasicShaderT
 	// Render
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	shader.setUniformMat4f("u_mvp", mvp);
-	shader.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	shader.setUniform4f("u_color", m_color.r/255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
+	if (shaderType == BasicShaderType::LASER) {
+		float halfWidth = 5;
+		shader.setUniform2f("normal", (y1-y2)/halfWidth, (x2-x1)/halfWidth );
+		shader.setUniform1f("halfWidth", halfWidth);
+	}
 	GLCall(glDrawArrays(GL_LINES, 0, 2));
 
 	// Unbinding
@@ -368,7 +373,7 @@ void DebugDrawService::point(float x, float y) {
 	// Update
 	glm::mat4 mvp = m_projMat * m_viewMat;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_POINTS, 0, 1));
 
 	// Unbinding
