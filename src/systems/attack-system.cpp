@@ -13,7 +13,31 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry) : ISystem(registry), m_projectileFactory(registry) {}
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry), m_projectileFactory(registry), m_emitter(emitter) {}
+
+void AttackSystem::connectEvents() {
+	if (m_bConnected == false) {
+		auto connection = m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove & event, EventEmitter & emitter) {
+			m_registry.view<entityTag::Tower, cmpt::Transform>().each([this,event](auto entity, auto, cmpt::Transform& transform) {
+				float agl = atan2(event.mousePos.y-transform.position.y, event.mousePos.x*WIN_RATIO- transform.position.x);
+				spdlog::info(agl);
+				transform.rotation = agl;
+			});
+		});
+		m_mouseMoveCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>>(connection);
+
+		m_bConnected = true;
+	}
+}
+
+void AttackSystem::disconnectEvents() {
+	if (m_bConnected == true) {
+		m_emitter.erase(*m_mouseMoveCon);
+		m_mouseMoveCon.reset();
+
+		m_bConnected = false;
+	}
+}
 
 void AttackSystem::update(float deltatime) {
 	// Look at target
@@ -58,14 +82,6 @@ void AttackSystem::update(float deltatime) {
 	});
 }
 
-void AttackSystem::connectEvents() {
-
-}
-
-void AttackSystem::disconnectEvents() {
-
-}
-
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
 void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
@@ -85,6 +101,8 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 	glm::vec2 laserEnd;
 	float surfaceAngle;
 
+	//Walls
+
 	if (0 <= topInter.y && topInter.y <= 1 && topInter.x >= 0) {
 		laserEnd = tlCorner + topInter.y * (trCorner - tlCorner);
 		surfaceAngle = 0;
@@ -101,6 +119,20 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 		laserEnd = blCorner + leftInter.y * (tlCorner - blCorner);
 		surfaceAngle = imac::TAU / 4;
 	}
+
+	float t = std::numeric_limits<float>::infinity();
+	//Mirrors
+	m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector](auto entity, cmpt::Transform & mirrorTransform, cmpt::Trigger& trigger, auto) {
+		glm::vec2 mirrorPos = mirrorTransform.position;
+		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
+		glm::vec2 inter = imac::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
+		if ( 0 <= inter.x && inter.x < t && 0 <= inter.y && inter.y <= 1) {
+			t = inter.x;
+			laserEnd = pos + t*unitDirVector;
+			surfaceAngle = mirrorTransform.rotation;
+		}
+	});
+
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
 	debugDraw.setColor(255, 0, 100, 1);

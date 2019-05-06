@@ -75,8 +75,8 @@ void LevelState::update(float deltatime) {
 	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
 	m_animationSystem.update(deltatime / 1000 * 6); 
 	m_movementSystem.update(deltatime);
-	m_attackSystem.update(deltatime);
 	m_renderSystem.update(deltatime);
+	m_attackSystem.update(deltatime);
 	m_ui->GetRenderer()->Render();
 }
 

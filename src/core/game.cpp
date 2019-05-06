@@ -273,7 +273,7 @@ int Game::init() {
 	movementSystem = new MovementSystem(registry, emitter);
 	constructionSystem = new ConstructionSystem(registry, emitter, *level, progression);
 	waveSystem = new WaveSystem(registry, emitter, *level);
-	attackSystem = new AttackSystem(registry);
+	attackSystem = new AttackSystem(registry,emitter);
 	healthSystem = new HealthSystem(registry, emitter, progression);
 
 	// States

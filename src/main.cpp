@@ -25,6 +25,8 @@
 #include "events/handlers/event-emitter.hpp"
 #include "events/left-click-up.hpp"
 #include "events/left-click-down.hpp"
+#include "events/right-click-up.hpp"
+#include "events/right-click-down.hpp"
 #include "events/translate-view.hpp"
 #include "events/scale-view.hpp"
 #include "events/mouse-move.hpp"
@@ -118,11 +120,15 @@ int main(int argc, char** argv) {
 			case SDL_MOUSEBUTTONUP:
 				if (bAllowClickEvent && e.button.button == SDL_BUTTON_LEFT)
 					emitter.publish<evnt::LeftClickUp>(normMousePos, glm::vec2(e.button.x, e.button.y));
+				else if (bAllowClickEvent && e.button.button == SDL_BUTTON_RIGHT)
+					emitter.publish<evnt::RightClickUp>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
 				if (bAllowClickEvent && e.button.button == SDL_BUTTON_LEFT)
 					emitter.publish<evnt::LeftClickDown>(normMousePos, glm::vec2(e.button.x, e.button.y));
+				else if (bAllowClickEvent && e.button.button == SDL_BUTTON_RIGHT)
+					emitter.publish<evnt::RightClickDown>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 
 			case SDL_MOUSEMOTION:
