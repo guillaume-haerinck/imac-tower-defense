@@ -5,7 +5,6 @@
 #include "components/sprite.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/transform.hpp"
-#include "events/projectile-hit.hpp"
 
 #include <spdlog/spdlog.h>
 

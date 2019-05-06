@@ -3,6 +3,5 @@
       VerticalAlignment="Bottom"
       HorizontalAlignment="Left"
       x:Class="LevelHud">
-  <TextBlock x:Name="Money" Text="Money is :" FontSize="20" Foreground="White">
-  </TextBlock>
+  <TextBlock x:Name="Money" Text="{Binding Output}" FontSize="20" Foreground="White"/>
 </StackPanel>
