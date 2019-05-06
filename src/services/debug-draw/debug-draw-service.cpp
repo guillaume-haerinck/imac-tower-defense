@@ -10,6 +10,7 @@
 
 DebugDrawService::DebugDrawService(glm::mat4 viewMat, glm::mat4 projMat)
 :	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
+	m_shaderLaser("res/shaders/basic/basic.vert", "res/shaders/basic/laser.frag"),
 	m_vbMaxSize(32),
 	m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
 	m_viewMat(viewMat),
@@ -328,9 +329,10 @@ void DebugDrawService::quad(float x1, float y1, float x2, float y2, float x3, fl
 
 }
 
-void DebugDrawService::line(float x1, float y1, float x2, float y2) {
+void DebugDrawService::line(float x1, float y1, float x2, float y2, BasicShaderType shaderType) {
+	Shader& shader = getShader(shaderType);
 	// Binding
-	m_shaderBasic.bind();
+	shader.bind();
 	m_va.bind();
 	m_vb.bind();
 
@@ -343,14 +345,14 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2) {
 
 	// Render
 	glm::mat4 mvp = m_projMat * m_viewMat;
-	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-	m_shaderBasic.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
+	shader.setUniformMat4f("u_mvp", mvp);
+	shader.setUniform4f("u_color", m_color.r, m_color.g, m_color.b, m_color.a);
 	GLCall(glDrawArrays(GL_LINES, 0, 2));
 
 	// Unbinding
 	m_vb.unbind();
 	m_va.unbind();
-	m_shaderBasic.unbind();
+	shader.unbind();
 }
 
 void DebugDrawService::point(float x, float y) {
@@ -384,3 +386,16 @@ void DebugDrawService::setProjMat(glm::mat4 mat) { m_projMat = mat; }
 void DebugDrawService::setViewMat(glm::mat4 mat) { m_viewMat = mat; }
 void DebugDrawService::setColor(glm::vec4 color) { m_color = color; }
 void DebugDrawService::setColor(float r, float g, float b, float a) { m_color = glm::vec4(r, g, b, a); }
+
+//Shaders
+
+Shader& DebugDrawService::getShader(BasicShaderType shaderType) {
+	switch (shaderType) {
+	case BASIC:
+		return m_shaderBasic;
+		break;
+	case LASER:
+		return m_shaderLaser;
+		break;
+	}
+}

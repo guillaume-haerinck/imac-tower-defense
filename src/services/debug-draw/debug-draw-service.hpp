@@ -37,7 +37,7 @@ public:
 	void square(float x, float y, float extent) override;
 	void ellipse(float a, float b, float c, float d) override;
 	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) override;
-	void line(float x1, float y1, float x2, float y2) override;
+	void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BASIC) override;
 	void point(float x, float y) override;
 	void shape(glm::vec2* vertices) override;
 
@@ -47,8 +47,12 @@ public:
 	void setColor(glm::vec4 color) override;
 	void setColor(float r, float g, float b, float a) override;
 
+	//Shaders
+	Shader& getShader(BasicShaderType shaderType);
+
 private:
     Shader m_shaderBasic;
+	Shader m_shaderLaser;
 	VertexArray m_va;
 	VertexBuffer m_vb;
 	unsigned int m_vbMaxSize;

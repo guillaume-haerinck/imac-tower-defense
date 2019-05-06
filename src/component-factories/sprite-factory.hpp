@@ -28,7 +28,7 @@ private:
 	IndexBuffer m_ib;    // All sprites shares the same index buffer
 	//Shaders
 	Shader& getShader(ShaderType shaderType);
-		//Basics
+		//Default
     Shader m_shaderTex;
     Shader m_shaderTexArray;
 		//Custom

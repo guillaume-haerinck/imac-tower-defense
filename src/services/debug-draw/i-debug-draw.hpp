@@ -3,6 +3,11 @@
 #include <Box2D/Box2D.h>
 #include <glm/glm.hpp>
 
+enum BasicShaderType {
+	BASIC,
+	LASER
+};
+
 class IDebugDraw : public b2Draw {
 public:
 	/* Processing-Like API */
@@ -11,7 +16,7 @@ public:
 	virtual void square(float x, float y, float extent) = 0;
 	virtual void ellipse(float a, float b, float c, float d) = 0;
 	virtual void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) = 0;
-	virtual void line(float x1, float y1, float x2, float y2) = 0;
+	virtual void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BASIC) = 0;
 	virtual void point(float x, float y) = 0;
 	virtual void shape(glm::vec2* vertices) = 0;
 
