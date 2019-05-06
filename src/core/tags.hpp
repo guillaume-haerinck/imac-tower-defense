@@ -18,5 +18,6 @@ namespace tileTag {
 
 namespace entityTag {
 	TAG(Tower);
+	TAG(Mirror);
 	TAG(Enemy);
 }
