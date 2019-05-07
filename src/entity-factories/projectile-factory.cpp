@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "core/tags.hpp"
+#include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/follow.hpp"
@@ -24,5 +25,5 @@ void ProjectileFactory::create(glm::vec2 initialPos, unsigned int targetId) {
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, initialPos);
 	m_registry.assign<cmpt::Follow>(myEntity,2.5);
-	m_registry.assign<cmpt::Targeting>(myEntity,targetId);
+	m_registry.assign<cmpt::Targeting>(myEntity,targetId,PROJECTILE_HITBOX_RADIUS);
 }
