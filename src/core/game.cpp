@@ -125,43 +125,6 @@ Game::Game(EventEmitter& emitter)
 	*/
 }
 
-Game::~Game() {
-	// Delete services
-	locator::debugDraw::reset();
-	locator::audio::reset();
-	locator::random::reset();
-
-	// Delete systems
-	delete renderSystem;
-	delete animationSystem;
-	delete movementSystem;
-	delete constructionSystem;
-	delete waveSystem;
-	delete attackSystem;
-	delete healthSystem;
-
-	// Delete level manager
-	delete level;
-
-	// Delete states
-	delete m_levelState;
-	delete m_titleState;
-	delete m_gameOverState;
-
-	// Shutdown 
-    ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
-	Noesis::GUI::Shutdown();
-    SDL_DestroyWindow(m_window);
-    SDL_Quit();
-    spdlog::drop_all();
-    spdlog::shutdown();
-
-	m_bInit = false;
-	m_bInstanciated = false;
-}
-
 int Game::init() {
     if (m_bInit) {
         spdlog::error("[Game] The init function as already been called !");
@@ -270,12 +233,12 @@ int Game::init() {
 	level = new Level(registry, "res/levels/level-2.itd", m_viewTranslation, m_viewScale);
 
 	// Systems
-	renderSystem = new RenderSystem(registry, m_viewMat, m_projMat);
+	renderSystem = new RenderSystem(registry, emitter, m_viewMat, m_projMat);
 	animationSystem = new AnimationSystem(registry, emitter);
 	movementSystem = new MovementSystem(registry, emitter);
 	constructionSystem = new ConstructionSystem(registry, emitter, *level, progression);
 	waveSystem = new WaveSystem(registry, emitter, *level);
-	attackSystem = new AttackSystem(registry,emitter);
+	attackSystem = new AttackSystem(registry, emitter);
 	healthSystem = new HealthSystem(registry, emitter, progression);
 
 	// States
@@ -327,6 +290,43 @@ void Game::update(float deltatime) {
 	default:
 		break;
 	}
+}
+
+Game::~Game() {
+	// Delete services
+	locator::debugDraw::reset();
+	locator::audio::reset();
+	locator::random::reset();
+
+	// Delete systems
+	delete renderSystem;
+	delete animationSystem;
+	delete movementSystem;
+	delete constructionSystem;
+	delete waveSystem;
+	delete attackSystem;
+	delete healthSystem;
+
+	// Delete level manager
+	delete level;
+
+	// Delete states
+	delete m_levelState;
+	delete m_titleState;
+	delete m_gameOverState;
+
+	// Shutdown 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+	Noesis::GUI::Shutdown();
+	SDL_DestroyWindow(m_window);
+	SDL_Quit();
+	spdlog::drop_all();
+	spdlog::shutdown();
+
+	m_bInit = false;
+	m_bInstanciated = false;
 }
 
 /* ----------------------- GETTERS ---------------------- */

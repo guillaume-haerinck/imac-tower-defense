@@ -24,13 +24,13 @@ LevelState::~LevelState() {
 
 void LevelState::onEnter() {
 	// Set event subscription for used systems 
-	m_game.animationSystem->connectEvents();
-	m_game.attackSystem->connectEvents();
-	m_game.constructionSystem->connectEvents();
-	m_game.healthSystem->connectEvents();
-	m_game.movementSystem->connectEvents();
-	m_game.renderSystem->connectEvents();
-	m_game.waveSystem->connectEvents();
+	m_game.animationSystem->connectInputs();
+	m_game.attackSystem->connectInputs();
+	m_game.constructionSystem->connectInputs();
+	m_game.healthSystem->connectInputs();
+	m_game.movementSystem->connectInputs();
+	m_game.renderSystem->connectInputs();
+	m_game.waveSystem->connectInputs();
 
 	// Listen to event and copy connection object
 	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {

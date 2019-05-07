@@ -24,13 +24,13 @@ GameOverState::~GameOverState() {
 
 void GameOverState::onEnter() {
 	// Remove event subscriptions to unused systems
-	m_game.animationSystem->disconnectEvents();
-	m_game.attackSystem->disconnectEvents();
-	m_game.constructionSystem->disconnectEvents();
-	m_game.healthSystem->disconnectEvents();
-	m_game.movementSystem->disconnectEvents();
-	m_game.renderSystem->disconnectEvents();
-	m_game.waveSystem->disconnectEvents();
+	m_game.animationSystem->disconnectInputs();
+	m_game.attackSystem->disconnectInputs();
+	m_game.constructionSystem->disconnectInputs();
+	m_game.healthSystem->disconnectInputs();
+	m_game.movementSystem->disconnectInputs();
+	m_game.renderSystem->disconnectInputs();
+	m_game.waveSystem->disconnectInputs();
 
 	// Listen to event and copy connection object
 	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
