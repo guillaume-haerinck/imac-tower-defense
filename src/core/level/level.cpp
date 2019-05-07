@@ -33,9 +33,8 @@ void Level::setLevel(unsigned int number) {
 	m_mapPath = "res/levels/";
 
 	// Delete last map if any
-	for each (auto entity in m_grid) {
-		m_registry.destroy(entity);
-	}
+	m_registry.reset();
+	m_grid.clear();
 
 	// Create graph
 	if (m_graph != nullptr) {
