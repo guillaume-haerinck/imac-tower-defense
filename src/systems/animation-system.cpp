@@ -18,9 +18,6 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 
 void AnimationSystem::update(float deltatime) {
     m_registry.view<cmpt::SpriteAnimation, cmpt::Sprite>().each([this,deltatime](auto entity, cmpt::SpriteAnimation& animation, cmpt::Sprite& sprite) {
-		if (m_registry.has<renderTag::OneTimeAtlas>(entity)) {
-			spdlog::info(animation.age);
-		}
 		animation.age += deltatime;
         if (animation.age < animation.duration) {
             animation.activeTile = animation.startTile + animation.age/animation.duration*(animation.endTile-animation.startTile) ;
