@@ -64,14 +64,14 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 15, entity);
+		this->shootLaser(transform.position, transform.rotation, 15, entity, deltatime);
 	});
 	glLineWidth(1);
 }
 
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
-void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId) {
+void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime) {
 	glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
 	glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
 	glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
@@ -125,12 +125,12 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	//Damage enemies
 	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
 	normal /= glm::length(normal);
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
 		float dist = abs(normal.x*(targetTransform.position.x-pos.x) + normal.y*(targetTransform.position.y-pos.y));
 		//TODO maybe too much computations to know if we are on the correct half of the laser line, will have to take a closer look if performance issues arise
 		float orient = (laserEnd.x-pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y-pos.y)*(targetTransform.position.y - pos.y);
 		if ( orient >= 0 && dist < targetTrigger.radius && launcherId != entity) {
-			m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, 0.2f);
+			m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
 		}
 	});
 
@@ -138,7 +138,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	debugDraw.setColor(255, 0, 0, 1);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime);
 	}
 }
 
