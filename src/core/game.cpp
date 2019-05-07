@@ -28,7 +28,7 @@ bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
 :   m_window(nullptr), m_context(nullptr), emitter(emitter),
-	level(nullptr), m_state(GameState::LEVEL),
+	level(nullptr), m_state(GameState::LEVEL), progression(emitter),
 
 	// Camera
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),

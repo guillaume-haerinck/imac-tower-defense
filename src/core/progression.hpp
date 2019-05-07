@@ -1,16 +1,19 @@
 #pragma once
 
+#include "events/handlers/event-emitter.hpp"
+
 class Progression {
 public:
-	Progression();
+	Progression(EventEmitter& emitter);
 	~Progression();
 
 	// Getters
-	unsigned int getMoney();
+	int getMoney();
 
 	// Setters
 	void addToMoney(int amount);
 
 private:
-	unsigned int m_money;
+	EventEmitter& m_emitter;
+	int m_money;
 };

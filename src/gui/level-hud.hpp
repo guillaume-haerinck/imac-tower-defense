@@ -31,13 +31,14 @@ private:
 
 class ViewModel : public NoesisApp::NotifyPropertyChangedBase {
 public:
-	ViewModel();
+	ViewModel(EventEmitter& emitter, Progression& progression);
 	const char* GetOutput() const;
 	void SetOutput(const char* value);
 
 private:
-	NoesisApp:: DelegateCommand _command;
-	char m_output[256];
+	char m_output[256] = "";
+	EventEmitter& m_emitter;
+	Progression& m_progression;
 
 	NS_IMPLEMENT_INLINE_REFLECTION(ViewModel, NotifyPropertyChangedBase) {
 		NsMeta<Noesis::TypeId>("ViewModel");
