@@ -1,41 +1,41 @@
-#include "i-system.hpp"
+#include "input-handler.hpp"
 
-void ISystem::connectInputs() {
+void InputHandler::connectInputs() {
 	if (m_bConnected == false) {
 		auto conMouseMove = m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove & event, EventEmitter & emitter) {
 			this->onMouseMove(event);
-		});
+			});
 		m_mouseMove = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>>(conMouseMove);
 
 
 		auto conLeftClickUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
 			this->onLeftClickUp(event);
-		});
+			});
 		m_leftClickUp = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(conLeftClickUp);
 
 
 		auto conLeftClickDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
 			this->onLeftClickDown(event);
-		});
+			});
 		m_leftClickDown = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(conLeftClickDown);
 
 
 		auto conRightClickUp = m_emitter.on<evnt::RightClickUp>([this](const evnt::RightClickUp & event, EventEmitter & emitter) {
 			this->onRightClickUp(event);
-		});
+			});
 		m_rightClickUp = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>>(conRightClickUp);
 
 
 		auto conRightClickDown = m_emitter.on<evnt::RightClickDown>([this](const evnt::RightClickDown & event, EventEmitter & emitter) {
 			this->onRightClickDown(event);
-		});
+			});
 		m_rightClickDown = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::RightClickDown>>(conRightClickDown);
 
 		m_bConnected = true;
 	}
 }
 
-void ISystem::disconnectInputs() {
+void InputHandler::disconnectInputs() {
 	if (m_bConnected == true) {
 		m_emitter.erase(*m_mouseMove);
 		m_mouseMove.reset();
@@ -56,10 +56,10 @@ void ISystem::disconnectInputs() {
 	}
 }
 
-void ISystem::onMouseMove(const evnt::MouseMove& event) {}
+void InputHandler::onMouseMove(const evnt::MouseMove& event) {}
 
-void ISystem::onLeftClickUp(const evnt::LeftClickUp& event) {}
-void ISystem::onLeftClickDown(const evnt::LeftClickDown& event) {}
+void InputHandler::onLeftClickUp(const evnt::LeftClickUp& event) {}
+void InputHandler::onLeftClickDown(const evnt::LeftClickDown& event) {}
 
-void ISystem::onRightClickUp(const evnt::RightClickUp& event) {}
-void ISystem::onRightClickDown(const evnt::RightClickDown& event) {}
+void InputHandler::onRightClickUp(const evnt::RightClickUp& event) {}
+void InputHandler::onRightClickDown(const evnt::RightClickDown& event) {}
