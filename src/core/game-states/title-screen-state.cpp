@@ -36,6 +36,7 @@ TitleScreenState::TitleScreenState(Progression& progression,
 
 TitleScreenState::~TitleScreenState() {
 	m_ui->GetRenderer()->Shutdown();
+	delete m_ui;
 }
 
 void TitleScreenState::onEnter() {

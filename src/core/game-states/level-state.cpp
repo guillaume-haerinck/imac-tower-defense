@@ -36,6 +36,7 @@ LevelState::LevelState(Progression& progression,
 
 LevelState::~LevelState() {
 	m_ui->GetRenderer()->Shutdown();
+	delete m_ui;
 }
 
 void LevelState::onEnter() {

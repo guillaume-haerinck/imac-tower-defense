@@ -36,6 +36,7 @@ GameOverState::GameOverState(Progression& progression,
 
 GameOverState::~GameOverState() {
 	m_ui->GetRenderer()->Shutdown();
+	delete m_ui;
 }
 
 void GameOverState::onEnter() {
