@@ -1,5 +1,7 @@
 #pragma once
 
+#include "events/handlers/input-handler.hpp"
+
 class Game; // Forward declaration
 
 enum GameState {
@@ -9,13 +11,13 @@ enum GameState {
 	GAME_OVER
 };
 
-class IGameState {
+class IGameState : public InputHandler {
 public:
-	IGameState(Game& game) : m_game(game) {}
+	IGameState(Game& game);
 
-	virtual void onEnter() = 0;
+	virtual void enter() = 0;
 	virtual void update(float deltatime) = 0;
-	virtual void onExit() = 0;
+	virtual void exit() = 0;
 
 protected:
 	Game& m_game;

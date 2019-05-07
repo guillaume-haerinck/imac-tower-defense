@@ -22,7 +22,7 @@ TitleScreenState::~TitleScreenState() {
 	delete m_ui;
 }
 
-void TitleScreenState::onEnter() {
+void TitleScreenState::enter() {
 	// Remove subscription for unsused systems
 	m_game.animationSystem->disconnectInputs();
 	m_game.attackSystem->disconnectInputs();
@@ -32,16 +32,8 @@ void TitleScreenState::onEnter() {
 	m_game.renderSystem->disconnectInputs();
 	m_game.waveSystem->disconnectInputs();
 
-	// Listen to event and copy connection object
-	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
-
-	auto connectionUp = m_game.emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
+	// Subscribe self to inputs
+	connectInputs();
 }
 
 void TitleScreenState::update(float deltatime) {
@@ -59,10 +51,15 @@ void TitleScreenState::update(float deltatime) {
 	m_ui->GetRenderer()->Render();
 }
 
-void TitleScreenState::onExit() {
-	// Remove event listenner
-	m_game.emitter.erase(*m_clickUpCon);
-	m_game.emitter.erase(*m_clickDownCon);
-	m_clickUpCon.reset();
-	m_clickDownCon.reset();
+void TitleScreenState::exit() {
+	// Remove input listenner
+	disconnectInputs();
+}
+
+void TitleScreenState::onLeftClickUp(const evnt::LeftClickUp& event) {
+	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+}
+
+void TitleScreenState::onLeftClickDown(const evnt::LeftClickDown& event) {
+	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 }
