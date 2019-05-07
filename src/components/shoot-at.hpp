@@ -5,6 +5,7 @@ namespace cmpt {
 
 		int loadingTime;
 		int timer;
+		float range;
 
 		ShootAt(int loadingTime) : loadingTime(loadingTime), timer(loadingTime-1) {}
 	};

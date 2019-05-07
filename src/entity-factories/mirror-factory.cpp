@@ -6,7 +6,7 @@
 #include "core/tags.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
-#include "components/trigger.hpp"
+#include "components/hitbox.hpp"
 
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
@@ -28,5 +28,5 @@ void MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_mirrorSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), glm::vec2(1.0f) , randomService.random(6.28));
-	m_registry.assign<cmpt::Trigger>(myEntity, 4.0f);
+	m_registry.assign<cmpt::Hitbox>(myEntity, 4.0f);
 }

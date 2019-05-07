@@ -47,14 +47,14 @@ void AttackSystem::update(float deltatime) {
 	});
 
 	// Pick a new target if current one is out of range or dead
-	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Targeting>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Trigger & trigger1, cmpt::Targeting & targeting) {
-		IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
-		dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
+	m_registry.view<cmpt::Transform, cmpt::Targeting>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting) {
+		//IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
+		//dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 
-		if ( !m_registry.valid(targeting.targetId) || !this->isInRange(transform1, trigger1, targeting.targetId)) {
+		if ( !m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
 			targeting.targetId = -1;
-			m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
-				if (this->isInRange(transform1,trigger1,transform2,trigger2) ) {
+			m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+				if (this->isInRange(transform1, targeting.targetingRange,transform2, enemyHitbox.radius) ) {
 					targeting.targetId = entity2;
 				}
 			});
@@ -90,7 +90,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 
 	float t = std::numeric_limits<float>::infinity();
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector](auto entity, cmpt::Transform & mirrorTransform, cmpt::Trigger& trigger, auto) {
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector](auto entity, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		glm::vec2 mirrorPos = mirrorTransform.position;
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
 		glm::vec2 inter = imac::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
@@ -125,8 +125,8 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	//Damage enemies
 	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
 	normal /= glm::length(normal);
-	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Health>().each([this, normal, launcherId](auto entity, cmpt::Transform & targetTransform, cmpt::Trigger& targetTrigger, cmpt::Health& targetHealth) {
-		float dist = abs(normal.x*targetTransform.position.x + normal.y*targetTransform.position.y);
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
+		float dist = abs(normal.x*(targetTransform.position.x-pos.x) + normal.y*(targetTransform.position.y-pos.y));
 		if ( dist < targetTrigger.radius && launcherId != entity) {
 			m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, 0.2f);
 		}
@@ -140,15 +140,15 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	}
 }
 
-bool AttackSystem::isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, cmpt::Transform transform2, cmpt::Trigger trigger2) {
+bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {
 	const glm::vec2 deltaPos = transform2.position - transform1.position;
 	const float distanceSq = deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y;
-	const float radii = trigger1.radius + trigger2.radius;
+	const float radii = radius1 + radius2;
 	return distanceSq <= radii * radii;
 }
 
-bool AttackSystem::isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, unsigned int targetId) {
+bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, unsigned int targetId) {
 	cmpt::Transform transform2 = m_registry.get<cmpt::Transform>(targetId);
-	cmpt::Trigger trigger2 = m_registry.get<cmpt::Trigger>(targetId);
-	return isInRange(transform1, trigger1, transform2, trigger2);
+	float radius2 = m_registry.get<cmpt::Hitbox>(targetId).radius;
+	return isInRange(transform1, radius1, transform2, radius2);
 }

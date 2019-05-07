@@ -3,7 +3,7 @@
 #include "i-system.hpp"
 #include "entity-factories/projectile-factory.hpp"
 
-#include "components/trigger.hpp"
+#include "components/hitbox.hpp"
 #include "components/transform.hpp"
 
 #include "events/handlers/event-emitter.hpp"
@@ -20,6 +20,6 @@ private:
 
 private:
 	void shootLaser(glm::vec2 pos, float agl, int nbBounce, unsigned int launcherId);
-	bool isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, cmpt::Transform transform2, cmpt::Trigger trigger2);
-	bool isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, unsigned int targetId);
+	bool isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2);
+	bool isInRange(cmpt::Transform transform1, float radius1, unsigned int targetId);
 };

@@ -11,7 +11,7 @@
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
 #include "components/shoot-at.hpp"
-#include "components/trigger.hpp"
+#include "components/hitbox.hpp"
 #include "components/health-bar.hpp"
 #include "components/health.hpp"
 #include "services/locator.hpp"
@@ -59,5 +59,5 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_level, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, 5);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
-	m_registry.assign<cmpt::Trigger>(myEntity, 5.0f);
+	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
 }

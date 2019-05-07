@@ -9,6 +9,8 @@ static const float PROJ_HEIGHT = 100.0f;
 static const float TILE_SIZE = 11.0f;
 
 static const float TOWER_HEALTH = 10;
+static const float TOWER_HITBOX_RADIUS = 4.0f;
+static const float TOWER_ATTACK_RANGE = 25.0f;
 
 static const float LASER_WIDTH = 20;
 
