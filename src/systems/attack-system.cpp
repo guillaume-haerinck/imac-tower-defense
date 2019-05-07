@@ -69,10 +69,10 @@ void AttackSystem::update(float deltatime) {
 		IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
 		dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 
-		if ( !m_registry.valid(targeting.targetId) || !isInRange(transform1, trigger1, targeting.targetId)) {
+		if ( !m_registry.valid(targeting.targetId) || !this->isInRange(transform1, trigger1, targeting.targetId)) {
 			targeting.targetId = -1;
 			m_registry.view<cmpt::Transform, cmpt::Trigger, entityTag::Enemy>().each([this, entity1, transform1, trigger1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Trigger & trigger2, auto) {
-				if ( isInRange(transform1,trigger1,transform2,trigger2) ) {
+				if (this->isInRange(transform1,trigger1,transform2,trigger2) ) {
 					targeting.targetId = entity2;
 				}
 			});
@@ -82,7 +82,7 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		shootLaser(transform.position, transform.rotation, 15);
+		this->shootLaser(transform.position, transform.rotation, 15);
 	});
 	glLineWidth(1);
 }
