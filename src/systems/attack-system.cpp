@@ -23,7 +23,6 @@ void AttackSystem::connectEvents() {
 		auto connection = m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove & event, EventEmitter & emitter) {
 			m_registry.view<entityTag::Tower, cmpt::Transform>().each([this,event](auto entity, auto, cmpt::Transform& transform) {
 				float agl = atan2(event.mousePos.y-transform.position.y, event.mousePos.x*WIN_RATIO- transform.position.x);
-				spdlog::info(agl);
 				transform.rotation = agl;
 			});
 		});
