@@ -10,7 +10,8 @@
 
 class Level {
 public:
-	Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale);
+	Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale);
+	~Level();
 
 	// Position interpolation
 	glm::vec2 windowToGrid(float x, float y);
@@ -22,20 +23,18 @@ public:
 	glm::vec2 getNodePosition(int nodeIndex);
 	unsigned int getGridWidth() const;
 	unsigned int getGridHeight() const;
+	Graph* getGraph() const;
+	Graph* getPathfindingGraph() const;
 
 	// Setters
-	void setLevel(const char* itdFilePath);
+	void setLevel(unsigned int number);
 
 	// Debug drawing
 	void drawGraph();
 	void drawGrid();
 
-public:
-	// TODO make getters
-	Graph m_graph;
-	Graph m_pathfindingGraph;
-
 private:
+	// Read Itd and PPM
 	glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
 	glm::vec3 getColorFromString(std::string line);
 	float getNumberFromString(std::string line);
@@ -56,6 +55,7 @@ private:
 	glm::vec3 m_endColor;
 	glm::vec3 m_constructColor;
 	std::string m_mapPath;
+	std::string m_itdPath;
 	float m_energy;
 
 	// Level details
@@ -70,4 +70,8 @@ private:
 	// External info
 	const glm::vec2& m_viewTranslation;
 	const float& m_viewScale;
+
+	// Graph data
+	Graph* m_graph;
+	Graph* m_pathfindingGraph;
 };

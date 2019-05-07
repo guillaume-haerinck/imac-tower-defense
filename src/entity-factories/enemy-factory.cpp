@@ -17,7 +17,7 @@
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 
-// TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimisés en mémoire
+// TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimisï¿½s en mï¿½moire
 
 EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Level& level)
 : Factory(registry), m_level(level)
@@ -47,7 +47,7 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 
 void EnemyFactory::create() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-	int startNode = m_level.m_graph.getStartNodeRandom();
+	int startNode = m_level.getGraph()->getStartNodeRandom();
 
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Enemy>(myEntity);

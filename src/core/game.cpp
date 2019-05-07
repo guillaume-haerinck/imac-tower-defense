@@ -82,6 +82,7 @@ Game::Game(EventEmitter& emitter)
 			break;
 
 		case LEVEL:
+			level->setLevel(event.subState);
 			m_levelState->enter();
 			break;
 
@@ -230,7 +231,7 @@ int Game::init() {
 	*/
 
 	// Level
-	level = new Level(registry, "res/levels/level-2.itd", m_viewTranslation, m_viewScale);
+	level = new Level(registry, 1, m_viewTranslation, m_viewScale);
 
 	// Systems
 	renderSystem = new RenderSystem(registry, emitter, m_viewMat, m_projMat);

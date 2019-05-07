@@ -49,9 +49,9 @@ void MovementSystem::update(float deltatime) {
 		direction *= 0.5 / glm::length(direction);
 		transform.position += direction;
 		}
-		else if (pathfinding.currentTarget != level->m_graph.getEndNode()) {
+		else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {
 			int tmp = pathfinding.currentTarget;
-			pathfinding.currentTarget = level->m_pathfindingGraph.pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
+			pathfinding.currentTarget = level->getPathfindingGraph()->pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
 			pathfinding.previousNode = tmp;
 		}
 		else {

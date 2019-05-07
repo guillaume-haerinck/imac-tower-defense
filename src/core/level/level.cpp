@@ -12,13 +12,44 @@
 #include "core/constants.hpp"
 #include "core/maths.hpp"
 
-Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2& viewTranslation, float& viewScale)
-	: m_registry(registry), m_tileFactory(registry), m_mapPath("res/levels/"), m_viewTranslation(viewTranslation), m_viewScale(viewScale)
+Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
+: m_registry(registry), m_tileFactory(registry), m_viewTranslation(viewTranslation), m_viewScale(viewScale),
+  m_graph(nullptr), m_pathfindingGraph(nullptr), m_energy(0), m_gridHeight(0), m_gridWidth(0)
 {
-	// TODO put everything in private functions
+	setLevel(levelNumber);
+}
 
-	/* ---------------------------- Read ITD file ------------------------- */
-	std::ifstream file(itdFilePath);
+Level::~Level() {
+	delete m_graph;
+	delete m_pathfindingGraph;
+}
+
+/* ----------------------- PUBLIC SETTERS --------------------------------- */
+
+void Level::setLevel(unsigned int number) {
+	m_itdPath = "res/levels/level-";
+	m_itdPath += std::to_string(number);
+	m_itdPath += ".itd";
+	m_mapPath = "res/levels/";
+
+	// Delete last map if any
+	for each (auto entity in m_grid) {
+		m_registry.destroy(entity);
+	}
+
+	// Create graph
+	if (m_graph != nullptr) {
+		delete m_graph;
+	}
+	m_graph = new Graph();
+
+	if (m_pathfindingGraph != nullptr) {
+		delete m_pathfindingGraph;
+	}
+	m_pathfindingGraph = new Graph();
+
+	// Read ITD file
+	std::ifstream file(m_itdPath);
 	if (file.is_open()) {
 		/* // TODO check first line to see if valid itd
 		if (.find("@ITD") != std::string::npos)
@@ -47,11 +78,10 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 		spdlog::critical("[ITD] Unable to open file");
 	}
 
-	/* --------------------------- Read Png file ------------------------- */
+	// Read Png file
 	int imgWidth, imgHeight, imgChannels;
-	// Because 0,0 is bottom left in OpenGL
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
+	unsigned char* image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
 	if (nullptr == image) {
 		spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
 		debug_break();
@@ -83,7 +113,7 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 				entityId = m_tileFactory.createArrival(position);
 				// Construct graph
 				// We start from the endpoint because there will always be only one on the map
-				m_graph.addEndNode(m_graph.addNode(x, y));
+				m_graph->addEndNode(m_graph->addNode(x, y));
 				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
 					lookForNodes(image, imgWidth, imgHeight, 0, x + 1, y, 1, 0, 1);
 				}
@@ -105,11 +135,13 @@ Level::Level(entt::DefaultRegistry& registry, const char* itdFilePath, glm::vec2
 			else {
 				entityId = m_tileFactory.createLocked(position);
 			}
+			// Saves entity Id of tiles
 			m_grid.at(y * m_gridWidth + x) = entityId;
 		}
 	}
 	stbi_image_free(image);
 }
+
 
 /* ----------------------- PUBLIC GETTERS ----------------- */
 
@@ -125,6 +157,14 @@ int Level::getTile(unsigned int x, unsigned int y) const {
 
 unsigned int Level::getGridWidth() const { return m_gridWidth; }
 unsigned int Level::getGridHeight() const { return m_gridHeight; }
+
+Graph* Level::getGraph() const {
+	return m_graph;
+}
+
+Graph* Level::getPathfindingGraph() const {
+	return m_pathfindingGraph;
+}
 
 glm::vec2 Level::windowToGrid(float x, float y) {
 	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
@@ -156,13 +196,7 @@ glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) {
 }
 
 glm::vec2 Level::getNodePosition(int nodeIndex) {
-	return gridToProj(m_graph.getNode(nodeIndex).x, m_graph.getNode(nodeIndex).y);
-}
-
-/* ----------------------- PRIVATE SETTERS --------------------------------- */
-
-void setLevel(const char* itdFilePath) {
-	// TODO
+	return gridToProj(m_graph->getNode(nodeIndex).x, m_graph->getNode(nodeIndex).y);
 }
 
 /* ----------------------- PRIVATE GETTERS & SETTERS ---------------- */
@@ -249,14 +283,14 @@ void Level::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, 
 		lookForNodes(image, imageWidth, imageHeight, parentNodeIndex, x + xDir, y + yDir, xDir, yDir, travelLength + 1);
 	}
 	else {
-		int nodeIndex = m_graph.nodeIndex(x, y);
+		int nodeIndex = m_graph->nodeIndex(x, y);
 
 		if (nodeIndex == -1) { //Node hasn't been added yet
 
-			int newNodeIndex = m_graph.addNode(x, y);
-			m_graph.addNeighbouring(parentNodeIndex, newNodeIndex, travelLength);
+			int newNodeIndex = m_graph->addNode(x, y);
+			m_graph->addNeighbouring(parentNodeIndex, newNodeIndex, travelLength);
 			if (color == m_startColor) {
-				m_graph.addStartNode(newNodeIndex);
+				m_graph->addStartNode(newNodeIndex);
 			}
 			//check forward
 			if (isPath(image, imageWidth, imageHeight, x + xDir, y + yDir)) {
@@ -276,7 +310,7 @@ void Level::lookForNodes(unsigned char* image, int imageWidth, int imageHeight, 
 			}
 		}
 		else { //Node already added
-			m_graph.addNeighbouring(parentNodeIndex, nodeIndex, travelLength, true);
+			m_graph->addNeighbouring(parentNodeIndex, nodeIndex, travelLength, true);
 		}
 	}
 }
@@ -288,8 +322,8 @@ void Level::constructPathfindingGraph() {
 
 	//Find all distances to endNode
 	//Initialize
-	int endNode = m_graph.getEndNode();
-	int N = m_graph.getNodesCount();
+	int endNode = m_graph->getEndNode();
+	int N = m_graph->getNodesCount();
 	float* dists = (float*)malloc(N * sizeof(float));
 	int* prevNode = (int*)malloc(N * sizeof(int));
 	bool* isDone = (bool*)malloc(N * sizeof(bool));
@@ -314,7 +348,7 @@ void Level::constructPathfindingGraph() {
 			isDone[currentNode] = true;
 			//
 			//Visit current node's neighbours
-			std::vector<graphEdge>* neighbours = m_graph.getNeighbours(currentNode);
+			std::vector<graphEdge>* neighbours = m_graph->getNeighbours(currentNode);
 			for( int i = 0 ; i < neighbours->size() ; ++i ) {
 				float distTest = dists[currentNode] + neighbours->at(i).dist;
 				int neighbour = neighbours->at(i).neighbourIndex;
@@ -328,29 +362,29 @@ void Level::constructPathfindingGraph() {
 	//Construct new graph with stochastic weights
 	//Nodes
 	for (int n = 0; n < N; ++n) {
-		m_pathfindingGraph.addNode(m_graph.getNode(n).x, m_graph.getNode(n).y);
+		m_pathfindingGraph->addNode(m_graph->getNode(n).x, m_graph->getNode(n).y);
 	}
 	//Edges
 	for (int n = 0; n < N; ++n) {
 		float dist = dists[n];
 		float neighboursDistSum = 0;
-		std::vector<graphEdge>* neighbours = m_graph.getNeighbours(n);
+		std::vector<graphEdge>* neighbours = m_graph->getNeighbours(n);
 		for (int i = 0; i < neighbours->size(); ++i) {
 			int neighbour = neighbours->at(i).neighbourIndex;
 			float d = dists[neighbour];
-			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
+			if (m_graph->distEstimator(neighbour) < m_graph->distEstimator(n) || d < dist) {
 				neighboursDistSum += d;
 			}
 		}
 		for (int i = 0; i < neighbours->size(); ++i) {
 			int neighbour = neighbours->at(i).neighbourIndex;
 			float d = dists[neighbour];
-			if (m_graph.distEstimator(neighbour) < m_graph.distEstimator(n) || d < dist) {
+			if (m_graph->distEstimator(neighbour) < m_graph->distEstimator(n) || d < dist) {
 				if (neighboursDistSum == 0 || d == neighboursDistSum) {
-					m_pathfindingGraph.addNeighbourTo(n, neighbour, 1);
+					m_pathfindingGraph->addNeighbourTo(n, neighbour, 1);
 				}
 				else {
-					m_pathfindingGraph.addNeighbourTo(n, neighbour, 1 - d / neighboursDistSum);
+					m_pathfindingGraph->addNeighbourTo(n, neighbour, 1 - d / neighboursDistSum);
 				}
 			}
 		}
@@ -369,21 +403,21 @@ void Level::drawGraph() {
 	GLCall(glPointSize(13));
 
 	// Draw vertices
-	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
-		float x = m_graph.getNode(k).x*100. / m_gridWidth + 50. / m_gridWidth;
-		float y = m_graph.getNode(k).y*100. / m_gridHeight + 50. / m_gridHeight;
+	for (int k = 0; k < m_graph->getNodesCount(); ++k) {
+		float x = m_graph->getNode(k).x*100. / m_gridWidth + 50. / m_gridWidth;
+		float y = m_graph->getNode(k).y*100. / m_gridHeight + 50. / m_gridHeight;
 		debugDraw.point(x, y);
 	}
 
 	// Draw edges
-	for (int k = 0; k < m_graph.getNodesCount(); ++k) {
-		float x1 = m_graph.getNode(k).x*100.0f / m_gridHeight + 50. / m_gridHeight;
-		float y1 = m_graph.getNode(k).y*100.0f / m_gridHeight + 50. / m_gridHeight;
-		std::vector<graphEdge>* neighbours = m_graph.getNeighbours(k);
+	for (int k = 0; k < m_graph->getNodesCount(); ++k) {
+		float x1 = m_graph->getNode(k).x*100.0f / m_gridHeight + 50. / m_gridHeight;
+		float y1 = m_graph->getNode(k).y*100.0f / m_gridHeight + 50. / m_gridHeight;
+		std::vector<graphEdge>* neighbours = m_graph->getNeighbours(k);
 
 		for( int i = 0 ; i < neighbours->size() ; ++i ){
-			float x2 = m_graph.getNode(neighbours->at(i).neighbourIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
-			float y2 = m_graph.getNode(neighbours->at(i).neighbourIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
+			float x2 = m_graph->getNode(neighbours->at(i).neighbourIndex).x*100.0f / m_gridHeight + 50. / m_gridHeight;
+			float y2 = m_graph->getNode(neighbours->at(i).neighbourIndex).y*100.0f / m_gridHeight + 50. / m_gridHeight;
 			debugDraw.line(x1, y1, x2, y2);
 		}
 	}
