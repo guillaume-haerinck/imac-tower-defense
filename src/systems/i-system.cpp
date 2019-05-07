@@ -30,6 +30,8 @@ void ISystem::connectInputs() {
 			this->onRightClickDown(event);
 		});
 		m_rightClickDown = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::RightClickDown>>(conRightClickDown);
+
+		m_bConnected = true;
 	}
 }
 
@@ -49,6 +51,8 @@ void ISystem::disconnectInputs() {
 
 		m_emitter.erase(*m_rightClickDown);
 		m_rightClickDown.reset();
+
+		m_bConnected = false;
 	}
 }
 

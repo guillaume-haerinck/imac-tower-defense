@@ -38,6 +38,6 @@ private:
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>> m_leftClickUp;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>> m_leftClickDown;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>> m_rightClickUp;
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>> m_rightClickDown;
+	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickDown>> m_rightClickDown;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>> m_mouseMove;
 };
