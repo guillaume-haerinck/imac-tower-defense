@@ -87,6 +87,7 @@ void RenderSystem::update(float deltatime) {
 
 				// Update pos
 				cmpt::Transform healthTransform = transform;
+				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
 				healthTransform.zIndex = 10;
 
@@ -109,6 +110,7 @@ void RenderSystem::update(float deltatime) {
 
 				// Update pos
 				cmpt::Transform healthTransform = transform;
+				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
 				float scale = imac::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
