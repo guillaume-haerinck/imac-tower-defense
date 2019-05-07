@@ -57,18 +57,18 @@ Game::Game(EventEmitter& emitter)
 		// Exit current state
 		switch (this->m_state) {
 		case TITLE_SCREEN:
-			m_titleState->onExit();
+			m_titleState->exit();
 			break;
 
 		case LEVEL:
-			m_levelState->onExit();
+			m_levelState->exit();
 			break;
 
 		case CINEMATIC:
 			break;
 
 		case GAME_OVER:
-			m_gameOverState->onExit();
+			m_gameOverState->exit();
 			break;
 
 		default:
@@ -78,18 +78,18 @@ Game::Game(EventEmitter& emitter)
 		// Enter new state
 		switch (event.state) {
 		case TITLE_SCREEN:
-			m_titleState->onEnter();
+			m_titleState->enter();
 			break;
 
 		case LEVEL:
-			m_levelState->onEnter();
+			m_levelState->enter();
 			break;
 
 		case CINEMATIC:
 			break;
 
 		case GAME_OVER:
-			m_gameOverState->onEnter();
+			m_gameOverState->enter();
 			break;
 
 		default:
@@ -249,18 +249,18 @@ int Game::init() {
 	// Init current state
 	switch (this->m_state) {
 	case TITLE_SCREEN:
-		m_titleState->onEnter();
+		m_titleState->enter();
 		break;
 
 	case LEVEL:
-		m_levelState->onEnter();
+		m_levelState->enter();
 		break;
 
 	case CINEMATIC:
 		break;
 
 	case GAME_OVER:
-		m_gameOverState->onEnter();
+		m_gameOverState->enter();
 		break;
 	}
 

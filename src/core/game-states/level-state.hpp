@@ -18,15 +18,16 @@ public:
 	LevelState(Game& game);
 	virtual ~LevelState();
 
-	void onEnter() override;
+	void enter() override;
 	void update(float deltatime) override;
-	void onExit() override;
+	void exit() override;
+
+	// Events
+	void onLeftClickUp(const evnt::LeftClickUp& event) override;
+	void onLeftClickDown(const evnt::LeftClickDown& event) override;
 
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
 	LevelHud m_levelHud;
-
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>> m_clickDownCon;
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>> m_clickUpCon;
 };

@@ -22,7 +22,7 @@ LevelState::~LevelState() {
 	delete m_ui;
 }
 
-void LevelState::onEnter() {
+void LevelState::enter() {
 	// Set event subscription for used systems 
 	m_game.animationSystem->connectInputs();
 	m_game.attackSystem->connectInputs();
@@ -32,16 +32,8 @@ void LevelState::onEnter() {
 	m_game.renderSystem->connectInputs();
 	m_game.waveSystem->connectInputs();
 
-	// Listen to event and copy connection object
-	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-		});
-	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
-
-	auto connectionUp = m_game.emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-		});
-	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
+	// Subscribe self to inputs
+	connectInputs();
 }
 
 void LevelState::update(float deltatime) {
@@ -64,10 +56,16 @@ void LevelState::update(float deltatime) {
 	m_ui->GetRenderer()->Render();
 }
 
-void LevelState::onExit() {
+void LevelState::exit() {
 	// Remove event listenner
-	m_game.emitter.erase(*m_clickUpCon);
-	m_game.emitter.erase(*m_clickDownCon);
-	m_clickUpCon.reset();
-	m_clickDownCon.reset();
+	disconnectInputs();
+}
+
+
+void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
+	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+}
+
+void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
+	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 }

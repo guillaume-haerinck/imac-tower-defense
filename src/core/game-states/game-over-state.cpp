@@ -22,7 +22,7 @@ GameOverState::~GameOverState() {
 	delete m_ui;
 }
 
-void GameOverState::onEnter() {
+void GameOverState::enter() {
 	// Remove event subscriptions to unused systems
 	m_game.animationSystem->disconnectInputs();
 	m_game.attackSystem->disconnectInputs();
@@ -32,16 +32,8 @@ void GameOverState::onEnter() {
 	m_game.renderSystem->disconnectInputs();
 	m_game.waveSystem->disconnectInputs();
 
-	// Listen to event and copy connection object
-	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
-
-	auto connectionUp = m_game.emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
-		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-	});
-	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
+	// Subscribe to events
+	connectInputs();
 }
 
 void GameOverState::update(float deltatime) {
@@ -59,10 +51,16 @@ void GameOverState::update(float deltatime) {
 	m_ui->GetRenderer()->Render();
 }
 
-void GameOverState::onExit() {
-	// Remove event listenner
-	m_game.emitter.erase(*m_clickUpCon);
-	m_game.emitter.erase(*m_clickDownCon);
-	m_clickUpCon.reset();
-	m_clickDownCon.reset();
+void GameOverState::exit() {
+	// Unsubscribe
+	disconnectInputs();
+}
+
+
+void GameOverState::onLeftClickUp(const evnt::LeftClickUp& event) {
+	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+}
+
+void GameOverState::onLeftClickDown(const evnt::LeftClickDown& event) {
+	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 }
