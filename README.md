@@ -26,8 +26,6 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
 ### To-do list
 
-To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-tower-defense)
-
 - [x] Integrate ECS system
 - [x] Load & play spritesheet
 - [x] Load, validate and interpret .itd files
@@ -42,11 +40,10 @@ To see full list, check this [Trello Board](https://trello.com/b/BauObFbb/imac-t
 - [x] Waves system
 - [x] Banking system
 - [x] Switch levels
-- [ ] Ressource manager
-- [ ] Upgrade system
-- [ ] World map
-- [ ] Attack with raycasting
-- [ ] Mirror towers
+- [x] Attack with raycasting
+- [x] Mirror towers
+- [ ] Level design
+- [ ] Tutorials
 
 ## Getting Started
 
@@ -142,13 +139,15 @@ The project follows the **Entity Component System** design pattern.
 | `logger`					| Error and log handlers for the game |
 | `services`				| Functionalities needed anywhere, like playing a sound |
 | `systems`					| Update the game and the entities based on their components (all the game logic is there) |
-| **core**					| **Constants, game class and map loading** |
+| **core**					| **Constants, Game state machine and map loading** |
+| `game-states`				| The different states of the game (title menu, in-level, game over, ...) |
+| `level`				    | Read .ITD and .PPM files, and construct a graph from them |
 | **res**					| **Ressources loaded at runtime** |
 | `audio`					| Musics and sound effects used accross the game |
 | `fonts`					| Fonts used accross the game |
 | `gui`						| XAML files describing the view for each user interface |
 | `images`					| Images and spritesheets used by the game |
-| `maps`					| .ITD and .PPM describing the levels of the game |
+| `levels`					| .ITD and .PPM describing the levels of the game |
 | `shaders`					| GLSL shaders used by openGL for rendering |
 | **doc**					| **Documentation** |
 | **lib**					| **Dependencies** |

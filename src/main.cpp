@@ -82,6 +82,10 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 2);
 			}
 
+			if (ImGui::Button("Load level 3")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 3);
+			}
+
 			if (ImGui::Button("Load title screen")) {
 				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN, 1);
 			}

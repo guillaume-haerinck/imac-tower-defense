@@ -1,5 +1,13 @@
 # Imac Tower Defense Changelog
 
+## 08.05.19
+
+Input events are handled separatly for clear separation between game screens.
+
+## 07.05.19
+
+Towers are shooting lasers. Lasers can be reflected by mirrors.
+
 ## 05.05.19
 
 Handles event unsubcription (deal with connection invalid constructor by making a copy of instanciated object in memory).
