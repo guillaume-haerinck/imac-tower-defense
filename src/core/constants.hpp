@@ -9,12 +9,14 @@ static const float PROJ_HEIGHT = 100.0f;
 static const float TILE_SIZE = 11.0f;
 
 static const int ENNEMY_MONEY_VALUE = 2;
+static const float ENNEMY_HEALTH = 5.0f;
 
 static const float TOWER_HEALTH = 10;
 static const float TOWER_HITBOX_RADIUS = 4.0f;
 static const float TOWER_ATTACK_RANGE = 25.0f;
 static const int TOWER_COST = 10;
 
+static const float LASER_DAMAGE_PER_SECOND = 2.0f;
 static const float LASER_WIDTH = 20;
 static const float PROJECTILE_HITBOX_RADIUS = 1.0f;
 

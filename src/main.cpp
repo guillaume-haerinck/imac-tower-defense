@@ -61,7 +61,6 @@ int main(int argc, char** argv) {
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
 	while (!bQuit) {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
 		// Imgui main debug window
 		{
 			ImGui_ImplOpenGL3_NewFrame();
@@ -102,7 +101,7 @@ int main(int argc, char** argv) {
 
 		// Game update & render
 		{
-			game.update(deltatime);
+			game.update(deltatime/1000); //In seconds
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}

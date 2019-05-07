@@ -47,9 +47,8 @@ void LevelState::update(float deltatime) {
 	GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
 	GLCall(glClearStencil(0));
 
-	// TODO create deltatima with this 6/1000 factor ? must check where it is used and why there is such a unit
 	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
-	m_game.animationSystem->update(deltatime / 1000 * 6); 
+	m_game.animationSystem->update(deltatime); 
 	m_game.movementSystem->update(deltatime);
 	m_game.renderSystem->update(deltatime);
 	m_game.attackSystem->update(deltatime);

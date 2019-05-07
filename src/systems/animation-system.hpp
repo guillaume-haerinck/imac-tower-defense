@@ -5,7 +5,6 @@
 
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "events/enemy-dead.hpp"
 
 #include "entity-factories/explosion-factory.hpp"
 

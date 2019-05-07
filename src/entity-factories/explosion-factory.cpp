@@ -24,6 +24,6 @@ void ExplosionFactory::create(glm::vec2 pos) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_explosionSprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 10);
+	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
 	m_registry.assign<cmpt::Transform>(myEntity, pos);
 }
