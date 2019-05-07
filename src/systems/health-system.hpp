@@ -12,11 +12,7 @@ class HealthSystem : public ISystem {
 public:
 	HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression);
 	void update(float deltatime) override;
-	void connectEvents() override;
-	void disconnectEvents() override;
 
 private:
-	EventEmitter& m_emitter;
 	Progression& m_progression;
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::EnemyDamaged>> m_damagedCon;
 };

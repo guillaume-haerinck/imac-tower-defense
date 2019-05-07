@@ -11,16 +11,8 @@
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 
-RenderSystem::RenderSystem(entt::DefaultRegistry& registry, glm::mat4& viewMat, glm::mat4& projMat)
-: ISystem(registry), m_view(viewMat), m_projection(projMat) {}
-
-void RenderSystem::connectEvents() {
-
-}
-
-void RenderSystem::disconnectEvents() {
-
-}
+RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
+: ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
 
 void RenderSystem::update(float deltatime) {
     /* 

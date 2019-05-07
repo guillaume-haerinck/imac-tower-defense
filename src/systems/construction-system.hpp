@@ -15,17 +15,13 @@
 class ConstructionSystem : public ISystem {
 public:
 	ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression);
-	void connectEvents() override;
-	void disconnectEvents() override;
 	void update(float deltatime) override;
+	void onLeftClickUp(const evnt::LeftClickUp& event) override;
+	void onRightClickUp(const evnt::RightClickUp& event) override;
 
 private:
-	EventEmitter& m_emitter;
 	Level& m_level;
 	Progression& m_progression;
 	TowerFactory m_towerFactory;
 	MirrorFactory m_mirrorFactory;
-
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>> m_clickUpCon;
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>> m_clickRightUpCon;
 };

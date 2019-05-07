@@ -20,15 +20,7 @@
 
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: ISystem(registry), m_emitter(emitter) {}
-
-void MovementSystem::connectEvents() {
-
-}
-
-void MovementSystem::disconnectEvents() {
-
-}
+: ISystem(registry, emitter) {}
 
 void MovementSystem::update(float deltatime) {
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
