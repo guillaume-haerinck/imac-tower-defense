@@ -64,14 +64,14 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 15);
+		this->shootLaser(transform.position, transform.rotation, 15, entity);
 	});
 	glLineWidth(1);
 }
 
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
-void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
+void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId) {
 	glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
 	glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
 	glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
@@ -125,10 +125,10 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 	//Damage enemies
 	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
 	normal /= glm::length(normal);
-	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Health, entityTag::Enemy>().each([this, normal](auto entity, cmpt::Transform & enemyTransform, cmpt::Trigger& enemyTrigger, cmpt::Health& enemyHealth, auto) {
-		float dist = abs(normal.x*enemyTransform.position.x + normal.y*enemyTransform.position.y);
-		if (dist < enemyTrigger.radius) {
-			m_emitter.publish<evnt::EnemyDamaged>(entity, enemyTransform.position, 0.2f);
+	m_registry.view<cmpt::Transform, cmpt::Trigger, cmpt::Health>().each([this, normal, launcherId](auto entity, cmpt::Transform & targetTransform, cmpt::Trigger& targetTrigger, cmpt::Health& targetHealth) {
+		float dist = abs(normal.x*targetTransform.position.x + normal.y*targetTransform.position.y);
+		if ( dist < targetTrigger.radius && launcherId != entity) {
+			m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, 0.2f);
 		}
 	});
 
@@ -136,7 +136,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce) {
 	debugDraw.setColor(255, 0, 0, 1);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1);
 	}
 }
 
