@@ -13,12 +13,7 @@ class AnimationSystem : public ISystem {
 public:
     AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
     void update(float deltatime) override;
-	void connectEvents() override;
-	void disconnectEvents() override;
 
 private:
-	EventEmitter & m_emitter;
 	ExplosionFactory m_explosionFactory;
-
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::EnnemyDead>> m_enemyDeadCon;
 };

@@ -13,14 +13,12 @@ class AttackSystem : public ISystem {
 public:
 	AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
 	void update(float deltatime) override;
-	void connectEvents() override;
-	void disconnectEvents() override;
+	void onMouseMove(const evnt::MouseMove& event) override;
 
 private:
-	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>> m_mouseMoveCon;
-
-	EventEmitter & m_emitter;
 	ProjectileFactory m_projectileFactory;
+
+private:
 	void shootLaser(glm::vec2 pos, float agl, int nbBounce);
 	bool isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, cmpt::Transform transform2, cmpt::Trigger trigger2);
 	bool isInRange(cmpt::Transform transform1, cmpt::Trigger trigger1, unsigned int targetId);

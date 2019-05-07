@@ -15,30 +15,13 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry), m_projectileFactory(registry), m_emitter(emitter) {
-}
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry) {}
 
-void AttackSystem::connectEvents() {
-	if (m_bConnected == false) {
-		auto connection = m_emitter.on<evnt::MouseMove>([this](const evnt::MouseMove & event, EventEmitter & emitter) {
-			m_registry.view<entityTag::Tower, cmpt::Transform>().each([this,event](auto entity, auto, cmpt::Transform& transform) {
-				float agl = atan2(event.mousePos.y-transform.position.y, event.mousePos.x*WIN_RATIO- transform.position.x);
-				transform.rotation = agl;
-			});
-		});
-		m_mouseMoveCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>>(connection);
-
-		m_bConnected = true;
-	}
-}
-
-void AttackSystem::disconnectEvents() {
-	if (m_bConnected == true) {
-		m_emitter.erase(*m_mouseMoveCon);
-		m_mouseMoveCon.reset();
-
-		m_bConnected = false;
-	}
+void AttackSystem::onMouseMove(const evnt::MouseMove& event) {
+	m_registry.view<entityTag::Tower, cmpt::Transform>().each([this, event](auto entity, auto, cmpt::Transform & transform) {
+		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
+		transform.rotation = agl;
+	});
 }
 
 void AttackSystem::update(float deltatime) {

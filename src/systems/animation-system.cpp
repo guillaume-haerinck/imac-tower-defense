@@ -9,26 +9,11 @@
 #include <spdlog/spdlog.h>
 
 AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: ISystem(registry), m_emitter(emitter), m_explosionFactory(registry) {}
-
-void AnimationSystem::connectEvents() {
-	if (m_bConnected == false) {
-		auto connection = m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
-			m_explosionFactory.create(event.position);
-		});
-		m_enemyDeadCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::EnnemyDead>>(connection);
-
-		m_bConnected = true;
-	}
-}
-
-void AnimationSystem::disconnectEvents() {
-	if (m_bConnected == true) {
-		m_emitter.erase(*m_enemyDeadCon);
-		m_enemyDeadCon.reset();
-
-		m_bConnected = false;
-	}
+: ISystem(registry, emitter), m_explosionFactory(registry)
+{
+	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+		m_explosionFactory.create(event.position);
+	});
 }
 
 void AnimationSystem::update(float deltatime) {

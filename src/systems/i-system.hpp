@@ -31,9 +31,10 @@ protected:
 
 	entt::DefaultRegistry& m_registry;
 	EventEmitter& m_emitter;
-	bool m_bConnected;
 
 private:
+	bool m_bConnected;
+
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>> m_leftClickUp;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>> m_leftClickDown;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>> m_rightClickUp;
