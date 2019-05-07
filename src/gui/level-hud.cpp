@@ -1,6 +1,8 @@
 #include "level-hud.hpp"
 
 #include <NsGui/Button.h>
+#include <string>
+
 #include "events/change-game-state.hpp"
 #include "events/progression-updated.hpp"
 #include "core/game-states/i-game-state.hpp"

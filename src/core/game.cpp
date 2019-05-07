@@ -279,9 +279,9 @@ int Game::init() {
 	healthSystem = new HealthSystem(registry, emitter, progression);
 
 	// States
-	m_levelState = new LevelState(progression, emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
-	m_titleState = new TitleScreenState(progression, emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
-	m_gameOverState = new GameOverState(progression, emitter, *animationSystem, *attackSystem, *constructionSystem, *healthSystem, *movementSystem, *renderSystem, *waveSystem);
+	m_levelState = new LevelState(*this);
+	m_titleState = new TitleScreenState(*this);
+	m_gameOverState = new GameOverState(*this);
 
 	// Init current state
 	switch (this->m_state) {

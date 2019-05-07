@@ -6,26 +6,9 @@
 
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
+#include "core/game.hpp"
 
-GameOverState::GameOverState(Progression& progression,
-	EventEmitter& emitter,
-	AnimationSystem& animationSystem,
-	AttackSystem& attackSystem,
-	ConstructionSystem& constructionSystem,
-	HealthSystem& healthSystem,
-	MovementSystem& movementSystem,
-	RenderSystem& renderSystem,
-	WaveSystem& waveSystem)
-: IGameState(progression,
-	emitter,
-	animationSystem,
-	attackSystem,
-	constructionSystem,
-	healthSystem,
-	movementSystem,
-	renderSystem,
-	waveSystem),
-	m_gameOver(emitter)
+GameOverState::GameOverState(Game& game) : IGameState(game), m_gameOver(m_game.emitter)
 {
 	m_xaml = m_gameOver;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
@@ -41,21 +24,21 @@ GameOverState::~GameOverState() {
 
 void GameOverState::onEnter() {
 	// Remove event subscriptions to unused systems
-	m_animationSystem.disconnectEvents();
-	m_attackSystem.disconnectEvents();
-	m_constructionSystem.disconnectEvents();
-	m_healthSystem.disconnectEvents();
-	m_movementSystem.disconnectEvents();
-	m_renderSystem.disconnectEvents();
-	m_waveSystem.disconnectEvents();
+	m_game.animationSystem->disconnectEvents();
+	m_game.attackSystem->disconnectEvents();
+	m_game.constructionSystem->disconnectEvents();
+	m_game.healthSystem->disconnectEvents();
+	m_game.movementSystem->disconnectEvents();
+	m_game.renderSystem->disconnectEvents();
+	m_game.waveSystem->disconnectEvents();
 
 	// Listen to event and copy connection object
-	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
+	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 	});
 	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
 
-	auto connectionUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
+	auto connectionUp = m_game.emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 	});
 	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
@@ -78,8 +61,8 @@ void GameOverState::update(float deltatime) {
 
 void GameOverState::onExit() {
 	// Remove event listenner
-	m_emitter.erase(*m_clickUpCon);
-	m_emitter.erase(*m_clickDownCon);
+	m_game.emitter.erase(*m_clickUpCon);
+	m_game.emitter.erase(*m_clickDownCon);
 	m_clickUpCon.reset();
 	m_clickDownCon.reset();
 }

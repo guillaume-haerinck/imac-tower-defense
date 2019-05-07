@@ -6,31 +6,16 @@
 #include <NsGui/IRenderer.h>
 #include <memory>
 
-#include "systems/render-system.hpp"
-#include "systems/movement-system.hpp"
-#include "systems/animation-system.hpp"
-#include "systems/construction-system.hpp"
-#include "systems/wave-system.hpp"
-#include "systems/attack-system.hpp"
-#include "systems/health-system.hpp"
-#include "events/handlers/event-emitter.hpp"
+#include "i-game-state.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
-#include "core/progression.hpp"
-#include "i-game-state.hpp"
 #include "gui/title-screen.hpp"
+
+class Game; // Forward declaration
 
 class TitleScreenState : public IGameState {
 public:
-	TitleScreenState(Progression& progression,
-		EventEmitter& emitter,
-		AnimationSystem& animationSystem,
-		AttackSystem& attackSystem,
-		ConstructionSystem& constructionSystem,
-		HealthSystem& healthSystem,
-		MovementSystem& movementSystem,
-		RenderSystem& renderSystem,
-		WaveSystem& waveSystem);
+	TitleScreenState(Game& game);
 	virtual ~TitleScreenState();
 
 	void onEnter() override;

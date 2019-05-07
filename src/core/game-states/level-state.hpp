@@ -6,33 +6,17 @@
 #include <NsGui/IRenderer.h>
 #include <memory>
 
-#include "systems/render-system.hpp"
-#include "systems/movement-system.hpp"
-#include "systems/animation-system.hpp"
-#include "systems/construction-system.hpp"
-#include "systems/wave-system.hpp"
-#include "systems/attack-system.hpp"
-#include "systems/health-system.hpp"
-#include "events/handlers/event-emitter.hpp"
+#include "i-game-state.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
-#include "core/progression.hpp"
-#include "i-game-state.hpp"
 #include "gui/level-hud.hpp"
+
+class Game; // Forward declaration
 
 class LevelState : public IGameState {
 public:
-	LevelState(Progression& progression,
-		EventEmitter& emitter,
-		AnimationSystem& animationSystem,
-		AttackSystem& attackSystem,
-		ConstructionSystem& constructionSystem,
-		HealthSystem& healthSystem,
-		MovementSystem& movementSystem,
-		RenderSystem& renderSystem,
-		WaveSystem& waveSystem);
-
-	~LevelState();
+	LevelState(Game& game);
+	virtual ~LevelState();
 
 	void onEnter() override;
 	void update(float deltatime) override;

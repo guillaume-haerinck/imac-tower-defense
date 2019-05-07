@@ -5,27 +5,10 @@
 #include <spdlog/spdlog.h>
 
 #include "core/constants.hpp"
+#include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
 
-LevelState::LevelState(Progression& progression,
-	EventEmitter& emitter,
-	AnimationSystem& animationSystem,
-	AttackSystem& attackSystem,
-	ConstructionSystem& constructionSystem,
-	HealthSystem& healthSystem,
-	MovementSystem& movementSystem,
-	RenderSystem& renderSystem,
-	WaveSystem& waveSystem)
-: IGameState(progression,
-		emitter,
-		animationSystem,
-		attackSystem,
-		constructionSystem,
-		healthSystem,
-		movementSystem,
-		renderSystem,
-		waveSystem),
-	m_levelHud(emitter, progression)
+LevelState::LevelState(Game& game): IGameState(game), m_levelHud(game.emitter, game.progression)
 {
 	m_xaml = m_levelHud;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
@@ -41,21 +24,21 @@ LevelState::~LevelState() {
 
 void LevelState::onEnter() {
 	// Set event subscription for used systems 
-	m_animationSystem.connectEvents();
-	m_attackSystem.connectEvents();
-	m_constructionSystem.connectEvents();
-	m_healthSystem.connectEvents();
-	m_movementSystem.connectEvents();
-	m_renderSystem.connectEvents();
-	m_waveSystem.connectEvents();
+	m_game.animationSystem->connectEvents();
+	m_game.attackSystem->connectEvents();
+	m_game.constructionSystem->connectEvents();
+	m_game.healthSystem->connectEvents();
+	m_game.movementSystem->connectEvents();
+	m_game.renderSystem->connectEvents();
+	m_game.waveSystem->connectEvents();
 
 	// Listen to event and copy connection object
-	auto connectionDown = m_emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
+	auto connectionDown = m_game.emitter.on<evnt::LeftClickDown>([this](const evnt::LeftClickDown & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 		});
 	m_clickDownCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickDown>>(connectionDown);
 
-	auto connectionUp = m_emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
+	auto connectionUp = m_game.emitter.on<evnt::LeftClickUp>([this](const evnt::LeftClickUp & event, EventEmitter & emitter) {
 		this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 		});
 	m_clickUpCon = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::LeftClickUp>>(connectionUp);
@@ -74,17 +57,17 @@ void LevelState::update(float deltatime) {
 
 	// TODO create deltatima with this 6/1000 factor ? must check where it is used and why there is such a unit
 	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
-	m_animationSystem.update(deltatime / 1000 * 6); 
-	m_movementSystem.update(deltatime);
-	m_renderSystem.update(deltatime);
-	m_attackSystem.update(deltatime);
+	m_game.animationSystem->update(deltatime / 1000 * 6); 
+	m_game.movementSystem->update(deltatime);
+	m_game.renderSystem->update(deltatime);
+	m_game.attackSystem->update(deltatime);
 	m_ui->GetRenderer()->Render();
 }
 
 void LevelState::onExit() {
 	// Remove event listenner
-	m_emitter.erase(*m_clickUpCon);
-	m_emitter.erase(*m_clickDownCon);
+	m_game.emitter.erase(*m_clickUpCon);
+	m_game.emitter.erase(*m_clickDownCon);
 	m_clickUpCon.reset();
 	m_clickDownCon.reset();
 }
