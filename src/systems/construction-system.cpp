@@ -39,6 +39,9 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
+				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
+					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+				}
 				m_currentEntity = entityId;
 				m_registry.assign<cmpt::LookAtMouse>(entityId);
 			}
@@ -76,6 +79,9 @@ void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Tower>(entityId)) {
+				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
+					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+				}
 				m_currentEntity = entityId;
 				m_registry.assign<cmpt::LookAtMouse>(entityId);
 			}
