@@ -5,8 +5,10 @@
 
 #include "core/constants.hpp"
 #include "core/tags.hpp"
+#include "core/maths.hpp"
 #include "components/transform.hpp"
 #include "components/entity-on.hpp"
+#include "components/look-at-mouse.hpp"
 #include "events/tower-dead.hpp"
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
@@ -30,7 +32,7 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
 				m_currentEntity = entityId;
-				m_registry.assign<mvmtTag::FollowMouse>(entityId);
+				m_registry.assign<cmpt::LookAtMouse>(entityId,imac::TAU/4);
 			}
 		}
 	}
@@ -38,11 +40,15 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 
 //Add tower
 void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
-
+	//Get tile
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
-		if (this->m_registry.has<tileTag::Constructible>(tileId)) {//&& m_progression.getMoney() >= TOWER_COST) {
+		if (m_registry.valid(m_currentEntity)) {
+			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+			m_currentEntity = -1;
+		}
+		else if (this->m_registry.has<tileTag::Constructible>(tileId)) {//&& m_progression.getMoney() >= TOWER_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int towerId = this->m_towerFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);

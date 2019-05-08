@@ -14,6 +14,7 @@
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
+#include "components/look-at-mouse.hpp"
 #include "components/trajectory.hpp"
 #include "components/follow.hpp"
 #include "components/pathfinding.hpp"
@@ -24,9 +25,9 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 : ISystem(registry, emitter) {}
 
 void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
-	m_registry.view<cmpt::Transform, mvmtTag::FollowMouse>().each([this, event](auto entity, cmpt::Transform & transform, auto) {
+	m_registry.view<cmpt::Transform, cmpt::LookAtMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::LookAtMouse& lookAtMouse) {
 		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
-		transform.rotation = agl;
+		transform.rotation = agl + lookAtMouse.angleOffset;
 	});
 }
 
