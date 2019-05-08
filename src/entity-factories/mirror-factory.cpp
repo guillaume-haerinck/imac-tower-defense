@@ -9,6 +9,8 @@
 #include "components/transform.hpp"
 #include "components/hitbox.hpp"
 
+#include "components/constrained-rotation.hpp"
+
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 
@@ -30,5 +32,6 @@ unsigned int MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), glm::vec2(1.0f));
 	m_registry.assign<cmpt::Hitbox>(myEntity, MIRROR_RADIUS);
+	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 16);
 	return myEntity;
 }

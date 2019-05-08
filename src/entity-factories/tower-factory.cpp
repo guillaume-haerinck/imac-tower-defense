@@ -18,6 +18,8 @@
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 
+#include "components/constrained-rotation.hpp"
+
 TowerFactory::TowerFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
 	m_towerSprite = m_spriteFactory.createSingle("res/images/textures/arrow.png", glm::vec2(TOWER_HITBOX_RADIUS*2));
@@ -45,5 +47,6 @@ unsigned int TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::ShootLaser>(myEntity);
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
+	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
 	return myEntity;
 }
