@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "core/tags.hpp"
+#include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/hitbox.hpp"
@@ -13,7 +14,7 @@
 
 MirrorFactory::MirrorFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
-	m_mirrorSprite = m_spriteFactory.createSingle("res/images/textures/mirror_tmp.png", glm::vec2(8.0f));
+	m_mirrorSprite = m_spriteFactory.createSingle("res/images/textures/mirror_tmp.png", glm::vec2(2*MIRROR_RADIUS));
 }
 
 MirrorFactory::~MirrorFactory() {
@@ -28,6 +29,6 @@ unsigned int MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_mirrorSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), glm::vec2(1.0f));
-	m_registry.assign<cmpt::Hitbox>(myEntity, 4.0f);
+	m_registry.assign<cmpt::Hitbox>(myEntity, MIRROR_RADIUS);
 	return myEntity;
 }
