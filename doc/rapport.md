@@ -1,5 +1,7 @@
 # Rapport de projet - Imac Tower Defense
 
+![Logo Imac](rapport-img/imac.png?raw=true)
+
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
 *Jules Fouchy, Cyrielle Lassarre, Guillaume Haerinck*
@@ -140,3 +142,6 @@ A --> C(Round Rect)
 B --> D{Rhombus}
 C --> D
 ```
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTkzODY5NTQwMV19
+-->
