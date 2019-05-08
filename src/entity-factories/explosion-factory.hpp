@@ -11,10 +11,11 @@ public:
 	ExplosionFactory(entt::DefaultRegistry& registry);
 	virtual ~ExplosionFactory();
 
-	void create(glm::vec2 pos);
+	void create(glm::vec2 pos, ShaderType type);
 
 private:
 	SpriteFactory m_spriteFactory;
-	cmpt::Sprite m_explosionSprite;
+	cmpt::Sprite m_towerExplosionSprite;
+	cmpt::Sprite m_enemyExplosionSprite;
 };
 

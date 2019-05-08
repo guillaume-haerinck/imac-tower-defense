@@ -7,9 +7,10 @@
 #include "graphics/texture-array.hpp"
 
 SpriteFactory::SpriteFactory()
-: m_shaderTex("res/shaders/texture/texture.vert", "res/shaders/texture/texture.frag"),
-  m_shaderTexArray("res/shaders/texture/texture.vert", "res/shaders/texture/texture-array.frag"),
-	m_explosionShader("res/shaders/texture/texture.vert", "res/shaders/texture/explosion.frag")
+:	m_shaderTex("res/shaders/texture/texture.vert", "res/shaders/texture/texture.frag"),
+	m_shaderTexArray("res/shaders/texture/texture.vert", "res/shaders/texture/texture-array.frag"),
+	m_towerExplosionShader("res/shaders/texture/texture.vert", "res/shaders/texture/tower-explosion.frag"),
+	m_enemyExplosionShader("res/shaders/texture/texture.vert", "res/shaders/texture/enemy-explosion.frag")
 {
     /* Index buffer */
 	unsigned int indices[] = {
@@ -113,8 +114,11 @@ Shader& SpriteFactory::getShader(ShaderType shaderType) {
 	case BASIC_ATLAS :
 		return m_shaderTexArray;
 		break;
-	case EXPLOSION :
-		return m_explosionShader;
+	case TOWER_EXPLOSION :
+		return m_towerExplosionShader;
+		break;
+	case ENEMY_EXPLOSION:
+		return m_enemyExplosionShader;
 		break;
 	}
 }

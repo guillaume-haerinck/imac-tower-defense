@@ -62,7 +62,6 @@ void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
 }
 
 //Tower
-//Mirror
 void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);

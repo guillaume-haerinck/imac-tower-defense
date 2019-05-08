@@ -15,12 +15,11 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 : ISystem(registry, emitter), m_explosionFactory(registry)
 {
 	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
-		m_explosionFactory.create(event.position);
+		m_explosionFactory.create(event.position, ENEMY_EXPLOSION);
 	});
 
 	m_emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
-		//TODO give another explosion for the towers, maybe more sad :s
-		m_explosionFactory.create(event.position);
+		m_explosionFactory.create(event.position, TOWER_EXPLOSION);
 	});
 }
 

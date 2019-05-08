@@ -9,7 +9,8 @@
 enum ShaderType {
 	BASIC_SINGLE,
 	BASIC_ATLAS,
-	EXPLOSION
+	TOWER_EXPLOSION,
+	ENEMY_EXPLOSION
 };
 
 class SpriteFactory {
@@ -32,5 +33,6 @@ private:
     Shader m_shaderTex;
     Shader m_shaderTexArray;
 		//Custom
-	Shader m_explosionShader;
+	Shader m_towerExplosionShader;
+	Shader m_enemyExplosionShader;
 };
