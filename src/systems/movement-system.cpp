@@ -15,6 +15,7 @@
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
 #include "components/look-at-mouse.hpp"
+#include "components/rotated-by-mouse.hpp"
 #include "components/trajectory.hpp"
 #include "components/follow.hpp"
 #include "components/pathfinding.hpp"
@@ -25,13 +26,19 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 : ISystem(registry, emitter) {}
 
 void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
-	m_registry.view<cmpt::Transform, cmpt::LookAtMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::LookAtMouse& lookAtMouse) {
-		//float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
-		glm::vec2 toPrevMouse = m_prevMousePos*glm::vec2(WIN_RATIO,1.0f) - transform.position;
+	//Rotated by mouse
+	m_registry.view<cmpt::Transform, cmpt::RotatedByMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::RotatedByMouse& rotatedByMouse) {
+		glm::vec2 toPrevMouse = m_prevMousePos * glm::vec2(WIN_RATIO, 1.0f) - transform.position;
 		glm::vec2 toMouse = event.mousePos*glm::vec2(WIN_RATIO, 1.0f) - transform.position;
-		float deltaAgl = atan2(toPrevMouse.y, toPrevMouse.x) - atan2(toMouse.y, toMouse.x);
-		transform.rotation -= deltaAgl;//+ lookAtMouse.angleOffset;
+		float deltaAgl = atan2(toMouse.y, toMouse.x) - atan2(toPrevMouse.y, toPrevMouse.x);
+		transform.rotation += deltaAgl;
 	});
+	//Look at mouse
+	m_registry.view<cmpt::Transform, cmpt::LookAtMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::LookAtMouse& lookAtMouse) {
+		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
+		transform.rotation = agl + lookAtMouse.angleOffset;
+	});
+	//Update previous mouse position
 	m_prevMousePos = event.mousePos;
 }
 

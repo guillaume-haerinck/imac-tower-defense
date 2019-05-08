@@ -8,7 +8,7 @@
 #include "core/maths.hpp"
 #include "components/transform.hpp"
 #include "components/entity-on.hpp"
-#include "components/look-at-mouse.hpp"
+#include "components/rotated-by-mouse.hpp"
 #include "events/tower-dead.hpp"
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
@@ -39,7 +39,7 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
 				m_currentEntity = entityId;
-				m_registry.assign<cmpt::LookAtMouse>(entityId);
+				m_registry.assign<cmpt::RotatedByMouse>(entityId);
 			}
 		}
 	}
@@ -51,7 +51,7 @@ void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
 	if (tileId != -1) {
 		//Stop rotating
 		if (m_registry.valid(m_currentEntity)) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+			m_registry.remove<cmpt::RotatedByMouse>(m_currentEntity);
 			m_currentEntity = -1;
 		}
 	}
@@ -76,7 +76,7 @@ void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Tower>(entityId)) {
 				m_currentEntity = entityId;
-				m_registry.assign<cmpt::LookAtMouse>(entityId);
+				m_registry.assign<cmpt::RotatedByMouse>(entityId);
 			}
 		}
 	}
@@ -88,7 +88,7 @@ void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
 	if (tileId != -1) {
 		//Stop rotating
 		if (m_registry.valid(m_currentEntity)) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+			m_registry.remove<cmpt::RotatedByMouse>(m_currentEntity);
 			m_currentEntity = -1;
 		}
 	}
