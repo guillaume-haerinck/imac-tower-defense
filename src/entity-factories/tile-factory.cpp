@@ -10,7 +10,9 @@ TileFactory::TileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
 	m_spawn = m_primitiveFactory.createRect(glm::vec4(0, 1, 0, 1), glm::vec2(TILE_SIZE));
 	m_arrival = m_primitiveFactory.createRect(glm::vec4(1, 0, 0, 1), glm::vec2(TILE_SIZE));
 	m_path = m_primitiveFactory.createRect(glm::vec4(1, 1, 1, 1), glm::vec2(TILE_SIZE));
+	//m_path = m_spriteFactory.createSingle("res/images/textures/path.png", glm::vec2(TILE_SIZE));
 	m_constructible = m_primitiveFactory.createRect(glm::vec4(0, 0, 1, 1), glm::vec2(TILE_SIZE));
+	//m_constructible = m_spriteFactory.createSingle("res/images/textures/constructible.png", glm::vec2(TILE_SIZE));
 	m_locked = m_primitiveFactory.createRect(glm::vec4(0.5, 0.5, 0.5, 1), glm::vec2(TILE_SIZE));
 }
 
@@ -39,6 +41,8 @@ unsigned int TileFactory::createArrival(glm::vec2 position) {
 unsigned int TileFactory::createPath(glm::vec2 position) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Primitive>(myEntity, m_path);
+	//m_registry.assign<cmpt::Sprite>(myEntity, m_path);
+	//m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, position);
 	return myEntity;
 }
@@ -46,6 +50,8 @@ unsigned int TileFactory::createPath(glm::vec2 position) {
 unsigned int TileFactory::createConstructible(glm::vec2 position) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Primitive>(myEntity, m_constructible);
+	//m_registry.assign<cmpt::Sprite>(myEntity, m_constructible);
+	//m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, position);
 	m_registry.assign<tileTag::Constructible>(myEntity);
 	return myEntity;

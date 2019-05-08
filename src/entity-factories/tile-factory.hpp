@@ -6,6 +6,7 @@
 
 #include "factory.hpp"
 #include "component-factories/primitive-factory.hpp"
+#include "component-factories/sprite-factory.hpp"
 
 class TileFactory : public Factory {
 public:
@@ -19,6 +20,7 @@ public:
 	unsigned int createLocked(glm::vec2 position);
 
 private:
+	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
 
 	cmpt::Primitive m_spawn;

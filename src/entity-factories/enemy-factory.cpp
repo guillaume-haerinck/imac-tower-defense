@@ -22,7 +22,8 @@
 EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Level& level)
 : Factory(registry), m_level(level)
 {
-	m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
+	//m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
+	m_ennemySprite = m_spriteFactory.createSingle("res/images/textures/drone.png", glm::vec2(13.0f));
 	m_healthBackground = m_primitiveFactory.createRect(glm::vec4(0, 0, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
 	m_healthBar = m_primitiveFactory.createRect(glm::vec4(0, 1, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
 }
@@ -52,10 +53,10 @@ void EnemyFactory::create() {
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Enemy>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
-	m_registry.assign<renderTag::Atlas>(myEntity);
+	m_registry.assign<renderTag::Single>(myEntity);
 	cmpt::Transform transform(m_level.getNodePosition(startNode), glm::vec2(1.0f), 0.0f, 30);
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
+	//m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_level, startNode);
 	m_registry.assign<cmpt::Health>(myEntity, ENNEMY_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);

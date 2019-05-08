@@ -16,7 +16,7 @@
 
 MirrorFactory::MirrorFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
-	m_mirrorSprite = m_spriteFactory.createSingle("res/images/textures/mirror_tmp.png", glm::vec2(2*MIRROR_RADIUS));
+	m_mirrorSprite = m_spriteFactory.createSingle("res/images/textures/mirror.png", glm::vec2(2*MIRROR_RADIUS));
 }
 
 MirrorFactory::~MirrorFactory() {

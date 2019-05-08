@@ -277,8 +277,8 @@ void Game::update(float deltatime) {
 
 	case LEVEL:
 		m_levelState->update(deltatime);
-		level->drawGraph();
-		level->drawGrid();
+		//level->drawGraph();
+		//level->drawGrid();
 		break;
 
 	case CINEMATIC:
