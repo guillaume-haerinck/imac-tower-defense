@@ -1,6 +1,6 @@
 # Rapport de projet - Imac Tower Defense
 
-![Logo Imac](doc/rapport-img/imac.png?raw=true)
+![Logo Imac](rapport-img/imac.png?raw=true)
 
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
@@ -143,5 +143,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAyMzUxNTg3Ml19
+eyJoaXN0b3J5IjpbMTkzODY5NTQwMSwyMDIzNTE1ODcyXX0=
 -->
