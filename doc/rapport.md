@@ -1,6 +1,6 @@
 # Rapport de projet - Imac Tower Defense
 
-![Logo Imac](https://github.com/guillaume-haerinck/imac-tower-defense/doc/rapport-img/imac.png?raw=true)
+[Logo Imac](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/imac.png?raw=)
 
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
@@ -143,6 +143,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNzM2MjUyMTgsMTkzODY5NTQwMSwyMD
-IzNTE1ODcyXX0=
+eyJoaXN0b3J5IjpbMTk1OTMyMTUzNiwxOTM4Njk1NDAxLDIwMj
+M1MTU4NzJdfQ==
 -->
