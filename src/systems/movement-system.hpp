@@ -14,4 +14,5 @@ public:
 
 private:
 	glm::vec2 m_mousePos;
+	glm::vec2 m_prevMousePos;
 };
