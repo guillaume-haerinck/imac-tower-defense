@@ -51,7 +51,7 @@ void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Stop rotating
-		if (m_registry.valid(m_currentEntity)) {
+		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity) ) {
 			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
 			m_currentEntity = -1;
 		}
@@ -88,7 +88,7 @@ void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Stop rotating
-		if (m_registry.valid(m_currentEntity)) {
+		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
 			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
 		}
 	}
