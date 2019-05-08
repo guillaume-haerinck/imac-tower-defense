@@ -27,7 +27,7 @@ unsigned int MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<entityTag::Mirror>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_mirrorSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
-	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), glm::vec2(1.0f) , randomService.random(6.28));
+	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), glm::vec2(1.0f));
 	m_registry.assign<cmpt::Hitbox>(myEntity, 4.0f);
 	return myEntity;
 }

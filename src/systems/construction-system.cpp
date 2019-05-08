@@ -21,54 +21,75 @@ ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmi
 	});
 }
 
-//Rotate mirror
+//Mirror
 void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
-	//Get tile
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
-		//Look for a mirror on the tile
+		//Construct
+		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= MIRROR_COST) {
+			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
+			unsigned int mirrorId = this->m_mirrorFactory.create(trans.position.x, trans.position.y);
+			this->m_registry.remove<tileTag::Constructible>(tileId);
+			this->m_registry.assign<cmpt::EntityOn>(tileId, mirrorId);
+			m_progression.addToMoney(-MIRROR_COST);
+		}
+		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
 				m_currentEntity = entityId;
-				m_registry.assign<cmpt::LookAtMouse>(entityId,imac::TAU/4);
+				m_registry.assign<cmpt::LookAtMouse>(entityId);
 			}
 		}
 	}
 }
 
-//Add tower
 void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
-	//Get tile
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
+		//Stop rotating
 		if (m_registry.valid(m_currentEntity)) {
 			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
 			m_currentEntity = -1;
 		}
-		else if (this->m_registry.has<tileTag::Constructible>(tileId)) {//&& m_progression.getMoney() >= TOWER_COST) {
+	}
+}
+
+//Tower
+//Mirror
+void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
+	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
+	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
+	if (tileId != -1) {
+		//Construct
+		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= TOWER_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int towerId = this->m_towerFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
-			this->m_registry.assign<cmpt::EntityOn>(tileId,towerId);
+			this->m_registry.assign<cmpt::EntityOn>(tileId, towerId);
 			m_progression.addToMoney(-TOWER_COST);
+		}
+		//Rotate
+		if (m_registry.has<cmpt::EntityOn>(tileId)) {
+			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
+			if (m_registry.has<entityTag::Tower>(entityId)) {
+				m_currentEntity = entityId;
+				m_registry.assign<cmpt::LookAtMouse>(entityId);
+			}
 		}
 	}
 }
 
-//Add mirror
 void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
-		if (this->m_registry.has<tileTag::Constructible>(tileId)) {// && m_progression.getMoney() >= 10) {
-			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
-			unsigned int mirrorId = this->m_mirrorFactory.create(trans.position.x, trans.position.y);
-			this->m_registry.remove<tileTag::Constructible>(tileId);
-			this->m_registry.assign<cmpt::EntityOn>(tileId, mirrorId);
-			m_progression.addToMoney(-10);
+		//Stop rotating
+		if (m_registry.valid(m_currentEntity)) {
+			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+			m_currentEntity = -1;
 		}
 	}
 }

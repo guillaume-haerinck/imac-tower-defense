@@ -9,6 +9,7 @@
 #include "events/handlers/event-emitter.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
+#include "events/right-click-down.hpp"
 #include "events/right-click-up.hpp"
 #include "core/level/level.hpp"
 #include "core/progression.hpp"
@@ -19,6 +20,7 @@ public:
 	void update(float deltatime) override;
 	void onLeftClickDown(const evnt::LeftClickDown& event) override;
 	void onLeftClickUp(const evnt::LeftClickUp& event) override;
+	void onRightClickDown(const evnt::RightClickDown& event) override;
 	void onRightClickUp(const evnt::RightClickUp& event) override;
 
 private:
