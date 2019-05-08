@@ -30,7 +30,7 @@ TowerFactory::~TowerFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_towerSprite.vaID));
 }
 
-void TowerFactory::create(float posX, float posY) {
+unsigned int TowerFactory::create(float posX, float posY) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 
 	auto myEntity = m_registry.create();
@@ -45,4 +45,5 @@ void TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::ShootLaser>(myEntity);
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
+	return myEntity;
 }

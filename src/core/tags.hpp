@@ -12,6 +12,10 @@ namespace renderTag {
     TAG(Single);
 };
 
+namespace mvmtTag {
+	TAG(FollowMouse);
+}
+
 namespace tileTag {
 	TAG(Constructible);
 }

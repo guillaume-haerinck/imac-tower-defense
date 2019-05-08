@@ -11,7 +11,7 @@ public:
 	MirrorFactory(entt::DefaultRegistry& registry);
 	virtual ~MirrorFactory();
 
-	void create(float posX, float posY);
+	unsigned int create(float posX, float posY);
 
 private:
 	SpriteFactory m_spriteFactory;

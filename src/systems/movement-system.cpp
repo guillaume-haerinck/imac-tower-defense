@@ -8,6 +8,7 @@
 
 #include "core/maths.hpp"
 #include "core/constants.hpp"
+#include "core/tags.hpp"
 #include "core/level/graph.hpp"
 #include "events/enemy-damaged.hpp"
 #include "components/transform.hpp"
@@ -21,6 +22,13 @@
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter) {}
+
+void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
+	m_registry.view<cmpt::Transform, mvmtTag::FollowMouse>().each([this, event](auto entity, cmpt::Transform & transform, auto) {
+		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
+		transform.rotation = agl;
+	});
+}
 
 void MovementSystem::update(float deltatime) {
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {

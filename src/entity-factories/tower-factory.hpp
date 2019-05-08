@@ -13,7 +13,7 @@ public:
 	TowerFactory(entt::DefaultRegistry& registry);
 	virtual ~TowerFactory();
 
-	void create(float posX, float posY);
+	unsigned int create(float posX, float posY);
 
 private:
 	SpriteFactory m_spriteFactory;

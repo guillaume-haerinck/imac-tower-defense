@@ -13,7 +13,6 @@ class AttackSystem : public ISystem {
 public:
 	AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter);
 	void update(float deltatime) override;
-	void onMouseMove(const evnt::MouseMove& event) override;
 
 private:
 	ProjectileFactory m_projectileFactory;

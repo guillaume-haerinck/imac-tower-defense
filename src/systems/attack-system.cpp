@@ -17,13 +17,6 @@
 
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry) {}
 
-void AttackSystem::onMouseMove(const evnt::MouseMove& event) {
-	m_registry.view<entityTag::Tower, cmpt::Transform>().each([this, event](auto entity, auto, cmpt::Transform & transform) {
-		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
-		transform.rotation = agl;
-	});
-}
-
 void AttackSystem::update(float deltatime) {
 	// Look at target
 	m_registry.view<cmpt::Targeting, cmpt::Transform , cmpt::LookAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::LookAt lookAt) {
