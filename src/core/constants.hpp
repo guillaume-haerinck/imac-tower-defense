@@ -19,7 +19,7 @@ static const int MIRROR_COST = 10;
 static const float MIRROR_RADIUS = TILE_SIZE / 2;
 
 static const float LASER_DAMAGE_PER_SECOND = 2.0f;
-static const float LASER_WIDTH = 20;
+static const float LASER_WIDTH = 15;
 static const float PROJECTILE_HITBOX_RADIUS = 1.0f;
 
 static const float TARGET_DELTA_MS = 1000.0f / 60.0f; // 60 FPS

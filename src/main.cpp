@@ -33,6 +33,9 @@
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
+#include "services/locator.hpp"
+#include "services/random/i-random.hpp"
+
 // Z-INDEXES (usefull to have it here for debug)
 int zIndexMap = -9;
 int zIndexEnemy = 0;
@@ -63,11 +66,16 @@ int main(int argc, char** argv) {
 	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 	//audioService.playSound(audioFiles::CROWD_1);
 
+
 	// Game loop
 	bool bQuit = false;
 	double deltatime = TARGET_DELTA_MS;
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
 	while (!bQuit) {
+		//IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+		//spdlog::info(randomService.noise((float)SDL_GetTicks()/1000));
+		//spdlog::info(SDL_GetTicks()/1000);
+
 		// Imgui main debug window
 		{
 			ImGui_ImplOpenGL3_NewFrame();
