@@ -62,7 +62,6 @@ int main(int argc, char** argv) {
 	double deltatime = TARGET_DELTA_MS;
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
 	while (!bQuit) {
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		// Imgui main debug window
 		{
 			ImGui_ImplOpenGL3_NewFrame();

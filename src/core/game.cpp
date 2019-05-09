@@ -206,10 +206,10 @@ int Game::init() {
 	ImGui::StyleColorsDark();
 
     // Noesis GUI
-    //Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
-    //Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
-    //Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
-    //Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
+    Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
+    Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
+    Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
+    Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
 	// Services
 	locator::debugDraw::set<DebugDrawService>();
@@ -321,7 +321,7 @@ Game::~Game() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-	//Noesis::GUI::Shutdown();
+	Noesis::GUI::Shutdown();
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
 	spdlog::drop_all();
