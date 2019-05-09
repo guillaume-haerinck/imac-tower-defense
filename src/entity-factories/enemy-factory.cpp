@@ -66,11 +66,12 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Health>(myEntity, ENNEMY_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
-	m_registry.assign<cmpt::Wiggle>(myEntity);
+	m_registry.assign<cmpt::Wiggle>(myEntity,0.5);
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0, 0));
 	m_registry.assign<cmpt::AttachedTo>(eye, myEntity);
 	m_registry.assign<cmpt::Sprite>(eye, m_droneEyeSprite);
 	m_registry.assign<renderTag::Single>(eye);
+	m_registry.assign<cmpt::Wiggle>(eye,1);
 }
