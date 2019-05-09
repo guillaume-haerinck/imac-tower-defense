@@ -57,14 +57,14 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 15, entity, deltatime);
+		this->shootLaser(transform.position, transform.rotation, 15, entity, deltatime, m_registry.has<stateTag::IsBeingConstructed>(entity));
 	});
 	glLineWidth(1);
 }
 
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
-void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime) {
+void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime, bool isTransparent) {
 	glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
 	glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
 	glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
@@ -82,8 +82,9 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	float surfaceAngle;
 
 	float t = std::numeric_limits<float>::infinity();
+	bool mirrorIsBeingConstructed = false;
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector](auto entity, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingConstructed](auto entity, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		glm::vec2 mirrorPos = mirrorTransform.position;
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
 		glm::vec2 inter = imac::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
@@ -91,6 +92,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
+			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingConstructed>(entity);
 		}
 	});
 
@@ -116,22 +118,27 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	}
 
 	//Damage enemies
-	float laserLength = sqrt((pos.x - laserEnd.x)*(pos.x - laserEnd.x) + (pos.y - laserEnd.y)*(pos.y - laserEnd.y));
-	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
-	normal /= glm::length(normal);
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
-		float orthoComp = abs(normal.x*(targetTransform.position.x-pos.x) + normal.y*(targetTransform.position.y-pos.y));
-		float colinComp = ((laserEnd.x-pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y-pos.y)*(targetTransform.position.y - pos.y))/laserLength;
-		if ( 0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
-			m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
-		}
-	});
+	if (!isTransparent) {
+		float laserLength = sqrt((pos.x - laserEnd.x)*(pos.x - laserEnd.x) + (pos.y - laserEnd.y)*(pos.y - laserEnd.y));
+		glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
+		normal /= glm::length(normal);
+		m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
+			if (!m_registry.has<stateTag::IsBeingConstructed>(entity)) {
+				float orthoComp = abs(normal.x*(targetTransform.position.x - pos.x) + normal.y*(targetTransform.position.y - pos.y));
+				float colinComp = ((laserEnd.x - pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y - pos.y)*(targetTransform.position.y - pos.y)) / laserLength;
+				if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
+					m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
+				}
+			}
+		});
+	}
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
-	debugDraw.setColor(122, 249, 237, 1);
+	float alpha = isTransparent ? 0.25 : 1;
+	debugDraw.setColor(122, 249, 237, alpha);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingConstructed);
 	}
 }
 

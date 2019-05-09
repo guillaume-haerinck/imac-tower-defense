@@ -21,3 +21,7 @@ namespace entityTag {
 	TAG(Mirror);
 	TAG(Enemy);
 }
+
+namespace stateTag {
+	TAG(IsBeingConstructed);
+}

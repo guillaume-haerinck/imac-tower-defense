@@ -38,6 +38,7 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
+			m_registry.assign<stateTag::IsBeingConstructed>(entityId);
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
 				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
 					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
@@ -54,9 +55,14 @@ void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Stop rotating
-		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity) ) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
-			m_currentEntity = -1;
+		if (m_registry.valid(m_currentEntity)){
+			if (m_registry.has<stateTag::IsBeingConstructed>(m_currentEntity)) {
+				m_registry.remove<stateTag::IsBeingConstructed>(m_currentEntity);
+			}
+			if (m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
+				m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+				m_currentEntity = -1;
+			}
 		}
 	}
 }
@@ -77,6 +83,7 @@ void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
+			m_registry.assign<stateTag::IsBeingConstructed>(entityId);
 			if (m_registry.has<entityTag::Tower>(entityId)) {
 				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
 					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
@@ -93,8 +100,14 @@ void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Stop rotating
-		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+		if (m_registry.valid(m_currentEntity)) {
+			if (m_registry.has<stateTag::IsBeingConstructed>(m_currentEntity)) {
+				m_registry.remove<stateTag::IsBeingConstructed>(m_currentEntity);
+			}
+			if (m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
+				m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+				m_currentEntity = -1;
+			}
 		}
 	}
 }
