@@ -30,5 +30,5 @@ public:
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
-	GameOver m_gameOver;
+	//GameOver m_gameOver;
 };

@@ -10,6 +10,7 @@
 #include "components/health-bar.hpp"
 #include "core/tags.hpp"
 #include "core/maths.hpp"
+#include "core/constants.hpp"
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
@@ -64,6 +65,8 @@ void RenderSystem::update(float deltatime) {
 		GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
 		GLCall(glBindTexture(sprite.target, sprite.textureID));
 		sprite.ib->bind();
+
+		transform.zIndex = enemyZindex;
 
 		// Updates
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);

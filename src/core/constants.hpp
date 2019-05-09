@@ -24,3 +24,5 @@ static const float PROJECTILE_HITBOX_RADIUS = 1.0f;
 
 static const float TARGET_DELTA_MS = 1000.0f / 60.0f; // 60 FPS
 static const float MAX_DELTA_MS = 1000.0f; // one second
+
+extern float enemyZindex;

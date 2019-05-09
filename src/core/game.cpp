@@ -31,7 +31,7 @@ Game::Game(EventEmitter& emitter)
 	level(nullptr), m_state(GameState::LEVEL), progression(emitter),
 
 	// Camera
-	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -50.0f, 50.0f)),
+	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -5.0f, 5.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f),
 
@@ -195,6 +195,7 @@ int Game::init() {
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_DEPTH_TEST));
+	GLCall(glDepthFunc(GL_LESS));
 
     // ImGui
     IMGUI_CHECKVERSION();
@@ -205,10 +206,10 @@ int Game::init() {
 	ImGui::StyleColorsDark();
 
     // Noesis GUI
-    Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
-    Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
-    Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
-    Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
+    //Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
+    //Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
+    //Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
+    //Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
 	// Services
 	locator::debugDraw::set<DebugDrawService>();
@@ -320,7 +321,7 @@ Game::~Game() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-	Noesis::GUI::Shutdown();
+	//Noesis::GUI::Shutdown();
 	SDL_DestroyWindow(m_window);
 	SDL_Quit();
 	spdlog::drop_all();

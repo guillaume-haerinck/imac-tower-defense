@@ -33,6 +33,8 @@
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
+float enemyZindex = 0.0f;
+
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -69,6 +71,8 @@ int main(int argc, char** argv) {
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Current money : %.d", game.progression.getMoney());
+
+			ImGui::SliderFloat("Enemy Z-Index", &enemyZindex, -10.0f, 10.0f, "ratio = %.3f");
 
 			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);

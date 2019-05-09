@@ -8,18 +8,18 @@
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
 
-TitleScreenState::TitleScreenState(Game& game) : IGameState(game), m_titleScreen(game.emitter)
+TitleScreenState::TitleScreenState(Game& game) : IGameState(game)//, m_titleScreen(game.emitter)
 {
-	m_xaml = m_titleScreen;
-	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
-	m_ui->SetIsPPAAEnabled(true);
-	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
+	//m_xaml = m_titleScreen;
+	//m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
+	//m_ui->SetIsPPAAEnabled(true);
+	//m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+	//m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 }
 
 TitleScreenState::~TitleScreenState() {
-	m_ui->GetRenderer()->Shutdown();
-	delete m_ui;
+	//m_ui->GetRenderer()->Shutdown();
+	//delete m_ui;
 }
 
 void TitleScreenState::enter() {

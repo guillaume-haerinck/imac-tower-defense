@@ -8,18 +8,18 @@
 #include "logger/gl-log-handler.hpp"
 #include "core/game.hpp"
 
-GameOverState::GameOverState(Game& game) : IGameState(game), m_gameOver(m_game.emitter)
+GameOverState::GameOverState(Game& game) : IGameState(game)//, m_gameOver(m_game.emitter)
 {
-	m_xaml = m_gameOver;
-	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
-	m_ui->SetIsPPAAEnabled(true);
-	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
-	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
+	//m_xaml = m_gameOver;
+	//m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
+	//m_ui->SetIsPPAAEnabled(true);
+	//m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+	//m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 }
 
 GameOverState::~GameOverState() {
-	m_ui->GetRenderer()->Shutdown();
-	delete m_ui;
+	//m_ui->GetRenderer()->Shutdown();
+	//delete m_ui;
 }
 
 void GameOverState::enter() {

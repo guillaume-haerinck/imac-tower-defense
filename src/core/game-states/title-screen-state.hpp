@@ -29,5 +29,5 @@ public:
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
-	TitleScreen m_titleScreen;
+	//TitleScreen m_titleScreen;
 };

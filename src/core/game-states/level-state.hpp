@@ -29,5 +29,5 @@ public:
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
-	LevelHud m_levelHud;
+	//LevelHud m_levelHud;
 };
