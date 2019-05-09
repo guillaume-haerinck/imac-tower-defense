@@ -34,5 +34,5 @@ void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION )
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
-	m_registry.assign<cmpt::Transform>(myEntity, pos);
+	m_registry.assign<cmpt::Transform>(myEntity, pos, zIndexExplosion);
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <vector>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "logger/gl-log-handler.hpp"
 #include "core/constants.hpp"
@@ -62,7 +63,9 @@ void DebugDrawService::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, co
     GLCall(glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Render
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount));
@@ -92,7 +95,9 @@ void DebugDrawService::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCoun
     GLCall(glBufferData(GL_ARRAY_BUFFER, vertexCount * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Render outline
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_LINE_LOOP, 0, vertexCount));
@@ -125,7 +130,9 @@ void DebugDrawService::DrawCircle(const b2Vec2& center, float32 radius, const b2
     GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Update
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_LINE_STRIP, 0, segmentNumber + 1));
@@ -155,7 +162,9 @@ void DebugDrawService::DrawSolidCircle(const b2Vec2& center, float32 radius, con
     GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
     
     // Update
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, color.a * 0.5f);
     GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 1));
@@ -184,7 +193,9 @@ void DebugDrawService::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2C
     GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
     
     // Render
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_LINES, 0, 2));
@@ -212,7 +223,9 @@ void DebugDrawService::DrawTransform(const b2Transform& xf) {
     GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &yAxis, GL_DYNAMIC_DRAW));
     
     // Render Y axis
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", 0.0f, 1.0f, 0.0f, 1.0f); // Y axis in Green
     GLCall(glDrawArrays(GL_LINES, 0, 4));
@@ -247,7 +260,9 @@ void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& c
     GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &data, GL_DYNAMIC_DRAW));
     
     // Update
-    glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
     GLCall(glDrawArrays(GL_POINTS, 0, 1));
@@ -276,7 +291,9 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
 	// Render
-	glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
@@ -306,7 +323,9 @@ void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
 	// Render
-	glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));
@@ -344,7 +363,9 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2, BasicShaderT
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
 	// Render
-	glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	shader.setUniformMat4f("u_mvp", mvp);
 	shader.setUniform4f("u_color", m_color.r/255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	if (shaderType == BasicShaderType::LASER) {
@@ -373,7 +394,9 @@ void DebugDrawService::point(float x, float y) {
 	GLCall(glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float), &data, GL_DYNAMIC_DRAW));
 
 	// Update
-	glm::mat4 mvp = m_projMat * m_viewMat;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
 	GLCall(glDrawArrays(GL_POINTS, 0, 1));

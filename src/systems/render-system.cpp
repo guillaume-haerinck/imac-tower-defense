@@ -10,6 +10,7 @@
 #include "components/health-bar.hpp"
 #include "core/tags.hpp"
 #include "core/maths.hpp"
+#include "core/constants.hpp"
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
@@ -89,7 +90,7 @@ void RenderSystem::update(float deltatime) {
 				cmpt::Transform healthTransform = transform;
 				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
-				healthTransform.zIndex = 10;
+				healthTransform.zIndex = zIndexHud - 1;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
@@ -114,7 +115,7 @@ void RenderSystem::update(float deltatime) {
 				healthTransform.position += healthbar.relativePos;
 				float scale = imac::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
-				healthTransform.zIndex = 11;
+				healthTransform.zIndex = zIndexHud;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);

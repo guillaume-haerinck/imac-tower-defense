@@ -54,7 +54,7 @@ void EnemyFactory::create() {
 	m_registry.assign<entityTag::Enemy>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
 	m_registry.assign<renderTag::Single>(myEntity);
-	cmpt::Transform transform(m_level.getNodePosition(startNode), glm::vec2(1.0f), 0.0f, 30);
+	cmpt::Transform transform(m_level.getNodePosition(startNode), zIndexEnemy);
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	//m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_level, startNode);

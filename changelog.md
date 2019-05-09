@@ -1,8 +1,13 @@
 # Imac Tower Defense Changelog
 
+## 09.05.19
+
+Fix deepth buffer.
+
 ## 08.05.19
 
 Input events are handled separatly for clear separation between game screens.
+Mirror factory and limit rotation of tower by a few axes.
 
 ## 07.05.19
 
