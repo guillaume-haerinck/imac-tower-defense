@@ -16,8 +16,12 @@ void IGameState::restoreGpuState() {
 
 	// Z-buffer
 	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LESS));
+	GLCall(glDepthFunc(GL_LEQUAL));
 	GLCall(glDepthMask(GL_TRUE));
+
+	// Blending
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	// Clear window
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));

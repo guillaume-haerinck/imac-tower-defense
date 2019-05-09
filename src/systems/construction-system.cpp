@@ -28,7 +28,7 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Construct
-		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= MIRROR_COST) {
+		if (m_registry.has<tileTag::Constructible>(tileId) ){// && m_progression.getMoney() >= MIRROR_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int mirrorId = this->m_mirrorFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
@@ -67,7 +67,7 @@ void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Construct
-		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= TOWER_COST) {
+		if (m_registry.has<tileTag::Constructible>(tileId) ){ //&& m_progression.getMoney() >= TOWER_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int towerId = this->m_towerFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
