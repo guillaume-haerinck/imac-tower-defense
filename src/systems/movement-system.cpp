@@ -64,6 +64,7 @@ void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
 }
 
 void MovementSystem::update(float deltatime) {
+
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
 		transform.position.x = rigidbody.body->GetPosition().x;
 		transform.position.y = rigidbody.body->GetPosition().y;

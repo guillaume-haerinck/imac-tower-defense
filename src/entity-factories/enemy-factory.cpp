@@ -16,6 +16,7 @@
 #include "components/health.hpp"
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
+#include "components/wiggle.hpp"
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimis�s en m�moire
 
@@ -61,4 +62,5 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Health>(myEntity, ENNEMY_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
+	m_registry.assign<cmpt::Wiggle>(myEntity);
 }

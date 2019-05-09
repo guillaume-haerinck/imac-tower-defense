@@ -11,6 +11,8 @@
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 #include "core/constants.hpp"
+#include "components/wiggle.hpp"
+#include <SDL2/SDL.h>
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
@@ -20,6 +22,13 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
+
+	//Add wiggle (will be removed after rendering)
+	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
+		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+		wiggle.latestMove = glm::vec2(0, 2.6*randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset));
+		transform.position += wiggle.latestMove;
+	});
 
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
@@ -133,6 +142,11 @@ void RenderSystem::update(float deltatime) {
 				healthbar.background.shader->unbind();
 			}
 		}
+	});
+
+	//Remove wiggle (must be last function called in renderSystem.update() )
+	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
+		transform.position -= wiggle.latestMove;
 	});
 }
 
