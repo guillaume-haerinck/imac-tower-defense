@@ -23,7 +23,7 @@ void ProjectileFactory::create(glm::vec2 initialPos, unsigned int targetId) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_projectileSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
-	m_registry.assign<cmpt::Transform>(myEntity, initialPos);
-	m_registry.assign<cmpt::Follow>(myEntity,2.5);
+	m_registry.assign<cmpt::Transform>(myEntity, initialPos, zIndexExplosion);
+	m_registry.assign<cmpt::Follow>(myEntity, 2.5);
 	m_registry.assign<cmpt::Targeting>(myEntity,targetId,PROJECTILE_HITBOX_RADIUS);
 }

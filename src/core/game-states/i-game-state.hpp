@@ -19,6 +19,8 @@ public:
 	virtual void update(float deltatime) = 0;
 	virtual void exit() = 0;
 
+	void restoreGpuState();
+
 protected:
 	Game& m_game;
 };

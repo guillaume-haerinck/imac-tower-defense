@@ -66,8 +66,6 @@ void RenderSystem::update(float deltatime) {
 		GLCall(glBindTexture(sprite.target, sprite.textureID));
 		sprite.ib->bind();
 
-		transform.zIndex = enemyZindex;
-
 		// Updates
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
@@ -92,7 +90,7 @@ void RenderSystem::update(float deltatime) {
 				cmpt::Transform healthTransform = transform;
 				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
-				healthTransform.zIndex = 10;
+				healthTransform.zIndex = zIndexHud - 1;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
@@ -117,7 +115,7 @@ void RenderSystem::update(float deltatime) {
 				healthTransform.position += healthbar.relativePos;
 				float scale = imac::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
-				healthTransform.zIndex = 11;
+				healthTransform.zIndex = zIndexHud;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);

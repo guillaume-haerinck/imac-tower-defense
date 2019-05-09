@@ -31,7 +31,7 @@ Game::Game(EventEmitter& emitter)
 	level(nullptr), m_state(GameState::LEVEL), progression(emitter),
 
 	// Camera
-	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -5.0f, 5.0f)),
+	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -10.0f, 10.0f)),
 	m_viewMat(glm::mat4(1.0f)),
 	m_viewTranslation(glm::vec2(0.0f)), m_viewScale(1.0f),
 
@@ -195,6 +195,7 @@ int Game::init() {
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_DEPTH_TEST));
+	GLCall(glDepthMask(GL_TRUE));
 	GLCall(glDepthFunc(GL_LESS));
 
     // ImGui

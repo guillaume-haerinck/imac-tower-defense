@@ -43,12 +43,7 @@ void LevelState::update(float deltatime) {
 	m_ui->GetRenderer()->RenderOffscreen();
 
 	// Need to restore the GPU state because noesis changes it
-	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-	GLCall(glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT));
-	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LESS));
-	GLCall(glDepthMask(GL_TRUE));
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	restoreGpuState();
 
 	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
 	m_game.animationSystem->update(deltatime); 
