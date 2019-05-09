@@ -13,6 +13,9 @@
 #include "core/constants.hpp"
 #include "components/wiggle.hpp"
 #include <SDL2/SDL.h>
+#include "components/attached-to.hpp"
+
+#include <spdlog/spdlog.h>
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
@@ -28,6 +31,17 @@ void RenderSystem::update(float deltatime) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 		wiggle.latestMove = glm::vec2(0, 2.6*randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset));
 		transform.position += wiggle.latestMove;
+	});
+
+	//Add main part position (will be removed after rendering (we don't copy to allow wiggle to happen))
+	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
+		if (m_registry.valid(attachedTo.entityId)) {
+			attachedTo.latestMainPos = m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
+			transform.position += attachedTo.latestMainPos;
+		}
+		else {
+			m_registry.destroy(entity);
+		}
 	});
 
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
@@ -141,6 +155,16 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(0));
 				healthbar.background.shader->unbind();
 			}
+		}
+	});
+
+	//Remove main part position
+	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
+		if (m_registry.valid(attachedTo.entityId)) {
+			transform.position -= attachedTo.latestMainPos;
+		}
+		else {
+			m_registry.destroy(entity);
 		}
 	});
 

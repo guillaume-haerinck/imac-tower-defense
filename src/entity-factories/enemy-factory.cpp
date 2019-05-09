@@ -17,6 +17,7 @@
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 #include "components/wiggle.hpp"
+#include "components/attached-to.hpp"
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimis�s en m�moire
 
@@ -24,14 +25,17 @@ EnemyFactory::EnemyFactory(entt::DefaultRegistry& registry, Level& level)
 : Factory(registry), m_level(level)
 {
 	//m_ennemySprite = m_spriteFactory.createAtlas("res/images/spritesheets/spaceman-196x196.png", glm::vec2(13.0f), glm::vec2(196, 196));
-	m_ennemySprite = m_spriteFactory.createSingle("res/images/textures/drone.png", glm::vec2(13.0f));
+	m_droneSprite = m_spriteFactory.createSingle("res/images/textures/drone-no-eye.png", glm::vec2(13.0f));
+	m_droneEyeSprite = m_spriteFactory.createSingle("res/images/textures/drone-eye.png", glm::vec2(13.0f));
 	m_healthBackground = m_primitiveFactory.createRect(glm::vec4(0, 0, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
 	m_healthBar = m_primitiveFactory.createRect(glm::vec4(0, 1, 0, 1), glm::vec2(6.0f, 1.0f), PivotPoint::MIDDLE_LEFT);
 }
 
 EnemyFactory::~EnemyFactory() {
-	GLCall(glDeleteTextures(1, &m_ennemySprite.textureID));
-	GLCall(glDeleteVertexArrays(1, &m_ennemySprite.vaID));
+	GLCall(glDeleteTextures(1, &m_droneSprite.textureID));
+	GLCall(glDeleteVertexArrays(1, &m_droneSprite.vaID));
+	GLCall(glDeleteTextures(1, &m_droneEyeSprite.textureID));
+	GLCall(glDeleteVertexArrays(1, &m_droneEyeSprite.vaID));
 	GLCall(glDeleteVertexArrays(1, &m_healthBackground.vaID));
 	GLCall(glDeleteVertexArrays(1, &m_healthBar.vaID));
 }
@@ -53,7 +57,7 @@ void EnemyFactory::create() {
 
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Enemy>(myEntity);
-	m_registry.assign<cmpt::Sprite>(myEntity, m_ennemySprite);
+	m_registry.assign<cmpt::Sprite>(myEntity, m_droneSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	cmpt::Transform transform(m_level.getNodePosition(startNode), zIndexEnemy);
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
@@ -63,4 +67,10 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
 	m_registry.assign<cmpt::Wiggle>(myEntity);
+
+	auto eye = m_registry.create();
+	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0, 0));
+	m_registry.assign<cmpt::AttachedTo>(eye, myEntity);
+	m_registry.assign<cmpt::Sprite>(eye, m_droneEyeSprite);
+	m_registry.assign<renderTag::Single>(eye);
 }

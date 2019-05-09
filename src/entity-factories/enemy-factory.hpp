@@ -21,7 +21,8 @@ public:
 private:
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
-	cmpt::Sprite m_ennemySprite;
+	cmpt::Sprite m_droneSprite;
+	cmpt::Sprite m_droneEyeSprite;
 	cmpt::Primitive m_healthBackground;
 	cmpt::Primitive m_healthBar;
 	Level& m_level;
