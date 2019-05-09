@@ -29,7 +29,10 @@ void RenderSystem::update(float deltatime) {
 	//Add wiggle (will be removed after rendering)
 	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-		wiggle.latestMove = glm::vec2(0, wiggle.amplitude*randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset));
+		float r = wiggle.amplitude*(1+randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset))/2;
+		float agl = 5*imac::TAU*randomService.noise((float)SDL_GetTicks() *0.000025 + wiggle.noiseOffset + 50);
+		glm::vec2 dl = r * glm::vec2(cos(agl), sin(agl));
+		wiggle.latestMove = dl;
 		transform.position += wiggle.latestMove;
 	});
 
