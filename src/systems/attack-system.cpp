@@ -57,7 +57,7 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 15, entity, deltatime, m_registry.has<stateTag::IsBeingConstructed>(entity));
+		this->shootLaser(transform.position, transform.rotation, 15, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity));
 	});
 	glLineWidth(1);
 }
@@ -92,7 +92,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
-			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingConstructed>(entity);
+			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingControlled>(entity);
 		}
 	});
 
@@ -123,7 +123,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
 		normal /= glm::length(normal);
 		m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
-			if (!m_registry.has<stateTag::IsBeingConstructed>(entity)) {
+			if (!m_registry.has<stateTag::IsBeingControlled>(entity)) {
 				float orthoComp = abs(normal.x*(targetTransform.position.x - pos.x) + normal.y*(targetTransform.position.y - pos.y));
 				float colinComp = ((laserEnd.x - pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y - pos.y)*(targetTransform.position.y - pos.y)) / laserLength;
 				if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {

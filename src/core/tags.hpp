@@ -23,5 +23,5 @@ namespace entityTag {
 }
 
 namespace stateTag {
-	TAG(IsBeingConstructed);
+	TAG(IsBeingControlled);
 }
