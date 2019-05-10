@@ -4,4 +4,7 @@
       HorizontalAlignment="Left"
       x:Class="LevelHud">
   <TextBlock x:Name="Money" Text="{Binding Output}" FontSize="20" Foreground="White"/>
+  <TextBlock.RenderTransform>
+    <TranslateTransform X="100" Y="-100"/>
+  </TextBlock.RenderTransform>
 </StackPanel>
