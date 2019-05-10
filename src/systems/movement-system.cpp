@@ -61,22 +61,23 @@ void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
 			transform.rotation = agl + lookAtMouse.angleOffset;
 		}
 	});
-	//Move towards mouse
-	m_registry.view<cmpt::Transform, cmpt::MoveTowardsMouse, cmpt::AttachedTo>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::MoveTowardsMouse& move, cmpt::AttachedTo& attachedTo) {
-		if (!m_registry.valid(attachedTo.entityId)) {
-			m_registry.destroy(entity);
-		}
-		else {
-			glm::vec2 pos = transform.position + m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
-			float agl = atan2(event.mousePos.y - pos.y, event.mousePos.x * WIN_RATIO - pos.x);
-			transform.position = move.maxDist * glm::vec2(cos(agl), sin(agl));
-		}
-	});
 	//Update previous mouse position
 	m_prevMousePos = event.mousePos;
 }
 
 void MovementSystem::update(float deltatime) {
+
+	//Move towards mouse
+	m_registry.view<cmpt::Transform, cmpt::MoveTowardsMouse, cmpt::AttachedTo>().each([this](auto entity, cmpt::Transform & transform, cmpt::MoveTowardsMouse& move, cmpt::AttachedTo& attachedTo) {
+		if (!m_registry.valid(attachedTo.entityId)) {
+			m_registry.destroy(entity);
+		}
+		else {
+			glm::vec2 pos = transform.position + m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
+			float agl = atan2(m_prevMousePos.y - pos.y, m_prevMousePos.x * WIN_RATIO - pos.x);
+			transform.position = move.maxDist * glm::vec2(cos(agl), sin(agl));
+		}
+	});
 
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
 		transform.position.x = rigidbody.body->GetPosition().x;
