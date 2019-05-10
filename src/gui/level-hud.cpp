@@ -2,6 +2,7 @@
 
 #include <NsGui/Button.h>
 #include <string>
+#include <spdlog/spdlog.h>
 
 #include "events/change-game-state.hpp"
 #include "events/progression-updated.hpp"
@@ -22,6 +23,16 @@ bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, co
 
 void LevelHud::OnInitialized(BaseComponent*, const Noesis::EventArgs&) {
 	SetDataContext(Noesis::MakePtr<ViewModel>(m_emitter, m_progression));
+}
+
+void LevelHud::OnMouseEnter(const Noesis::MouseEventArgs& e) {
+	spdlog::info("Mouse entered Noesis !");
+	m_emitter.focus = FocusMode::HUD;
+}
+
+void LevelHud::OnMouseLeave(const Noesis::MouseEventArgs& e) {
+	spdlog::info("Mouse left Noesis !");
+	m_emitter.focus = FocusMode::GAME;
 }
 
 ViewModel::ViewModel(EventEmitter& emitter, Progression& progression)

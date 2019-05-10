@@ -83,3 +83,7 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 }
+
+void LevelState::onMouseMove(const evnt::MouseMove& event) {
+	this->m_ui->MouseMove(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y);
+}

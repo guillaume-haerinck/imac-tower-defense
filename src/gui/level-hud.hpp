@@ -20,6 +20,10 @@ private:
 	void InitializeComponent();
 	void OnInitialized(BaseComponent*, const Noesis::EventArgs&);
 
+	// Events
+	void OnMouseEnter(const Noesis::MouseEventArgs& e) override;
+	void OnMouseLeave(const Noesis::MouseEventArgs& e) override;
+
 private:
 	NS_IMPLEMENT_INLINE_REFLECTION(LevelHud, StackPanel) {
 		NsMeta<Noesis::TypeId>("LevelHud");

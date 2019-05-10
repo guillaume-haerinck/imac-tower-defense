@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 				break;
 
 			case SDL_MOUSEMOTION:
-				emitter.publish<evnt::MouseMove>(normMousePos);
+				emitter.publish<evnt::MouseMove>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 			
 			case SDL_KEYDOWN:
