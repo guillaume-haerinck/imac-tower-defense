@@ -71,7 +71,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Wiggle>(myEntity,1);
 
 	auto eye = m_registry.create();
-	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), zIndexEnemy+1);
+	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);
 	m_registry.assign<cmpt::AttachedTo>(eye, myEntity);
 	m_registry.assign<cmpt::Sprite>(eye, m_droneEyeSprite);
 	m_registry.assign<renderTag::Single>(eye);
