@@ -94,9 +94,14 @@ void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
 }
 
 void ConstructionSystem::removeControlTags() {
-	m_registry.view<stateTag::IsBeingControlled, cmpt::LookAtMouse>().each([this](auto entity, auto, auto) {
+	m_registry.view<stateTag::IsBeingControlled>().each([this](auto entity, auto) {
 		m_registry.remove<stateTag::IsBeingControlled>(entity);
-		m_registry.remove<cmpt::LookAtMouse>(entity);
+		if (m_registry.has<cmpt::LookAtMouse>(entity)) {
+			m_registry.remove<cmpt::LookAtMouse>(entity);
+		}
+		if (m_registry.has<cmpt::ShootLaser>(entity)) {
+			m_registry.get<cmpt::ShootLaser>(entity).isActiv = true;
+		}
 	});
 }
 
