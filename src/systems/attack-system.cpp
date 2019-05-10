@@ -18,6 +18,7 @@
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry) {}
 
 void AttackSystem::update(float deltatime) {
+
 	// Look at target
 	m_registry.view<cmpt::Targeting, cmpt::Transform , cmpt::LookAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::LookAt lookAt) {
 		if ( m_registry.valid(targeting.targetId) ) {
@@ -57,9 +58,7 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		if (laser.isActiv) {
-			this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity));
-		}
+	this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
 	});
 	glLineWidth(1);
 }
