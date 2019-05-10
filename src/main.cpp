@@ -33,14 +33,6 @@
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
-// Z-INDEXES (usefull to have it here for debug)
-int zIndexMap = -9;
-int zIndexEnemy = 0;
-int zIndexTower = 1;
-int zIndexExplosion = 8;
-int zIndexDebugDraw = 9;
-int zIndexHud = 9;
-
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -76,8 +68,6 @@ int main(int argc, char** argv) {
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Current money : %.d", game.progression.getMoney());
-
-			ImGui::SliderInt("Enemy Z-Index", &zIndexEnemy, -10, 10);
 
 			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);
