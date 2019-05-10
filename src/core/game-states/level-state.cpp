@@ -51,6 +51,23 @@ void LevelState::update(float deltatime) {
 	m_game.renderSystem->update(deltatime);
 	m_game.attackSystem->update(deltatime);
 	m_ui->GetRenderer()->Render();
+
+	switch (checkVictoryConditions()) {
+	case GameplayState::LOOSE:
+		// change game state to game over screen ? Use a personalized message
+		break;
+
+	case GameplayState::WIN:
+		// change to next level introduction
+		break;
+
+	default:
+		break;
+	}
+}
+
+GameplayState LevelState::checkVictoryConditions() {
+	return GameplayState::PLAY;
 }
 
 void LevelState::exit() {
