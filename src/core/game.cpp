@@ -78,10 +78,16 @@ Game::Game(EventEmitter& emitter)
 		// Enter new state
 		switch (event.state) {
 		case TITLE_SCREEN:
+			if (m_titleState == nullptr) {
+				m_titleState = new TitleScreenState(*this);
+			}
 			m_titleState->enter();
 			break;
 
 		case LEVEL:
+			if (m_levelState == nullptr) {
+				m_levelState = new LevelState(*this);
+			}
 			level->setLevel(event.subState);
 			m_levelState->enter();
 			break;
@@ -90,6 +96,9 @@ Game::Game(EventEmitter& emitter)
 			break;
 
 		case GAME_OVER:
+			if (m_gameOverState == nullptr) {
+				m_gameOverState = new GameOverState(*this);
+			}
 			m_gameOverState->enter();
 			break;
 
@@ -244,18 +253,15 @@ int Game::init() {
 	attackSystem = new AttackSystem(registry, emitter);
 	healthSystem = new HealthSystem(registry, emitter, progression);
 
-	// States
-	m_levelState = new LevelState(*this);
-	m_titleState = new TitleScreenState(*this);
-	m_gameOverState = new GameOverState(*this);
-
 	// Init current state
 	switch (this->m_state) {
 	case TITLE_SCREEN:
+		m_titleState = new TitleScreenState(*this);
 		m_titleState->enter();
 		break;
 
 	case LEVEL:
+		m_levelState = new LevelState(*this);
 		m_levelState->enter();
 		break;
 
@@ -263,6 +269,7 @@ int Game::init() {
 		break;
 
 	case GAME_OVER:
+		m_gameOverState = new GameOverState(*this);
 		m_gameOverState->enter();
 		break;
 	}
