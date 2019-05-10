@@ -3,14 +3,14 @@
 #include <NsGui/StackPanel.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsApp/DelegateCommand.h>
-#include <NsApp/NotifyPropertyChangedBase.h>
+#include <entt/entt.hpp>
 
 #include "events/handlers/event-emitter.hpp"
 #include "core/progression.hpp"
 
 class LevelHud : public Noesis::StackPanel {
 public:
-	LevelHud(EventEmitter& emitter, Progression& progression);
+	LevelHud(EventEmitter& emitter, Progression& progression, entt::DefaultRegistry& registry);
 
 private:
 	// Events
@@ -31,21 +31,6 @@ private:
 
 	EventEmitter& m_emitter;
 	Progression& m_progression;
+	entt::DefaultRegistry& m_registry;
 };
 
-class ViewModel : public NoesisApp::NotifyPropertyChangedBase {
-public:
-	ViewModel(EventEmitter& emitter, Progression& progression);
-	const char* GetOutput() const;
-	void SetOutput(const char* value);
-
-private:
-	char m_output[256] = "";
-	EventEmitter& m_emitter;
-	Progression& m_progression;
-
-	NS_IMPLEMENT_INLINE_REFLECTION(ViewModel, NotifyPropertyChangedBase) {
-		NsMeta<Noesis::TypeId>("ViewModel");
-		NsProp("Output", &ViewModel::GetOutput, &ViewModel::SetOutput);
-	}
-};

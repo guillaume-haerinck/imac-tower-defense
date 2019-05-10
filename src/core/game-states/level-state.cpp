@@ -8,7 +8,7 @@
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
 
-LevelState::LevelState(Game& game): IGameState(game), m_levelHud(game.emitter, game.progression)
+LevelState::LevelState(Game& game): IGameState(game), m_levelHud(game.emitter, game.progression, game.registry)
 {
 	m_xaml = m_levelHud;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();

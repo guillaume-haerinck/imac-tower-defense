@@ -1,11 +1,11 @@
 #include "maths.hpp"
 #include <limits>
 
-float imac::rangeMapping(float x, float in_min, float in_max, float out_min, float out_max) {
+float imaths::rangeMapping(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-glm::vec2 imac::segmentsIntersection(glm::vec2 P, glm::vec2 Q, glm::vec2 P_, glm::vec2 Q_)
+glm::vec2 imaths::segmentsIntersection(glm::vec2 P, glm::vec2 Q, glm::vec2 P_, glm::vec2 Q_)
 {//Returns t and t_ such that the intersection point is equal to P+t*PQ and P_+t_*P_Q_.
 //(note : there is an actual intersection iff 0 <= t <= 1 and 0 <= t_ <= 1
 	float det = (Q.x - P.x)*(P_.y - Q_.y) - (Q.y - P.y)*(P_.x - Q_.x);

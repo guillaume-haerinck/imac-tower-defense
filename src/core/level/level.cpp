@@ -166,8 +166,8 @@ Graph* Level::getPathfindingGraph() const {
 }
 
 glm::vec2 Level::windowToGrid(float x, float y) {
-	float projX = imac::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
-	float projY = imac::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
+	float projX = imaths::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
+	float projY = imaths::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
 	return projToGrid(projX, projY);
 }
 
@@ -177,20 +177,20 @@ glm::vec2 Level::projToGrid(float x, float y) {
 	//spdlog::info("translation is {} {}", m_viewTranslation.x, m_viewTranslation.y);
 
 	float posX = WIN_RATIO * x - m_viewTranslation.x;
-	//posX = imac::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE * m_viewScale, 0, m_gridWidth * TILE_SIZE);
+	//posX = imaths::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE * m_viewScale, 0, m_gridWidth * TILE_SIZE);
 	float posY = y - m_viewTranslation.y;
-	//posY = imac::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE * m_viewScale, 0, m_gridHeight * TILE_SIZE);
+	//posY = imaths::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE * m_viewScale, 0, m_gridHeight * TILE_SIZE);
 
 	//spdlog::info("posY is {}", posY);
 
-	unsigned int tileX = imac::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
-	unsigned int tileY = imac::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
+	unsigned int tileX = imaths::rangeMapping(posX, 0, m_gridWidth * TILE_SIZE, 0, m_gridWidth);
+	unsigned int tileY = imaths::rangeMapping(posY, 0, m_gridHeight * TILE_SIZE, 0, m_gridHeight);
 	return glm::vec2(tileX, tileY);
 }
 
 glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) {
-	float posX = imac::rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
-	float posY = imac::rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
+	float posX = imaths::rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
+	float posY = imaths::rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
 	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);
 }
 

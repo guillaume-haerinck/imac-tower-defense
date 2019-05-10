@@ -3,12 +3,11 @@
 #include <entt/entt.hpp>
 
 enum FocusMode {
-	HUD,
-	GAME
+	GAME,
+	HUD
 };
 
 struct EventEmitter : entt::Emitter<EventEmitter> {
+	EventEmitter() : focus(GAME) {}
 	FocusMode focus;
 };
-
-// TODO use another struct, an event dispatcher for physic, because it is synchronious

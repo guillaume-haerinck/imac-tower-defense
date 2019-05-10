@@ -3,8 +3,8 @@
       VerticalAlignment="Bottom"
       HorizontalAlignment="Left"
       x:Class="LevelHud">
-  <TextBlock x:Name="Money" Text="{Binding Output}" FontSize="20" Foreground="White"/>
-  <TextBlock.RenderTransform>
-    <TranslateTransform X="100" Y="-100"/>
-  </TextBlock.RenderTransform>
+
+  <Canvas>
+    <ToggleButton Canvas.Left="{Binding PosX}" Canvas.Bottom="{Binding PosY}" Content="Mon super bouton"/>
+  </Canvas>
 </StackPanel>

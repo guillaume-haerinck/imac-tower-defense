@@ -3,12 +3,15 @@
 #include <NsGui/Button.h>
 #include <string>
 #include <spdlog/spdlog.h>
+#include <glm/glm.hpp>
 
-#include "events/change-game-state.hpp"
-#include "events/progression-updated.hpp"
+#include "level-hud-bindings/floating-menu-bindings.hpp"
 #include "core/game-states/i-game-state.hpp"
 
-LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(emitter), m_progression(progression) {
+
+LevelHud::LevelHud(EventEmitter& emitter, Progression& progression, entt::DefaultRegistry& registry)
+	: m_emitter(emitter), m_progression(progression), m_registry(registry)
+{
 	Initialized() += MakeDelegate(this, &LevelHud::OnInitialized);
 	InitializeComponent();
 }
@@ -22,7 +25,7 @@ bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, co
 }
 
 void LevelHud::OnInitialized(BaseComponent*, const Noesis::EventArgs&) {
-	SetDataContext(Noesis::MakePtr<ViewModel>(m_emitter, m_progression));
+	SetDataContext(Noesis::MakePtr<FloatingMenuBindings>(m_emitter, m_progression, m_registry));
 }
 
 void LevelHud::OnMouseEnter(const Noesis::MouseEventArgs& e) {
@@ -33,27 +36,4 @@ void LevelHud::OnMouseEnter(const Noesis::MouseEventArgs& e) {
 void LevelHud::OnMouseLeave(const Noesis::MouseEventArgs& e) {
 	spdlog::info("Mouse left Noesis !");
 	m_emitter.focus = FocusMode::GAME;
-}
-
-ViewModel::ViewModel(EventEmitter& emitter, Progression& progression)
-: m_output("0"), m_emitter(emitter), m_progression(progression)
-{
-	std::string text = std::to_string(this->m_progression.getMoney());
-	this->SetOutput(text.c_str());
-
-	m_emitter.on<evnt::ProgressionUpdated>([this](const evnt::ProgressionUpdated & event, EventEmitter & emitter) {
-		std::string text = std::to_string(this->m_progression.getMoney());
-		this->SetOutput(text.c_str());
-	});
-}
-
-const char* ViewModel::GetOutput() const {
-	return m_output;
-}
-
-void ViewModel::SetOutput(const char* value) {
-	if (!Noesis::String::Equals(m_output, value)) {
-		Noesis::String::Copy(m_output, sizeof(m_output), value);
-		OnPropertyChanged("Output");
-	}
 }

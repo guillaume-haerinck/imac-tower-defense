@@ -74,10 +74,10 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	glm::vec2 unitDirVector = glm::vec2(cos(agl), sin(agl));
 	glm::vec2 posPlusUnitVector = pos + unitDirVector;
 
-	glm::vec2 topInter = imac::segmentsIntersection(pos, posPlusUnitVector, tlCorner, trCorner);
-	glm::vec2 rightInter = imac::segmentsIntersection(pos, posPlusUnitVector, trCorner, brCorner);
-	glm::vec2 botInter = imac::segmentsIntersection(pos, posPlusUnitVector, brCorner, blCorner);
-	glm::vec2 leftInter = imac::segmentsIntersection(pos, posPlusUnitVector, blCorner, tlCorner);
+	glm::vec2 topInter = imaths::segmentsIntersection(pos, posPlusUnitVector, tlCorner, trCorner);
+	glm::vec2 rightInter = imaths::segmentsIntersection(pos, posPlusUnitVector, trCorner, brCorner);
+	glm::vec2 botInter = imaths::segmentsIntersection(pos, posPlusUnitVector, brCorner, blCorner);
+	glm::vec2 leftInter = imaths::segmentsIntersection(pos, posPlusUnitVector, blCorner, tlCorner);
 
 	glm::vec2 laserEnd;
 	float surfaceAngle;
@@ -88,7 +88,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingConstructed](auto entity, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		glm::vec2 mirrorPos = mirrorTransform.position;
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
-		glm::vec2 inter = imac::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
+		glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
 		if ( 0 <= inter.x && inter.x < t && 0 <= inter.y && inter.y <= 1) {
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
@@ -106,7 +106,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		}
 		if (0 <= rightInter.y && rightInter.y <= 1 && rightInter.x >= 0) {
 			laserEnd = trCorner + rightInter.y * (brCorner - trCorner);
-			surfaceAngle = imac::TAU / 4;
+			surfaceAngle = imaths::TAU / 4;
 		}
 		if (0 <= botInter.y && botInter.y <= 1 && botInter.x >= 0) {
 			laserEnd = brCorner + botInter.y * (blCorner - brCorner);
@@ -114,7 +114,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		}
 		if (0 <= leftInter.y && leftInter.y <= 1 && leftInter.x >= 0) {
 			laserEnd = blCorner + leftInter.y * (tlCorner - blCorner);
-			surfaceAngle = imac::TAU / 4;
+			surfaceAngle = imaths::TAU / 4;
 		}
 	}
 
