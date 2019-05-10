@@ -25,9 +25,9 @@ static const float PROJECTILE_HITBOX_RADIUS = 1.0f;
 static const float TARGET_DELTA_MS = 1000.0f / 60.0f; // 60 FPS
 static const float MAX_DELTA_MS = 1000.0f; // one second
 
-extern int zIndexEnemy;
-extern int zIndexTower;
-extern int zIndexMap;
-extern int zIndexExplosion;
-extern int zIndexDebugDraw;
-extern int zIndexHud;
+static const int Z_INDEX_MAP = -9;
+static const int Z_INDEX_ENEMY = 0;
+static const int Z_INDEX_TOWER = 1;
+static const int Z_INDEX_VISUAL_EFFECTS = 8;
+static const int Z_INDEX_DEBUG_DRAW = 9;
+static const int Z_INDEX_HUD = 9;;

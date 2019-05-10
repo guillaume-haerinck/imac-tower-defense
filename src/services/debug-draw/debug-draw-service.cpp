@@ -64,7 +64,7 @@ void DebugDrawService::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, co
     
     // Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
@@ -96,7 +96,7 @@ void DebugDrawService::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCoun
     
     // Render outline
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
@@ -131,7 +131,7 @@ void DebugDrawService::DrawCircle(const b2Vec2& center, float32 radius, const b2
     
     // Update
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
@@ -163,7 +163,7 @@ void DebugDrawService::DrawSolidCircle(const b2Vec2& center, float32 radius, con
     
     // Update
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, color.a * 0.5f);
@@ -194,7 +194,7 @@ void DebugDrawService::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2C
     
     // Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
@@ -224,7 +224,7 @@ void DebugDrawService::DrawTransform(const b2Transform& xf) {
     
     // Render Y axis
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", 0.0f, 1.0f, 0.0f, 1.0f); // Y axis in Green
@@ -261,7 +261,7 @@ void DebugDrawService::DrawPoint(const b2Vec2& p, float32 size, const b2Color& c
     
     // Update
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
     m_shaderBasic.setUniformMat4f("u_mvp", mvp);
     m_shaderBasic.setUniform4f("u_color", color.r, color.g, color.b, color.a);
@@ -292,7 +292,7 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 
 	// Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
@@ -324,7 +324,7 @@ void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 
 	// Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
@@ -364,7 +364,7 @@ void DebugDrawService::line(float x1, float y1, float x2, float y2, BasicShaderT
 
 	// Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	shader.setUniformMat4f("u_mvp", mvp);
 	shader.setUniform4f("u_color", m_color.r/255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);
@@ -395,7 +395,7 @@ void DebugDrawService::point(float x, float y) {
 
 	// Update
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndexDebugDraw));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);

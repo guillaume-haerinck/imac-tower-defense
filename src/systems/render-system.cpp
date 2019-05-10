@@ -116,7 +116,7 @@ void RenderSystem::update(float deltatime) {
 				cmpt::Transform healthTransform = transform;
 				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
-				healthTransform.zIndex = zIndexHud - 1;
+				healthTransform.zIndex = Z_INDEX_HUD - 1;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
@@ -141,7 +141,7 @@ void RenderSystem::update(float deltatime) {
 				healthTransform.position += healthbar.relativePos;
 				float scale = imac::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
-				healthTransform.zIndex = zIndexHud;
+				healthTransform.zIndex = Z_INDEX_HUD;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
