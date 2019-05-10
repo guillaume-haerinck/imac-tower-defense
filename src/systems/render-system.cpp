@@ -11,6 +11,11 @@
 #include "core/tags.hpp"
 #include "core/maths.hpp"
 #include "core/constants.hpp"
+#include "components/wiggle.hpp"
+#include <SDL2/SDL.h>
+#include "components/attached-to.hpp"
+
+#include <spdlog/spdlog.h>
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
@@ -20,6 +25,27 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
+
+	//Add wiggle (will be removed after rendering)
+	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
+		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+		float r = wiggle.amplitude*(1+randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset))/2;
+		float agl = 5*imac::TAU*randomService.noise((float)SDL_GetTicks() *0.000025 + wiggle.noiseOffset + 50);
+		glm::vec2 dl = r * glm::vec2(cos(agl), sin(agl));
+		wiggle.latestMove = dl;
+		transform.position += wiggle.latestMove;
+	});
+
+	//Add main part position (will be removed after rendering (we don't copy to allow wiggle to happen))
+	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
+		if (m_registry.valid(attachedTo.entityId)) {
+			attachedTo.latestMainPos = m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
+			transform.position += attachedTo.latestMainPos;
+		}
+		else {
+			m_registry.destroy(entity);
+		}
+	});
 
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
@@ -133,6 +159,21 @@ void RenderSystem::update(float deltatime) {
 				healthbar.background.shader->unbind();
 			}
 		}
+	});
+
+	//Remove main part position
+	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
+		if (m_registry.valid(attachedTo.entityId)) {
+			transform.position -= attachedTo.latestMainPos;
+		}
+		else {
+			m_registry.destroy(entity);
+		}
+	});
+
+	//Remove wiggle (must be last function called in renderSystem.update() )
+	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
+		transform.position -= wiggle.latestMove;
 	});
 }
 

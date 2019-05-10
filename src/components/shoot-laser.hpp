@@ -2,6 +2,7 @@
 
 namespace cmpt {
 	struct ShootLaser {
-		ShootLaser() {}
+		ShootLaser() : isActiv(true) {}
+		bool isActiv;
 	};
 }

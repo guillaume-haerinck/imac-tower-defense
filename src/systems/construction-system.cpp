@@ -10,12 +10,13 @@
 #include "components/entity-on.hpp"
 #include "components/rotated-by-mouse.hpp"
 #include "components/look-at-mouse.hpp"
+#include "components/shoot-laser.hpp"
 #include "events/tower-dead.hpp"
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
-: ISystem(registry, emitter), m_currentEntity(-1), m_level(level), m_towerFactory(registry), m_mirrorFactory(registry), m_progression(progression) {
+	: ISystem(registry, emitter), m_level(level), m_towerFactory(registry), m_mirrorFactory(registry), m_progression(progression) {
 	m_emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
-		glm::vec2 tilePosition = this->m_level.projToGrid(event.position.x/WIN_RATIO, event.position.y);
+		glm::vec2 tilePosition = this->m_level.projToGrid(event.position.x / WIN_RATIO, event.position.y);
 		unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 		this->m_registry.assign<tileTag::Constructible>(tileId);
 		this->m_registry.remove<cmpt::EntityOn>(tileId);
@@ -24,11 +25,14 @@ ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmi
 
 //Mirror
 void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
+	//Safety
+	removeControlTags();
+	//Get tile
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Construct
-		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= MIRROR_COST) {
+		if (m_registry.has<tileTag::Constructible>(tileId)) {// && m_progression.getMoney() >= MIRROR_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int mirrorId = this->m_mirrorFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
@@ -39,64 +43,66 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
 			if (m_registry.has<entityTag::Mirror>(entityId)) {
-				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
-					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
-				}
-				m_currentEntity = entityId;
+				m_registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_registry.assign<cmpt::LookAtMouse>(entityId);
+			}
+			if (m_registry.has<cmpt::ShootLaser>(entityId)) {
+				m_registry.get<cmpt::ShootLaser>(entityId).isActiv = !m_registry.get<cmpt::ShootLaser>(entityId).isActiv;
 			}
 		}
 	}
 }
 
 void ConstructionSystem::onLeftClickUp(const evnt::LeftClickUp& event) {
-	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
-	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
-	if (tileId != -1) {
-		//Stop rotating
-		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity) ) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
-			m_currentEntity = -1;
-		}
-	}
+	removeControlTags();
 }
 
 //Tower
 void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
+	//Safety
+	removeControlTags();
+	//Get tile
 	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Construct
-		if (m_registry.has<tileTag::Constructible>(tileId)) { //&& m_progression.getMoney() >= TOWER_COST) {
+		if (m_registry.has<tileTag::Constructible>(tileId)) {// && m_progression.getMoney() >= TOWER_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int towerId = this->m_towerFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
 			this->m_registry.assign<cmpt::EntityOn>(tileId, towerId);
 			m_progression.addToMoney(-TOWER_COST);
+			m_registry.assign<stateTag::IsBeingControlled>(towerId);
+			m_registry.assign<cmpt::LookAtMouse>(towerId);
 		}
 		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
-			if (m_registry.has<entityTag::Tower>(entityId)) {
-				if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
-					m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
-				}
-				m_currentEntity = entityId;
+			if (m_registry.has<entityTag::Mirror>(entityId)) {
+				m_registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_registry.assign<cmpt::LookAtMouse>(entityId);
+			}
+			if (m_registry.has<cmpt::ShootLaser>(entityId)) {
+				m_registry.get<cmpt::ShootLaser>(entityId).isActiv = !m_registry.get<cmpt::ShootLaser>(entityId).isActiv;
 			}
 		}
 	}
 }
 
 void ConstructionSystem::onRightClickUp(const evnt::RightClickUp& event) {
-	glm::vec2 tilePosition = this->m_level.projToGrid(event.mousePos.x, event.mousePos.y);
-	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
-	if (tileId != -1) {
-		//Stop rotating
-		if (m_registry.valid(m_currentEntity) && m_registry.has<cmpt::LookAtMouse>(m_currentEntity)) {
-			m_registry.remove<cmpt::LookAtMouse>(m_currentEntity);
+	removeControlTags();
+}
+
+void ConstructionSystem::removeControlTags() {
+	m_registry.view<stateTag::IsBeingControlled>().each([this](auto entity, auto) {
+		m_registry.remove<stateTag::IsBeingControlled>(entity);
+		if (m_registry.has<cmpt::LookAtMouse>(entity)) {
+			m_registry.remove<cmpt::LookAtMouse>(entity);
 		}
-	}
+		if (m_registry.has<cmpt::ShootLaser>(entity)) {
+			m_registry.get<cmpt::ShootLaser>(entity).isActiv = true;
+		}
+	});
 }
 
 void ConstructionSystem::update(float deltatime) {}

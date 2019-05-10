@@ -24,9 +24,9 @@ public:
 	void onRightClickUp(const evnt::RightClickUp& event) override;
 
 private:
-	unsigned int m_currentEntity;
 	Level& m_level;
 	Progression& m_progression;
 	TowerFactory m_towerFactory;
 	MirrorFactory m_mirrorFactory;
+	void removeControlTags();
 };

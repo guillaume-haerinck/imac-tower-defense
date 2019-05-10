@@ -8,5 +8,7 @@ public:
 
 	virtual int randInt(int min, int maxPlusOne) = 0;
 	virtual int randInt(int maxPlusOne) = 0;
+
+	virtual float noise(float t) = 0;
 };
 

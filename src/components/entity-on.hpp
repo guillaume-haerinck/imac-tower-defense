@@ -2,7 +2,7 @@
 
 namespace cmpt {
 	struct EntityOn {
-		EntityOn(unsigned int entityId) : entityId(entityId){}
+		EntityOn(unsigned int entityId) : entityId(entityId) {}
 
 		unsigned int entityId;
 	};

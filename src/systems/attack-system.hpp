@@ -18,7 +18,7 @@ private:
 	ProjectileFactory m_projectileFactory;
 
 private:
-	void shootLaser(glm::vec2 pos, float agl, int nbBounce, unsigned int launcherId, float deltatime);
+	void shootLaser(glm::vec2 pos, float agl, int nbBounce, unsigned int launcherId, float deltatime, bool isTransparent);
 	bool isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2);
 	bool isInRange(cmpt::Transform transform1, float radius1, unsigned int targetId);
 };
