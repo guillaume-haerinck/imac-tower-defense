@@ -10,12 +10,13 @@
 #include "components/entity-on.hpp"
 #include "components/rotated-by-mouse.hpp"
 #include "components/look-at-mouse.hpp"
+#include "components/shoot-laser.hpp"
 #include "events/tower-dead.hpp"
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
-: ISystem(registry, emitter), m_level(level), m_towerFactory(registry), m_mirrorFactory(registry), m_progression(progression) {
+	: ISystem(registry, emitter), m_level(level), m_towerFactory(registry), m_mirrorFactory(registry), m_progression(progression) {
 	m_emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
-		glm::vec2 tilePosition = this->m_level.projToGrid(event.position.x/WIN_RATIO, event.position.y);
+		glm::vec2 tilePosition = this->m_level.projToGrid(event.position.x / WIN_RATIO, event.position.y);
 		unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 		this->m_registry.assign<tileTag::Constructible>(tileId);
 		this->m_registry.remove<cmpt::EntityOn>(tileId);
@@ -31,7 +32,7 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 	unsigned int tileId = this->m_level.getTile(tilePosition.x, tilePosition.y);
 	if (tileId != -1) {
 		//Construct
-		if (m_registry.has<tileTag::Constructible>(tileId) ){// && m_progression.getMoney() >= MIRROR_COST) {
+		if (m_registry.has<tileTag::Constructible>(tileId)) {// && m_progression.getMoney() >= MIRROR_COST) {
 			cmpt::Transform trans = this->m_registry.get<cmpt::Transform>(tileId);
 			unsigned int mirrorId = this->m_mirrorFactory.create(trans.position.x, trans.position.y);
 			this->m_registry.remove<tileTag::Constructible>(tileId);
@@ -41,8 +42,13 @@ void ConstructionSystem::onLeftClickDown(const evnt::LeftClickDown& event) {
 		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
-			m_registry.assign<stateTag::IsBeingControlled>(entityId);
-			m_registry.assign<cmpt::LookAtMouse>(entityId);
+			if (m_registry.has<entityTag::Mirror>(entityId)) {
+				m_registry.assign<stateTag::IsBeingControlled>(entityId);
+				m_registry.assign<cmpt::LookAtMouse>(entityId);
+			}
+			if (m_registry.has<cmpt::ShootLaser>(entityId)) {
+				m_registry.get<cmpt::ShootLaser>(entityId).isActiv = !m_registry.get<cmpt::ShootLaser>(entityId).isActiv;
+			}
 		}
 	}
 }
@@ -66,12 +72,19 @@ void ConstructionSystem::onRightClickDown(const evnt::RightClickDown& event) {
 			this->m_registry.remove<tileTag::Constructible>(tileId);
 			this->m_registry.assign<cmpt::EntityOn>(tileId, towerId);
 			m_progression.addToMoney(-TOWER_COST);
+			m_registry.assign<stateTag::IsBeingControlled>(towerId);
+			m_registry.assign<cmpt::LookAtMouse>(towerId);
 		}
 		//Rotate
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			unsigned int entityId = m_registry.get<cmpt::EntityOn>(tileId).entityId;
-			m_registry.assign<stateTag::IsBeingControlled>(entityId);
-			m_registry.assign<cmpt::LookAtMouse>(entityId);
+			if (m_registry.has<entityTag::Mirror>(entityId)) {
+				m_registry.assign<stateTag::IsBeingControlled>(entityId);
+				m_registry.assign<cmpt::LookAtMouse>(entityId);
+			}
+			if (m_registry.has<cmpt::ShootLaser>(entityId)) {
+				m_registry.get<cmpt::ShootLaser>(entityId).isActiv = !m_registry.get<cmpt::ShootLaser>(entityId).isActiv;
+			}
 		}
 	}
 }

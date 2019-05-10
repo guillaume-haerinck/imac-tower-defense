@@ -57,7 +57,9 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity));
+		if (laser.isActiv) {
+			this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity));
+		}
 	});
 	glLineWidth(1);
 }
