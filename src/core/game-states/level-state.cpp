@@ -12,7 +12,8 @@
 #include "components/look-at-mouse.hpp"
 
 LevelState::LevelState(Game& game)
-: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE), m_towerFactory(game.registry), m_mirrorFactory(game.registry)
+	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
+	m_towerFactory(game.registry), m_mirrorFactory(game.registry), m_invalidTimeCounter(0), m_invalidTimeMax(2 * 60)
 {
 	m_xaml = m_levelHud;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
@@ -48,6 +49,44 @@ LevelInteractionState LevelState::getInteractionState() {
 	return m_state;
 }
 
+/* ------------------------ SETTERS ------------------------- */
+void LevelState::changeState(LevelInteractionState state) {
+	// Exit current state
+	switch (m_state) {
+	case FREE:
+		break;
+	case ROTATE:
+		break;
+	case INVALID:
+		break;
+	case OPTIONS:
+		break;
+	case BUILD:
+		break;
+	default:
+		break;
+	}
+
+	// Enter new state
+	switch (state) {
+	case FREE:
+		break;
+	case ROTATE:
+		break;
+	case INVALID:
+		break;
+	case OPTIONS:
+		break;
+	case BUILD:
+		break;
+	default:
+		break;
+	}
+
+	// Change state
+	m_state = state;
+}
+
 /* ------------------------ STATE MACHINE ------------------------ */
 
 void LevelState::enter() {
@@ -56,6 +95,15 @@ void LevelState::enter() {
 }
 
 void LevelState::update(float deltatime) {
+	if (m_state == LevelInteractionState::INVALID) {
+		m_invalidTimeCounter++;
+	}
+
+	if (m_invalidTimeCounter >= m_invalidTimeMax) {
+		m_invalidTimeCounter = 0;
+		changeState(LevelInteractionState::FREE);
+	}
+
 	// Noesis gui update
 	m_ui->Update(SDL_GetTicks());
 	m_ui->GetRenderer()->UpdateRenderTree();
@@ -105,7 +153,7 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 
 		case ROTATE:
 			// Stop rotating when mouse not pressed
-			m_state = LevelInteractionState::FREE;
+			changeState(LevelInteractionState::FREE);
 			break;
 
 		case INVALID:
@@ -134,12 +182,13 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (entityId != -1) {
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
-					m_state = LevelInteractionState::ROTATE;
+					changeState(LevelInteractionState::ROTATE);
 					m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 					m_game.registry.assign<cmpt::LookAtMouse>(entityId);
 				}
 			}
 			else {
+				spdlog::warn("No valid entity on tile");
 				m_state = LevelInteractionState::INVALID;
 			}
 			break;
@@ -150,12 +199,12 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 
 		case INVALID:
 			// Stop the invalid animation if click during
-			m_state = LevelInteractionState::FREE;
+			changeState(LevelInteractionState::FREE);
 			break;
 
 		case OPTIONS:
 			// Click outside option menu closes it
-			m_state = LevelInteractionState::FREE;
+			changeState(LevelInteractionState::FREE);
 			break;
 
 		case BUILD:
@@ -172,10 +221,11 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 				m_game.registry.remove<tileTag::Constructible>(tileId);
 				m_game.registry.assign<cmpt::EntityOn>(tileId, mirrorId);
 				m_game.progression.addToMoney(-MIRROR_COST);
-				m_state = LevelInteractionState::FREE;
+				changeState(LevelInteractionState::FREE);
 			}
 			else {
-				m_state = LevelInteractionState::INVALID;
+				spdlog::warn("Not a constructible tile");
+				changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
@@ -194,7 +244,7 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			// Get entity. If valid open options. Else Invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (entityId != -1) {
-				m_state = LevelInteractionState::OPTIONS;
+				changeState(LevelInteractionState::OPTIONS);
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					// TODO call m_levelHud to open options for mirror
 				}
@@ -203,7 +253,8 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 				}
 			}
 			else {
-				m_state = LevelInteractionState::INVALID;
+				spdlog::warn("No valid entity on tile");
+				changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
@@ -213,7 +264,7 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 
 		case INVALID:
 			// Stop the invalid animation if click during
-			m_state = LevelInteractionState::FREE;
+			changeState(LevelInteractionState::FREE);
 			break;
 
 		case OPTIONS:

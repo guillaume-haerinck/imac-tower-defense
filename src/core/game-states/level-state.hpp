@@ -51,6 +51,9 @@ public:
 	// Getters
 	LevelInteractionState getInteractionState();
 
+	// Setters
+	void changeState(LevelInteractionState state);
+
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
@@ -59,4 +62,7 @@ private:
 
 	TowerFactory m_towerFactory;
 	MirrorFactory m_mirrorFactory;
+
+	unsigned int m_invalidTimeCounter;
+	unsigned int m_invalidTimeMax;
 };
