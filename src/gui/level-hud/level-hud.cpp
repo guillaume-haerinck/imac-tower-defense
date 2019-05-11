@@ -7,6 +7,7 @@
 
 #include "core/game-states/i-game-state.hpp"
 #include "events/interactions/construct-selection.hpp"
+#include "events/interactions/delete-entity.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelHud) {
 	NsMeta<Noesis::TypeId>("LevelHud");
@@ -26,26 +27,23 @@ void LevelHud::InitializeComponent() {
 bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTower);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectMirror);
+	NS_CONNECT_EVENT(Noesis::Button, Click, onDeleteEntity);
 	return false;
 }
 
 void LevelHud::OnInitialized(BaseComponent*, const Noesis::EventArgs&) {
 	SetDataContext(m_bindings.GetPtr());
-	m_bindings->setPosX(500.0f);
 }
 
 void LevelHud::OnMouseEnter(const Noesis::MouseEventArgs& e) {
-	spdlog::info("Mouse entered Noesis !");
 	m_emitter.focus = FocusMode::HUD;
 }
 
 void LevelHud::OnMouseLeave(const Noesis::MouseEventArgs& e) {
-	spdlog::info("Mouse left Noesis !");
 	m_emitter.focus = FocusMode::GAME;
 }
 
 void LevelHud::OnMouseDown(const Noesis::MouseButtonEventArgs& e) {
-	spdlog::info("Mouse click noesis !");
 }
 
 void LevelHud::onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
@@ -54,4 +52,16 @@ void LevelHud::onSelectTower(Noesis::BaseComponent* sender, const Noesis::Routed
 
 void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
 	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::MIRROR_BASIC);
+}
+
+void LevelHud::onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+	m_emitter.publish<evnt::DeleteEntity>(0);
+}
+
+void LevelHud::setOptionsPosition(glm::vec2 pos) {
+	pos.y -= 45;
+	pos.x += 10;
+
+	m_bindings->setPosX(pos.x);
+	m_bindings->setPosY(pos.y);
 }

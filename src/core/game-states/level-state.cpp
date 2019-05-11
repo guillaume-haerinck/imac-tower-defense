@@ -9,6 +9,7 @@
 #include "core/tags.hpp"
 #include "events/interactions/select-rotation.hpp"
 #include "events/tower-dead.hpp"
+#include "events/interactions/delete-entity.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"
 #include "components/look-at-mouse.hpp"
@@ -26,6 +27,10 @@ LevelState::LevelState(Game& game)
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		this->m_constructType = event.type;
 		this->changeState(LevelInteractionState::BUILD);
+	});
+
+	game.emitter.on<evnt::DeleteEntity>([this](const evnt::DeleteEntity & event, EventEmitter & emitter) {
+		spdlog::info("Asked to delete entity");
 	});
 
 	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
@@ -282,16 +287,17 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
 		case FREE:
+		case OPTIONS:
 		{
 			// Get entity. If valid open options. Else Invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (entityId != -1) {
 				changeState(LevelInteractionState::OPTIONS);
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
-					// TODO call m_levelHud to open options for mirror
+					m_levelHud.setOptionsPosition(event.mousePosSdlCoord);
 				}
 				else if (m_game.registry.has<entityTag::Tower>(entityId)) {
-					// TODO call m_levelHud to open options for towers
+					m_levelHud.setOptionsPosition(event.mousePosSdlCoord);
 				}
 			}
 			else {
@@ -307,9 +313,6 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 		case INVALID:
 			// Stop the invalid animation if click during
 			changeState(LevelInteractionState::FREE);
-			break;
-
-		case OPTIONS:
 			break;
 
 		case BUILD:

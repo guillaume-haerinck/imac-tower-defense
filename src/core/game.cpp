@@ -44,9 +44,13 @@ Game::Game(EventEmitter& emitter)
 	healthSystem(nullptr),
 
 	// States
-	m_gameOverState(nullptr),
+	m_cinematicState(nullptr),
+	m_titleState(nullptr),
+	m_levelIntroState(nullptr),
 	m_levelState(nullptr),
-	m_titleState(nullptr)
+	m_levelExitState(nullptr),
+	m_gameOverState(nullptr)
+	
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
