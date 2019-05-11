@@ -88,7 +88,29 @@ void LevelState::exit() {
 void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 
-	
+	if (m_game.emitter.focus == FocusMode::GAME) {
+		switch (m_state) {
+		case FREE:
+			break;
+
+		case ROTATE:
+			// Stop rotating when mouse not pressed
+			m_state = LevelInteractionState::FREE;
+			break;
+
+		case INVALID:
+			break;
+
+		case OPTIONS:
+			break;
+
+		case BUILD:
+			break;
+
+		default:
+			break;
+		}
+	}
 }
 
 void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
@@ -114,7 +136,6 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		}
 
 		case ROTATE:
-			spdlog::warn("[Level State] Impossible state reached : cannot click down and already be rotating");
 			break;
 
 		case INVALID:
@@ -133,11 +154,15 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 			int tileId = m_game.level->getTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.has<tileTag::Constructible>(tileId)) {
 				cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
+
+				// TODO handle build type, can be any type of tower or mirror
+				// Use a local variable updated by an event which indicates the last selected build type
 				unsigned int mirrorId = m_mirrorFactory.create(trans.position.x, trans.position.y);
 
 				m_game.registry.remove<tileTag::Constructible>(tileId);
 				m_game.registry.assign<cmpt::EntityOn>(tileId, mirrorId);
 				m_game.progression.addToMoney(-MIRROR_COST);
+				m_state = LevelInteractionState::FREE;
 			}
 			else {
 				m_state = LevelInteractionState::INVALID;
@@ -151,8 +176,74 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	}
 }
 
+void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
+	if (m_game.emitter.focus == FocusMode::GAME) {
+		switch (m_state) {
+		case FREE:
+		{
+			// Get entity. If valid open options. Else Invalid
+			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
+			if (entityId != -1) {
+				m_state = LevelInteractionState::OPTIONS;
+				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
+					// TODO call m_levelHud to open options for mirror
+				}
+				else if (m_game.registry.has<entityTag::Tower>(entityId)) {
+					// TODO call m_levelHud to open options for towers
+				}
+			}
+			else {
+				m_state = LevelInteractionState::INVALID;
+			}
+			break;
+		}
+
+		case ROTATE:
+			break;
+
+		case INVALID:
+			// Stop the invalid animation if click during
+			m_state = LevelInteractionState::FREE;
+			break;
+
+		case OPTIONS:
+			break;
+
+		case BUILD:
+			break;
+
+		default:
+			break;
+		}
+	}
+}
+
 void LevelState::onMouseMove(const evnt::MouseMove& event) {
 	this->m_ui->MouseMove(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y);
+
+	if (m_game.emitter.focus == FocusMode::GAME) {
+		switch (m_state) {
+		case FREE:
+			// TODO move camera if close to screen
+			break;
+
+		case ROTATE:
+			// TODO update rotation of selected entity
+			break;
+
+		case INVALID:
+			break;
+
+		case OPTIONS:
+			break;
+
+		case BUILD:
+			// TODO follow mouse with transparent entity to be built
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 

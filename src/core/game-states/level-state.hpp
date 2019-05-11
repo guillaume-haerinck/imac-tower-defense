@@ -11,6 +11,7 @@
 #include "entity-factories/tower-factory.hpp"
 #include "events/inputs/left-click-down.hpp"
 #include "events/inputs/left-click-up.hpp"
+#include "events/inputs/right-click-down.hpp"
 #include "events/inputs/mouse-move.hpp"
 #include "gui/level-hud/level-hud.hpp"
 
@@ -44,6 +45,7 @@ public:
 	// Events
 	void onLeftClickUp(const evnt::LeftClickUp& event) override;
 	void onLeftClickDown(const evnt::LeftClickDown& event) override;
+	void onRightClickDown(const evnt::RightClickDown& event) override;
 	void onMouseMove(const evnt::MouseMove& event) override;
 
 private:
