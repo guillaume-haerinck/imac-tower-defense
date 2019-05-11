@@ -225,7 +225,12 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 
 					m_game.registry.remove<tileTag::Constructible>(tileId);
 					m_game.registry.assign<cmpt::EntityOn>(tileId, entityId);
-					changeState(LevelInteractionState::FREE);
+
+					// Rotatable on build
+					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
+					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
+					changeState(LevelInteractionState::ROTATE);
+					m_lastSelectedEntity = entityId;
 				}
 				else {
 					spdlog::warn("Not a constructible tile");
