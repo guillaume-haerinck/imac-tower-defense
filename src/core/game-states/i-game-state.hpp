@@ -5,9 +5,11 @@
 class Game; // Forward declaration
 
 enum GameState {
-	TITLE_SCREEN,
-	LEVEL,
 	CINEMATIC,
+	TITLE_SCREEN,
+	LEVEL_INTRO,
+	LEVEL,
+	LEVEL_EXIT,
 	GAME_OVER
 };
 

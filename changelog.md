@@ -1,5 +1,10 @@
 # Imac Tower Defense Changelog
 
+## 11.05.19
+
+Handles input in game state as a state machine. Removes construction system.
+Add basic UI.
+
 ## 09.05.19
 
 Fix deepth buffer.

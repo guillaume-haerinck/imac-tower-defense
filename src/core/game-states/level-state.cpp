@@ -7,7 +7,7 @@
 #include "core/constants.hpp"
 #include "core/game.hpp"
 #include "core/tags.hpp"
-#include "events/gui/select-rotation.hpp"
+#include "events/interactions/select-rotation.hpp"
 #include "events/tower-dead.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"

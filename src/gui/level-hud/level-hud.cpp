@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "core/game-states/i-game-state.hpp"
-#include "events/gui/construct-selection.hpp"
+#include "events/interactions/construct-selection.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelHud) {
 	NsMeta<Noesis::TypeId>("LevelHud");

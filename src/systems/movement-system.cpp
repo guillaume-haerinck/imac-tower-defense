@@ -11,7 +11,7 @@
 #include "core/tags.hpp"
 #include "core/level/graph.hpp"
 #include "events/enemy-damaged.hpp"
-#include "events/gui/select-rotation.hpp"
+#include "events/interactions/select-rotation.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"

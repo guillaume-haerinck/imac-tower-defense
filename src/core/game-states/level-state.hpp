@@ -14,7 +14,7 @@
 #include "events/inputs/right-click-down.hpp"
 #include "events/inputs/mouse-move.hpp"
 #include "gui/level-hud/level-hud.hpp"
-#include "events/gui/construct-selection.hpp"
+#include "events/interactions/construct-selection.hpp"
 
 class Game; // Forward declaration
 
@@ -69,3 +69,28 @@ private:
 	ConstructibleType m_constructType;
 	int m_lastSelectedEntity;
 };
+
+
+/* TODO listen to event here ? Or use a camera class, or even a camera service
+	else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+		viewTranslation.y++;
+		viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
+	} else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+		viewTranslation.y--;
+		viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
+	} else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+		viewTranslation.x--;
+		viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
+	} else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+		viewTranslation.x++;
+		viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+
+	// TODO ameliorer translation quand proche du bord
+	// FIXME
+	viewScale += 0.1f;
+	viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
+	viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
+	viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
+	viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
+*/

@@ -52,18 +52,28 @@ Game::Game(EventEmitter& emitter)
 	m_bInstanciated = true;
 
 	// Handle state changes
+	// TODO use an interfare vector to do this automatically in a loop ?
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
 		// Exit current state
 		switch (this->m_state) {
+		case CINEMATIC:
+			m_cinematicState->exit();
+			break;
+
 		case TITLE_SCREEN:
 			m_titleState->exit();
+			break;
+
+		case LEVEL_INTRO:
+			m_levelIntroState->exit();
 			break;
 
 		case LEVEL:
 			m_levelState->exit();
 			break;
 
-		case CINEMATIC:
+		case LEVEL_EXIT:
+			m_levelExitState->exit();
 			break;
 
 		case GAME_OVER:
@@ -76,11 +86,25 @@ Game::Game(EventEmitter& emitter)
 
 		// Enter new state
 		switch (event.state) {
+		case CINEMATIC:
+			if (m_cinematicState == nullptr) {
+				m_cinematicState = new CinematicState(*this);
+			}
+			m_cinematicState->enter();
+			break;
+
 		case TITLE_SCREEN:
 			if (m_titleState == nullptr) {
 				m_titleState = new TitleScreenState(*this);
 			}
 			m_titleState->enter();
+			break;
+
+		case LEVEL_INTRO:
+			if (m_levelIntroState == nullptr) {
+				m_levelIntroState = new LevelIntroState(*this);
+			}
+			m_levelIntroState->enter();
 			break;
 
 		case LEVEL:
@@ -91,7 +115,11 @@ Game::Game(EventEmitter& emitter)
 			m_levelState->enter();
 			break;
 
-		case CINEMATIC:
+		case LEVEL_EXIT:
+			if (m_levelExitState == nullptr) {
+				m_levelExitState = new LevelExitState(*this);
+			}
+			m_levelExitState->enter();
 			break;
 
 		case GAME_OVER:
@@ -108,30 +136,6 @@ Game::Game(EventEmitter& emitter)
 		// Update state
 		this->m_state = event.state;
 	});
-
-	/* TODO listen to event here ? Or use a camera class, or even a camera service
-		else if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-			viewTranslation.y++;
-			viewMat = glm::translate(viewMat, glm::vec3(0.0f, 1.0f, 0.0f));
-		} else if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-			viewTranslation.y--;
-			viewMat = glm::translate(viewMat, glm::vec3(0.0f, -1.0f, 0.0f));
-		} else if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-			viewTranslation.x--;
-			viewMat = glm::translate(viewMat, glm::vec3(-1.0f, 0.0f, 0.0f));
-		} else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-			viewTranslation.x++;
-			viewMat = glm::translate(viewMat, glm::vec3(1.0f, 0.0f, 0.0f));
-		}
-
-		// TODO ameliorer translation quand proche du bord
-		// FIXME
-		viewScale += 0.1f;
-		viewTranslation = glm::vec2(normMousePos.x * WIN_RATIO, normMousePos.y);
-		viewMat = glm::translate(viewMat, glm::vec3(normMousePos.x * WIN_RATIO, normMousePos.y, 0.0f));
-		viewMat = glm::scale(viewMat, glm::vec3(1.1f, 1.1f, 0.0f));
-		viewMat = glm::translate(viewMat, glm::vec3(-normMousePos.x * WIN_RATIO, -normMousePos.y, 0.0f));
-	*/
 }
 
 int Game::init() {
@@ -253,9 +257,19 @@ int Game::init() {
 
 	// Init current state
 	switch (this->m_state) {
+	case CINEMATIC:
+		m_cinematicState = new CinematicState(*this);
+		m_cinematicState->enter();
+		break;
+
 	case TITLE_SCREEN:
 		m_titleState = new TitleScreenState(*this);
 		m_titleState->enter();
+		break;
+
+	case LEVEL_INTRO:
+		m_levelIntroState = new LevelIntroState(*this);
+		m_levelIntroState->enter();
 		break;
 
 	case LEVEL:
@@ -263,7 +277,9 @@ int Game::init() {
 		m_levelState->enter();
 		break;
 
-	case CINEMATIC:
+	case LEVEL_EXIT:
+		m_levelExitState = new LevelExitState(*this);
+		m_levelExitState->enter();
 		break;
 
 	case GAME_OVER:
@@ -278,8 +294,15 @@ int Game::init() {
 
 void Game::update(float deltatime) {
 	switch (m_state) {
+	case CINEMATIC:
+		break;
+
 	case TITLE_SCREEN:
 		m_titleState->update(deltatime);
+		break;
+
+	case LEVEL_INTRO:
+		m_levelIntroState->update(deltatime);
 		break;
 
 	case LEVEL:
@@ -288,7 +311,8 @@ void Game::update(float deltatime) {
 		//level->drawGrid();
 		break;
 
-	case CINEMATIC:
+	case LEVEL_EXIT:
+		m_levelExitState->update(deltatime);
 		break;
 
 	case GAME_OVER:
@@ -318,8 +342,11 @@ Game::~Game() {
 	delete level;
 
 	// Delete states
-	delete m_levelState;
+	delete m_cinematicState;
 	delete m_titleState;
+	delete m_levelIntroState;
+	delete m_levelState;
+	delete m_levelExitState;
 	delete m_gameOverState;
 
 	// Shutdown 

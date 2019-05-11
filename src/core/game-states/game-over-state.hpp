@@ -10,7 +10,7 @@
 #include "events/inputs/left-click-down.hpp"
 #include "events/inputs/left-click-up.hpp"
 #include "i-game-state.hpp"
-#include "gui/game-over.hpp"
+#include "gui/game-over/game-over.hpp"
 
 class Game; // Forward declaration
 

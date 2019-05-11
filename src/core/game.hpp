@@ -8,6 +8,9 @@
 #include "game-states/level-state.hpp"
 #include "game-states/game-over-state.hpp"
 #include "game-states/title-screen-state.hpp"
+#include "game-states/level-intro-state.hpp"
+#include "game-states/level-exit-state.hpp"
+#include "game-states/cinematic-state.hpp"
 #include "level/level.hpp"
 #include "progression.hpp"
 #include "systems/render-system.hpp"
@@ -48,8 +51,11 @@ public:
 	HealthSystem* healthSystem;
 
 	// Temp, only public to debug state machine
-	LevelState* m_levelState;
+	CinematicState* m_cinematicState;
 	TitleScreenState* m_titleState;
+	LevelIntroState* m_levelIntroState;
+	LevelState* m_levelState;
+	LevelExitState* m_levelExitState;
 	GameOverState* m_gameOverState;
 
 private:
