@@ -10,6 +10,7 @@ static const float TILE_SIZE = 11.0f;
 
 static const int ENNEMY_MONEY_VALUE = 2;
 static const float ENNEMY_HEALTH = 5.0f;
+static const float ENEMY_VELOCITY = 18.0f;
 
 static const float TOWER_HEALTH = 10;
 static const float TOWER_HITBOX_RADIUS = 4.0f;
