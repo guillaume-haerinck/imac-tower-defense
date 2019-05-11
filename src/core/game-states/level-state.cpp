@@ -8,6 +8,7 @@
 #include "core/game.hpp"
 #include "core/tags.hpp"
 #include "events/gui/select-rotation.hpp"
+#include "events/tower-dead.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"
 #include "components/look-at-mouse.hpp"
@@ -25,6 +26,13 @@ LevelState::LevelState(Game& game)
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		this->m_constructType = event.type;
 		this->changeState(LevelInteractionState::BUILD);
+	});
+
+	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
+		glm::vec2 tilePosition = this->m_game.level->projToGrid(event.position.x / WIN_RATIO, event.position.y);
+		unsigned int tileId = this->m_game.level->getTile(tilePosition.x, tilePosition.y);
+		this->m_game.registry.assign<tileTag::Constructible>(tileId);
+		this->m_game.registry.remove<cmpt::EntityOn>(tileId);
 	});
 
 	/*
@@ -153,45 +161,17 @@ void LevelState::exit() {
 
 /* ----------------------------------- INPUT EVENTS --------------------------- */
 
-void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
-	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
-
-	if (m_game.emitter.focus == FocusMode::GAME) {
-		switch (m_state) {
-		case FREE:
-			break;
-
-		case ROTATE:
-			// Stop rotating when mouse not pressed
-			changeState(LevelInteractionState::FREE);
-			break;
-
-		case INVALID:
-			break;
-
-		case OPTIONS:
-			break;
-
-		case BUILD:
-			break;
-
-		default:
-			break;
-		}
-	}
-}
-
 void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
-		case FREE: 
+		case FREE:
 		{
 			// Get entity. If valid mirror rotate. Else Invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(entityId)) {
-				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
+				if (m_game.registry.has<entityTag::Mirror>(entityId) || m_game.registry.has<entityTag::Tower>(entityId)) {
 					changeState(LevelInteractionState::ROTATE);
 					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
 					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
@@ -242,7 +222,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					default:
 						break;
 					}
-					 
+
 					m_game.registry.remove<tileTag::Constructible>(tileId);
 					m_game.registry.assign<cmpt::EntityOn>(tileId, entityId);
 					changeState(LevelInteractionState::FREE);
@@ -251,12 +231,41 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					spdlog::warn("Not a constructible tile");
 					changeState(LevelInteractionState::INVALID);
 				}
-			} else {
+			}
+			else {
 				spdlog::warn("Invalid tile");
 				changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
+
+		default:
+			break;
+		}
+	}
+}
+
+void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
+	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+
+	if (m_game.emitter.focus == FocusMode::GAME) {
+		switch (m_state) {
+		case FREE:
+			break;
+
+		case ROTATE:
+			// Stop rotating when mouse not pressed
+			changeState(LevelInteractionState::FREE);
+			break;
+
+		case INVALID:
+			break;
+
+		case OPTIONS:
+			break;
+
+		case BUILD:
+			break;
 
 		default:
 			break;
