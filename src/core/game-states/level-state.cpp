@@ -42,6 +42,14 @@ LevelState::~LevelState() {
 	delete m_ui;
 }
 
+/* ----------------------- GETTERS ------------------------ */
+
+LevelInteractionState LevelState::getInteractionState() {
+	return m_state;
+}
+
+/* ------------------------ STATE MACHINE ------------------------ */
+
 void LevelState::enter() {
 	// Subscribe self to input events
 	connectInputs();
@@ -84,6 +92,8 @@ void LevelState::exit() {
 	// Remove self from input events
 	disconnectInputs();
 }
+
+/* ----------------------------------- INPUT EVENTS --------------------------- */
 
 void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);

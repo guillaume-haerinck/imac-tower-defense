@@ -48,6 +48,9 @@ public:
 	void onRightClickDown(const evnt::RightClickDown& event) override;
 	void onMouseMove(const evnt::MouseMove& event) override;
 
+	// Getters
+	LevelInteractionState getInteractionState();
+
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;

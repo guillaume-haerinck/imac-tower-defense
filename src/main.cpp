@@ -33,9 +33,11 @@
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
-
+#include "core/game-states/level-state.hpp"
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
+
+
 int main(int argc, char** argv) {
 #ifdef _WIN32 // Check memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -77,6 +79,34 @@ int main(int argc, char** argv) {
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Current money : %.d", game.progression.getMoney());
 
+			if (game.m_levelState != nullptr) {
+				switch (game.m_levelState->getInteractionState()) {
+				case LevelInteractionState::FREE:
+					ImGui::Text("Current level state: FREE");
+					break;
+
+				case LevelInteractionState::BUILD:
+					ImGui::Text("Current level state: BUILD");
+					break;
+
+				case LevelInteractionState::INVALID:
+					ImGui::Text("Current level state: INVALID");
+					break;
+
+				case LevelInteractionState::OPTIONS:
+					ImGui::Text("Current level state: OPTIONS");
+					break;
+
+				case LevelInteractionState::ROTATE:
+					ImGui::Text("Current level state: ROTATE");
+					break;
+
+				default:
+					break;
+				}
+				
+			}
+			
 			if (ImGui::Button("Send wave event")) {
 				emitter.publish<evnt::StartWave>(10);
 			}

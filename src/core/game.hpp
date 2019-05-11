@@ -47,6 +47,11 @@ public:
 	AttackSystem* attackSystem;
 	HealthSystem* healthSystem;
 
+	// Temp, only public to debug state machine
+	LevelState* m_levelState;
+	TitleScreenState* m_titleState;
+	GameOverState* m_gameOverState;
+
 private:
 	// Lifetime
     static bool m_bInit;
@@ -58,9 +63,6 @@ private:
 
 	// State machine
 	GameState m_state;
-	LevelState* m_levelState;
-	TitleScreenState* m_titleState;
-	GameOverState* m_gameOverState;
 
 	// Camera
 	glm::mat4 m_projMat;
