@@ -29,6 +29,9 @@
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter) {}
 
+
+// TODO use another event, sent by the gameLevelState
+/*
 void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
 	//Rotated by mouse
 	m_registry.view<cmpt::Transform, cmpt::RotatedByMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::RotatedByMouse& rotatedByMouse) {
@@ -65,6 +68,7 @@ void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
 	//Update previous mouse position
 	m_prevMousePos = event.mousePos;
 }
+*/
 
 void MovementSystem::update(float deltatime) {
 

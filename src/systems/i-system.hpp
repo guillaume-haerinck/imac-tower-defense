@@ -4,14 +4,14 @@
 #include <memory>
 
 #include "events/handlers/event-emitter.hpp"
-#include "events/handlers/input-handler.hpp"
 
-class ISystem : public InputHandler {
+class ISystem {
 public:
 	virtual void update(float deltatime) = 0;
 
 protected:
-	ISystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : InputHandler(emitter), m_registry(registry) {}
+	ISystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : m_registry(registry), m_emitter(emitter) {}
 
 	entt::DefaultRegistry& m_registry;
+	EventEmitter& m_emitter;
 };

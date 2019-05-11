@@ -23,16 +23,7 @@ LevelState::~LevelState() {
 }
 
 void LevelState::enter() {
-	// Set event subscription for used systems 
-	m_game.animationSystem->connectInputs();
-	m_game.attackSystem->connectInputs();
-	m_game.constructionSystem->connectInputs();
-	m_game.healthSystem->connectInputs();
-	m_game.movementSystem->connectInputs();
-	m_game.renderSystem->connectInputs();
-	m_game.waveSystem->connectInputs();
-
-	// Subscribe self to inputs
+	// Subscribe self to input events
 	connectInputs();
 }
 
@@ -45,7 +36,6 @@ void LevelState::update(float deltatime) {
 	// Need to restore the GPU state because noesis changes it
 	restoreGpuState();
 
-	// TODO ne pas utiliser le deltatime comme ça, il est quasiment fixe à chaque frame
 	m_game.animationSystem->update(deltatime); 
 	m_game.movementSystem->update(deltatime);
 	m_game.renderSystem->update(deltatime);
@@ -71,7 +61,7 @@ GameplayState LevelState::checkVictoryConditions() {
 }
 
 void LevelState::exit() {
-	// Remove event listenner
+	// Remove self from input events
 	disconnectInputs();
 }
 

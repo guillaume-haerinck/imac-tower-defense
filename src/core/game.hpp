@@ -13,7 +13,6 @@
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
-#include "systems/construction-system.hpp"
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
@@ -44,7 +43,6 @@ public:
 	RenderSystem* renderSystem;
 	AnimationSystem* animationSystem;
 	MovementSystem* movementSystem;
-	ConstructionSystem* constructionSystem;
 	WaveSystem* waveSystem;
 	AttackSystem* attackSystem;
 	HealthSystem* healthSystem;

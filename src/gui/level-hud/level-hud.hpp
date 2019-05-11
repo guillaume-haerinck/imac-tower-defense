@@ -1,18 +1,40 @@
-#include "construction-system.hpp"
+#pragma once
 
-#include <spdlog/spdlog.h>
-#include <glm/glm.hpp>
+#include <NsGui/StackPanel.h>
+#include <NsGui/IntegrationAPI.h>
+#include <NsApp/DelegateCommand.h>
+#include <entt/entt.hpp>
 
-#include "core/constants.hpp"
-#include "core/tags.hpp"
-#include "core/maths.hpp"
-#include "components/transform.hpp"
-#include "components/entity-on.hpp"
-#include "components/rotated-by-mouse.hpp"
-#include "components/look-at-mouse.hpp"
-#include "components/shoot-laser.hpp"
-#include "events/tower-dead.hpp"
-#include "events/selected.hpp"
+#include "events/handlers/event-emitter.hpp"
+#include "core/progression.hpp"
+#include "level-hud-bindings.hpp"
+
+class LevelHud : public Noesis::StackPanel {
+public:
+	LevelHud(EventEmitter& emitter, Progression& progression, entt::DefaultRegistry& registry);
+
+private:
+	// Events
+	bool ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) override;
+
+	// Init 
+	void InitializeComponent();
+	void OnInitialized(BaseComponent*, const Noesis::EventArgs&);
+
+	// Events
+	void OnMouseEnter(const Noesis::MouseEventArgs& e) override;
+	void OnMouseLeave(const Noesis::MouseEventArgs& e) override;
+
+private:
+	NS_DECLARE_REFLECTION(LevelHud, StackPanel)
+
+	Noesis::Ptr<LevelHudBindings> m_bindings;
+	EventEmitter& m_emitter;
+	Progression& m_progression;
+	entt::DefaultRegistry& m_registry;
+};
+
+/*
 
 ConstructionSystem::ConstructionSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level, Progression& progression)
 	: ISystem(registry, emitter), m_level(level), m_towerFactory(registry), m_mirrorFactory(registry), m_progression(progression) {
@@ -113,3 +135,5 @@ void ConstructionSystem::removeControlTags() {
 }
 
 void ConstructionSystem::update(float deltatime) {}
+
+*/

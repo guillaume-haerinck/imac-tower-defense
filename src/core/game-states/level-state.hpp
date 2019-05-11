@@ -7,12 +7,14 @@
 #include <memory>
 
 #include "i-game-state.hpp"
-#include "events/left-click-down.hpp"
-#include "events/left-click-up.hpp"
-#include "events/mouse-move.hpp"
-#include "gui/level-hud.hpp"
+#include "events/inputs/left-click-down.hpp"
+#include "events/inputs/left-click-up.hpp"
+#include "events/inputs/mouse-move.hpp"
+#include "gui/level-hud/level-hud.hpp"
 
 class Game; // Forward declaration
+
+// TODO State machine for inputs as well, every inputs handled here for this state
 
 enum GameplayState {
 	PLAY,

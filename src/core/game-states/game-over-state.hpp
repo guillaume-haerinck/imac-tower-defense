@@ -7,8 +7,8 @@
 #include <memory>
 
 #include "systems/render-system.hpp"
-#include "events/left-click-down.hpp"
-#include "events/left-click-up.hpp"
+#include "events/inputs/left-click-down.hpp"
+#include "events/inputs/left-click-up.hpp"
 #include "i-game-state.hpp"
 #include "gui/game-over.hpp"
 

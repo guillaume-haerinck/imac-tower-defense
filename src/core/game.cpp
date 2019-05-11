@@ -39,7 +39,6 @@ Game::Game(EventEmitter& emitter)
 	renderSystem(nullptr),
 	animationSystem(nullptr),
 	movementSystem(nullptr),
-	constructionSystem(nullptr),
 	waveSystem(nullptr),
 	attackSystem(nullptr),
 	healthSystem(nullptr),
@@ -248,7 +247,6 @@ int Game::init() {
 	renderSystem = new RenderSystem(registry, emitter, m_viewMat, m_projMat);
 	animationSystem = new AnimationSystem(registry, emitter);
 	movementSystem = new MovementSystem(registry, emitter);
-	constructionSystem = new ConstructionSystem(registry, emitter, *level, progression);
 	waveSystem = new WaveSystem(registry, emitter, *level);
 	attackSystem = new AttackSystem(registry, emitter);
 	healthSystem = new HealthSystem(registry, emitter, progression);
@@ -312,7 +310,6 @@ Game::~Game() {
 	delete renderSystem;
 	delete animationSystem;
 	delete movementSystem;
-	delete constructionSystem;
 	delete waveSystem;
 	delete attackSystem;
 	delete healthSystem;

@@ -7,7 +7,7 @@
 #include "components/transform.hpp"
 
 #include "events/handlers/event-emitter.hpp"
-#include "events/mouse-move.hpp"
+#include "events/inputs/mouse-move.hpp"
 
 #include "entity-factories/explosion-factory.hpp"
 

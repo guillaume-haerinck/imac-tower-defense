@@ -7,8 +7,8 @@
 #include <memory>
 
 #include "i-game-state.hpp"
-#include "events/left-click-down.hpp"
-#include "events/left-click-up.hpp"
+#include "events/inputs/left-click-down.hpp"
+#include "events/inputs/left-click-up.hpp"
 #include "gui/title-screen.hpp"
 
 class Game; // Forward declaration
