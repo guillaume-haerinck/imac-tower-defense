@@ -7,6 +7,8 @@
 #include <memory>
 
 #include "i-game-state.hpp"
+#include "entity-factories/mirror-factory.hpp"
+#include "entity-factories/tower-factory.hpp"
 #include "events/inputs/left-click-down.hpp"
 #include "events/inputs/left-click-up.hpp"
 #include "events/inputs/mouse-move.hpp"
@@ -14,7 +16,13 @@
 
 class Game; // Forward declaration
 
-// TODO State machine for inputs as well, every inputs handled here for this state
+enum LevelInteractionState {
+	FREE,
+	ROTATE,
+	INVALID,
+	OPTIONS,
+	BUILD
+};
 
 enum GameplayState {
 	PLAY,
@@ -42,4 +50,8 @@ private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
 	LevelHud m_levelHud;
+	LevelInteractionState m_state;
+
+	TowerFactory m_towerFactory;
+	MirrorFactory m_mirrorFactory;
 };
