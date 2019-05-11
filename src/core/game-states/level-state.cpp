@@ -8,7 +8,7 @@
 #include "core/game.hpp"
 #include "logger/gl-log-handler.hpp"
 
-LevelState::LevelState(Game& game): IGameState(game), m_levelHud(game.emitter, game.progression)
+LevelState::LevelState(Game& game): IGameState(game), m_levelHud(game.emitter, game.progression, game.registry)
 {
 	m_xaml = m_levelHud;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
@@ -82,4 +82,8 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 
 void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+}
+
+void LevelState::onMouseMove(const evnt::MouseMove& event) {
+	this->m_ui->MouseMove(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y);
 }

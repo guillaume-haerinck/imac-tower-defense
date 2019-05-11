@@ -28,11 +28,13 @@ void RenderSystem::update(float deltatime) {
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
 
+	// TODO move to movement system ?
+
 	//Add wiggle (will be removed after rendering)
 	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 		float r = wiggle.amplitude*(1+randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset))/2;
-		float agl = 5*imac::TAU*randomService.noise((float)SDL_GetTicks() *0.000025 + wiggle.noiseOffset + 50);
+		float agl = 5*imaths::TAU*randomService.noise((float)SDL_GetTicks() *0.000025 + wiggle.noiseOffset + 50);
 		glm::vec2 dl = r * glm::vec2(cos(agl), sin(agl));
 		wiggle.latestMove = dl;
 		transform.position += wiggle.latestMove;
@@ -150,7 +152,7 @@ void RenderSystem::update(float deltatime) {
 				cmpt::Transform healthTransform = transform;
 				healthTransform.rotation = 0;
 				healthTransform.position += healthbar.relativePos;
-				float scale = imac::rangeMapping(health.current, 0, health.max, 0, 1);
+				float scale = imaths::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
 				healthTransform.zIndex = Z_INDEX_HUD;
 
@@ -171,6 +173,8 @@ void RenderSystem::update(float deltatime) {
 			}
 		}
 	});
+
+	// TODO move to movement system ?
 
 	//Remove main part position
 	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {

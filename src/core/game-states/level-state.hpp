@@ -9,6 +9,7 @@
 #include "i-game-state.hpp"
 #include "events/left-click-down.hpp"
 #include "events/left-click-up.hpp"
+#include "events/mouse-move.hpp"
 #include "gui/level-hud.hpp"
 
 class Game; // Forward declaration
@@ -33,6 +34,7 @@ public:
 	// Events
 	void onLeftClickUp(const evnt::LeftClickUp& event) override;
 	void onLeftClickDown(const evnt::LeftClickDown& event) override;
+	void onMouseMove(const evnt::MouseMove& event) override;
 
 private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;

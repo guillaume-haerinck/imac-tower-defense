@@ -121,8 +121,8 @@ int main(int argc, char** argv) {
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
 			const glm::vec2 normMousePos = glm::vec2(
-				imac::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
-				imac::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
+				imaths::rangeMapping(e.button.x, 0, WIN_WIDTH, 0, PROJ_WIDTH),
+				imaths::rangeMapping(WIN_HEIGHT - e.button.y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT)
 			);
 
 			if (e.type == SDL_QUIT) {
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 				break;
 
 			case SDL_MOUSEMOTION:
-				emitter.publish<evnt::MouseMove>(normMousePos);
+				emitter.publish<evnt::MouseMove>(normMousePos, glm::vec2(e.button.x, e.button.y));
 				break;
 			
 			case SDL_KEYDOWN:
