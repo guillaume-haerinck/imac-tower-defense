@@ -118,7 +118,6 @@ void MovementSystem::update(float deltatime) {
 		float norm = glm::length(direction);
 		if (norm > 1) {
 			direction /= norm;
-			spdlog::info(velocity.velocity*velocity.velMultiplier*deltatime);
 			transform.position += velocity.velocity*velocity.velMultiplier*deltatime*direction;
 		}
 		else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {

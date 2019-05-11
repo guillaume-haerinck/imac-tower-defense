@@ -19,8 +19,11 @@
 
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
-		trySpawnLaserParticle(event.position, 0.05);
-		trySpawnLaserParticle(event.position, 0.05);
+		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+		if (randomService.random() < 0.1) {
+			trySpawnLaserParticle(event.position, 1);
+			trySpawnLaserParticle(event.position, 1);
+		}
 	});
 }
 
@@ -65,7 +68,6 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		trySpawnLaserParticle(transform.position, deltatime);
 		this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
 	});
 	glLineWidth(1);
@@ -140,6 +142,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 				float colinComp = ((laserEnd.x - pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y - pos.y)*(targetTransform.position.y - pos.y)) / laserLength;
 				if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
 					m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
+					trySpawnLaserParticle(targetTransform.position, deltatime);
 				}
 			}
 		});
@@ -156,7 +159,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 
 void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-	if (randomService.random() < 4 * deltatime) {
+	if (randomService.random() < 12 * deltatime) {
 		m_explosionFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
 	}
 }
