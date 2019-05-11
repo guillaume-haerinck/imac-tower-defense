@@ -7,12 +7,17 @@
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
+#include "components/direction.hpp"
+#include "components/velocity.hpp"
+#include "components/age.hpp"
+
 
 ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
 : Factory(registry)
 {
 	m_towerExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100),TOWER_EXPLOSION);
 	m_enemyExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100), ENEMY_EXPLOSION);
+	m_laserParticleSprite = m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(1.0f));
 }
 
 ExplosionFactory::~ExplosionFactory() {
@@ -35,4 +40,14 @@ void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION )
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
+}
+
+void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
+	auto myEntity = m_registry.create();
+	m_registry.assign<cmpt::Sprite>(myEntity, m_laserParticleSprite);
+	m_registry.assign<renderTag::Single>(myEntity);
+	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
+	m_registry.assign<cmpt::Direction>(myEntity, dirAgl);
+	m_registry.assign<cmpt::Velocity>(myEntity, 45.0f);
+	m_registry.assign<cmpt::Age>(myEntity, 0.1f);
 }

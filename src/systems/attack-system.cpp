@@ -12,10 +12,17 @@
 #include "components/shoot-laser.hpp"
 #include "components/health.hpp"
 #include "events/enemy-damaged.hpp"
+#include "events/laser-particle-dead.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
+#include "services/random/i-random.hpp"
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry) {}
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
+	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
+		trySpawnLaserParticle(event.position, 0.05);
+		trySpawnLaserParticle(event.position, 0.05);
+	});
+}
 
 void AttackSystem::update(float deltatime) {
 
@@ -58,7 +65,8 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-	this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
+		trySpawnLaserParticle(transform.position, deltatime);
+		this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
 	});
 	glLineWidth(1);
 }
@@ -117,6 +125,9 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			surfaceAngle = imac::TAU / 4;
 		}
 	}
+	else {
+		trySpawnLaserParticle(laserEnd, deltatime);
+	}
 
 	//Damage enemies
 	if (!isTransparent) {
@@ -140,6 +151,13 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
 		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingConstructed);
+	}
+}
+
+void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	if (randomService.random() < 4 * deltatime) {
+		m_explosionFactory.createLaserParticle(pos, randomService.random(imac::TAU));
 	}
 }
 

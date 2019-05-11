@@ -23,7 +23,8 @@
 #include "components/targeting.hpp"
 #include "components/move-towards-mouse.hpp"
 #include "components/attached-to.hpp"
-
+#include "components/velocity.hpp"
+#include "components/direction.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter) {}
@@ -79,6 +80,15 @@ void MovementSystem::update(float deltatime) {
 		}
 	});
 
+	//Update velocity multiplier
+	m_registry.view<cmpt::Velocity>().each([this, deltatime](auto entity, cmpt::Velocity& velocity) {
+		velocity.multiplierLifespan -= deltatime;
+		if(velocity.multiplierLifespan < 0){
+			velocity.multiplierLifespan = 0;
+			velocity.velMultiplier = 1;
+		}
+	});
+
 	m_registry.view<cmpt::RigidBody, cmpt::Transform>().each([](auto entity, cmpt::RigidBody & rigidbody, cmpt::Transform & transform) {
 		transform.position.x = rigidbody.body->GetPosition().x;
 		transform.position.y = rigidbody.body->GetPosition().y;
@@ -97,13 +107,19 @@ void MovementSystem::update(float deltatime) {
 		}
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::Pathfinding>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Pathfinding& pathfinding) {
+	m_registry.view<cmpt::Transform, cmpt::Direction, cmpt::Velocity>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Direction& direction, cmpt::Velocity& velocity) {
+		transform.position += direction.dir*velocity.velocity*velocity.velMultiplier*deltatime;
+	});
+
+
+	m_registry.view<cmpt::Transform, cmpt::Velocity, cmpt::Pathfinding>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Velocity& velocity, cmpt::Pathfinding& pathfinding) {
 		Level* level = pathfinding.level;
 		glm::vec2 direction = level->getNodePosition(pathfinding.currentTarget) - transform.position;
 		float norm = glm::length(direction);
 		if (norm > 1) {
-		direction *= 0.5 / glm::length(direction);
-		transform.position += direction;
+			direction /= norm;
+			spdlog::info(velocity.velocity*velocity.velMultiplier*deltatime);
+			transform.position += velocity.velocity*velocity.velMultiplier*deltatime*direction;
 		}
 		else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {
 			int tmp = pathfinding.currentTarget;

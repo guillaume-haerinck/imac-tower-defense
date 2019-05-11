@@ -14,6 +14,8 @@
 #include "components/wiggle.hpp"
 #include <SDL2/SDL.h>
 #include "components/attached-to.hpp"
+#include "components/age.hpp"
+#include "events/laser-particle-dead.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -43,6 +45,15 @@ void RenderSystem::update(float deltatime) {
 			transform.position += attachedTo.latestMainPos;
 		}
 		else {
+			m_registry.destroy(entity);
+		}
+	});
+
+	//Update age
+	m_registry.view<cmpt::Age>().each([this,deltatime](auto entity, cmpt::Age & age) {
+		age.age += deltatime;
+		if (age.lifespan < age.age) {
+			m_emitter.publish<evnt::LaserParticleDead>(m_registry.get<cmpt::Transform>(entity).position);
 			m_registry.destroy(entity);
 		}
 	});
