@@ -7,6 +7,7 @@
 #include "core/constants.hpp"
 #include "core/game.hpp"
 #include "core/tags.hpp"
+#include "events/gui/select-rotation.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"
 #include "components/look-at-mouse.hpp"
@@ -316,7 +317,7 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 			break;
 
 		case ROTATE:
-			// TODO update rotation of selected entity
+			m_game.emitter.publish<evnt::SelectRotation>(event.mousePos);
 			break;
 
 		case INVALID:

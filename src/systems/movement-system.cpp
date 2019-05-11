@@ -11,6 +11,7 @@
 #include "core/tags.hpp"
 #include "core/level/graph.hpp"
 #include "events/enemy-damaged.hpp"
+#include "events/gui/select-rotation.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
 #include "components/look-at.hpp"
@@ -27,51 +28,47 @@
 #include "components/direction.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
-: ISystem(registry, emitter) {}
-
-
-// TODO use another event, sent by the gameLevelState
-/*
-void MovementSystem::onMouseMove(const evnt::MouseMove& event) {
-	//Rotated by mouse
-	m_registry.view<cmpt::Transform, cmpt::RotatedByMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::RotatedByMouse& rotatedByMouse) {
-		glm::vec2 toPrevMouse = m_prevMousePos * glm::vec2(WIN_RATIO, 1.0f) - transform.position;
-		glm::vec2 toMouse = event.mousePos*glm::vec2(WIN_RATIO, 1.0f) - transform.position;
-		float deltaAgl = atan2(toMouse.y, toMouse.x) - atan2(toPrevMouse.y, toPrevMouse.x);
-		if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
-			cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
-			rot.accumulatedAngle += deltaAgl;
-			while (rot.accumulatedAngle > rot.angleStep) {
-				rot.accumulatedAngle -= rot.angleStep;
-				transform.rotation += rot.angleStep;
+: ISystem(registry, emitter)
+{
+	// TODO cleanup this code, some of this logic can be calculated when publishing the event
+	m_emitter.on<evnt::SelectRotation>([this](const evnt::SelectRotation & event, EventEmitter & emitter) {
+		m_registry.view<cmpt::Transform, cmpt::RotatedByMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::RotatedByMouse & rotatedByMouse) {
+			glm::vec2 toPrevMouse = m_prevMousePos * glm::vec2(WIN_RATIO, 1.0f) - transform.position;
+			glm::vec2 toMouse = event.mousePos * glm::vec2(WIN_RATIO, 1.0f) - transform.position;
+			float deltaAgl = atan2(toMouse.y, toMouse.x) - atan2(toPrevMouse.y, toPrevMouse.x);
+			if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
+				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
+				rot.accumulatedAngle += deltaAgl;
+				while (rot.accumulatedAngle > rot.angleStep) {
+					rot.accumulatedAngle -= rot.angleStep;
+					transform.rotation += rot.angleStep;
+				}
+				while (rot.accumulatedAngle < -rot.angleStep) {
+					rot.accumulatedAngle += rot.angleStep;
+					transform.rotation -= rot.angleStep;
+				}
 			}
-			while (rot.accumulatedAngle < -rot.angleStep) {
-				rot.accumulatedAngle += rot.angleStep;
-				transform.rotation -= rot.angleStep;
+			else {
+				transform.rotation += deltaAgl;
 			}
-		}
-		else {
-			transform.rotation += deltaAgl;
-		}
+		});
+		//Look at mouse
+		m_registry.view<cmpt::Transform, cmpt::LookAtMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::LookAtMouse & lookAtMouse) {
+			float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
+			if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
+				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
+				transform.rotation = round(agl / rot.angleStep) * rot.angleStep + lookAtMouse.angleOffset;
+			}
+			else {
+				transform.rotation = agl + lookAtMouse.angleOffset;
+			}
+		});
+		//Update previous mouse position
+		m_prevMousePos = event.mousePos;
 	});
-	//Look at mouse
-	m_registry.view<cmpt::Transform, cmpt::LookAtMouse>().each([this, event](auto entity, cmpt::Transform & transform, cmpt::LookAtMouse& lookAtMouse) {
-		float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
-		if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
-			cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
-			transform.rotation = round(agl / rot.angleStep) * rot.angleStep + lookAtMouse.angleOffset;
-		}
-		else {
-			transform.rotation = agl + lookAtMouse.angleOffset;
-		}
-	});
-	//Update previous mouse position
-	m_prevMousePos = event.mousePos;
 }
-*/
 
 void MovementSystem::update(float deltatime) {
-
 	//Move towards mouse
 	m_registry.view<cmpt::Transform, cmpt::MoveTowardsMouse, cmpt::AttachedTo>().each([this](auto entity, cmpt::Transform & transform, cmpt::MoveTowardsMouse& move, cmpt::AttachedTo& attachedTo) {
 		if (!m_registry.valid(attachedTo.entityId)) {
