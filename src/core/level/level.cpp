@@ -11,6 +11,7 @@
 #include "logger/gl-log-handler.hpp"
 #include "core/constants.hpp"
 #include "core/maths.hpp"
+#include "components/entity-on.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
 : m_registry(registry), m_tileFactory(registry), m_viewTranslation(viewTranslation), m_viewScale(viewScale),
@@ -154,6 +155,25 @@ int Level::getTile(unsigned int x, unsigned int y) const {
 	}
 }
 
+int Level::getTileFromProjCoord(float x, float y) const {
+	glm::vec2 tilePosition = projToGrid(x, y);
+	return getTile(tilePosition.x, tilePosition.y);
+}
+
+int Level::getEntityOnTileFromProjCoord(float x, float y) const {
+	glm::vec2 tilePosition = projToGrid(x, y);
+	unsigned int tileId = getTile(tilePosition.x, tilePosition.y);
+	if (m_registry.valid(tileId)) {
+		if (m_registry.has<cmpt::EntityOn>(tileId)) {
+			return m_registry.get<cmpt::EntityOn>(tileId).entityId;
+		} else {
+			return -1;
+		}
+	} else {
+		return -1;
+	}
+}
+
 unsigned int Level::getGridWidth() const { return m_gridWidth; }
 unsigned int Level::getGridHeight() const { return m_gridHeight; }
 
@@ -165,13 +185,13 @@ Graph* Level::getPathfindingGraph() const {
 	return m_pathfindingGraph;
 }
 
-glm::vec2 Level::windowToGrid(float x, float y) {
+glm::vec2 Level::windowToGrid(float x, float y) const {
 	float projX = imaths::rangeMapping(x, 0, WIN_WIDTH, 0, PROJ_WIDTH);
 	float projY = imaths::rangeMapping(y, 0, WIN_HEIGHT, 0, PROJ_HEIGHT);
 	return projToGrid(projX, projY);
 }
 
-glm::vec2 Level::projToGrid(float x, float y) {
+glm::vec2 Level::projToGrid(float x, float y) const {
 	// TODO Fixme
 	//spdlog::info("scale is {}", m_viewScale);
 	//spdlog::info("translation is {} {}", m_viewTranslation.x, m_viewTranslation.y);
@@ -188,7 +208,7 @@ glm::vec2 Level::projToGrid(float x, float y) {
 	return glm::vec2(tileX, tileY);
 }
 
-glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) {
+glm::vec2 Level::gridToProj(unsigned int x, unsigned int y) const {
 	float posX = imaths::rangeMapping(x, 0, m_gridWidth, 0, m_gridWidth * TILE_SIZE);
 	float posY = imaths::rangeMapping(y, 0, m_gridHeight, 0, m_gridHeight * TILE_SIZE);
 	return glm::vec2(posX + TILE_SIZE / 2, posY + TILE_SIZE / 2);

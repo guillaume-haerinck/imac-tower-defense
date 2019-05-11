@@ -4,11 +4,11 @@
 #include <memory>
 
 #include "events/handlers/event-emitter.hpp"
-#include "events/left-click-up.hpp"
-#include "events/left-click-down.hpp"
-#include "events/right-click-up.hpp"
-#include "events/right-click-down.hpp"
-#include "events/mouse-move.hpp"
+#include "events/inputs/left-click-up.hpp"
+#include "events/inputs/left-click-down.hpp"
+#include "events/inputs/right-click-up.hpp"
+#include "events/inputs/right-click-down.hpp"
+#include "events/inputs/mouse-move.hpp"
 
 class InputHandler {
 public:

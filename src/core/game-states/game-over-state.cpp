@@ -23,15 +23,6 @@ GameOverState::~GameOverState() {
 }
 
 void GameOverState::enter() {
-	// Remove event subscriptions to unused systems
-	m_game.animationSystem->disconnectInputs();
-	m_game.attackSystem->disconnectInputs();
-	m_game.constructionSystem->disconnectInputs();
-	m_game.healthSystem->disconnectInputs();
-	m_game.movementSystem->disconnectInputs();
-	m_game.renderSystem->disconnectInputs();
-	m_game.waveSystem->disconnectInputs();
-
 	// Subscribe to events
 	connectInputs();
 }

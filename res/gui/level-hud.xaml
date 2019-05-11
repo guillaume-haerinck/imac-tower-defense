@@ -7,4 +7,7 @@
   <Canvas>
     <ToggleButton Canvas.Left="{Binding PosX}" Canvas.Bottom="{Binding PosY}" Content="Mon super bouton"/>
   </Canvas>
+
+  <RadioButton Click="onSelectTower">Tower</RadioButton>
+  <RadioButton Click="onSelectMirror">Mirror</RadioButton>
 </StackPanel>

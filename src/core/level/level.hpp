@@ -14,12 +14,16 @@ public:
 	~Level();
 
 	// Position interpolation
-	glm::vec2 windowToGrid(float x, float y);
-	glm::vec2 projToGrid(float x, float y);
-	glm::vec2 gridToProj(unsigned int x, unsigned int y);
+	glm::vec2 windowToGrid(float x, float y) const;
+	glm::vec2 projToGrid(float x, float y) const;
+	glm::vec2 gridToProj(unsigned int x, unsigned int y) const;
 
 	// Getters
 	int getTile(unsigned int x, unsigned int y) const;
+	int getTileFromProjCoord(float x, float y) const;
+
+	int getEntityOnTileFromProjCoord(float x, float y) const;
+
 	glm::vec2 getNodePosition(int nodeIndex);
 	unsigned int getGridWidth() const;
 	unsigned int getGridHeight() const;

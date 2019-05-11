@@ -23,15 +23,6 @@ TitleScreenState::~TitleScreenState() {
 }
 
 void TitleScreenState::enter() {
-	// Remove subscription for unsused systems
-	m_game.animationSystem->disconnectInputs();
-	m_game.attackSystem->disconnectInputs();
-	m_game.constructionSystem->disconnectInputs();
-	m_game.healthSystem->disconnectInputs();
-	m_game.movementSystem->disconnectInputs();
-	m_game.renderSystem->disconnectInputs();
-	m_game.waveSystem->disconnectInputs();
-
 	// Subscribe self to inputs
 	connectInputs();
 }

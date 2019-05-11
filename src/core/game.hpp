@@ -13,7 +13,6 @@
 #include "systems/render-system.hpp"
 #include "systems/movement-system.hpp"
 #include "systems/animation-system.hpp"
-#include "systems/construction-system.hpp"
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
 #include "systems/health-system.hpp"
@@ -44,10 +43,14 @@ public:
 	RenderSystem* renderSystem;
 	AnimationSystem* animationSystem;
 	MovementSystem* movementSystem;
-	ConstructionSystem* constructionSystem;
 	WaveSystem* waveSystem;
 	AttackSystem* attackSystem;
 	HealthSystem* healthSystem;
+
+	// Temp, only public to debug state machine
+	LevelState* m_levelState;
+	TitleScreenState* m_titleState;
+	GameOverState* m_gameOverState;
 
 private:
 	// Lifetime
@@ -60,9 +63,6 @@ private:
 
 	// State machine
 	GameState m_state;
-	LevelState* m_levelState;
-	TitleScreenState* m_titleState;
-	GameOverState* m_gameOverState;
 
 	// Camera
 	glm::mat4 m_projMat;
