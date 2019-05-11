@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "core/game-states/i-game-state.hpp"
+#include "events/gui/construct-selection.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelHud) {
 	NsMeta<Noesis::TypeId>("LevelHud");
@@ -23,6 +24,8 @@ void LevelHud::InitializeComponent() {
 }
 
 bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
+	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTower);
+	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectMirror);
 	return false;
 }
 
@@ -43,4 +46,12 @@ void LevelHud::OnMouseLeave(const Noesis::MouseEventArgs& e) {
 
 void LevelHud::OnMouseDown(const Noesis::MouseButtonEventArgs& e) {
 	spdlog::info("Mouse click noesis !");
+}
+
+void LevelHud::onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_BASIC);
+}
+
+void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::MIRROR_BASIC);
 }

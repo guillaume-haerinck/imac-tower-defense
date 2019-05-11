@@ -163,7 +163,7 @@ int Level::getTileFromProjCoord(float x, float y) const {
 int Level::getEntityOnTileFromProjCoord(float x, float y) const {
 	glm::vec2 tilePosition = projToGrid(x, y);
 	unsigned int tileId = getTile(tilePosition.x, tilePosition.y);
-	if (tileId != -1) {
+	if (m_registry.valid(tileId)) {
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			return m_registry.get<cmpt::EntityOn>(tileId).entityId;
 		} else {

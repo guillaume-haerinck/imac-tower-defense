@@ -14,6 +14,7 @@
 #include "events/inputs/right-click-down.hpp"
 #include "events/inputs/mouse-move.hpp"
 #include "gui/level-hud/level-hud.hpp"
+#include "events/gui/construct-selection.hpp"
 
 class Game; // Forward declaration
 
@@ -49,7 +50,7 @@ public:
 	void onMouseMove(const evnt::MouseMove& event) override;
 
 	// Getters
-	LevelInteractionState getInteractionState();
+	LevelInteractionState getInteractionState() const;
 
 	// Setters
 	void changeState(LevelInteractionState state);
@@ -65,4 +66,6 @@ private:
 
 	unsigned int m_invalidTimeCounter;
 	unsigned int m_invalidTimeMax;
+	ConstructibleType m_constructType;
+	int m_lastSelectedEntity;
 };

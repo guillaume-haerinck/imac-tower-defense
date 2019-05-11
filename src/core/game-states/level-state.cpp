@@ -13,13 +13,18 @@
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
-	m_towerFactory(game.registry), m_mirrorFactory(game.registry), m_invalidTimeCounter(0), m_invalidTimeMax(2 * 60)
+	m_towerFactory(game.registry), m_mirrorFactory(game.registry), m_invalidTimeCounter(0), m_invalidTimeMax(1 * 60)
 {
 	m_xaml = m_levelHud;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
+
+	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
+		this->m_constructType = event.type;
+		this->changeState(LevelInteractionState::BUILD);
+	});
 
 	/*
 	// TODO handle unselection
@@ -45,7 +50,7 @@ LevelState::~LevelState() {
 
 /* ----------------------- GETTERS ------------------------ */
 
-LevelInteractionState LevelState::getInteractionState() {
+LevelInteractionState LevelState::getInteractionState() const {
 	return m_state;
 }
 
@@ -55,8 +60,12 @@ void LevelState::changeState(LevelInteractionState state) {
 	switch (m_state) {
 	case FREE:
 		break;
+
 	case ROTATE:
+		m_game.registry.remove<stateTag::IsBeingControlled>(m_lastSelectedEntity);
+		m_game.registry.remove<cmpt::LookAtMouse>(m_lastSelectedEntity);
 		break;
+
 	case INVALID:
 		break;
 	case OPTIONS:
@@ -180,16 +189,18 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		{
 			// Get entity. If valid mirror rotate. Else Invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
-			if (entityId != -1) {
+			if (m_game.registry.valid(entityId)) {
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					changeState(LevelInteractionState::ROTATE);
-					m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
-					m_game.registry.assign<cmpt::LookAtMouse>(entityId);
+					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
+					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
+
+					m_lastSelectedEntity = entityId;
 				}
 			}
 			else {
 				spdlog::warn("No valid entity on tile");
-				m_state = LevelInteractionState::INVALID;
+				changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
@@ -211,20 +222,36 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		{
 			// Build selected type on tile if valid
 			int tileId = m_game.level->getTileFromProjCoord(event.mousePos.x, event.mousePos.y);
-			if (m_game.registry.has<tileTag::Constructible>(tileId)) {
-				cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
+			if (m_game.registry.valid(tileId)) {
+				if (m_game.registry.has<tileTag::Constructible>(tileId)) {
+					cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
+					unsigned int entityId = 0;
 
-				// TODO handle build type, can be any type of tower or mirror
-				// Use a local variable updated by an event which indicates the last selected build type
-				unsigned int mirrorId = m_mirrorFactory.create(trans.position.x, trans.position.y);
+					switch (m_constructType) {
+					case MIRROR_BASIC:
+						entityId = m_mirrorFactory.create(trans.position.x, trans.position.y);
+						m_game.progression.addToMoney(-MIRROR_COST);
+						break;
 
-				m_game.registry.remove<tileTag::Constructible>(tileId);
-				m_game.registry.assign<cmpt::EntityOn>(tileId, mirrorId);
-				m_game.progression.addToMoney(-MIRROR_COST);
-				changeState(LevelInteractionState::FREE);
-			}
-			else {
-				spdlog::warn("Not a constructible tile");
+					case TOWER_BASIC:
+						entityId = m_towerFactory.create(trans.position.x, trans.position.y);
+						m_game.progression.addToMoney(-TOWER_COST);
+						break;
+
+					default:
+						break;
+					}
+					 
+					m_game.registry.remove<tileTag::Constructible>(tileId);
+					m_game.registry.assign<cmpt::EntityOn>(tileId, entityId);
+					changeState(LevelInteractionState::FREE);
+				}
+				else {
+					spdlog::warn("Not a constructible tile");
+					changeState(LevelInteractionState::INVALID);
+				}
+			} else {
+				spdlog::warn("Invalid tile");
 				changeState(LevelInteractionState::INVALID);
 			}
 			break;

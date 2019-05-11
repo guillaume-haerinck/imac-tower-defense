@@ -19,6 +19,8 @@ private:
 
 	// Events
 	bool ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) override;
+	void onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
+	void onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 
 	// Input events
 	void OnMouseEnter(const Noesis::MouseEventArgs& e) override;
