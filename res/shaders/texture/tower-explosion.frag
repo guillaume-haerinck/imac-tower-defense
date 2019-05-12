@@ -21,6 +21,6 @@ void main() {
 	else{
 		texColor.a = 1 ;
 	}
-	color = texColor*0.02;
-	color.a = 1 ;
+	color = texColor*0.2;
+	color.a = 0.5 ;
 }
