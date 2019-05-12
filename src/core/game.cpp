@@ -19,6 +19,7 @@
 #include "services/debug-draw/debug-draw-service.hpp"
 #include "services/random/random-service.hpp"
 #include "services/audio/audio-service.hpp"
+#include "services/get-position/get-position-service.hpp"
 #include "events/change-game-state.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
@@ -235,6 +236,10 @@ int Game::init() {
 	debugDraw.setViewMat(m_viewMat);
 	locator::random::set<RandomService>();
 	locator::audio::set<AudioService>();
+	locator::getPosition::set<GetPositionService>();
+	IGetPosition& getPosition = locator::getPosition::ref();
+	getPosition.setRegistry(&registry);
+	getPosition.setEmitter(&emitter);
 
 	// Init Physics
 	/*
@@ -333,6 +338,7 @@ Game::~Game() {
 	locator::debugDraw::reset();
 	locator::audio::reset();
 	locator::random::reset();
+	locator::getPosition::reset();
 
 	// Delete systems
 	delete renderSystem;

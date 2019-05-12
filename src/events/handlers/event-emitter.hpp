@@ -1,6 +1,7 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <glm/glm.hpp>
 
 enum FocusMode {
 	GAME,
@@ -10,4 +11,5 @@ enum FocusMode {
 struct EventEmitter : entt::Emitter<EventEmitter> {
 	EventEmitter() : focus(GAME) {}
 	FocusMode focus;
+	glm::vec2 mousePos;
 };

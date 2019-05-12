@@ -18,7 +18,9 @@
 #include "components/shake.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "events/enemy-damaged.hpp"
-#include "core/get-position.hpp"
+
+#include "services/locator.hpp"
+#include "services/get-position/i-get-position.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -110,6 +112,7 @@ void RenderSystem::update(float deltatime) {
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
 		if (health.current != health.max) {
+			IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
 			// Background
 			{
 				// Binding
@@ -117,7 +120,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.background.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(getPosition(m_registry,entity), Z_INDEX_HUD - 1);
+				cmpt::Transform healthTransform(getPositionService.get(entity), Z_INDEX_HUD - 1);
 				healthTransform.position += healthbar.relativePos;
 
 				// Updates
@@ -138,7 +141,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.bar.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(getPosition(m_registry, entity), Z_INDEX_HUD);
+				cmpt::Transform healthTransform(getPositionService.get(entity), Z_INDEX_HUD);
 				healthTransform.position += healthbar.relativePos;
 				float scale = imaths::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
@@ -163,10 +166,11 @@ void RenderSystem::update(float deltatime) {
 }
 
 glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
+	IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
 	glm::mat4 model(1.0f);
 	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
 
-	model = glm::translate(model, glm::vec3(getPosition(m_registry,entityId), transform.zIndex));
+	model = glm::translate(model, glm::vec3(getPositionService.get(entityId), transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
     return model;

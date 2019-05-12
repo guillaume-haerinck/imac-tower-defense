@@ -337,6 +337,7 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 
 void LevelState::onMouseMove(const evnt::MouseMove& event) {
 	this->m_ui->MouseMove(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y);
+	m_game.emitter.mousePos = event.mousePos;
 
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
