@@ -25,7 +25,7 @@ glm::vec2 getPosition(entt::DefaultRegistry& registry, unsigned int entityId) {
 	if (registry.has<cmpt::AttachedTo>(entityId)) {
 		unsigned int mainEntityId = registry.get<cmpt::AttachedTo>(entityId).entityId;
 		if (registry.valid(mainEntityId)) {
-			glm::vec2 mainPos = registry.get<cmpt::Transform>(mainEntityId).position;
+			glm::vec2 mainPos = getPosition(registry,mainEntityId);
 			actualPos += mainPos;
 			if (registry.has<cmpt::MoveTowardsMouse>(entityId)) {
 				cmpt::MoveTowardsMouse& move = registry.get<cmpt::MoveTowardsMouse>(entityId);
