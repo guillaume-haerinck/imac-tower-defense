@@ -15,13 +15,26 @@
 #include <SDL2/SDL.h>
 #include "components/attached-to.hpp"
 #include "components/age.hpp"
+#include "components/shake.hpp"
 #include "events/laser-particle-dead.hpp"
+#include "events/enemy-damaged.hpp"
 #include "core/get-position.hpp"
 
 #include <spdlog/spdlog.h>
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
-: ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {}
+: ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {
+	m_emitter.on<evnt::EnemyDamaged>([this](const evnt::EnemyDamaged & event, EventEmitter & emitter) {
+		if (m_registry.valid(event.targetId)) {
+			//Shake
+			if (m_registry.has<cmpt::Shake>(event.targetId)) {
+				IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+				float agl = randomService.random(imaths::TAU);
+				m_registry.get<cmpt::Shake>(event.targetId).offset = 0.5f*glm::vec2(cos(agl), sin(agl));
+			}
+		}
+	});
+}
 
 void RenderSystem::update(float deltatime) {
     /* 

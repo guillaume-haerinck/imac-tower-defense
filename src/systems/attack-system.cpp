@@ -11,6 +11,7 @@
 #include "components/shoot-at.hpp"
 #include "components/shoot-laser.hpp"
 #include "components/health.hpp"
+#include "components/shake.hpp"
 #include "events/enemy-damaged.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "services/locator.hpp"
@@ -76,6 +77,7 @@ void AttackSystem::update(float deltatime) {
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
 void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime, bool isTransparent) {
+
 	glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
 	glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
 	glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
@@ -131,7 +133,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		trySpawnLaserParticle(laserEnd, deltatime);
 	}
 
-	//Damage enemies
+	//Damage entities
 	if (!isTransparent) {
 		float laserLength = sqrt((pos.x - laserEnd.x)*(pos.x - laserEnd.x) + (pos.y - laserEnd.y)*(pos.y - laserEnd.y));
 		glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);

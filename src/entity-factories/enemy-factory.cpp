@@ -21,6 +21,7 @@
 #include "components/look-at-mouse.hpp"
 #include "components/move-towards-mouse.hpp"
 #include "components/velocity.hpp"
+#include "components/shake.hpp"
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimis�s en m�moire
 
@@ -71,6 +72,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
 	m_registry.assign<cmpt::Wiggle>(myEntity,1);
 	m_registry.assign<cmpt::Velocity>(myEntity, ENEMY_VELOCITY);
+	m_registry.assign<cmpt::Shake>(myEntity);
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);

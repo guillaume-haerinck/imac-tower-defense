@@ -6,6 +6,7 @@
 #include "events/tower-dead.hpp"
 #include "components/health.hpp"
 #include "components/transform.hpp"
+#include "components/shake.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
 
@@ -13,6 +14,7 @@ HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 : ISystem(registry, emitter), m_progression(progression)
 {
 	m_emitter.on<evnt::EnemyDamaged>([this](const evnt::EnemyDamaged & event, EventEmitter & emitter) {
+		//Reduce health
 		cmpt::Health& health = m_registry.get<cmpt::Health>(event.targetId);
 		health.current -= event.damage;
 		if (health.current <= 0.0001f) {

@@ -15,6 +15,7 @@
 #include "components/shoot-laser.hpp"
 #include "components/health-bar.hpp"
 #include "components/health.hpp"
+#include "components/shake.hpp"
 #include "services/locator.hpp"
 #include "services/random/i-random.hpp"
 
@@ -48,5 +49,6 @@ unsigned int TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
+	m_registry.assign<cmpt::Shake>(myEntity);
 	return myEntity;
 }
