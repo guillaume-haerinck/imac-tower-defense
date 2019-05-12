@@ -19,10 +19,10 @@ public:
 	glm::vec2 gridToProj(unsigned int x, unsigned int y) const;
 
 	// Getters
-	int getTile(unsigned int x, unsigned int y) const;
-	int getTileFromProjCoord(float x, float y) const;
+	std::uint32_t getTile(unsigned int x, unsigned int y) const;
+	std::uint32_t getTileFromProjCoord(float x, float y) const;
 
-	int getEntityOnTileFromProjCoord(float x, float y) const;
+	std::uint32_t getEntityOnTileFromProjCoord(float x, float y) const;
 
 	glm::vec2 getNodePosition(int nodeIndex);
 	unsigned int getGridWidth() const;

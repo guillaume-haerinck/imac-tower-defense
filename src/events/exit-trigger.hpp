@@ -2,9 +2,9 @@
 
 namespace evnt {
 	struct ExitTrigger {
-		ExitTrigger(unsigned int entity1, unsigned int entity2) : entity1(entity1), entity2(entity2) {}
+		ExitTrigger(int entity1, int entity2) : entity1(entity1), entity2(entity2) {}
 
-		unsigned int entity1;
-		unsigned int entity2;
+		std::uint32_t entity1;
+		std::uint32_t entity2;
 	};
 }

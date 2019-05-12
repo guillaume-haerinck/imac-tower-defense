@@ -145,32 +145,32 @@ void Level::setLevel(unsigned int number) {
 
 /* ----------------------- PUBLIC GETTERS ----------------- */
 
-int Level::getTile(unsigned int x, unsigned int y) const {
+std::uint32_t Level::getTile(unsigned int x, unsigned int y) const {
 	try {
 		return m_grid.at(y * m_gridWidth + x);
 	}
 	catch (const std::out_of_range e) {
 		spdlog::warn("Tile out of map range");
-		return -1;
+		return entt::null;
 	}
 }
 
-int Level::getTileFromProjCoord(float x, float y) const {
+std::uint32_t Level::getTileFromProjCoord(float x, float y) const {
 	glm::vec2 tilePosition = projToGrid(x, y);
 	return getTile(tilePosition.x, tilePosition.y);
 }
 
-int Level::getEntityOnTileFromProjCoord(float x, float y) const {
+std::uint32_t Level::getEntityOnTileFromProjCoord(float x, float y) const {
 	glm::vec2 tilePosition = projToGrid(x, y);
 	unsigned int tileId = getTile(tilePosition.x, tilePosition.y);
 	if (m_registry.valid(tileId)) {
 		if (m_registry.has<cmpt::EntityOn>(tileId)) {
 			return m_registry.get<cmpt::EntityOn>(tileId).entityId;
 		} else {
-			return -1;
+			return entt::null;
 		}
 	} else {
-		return -1;
+		return entt::null;
 	}
 }
 

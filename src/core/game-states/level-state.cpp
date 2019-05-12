@@ -15,6 +15,7 @@
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"
 #include "components/look-at-mouse.hpp"
+#include "components/transform.hpp"
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -32,12 +33,20 @@ LevelState::LevelState(Game& game)
 	});
 
 	game.emitter.on<evnt::DeleteEntity>([this](const evnt::DeleteEntity & event, EventEmitter & emitter) {
-		spdlog::info("Asked to delete entity");
+		if (this->m_game.registry.valid(event.entityId)) {
+			glm::vec2 position = this->m_game.registry.get<cmpt::Transform>(event.entityId).position;
+			this->m_game.registry.destroy(event.entityId);
+
+			std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(position.x / WIN_RATIO, position.y);
+			this->m_game.registry.assign<tileTag::Constructible>(tileId);
+			this->m_game.registry.remove<cmpt::EntityOn>(tileId);
+
+			this->changeState(LevelInteractionState::FREE);
+		}
 	});
 
 	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
-		glm::vec2 tilePosition = this->m_game.level->projToGrid(event.position.x / WIN_RATIO, event.position.y);
-		unsigned int tileId = this->m_game.level->getTile(tilePosition.x, tilePosition.y);
+		std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(event.position.x / WIN_RATIO, event.position.y);
 		this->m_game.registry.assign<tileTag::Constructible>(tileId);
 		this->m_game.registry.remove<cmpt::EntityOn>(tileId);
 	});
@@ -98,15 +107,19 @@ void LevelState::changeState(LevelInteractionState state) {
 	// Enter new state
 	switch (state) {
 	case FREE:
+	case INVALID:
+		m_levelHud.setSelectedEntity(entt::null);
 		break;
+
 	case ROTATE:
 		break;
-	case INVALID:
-		break;
+
 	case OPTIONS:
 		break;
+
 	case BUILD:
 		break;
+
 	default:
 		break;
 	}
@@ -187,6 +200,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
 
 					m_lastSelectedEntity = entityId;
+					m_levelHud.setSelectedEntity(entityId);
 				}
 			}
 			else {
@@ -298,6 +312,7 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (entityId != -1) {
 				changeState(LevelInteractionState::OPTIONS);
+				m_levelHud.setSelectedEntity(entityId);
 				cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(entityId);
 				glm::vec2 posWindow = glm::vec2(
 					imaths::rangeMapping(trans.position.x, 0.0f, PROJ_WIDTH_RAT, 0.0f, WIN_WIDTH),

@@ -67,7 +67,7 @@ private:
 	unsigned int m_invalidTimeCounter;
 	unsigned int m_invalidTimeMax;
 	ConstructibleType m_constructType;
-	int m_lastSelectedEntity;
+	std::uint32_t m_lastSelectedEntity;
 };
 
 

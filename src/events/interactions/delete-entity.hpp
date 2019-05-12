@@ -2,8 +2,8 @@
 
 namespace evnt {
 	struct DeleteEntity {
-		DeleteEntity(int entityId) : entityId(entityId) {}
+		DeleteEntity(std::uint32_t entityId) : entityId(entityId) {}
 
-		int entityId;
+		std::uint32_t entityId;
 	};
 }

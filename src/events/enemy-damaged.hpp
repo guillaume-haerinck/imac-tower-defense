@@ -4,9 +4,9 @@
 
 namespace evnt {
 	struct EnemyDamaged {
-		EnemyDamaged(unsigned int targetId, glm::vec2 position, float damage) : targetId(targetId), position(position), damage(damage) {}
+		EnemyDamaged(std::uint32_t targetId, glm::vec2 position, float damage) : targetId(targetId), position(position), damage(damage) {}
 
-		unsigned int targetId;
+		std::uint32_t targetId;
 		glm::vec2 position;
 		float damage;
 	};

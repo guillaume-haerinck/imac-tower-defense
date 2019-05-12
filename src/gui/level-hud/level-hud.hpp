@@ -17,6 +17,8 @@ public:
 	void setOptionsPosition(glm::vec2 pos);
 	void setOptionsVisibilityTo(bool show);
 
+	void setSelectedEntity(std::uint32_t id);
+
 private:
 	// Init 
 	void InitializeComponent();
@@ -39,4 +41,5 @@ private:
 	Noesis::Ptr<LevelHudBindings> m_bindings;
 	EventEmitter& m_emitter;
 	Progression& m_progression;
+	std::uint32_t m_lastSelectedEntity;
 };

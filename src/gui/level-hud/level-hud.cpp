@@ -56,8 +56,10 @@ void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::Route
 }
 
 void LevelHud::onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::DeleteEntity>(0);
+	m_emitter.publish<evnt::DeleteEntity>(m_lastSelectedEntity);
 }
+
+/* ------------------------ SETTERS ----------------------- */
 
 void LevelHud::setOptionsPosition(glm::vec2 pos) {
 	// Invert pos Y to match 0.0 on the top
@@ -78,4 +80,8 @@ void LevelHud::setOptionsVisibilityTo(bool show) {
 	} else {
 		m_bindings->setVisibility("Collapsed");
 	}
+}
+
+void LevelHud::setSelectedEntity(std::uint32_t id) {
+	m_lastSelectedEntity = id;
 }
