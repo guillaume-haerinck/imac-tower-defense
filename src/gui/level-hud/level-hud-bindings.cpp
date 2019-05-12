@@ -14,9 +14,10 @@ NS_IMPLEMENT_REFLECTION(LevelHudBindings) {
 	NsMeta<Noesis::TypeId>("LevelHudBindings");
 	NsProp("PosX", &LevelHudBindings::getPosX, &LevelHudBindings::setPosX);
 	NsProp("PosY", &LevelHudBindings::getPosY, &LevelHudBindings::setPosY);
+	NsProp("Visibility", &LevelHudBindings::getVisibility, &LevelHudBindings::setVisibility);
 }
 
-LevelHudBindings::LevelHudBindings() : bHide(true), m_posX(0.0f), m_posY(0.0f)
+LevelHudBindings::LevelHudBindings() : m_visibility("Visible"), m_posX(0.0f), m_posY(-500.0f)
 {
 	/*
 	std::string text = std::to_string(this->m_progression.getMoney());
@@ -51,16 +52,23 @@ float LevelHudBindings::getPosY() const {
 	return m_posY;
 }
 
-/*
-const char* LevelHudBindings::GetOutput() const {
-	return m_output;
+
+const char* LevelHudBindings::getVisibility() const {
+	return m_visibility;
 }
 
-void LevelHudBindings::SetOutput(const char* value) {
-	if (!Noesis::String::Equals(m_output, value)) {
-		Noesis::String::Copy(m_output, sizeof(m_output), value);
-		OnPropertyChanged("Output");
+void LevelHudBindings::setVisibility(const char* value) {
+	if (!Noesis::String::Equals(m_visibility, value)) {
+		Noesis::String::Copy(m_visibility, sizeof(m_visibility), value);
+		//OnPropertyChanged("Visibitity");
+
+		// Temp fix because does not work at runtime
+		if (Noesis::String::Equals("Collapsed", value)) {
+			m_posY = -500;
+			OnPropertyChanged("PosY");
+		}
 	}
+	
 }
-*/
+
 

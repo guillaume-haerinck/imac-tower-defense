@@ -14,8 +14,8 @@ class LevelHudBindings : public NoesisApp::NotifyPropertyChangedBase {
 public:
 	LevelHudBindings();
 
-	//const char* GetOutput() const;
-	//void SetOutput(const char* value);
+	const char* getVisibility() const;
+	void setVisibility(const char* value);
 
 	void setPosX(float pos);
 	float getPosX() const;
@@ -28,5 +28,5 @@ private:
 
 	float m_posX;
 	float m_posY;
-	bool bHide;
+	char m_visibility[256];
 };

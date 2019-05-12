@@ -4,7 +4,7 @@
 
   <!-- Option floating menu -->
   <Canvas>
-    <Grid Canvas.Left="{Binding PosX}" Canvas.Top="{Binding PosY}">
+    <Grid Canvas.Left="{Binding PosX}" Canvas.Top="{Binding PosY}" Visibility="{Binding Visibility}">
       <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>

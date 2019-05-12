@@ -15,6 +15,7 @@ public:
 
 	// Setters
 	void setOptionsPosition(glm::vec2 pos);
+	void setOptionsVisibilityTo(bool show);
 
 private:
 	// Init 

@@ -7,6 +7,8 @@
 #include "core/constants.hpp"
 #include "core/game.hpp"
 #include "core/tags.hpp"
+#include "core/maths.hpp"
+#include "core/constants.hpp"
 #include "events/interactions/select-rotation.hpp"
 #include "events/tower-dead.hpp"
 #include "events/interactions/delete-entity.hpp"
@@ -82,8 +84,11 @@ void LevelState::changeState(LevelInteractionState state) {
 
 	case INVALID:
 		break;
+
 	case OPTIONS:
+		m_levelHud.setOptionsVisibilityTo(false);
 		break;
+
 	case BUILD:
 		break;
 	default:
@@ -293,11 +298,16 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (entityId != -1) {
 				changeState(LevelInteractionState::OPTIONS);
+				cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(entityId);
+				glm::vec2 posWindow = glm::vec2(
+					imaths::rangeMapping(trans.position.x, 0.0f, PROJ_WIDTH_RAT, 0.0f, WIN_WIDTH),
+					imaths::rangeMapping(trans.position.y, 0.0f, PROJ_HEIGHT, 0.0f, WIN_HEIGHT)
+				);
+
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
-					m_levelHud.setOptionsPosition(event.mousePosSdlCoord);
-				}
-				else if (m_game.registry.has<entityTag::Tower>(entityId)) {
-					m_levelHud.setOptionsPosition(event.mousePosSdlCoord);
+					m_levelHud.setOptionsPosition(posWindow);
+				} else if (m_game.registry.has<entityTag::Tower>(entityId)) {
+					m_levelHud.setOptionsPosition(posWindow);
 				}
 			}
 			else {

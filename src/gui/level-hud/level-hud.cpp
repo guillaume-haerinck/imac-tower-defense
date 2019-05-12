@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <glm/glm.hpp>
 
+#include "core/constants.hpp"
 #include "core/game-states/i-game-state.hpp"
 #include "events/interactions/construct-selection.hpp"
 #include "events/interactions/delete-entity.hpp"
@@ -59,9 +60,22 @@ void LevelHud::onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::Route
 }
 
 void LevelHud::setOptionsPosition(glm::vec2 pos) {
-	pos.y -= 45;
-	pos.x += 10;
+	// Invert pos Y to match 0.0 on the top
+	pos.y = WIN_HEIGHT - pos.y;
 
+	// Make the pivot point bottom left with an offset corresponding to menu size
+	pos.y -= 55;
+	pos.x += 25;
+
+	setOptionsVisibilityTo(true);
 	m_bindings->setPosX(pos.x);
 	m_bindings->setPosY(pos.y);
+}
+
+void LevelHud::setOptionsVisibilityTo(bool show) {
+	if (show) {
+		m_bindings->setVisibility("Visible");
+	} else {
+		m_bindings->setVisibility("Collapsed");
+	}
 }
