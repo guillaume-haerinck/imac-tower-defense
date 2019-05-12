@@ -8,8 +8,9 @@ const float PROJ_WIDTH_RAT = PROJ_WIDTH * WIN_RATIO;
 const float PROJ_HEIGHT = 100.0f;
 const float TILE_SIZE = 11.0f;
 
-const int ENNEMY_MONEY_VALUE = 2;
-const float ENNEMY_HEALTH = 5.0f;
+const int ENEMY_MONEY_VALUE = 2;
+const float ENEMY_HEALTH = 5.0f;
+const float ENEMY_HEALTH_RANDOM_VARIATION = 0.5f;
 const float ENEMY_VELOCITY = 18.0f;
 
 const float TOWER_HEALTH = 10;

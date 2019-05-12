@@ -67,7 +67,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	//m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_level, startNode);
-	m_registry.assign<cmpt::Health>(myEntity, ENNEMY_HEALTH);
+	m_registry.assign<cmpt::Health>(myEntity, ENEMY_HEALTH + randomService.random(-ENEMY_HEALTH_RANDOM_VARIATION, ENEMY_HEALTH_RANDOM_VARIATION));
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
 	m_registry.assign<cmpt::Wiggle>(myEntity,1);

@@ -20,7 +20,7 @@ HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 		if (health.current <= 0.0001f) {
 			if (m_registry.has<entityTag::Enemy>(event.targetId)) {
 				m_emitter.publish<evnt::EnnemyDead>(event.position);
-				m_progression.addToMoney(ENNEMY_MONEY_VALUE);
+				m_progression.addToMoney(ENEMY_MONEY_VALUE);
 			}
 			if (m_registry.has<entityTag::Tower>(event.targetId)) {
 				m_emitter.publish<evnt::TowerDead>(m_registry.get<cmpt::Transform>(event.targetId).position);

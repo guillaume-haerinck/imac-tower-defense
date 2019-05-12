@@ -8,8 +8,9 @@ extern const float PROJ_WIDTH_RAT;
 extern const float PROJ_HEIGHT;
 extern const float TILE_SIZE;
 
-extern const int ENNEMY_MONEY_VALUE;
-extern const float ENNEMY_HEALTH;
+extern const int ENEMY_MONEY_VALUE;
+extern const float ENEMY_HEALTH;
+extern const float ENEMY_HEALTH_RANDOM_VARIATION;
 extern const float ENEMY_VELOCITY;
 
 extern const float TOWER_HEALTH;
