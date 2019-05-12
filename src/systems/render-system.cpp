@@ -104,10 +104,8 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.background.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform = transform;
-				healthTransform.rotation = 0;
+				cmpt::Transform healthTransform(getPosition(m_registry,entity), Z_INDEX_HUD - 1);
 				healthTransform.position += healthbar.relativePos;
-				healthTransform.zIndex = Z_INDEX_HUD - 1;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
@@ -127,12 +125,10 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.bar.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform = transform;
-				healthTransform.rotation = 0;
+				cmpt::Transform healthTransform(getPosition(m_registry, entity), Z_INDEX_HUD);
 				healthTransform.position += healthbar.relativePos;
 				float scale = imaths::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
-				healthTransform.zIndex = Z_INDEX_HUD;
 
 				// Updates
 				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
