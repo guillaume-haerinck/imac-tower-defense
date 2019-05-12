@@ -32,6 +32,8 @@ LevelState::LevelState(Game& game)
 		this->changeState(LevelInteractionState::BUILD);
 	});
 
+	// TODO use a safer and more global way, because if tile is invalid, it will cause a problem
+	// Start by using only one type of event for entity deletion, and see if there is a way to check the grid for deletion
 	game.emitter.on<evnt::DeleteEntity>([this](const evnt::DeleteEntity & event, EventEmitter & emitter) {
 		if (this->m_game.registry.valid(event.entityId)) {
 			glm::vec2 position = this->m_game.registry.get<cmpt::Transform>(event.entityId).position;
