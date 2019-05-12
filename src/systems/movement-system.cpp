@@ -69,18 +69,6 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 }
 
 void MovementSystem::update(float deltatime) {
-	//Move towards mouse
-	m_registry.view<cmpt::Transform, cmpt::MoveTowardsMouse, cmpt::AttachedTo>().each([this](auto entity, cmpt::Transform & transform, cmpt::MoveTowardsMouse& move, cmpt::AttachedTo& attachedTo) {
-		if (!m_registry.valid(attachedTo.entityId)) {
-			m_registry.destroy(entity);
-		}
-		else {
-			glm::vec2 pos = transform.position + m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
-			float agl = atan2(m_prevMousePos.y - pos.y, m_prevMousePos.x * WIN_RATIO - pos.x);
-			transform.position = move.maxDist * glm::vec2(cos(agl), sin(agl));
-		}
-	});
-
 	//Update velocity multiplier
 	m_registry.view<cmpt::Velocity>().each([this, deltatime](auto entity, cmpt::Velocity& velocity) {
 		velocity.multiplierLifespan -= deltatime;

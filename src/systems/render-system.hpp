@@ -15,7 +15,8 @@ public:
     void update(float deltatime) override;
 
 private:
-    glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
+    glm::mat4 getModelMatrix(unsigned int entityId) const;
+	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
 	const glm::mat4& m_view;
 	const glm::mat4& m_projection;
 };

@@ -11,6 +11,5 @@ namespace cmpt {
 
 		float amplitude;
 		float noiseOffset;
-		glm::vec2 latestMove;
 	};
 }

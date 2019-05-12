@@ -16,6 +16,7 @@
 #include "components/attached-to.hpp"
 #include "components/age.hpp"
 #include "events/laser-particle-dead.hpp"
+#include "core/get-position.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -27,29 +28,6 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
-
-	// TODO move to movement system ?
-
-	//Add wiggle (will be removed after rendering)
-	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
-		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-		float r = wiggle.amplitude*(1+randomService.noise((float)SDL_GetTicks() *0.0003 + wiggle.noiseOffset))/2;
-		float agl = 5*imaths::TAU*randomService.noise((float)SDL_GetTicks() *0.000025 + wiggle.noiseOffset + 50);
-		glm::vec2 dl = r * glm::vec2(cos(agl), sin(agl));
-		wiggle.latestMove = dl;
-		transform.position += wiggle.latestMove;
-	});
-
-	//Add main part position (will be removed after rendering (we don't copy to allow wiggle to happen))
-	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
-		if (m_registry.valid(attachedTo.entityId)) {
-			attachedTo.latestMainPos = m_registry.get<cmpt::Transform>(attachedTo.entityId).position;
-			transform.position += attachedTo.latestMainPos;
-		}
-		else {
-			m_registry.destroy(entity);
-		}
-	});
 
 	//Update age
 	m_registry.view<cmpt::Age>().each([this,deltatime](auto entity, cmpt::Age & age) {
@@ -66,7 +44,7 @@ void RenderSystem::update(float deltatime) {
         GLCall(glBindVertexArray(primitive.vaID));
 
         // Updates
-        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
+        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
         GLCall(glDrawArrays(primitive.type, 0, primitive.vertexCount));
@@ -85,7 +63,7 @@ void RenderSystem::update(float deltatime) {
 		sprite.ib->bind();
 
 		// Updates
-		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
+		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
@@ -106,7 +84,7 @@ void RenderSystem::update(float deltatime) {
 		sprite.ib->bind();
 
 		// Updates
-		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(transform);
+		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 
@@ -173,29 +151,22 @@ void RenderSystem::update(float deltatime) {
 			}
 		}
 	});
+}
 
-	// TODO move to movement system ?
+glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
+	glm::mat4 model(1.0f);
+	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
 
-	//Remove main part position
-	m_registry.view<cmpt::AttachedTo, cmpt::Transform>().each([this](auto entity, cmpt::AttachedTo & attachedTo, cmpt::Transform & transform) {
-		if (m_registry.valid(attachedTo.entityId)) {
-			transform.position -= attachedTo.latestMainPos;
-		}
-		else {
-			m_registry.destroy(entity);
-		}
-	});
-
-	//Remove wiggle (must be last function called in renderSystem.update() )
-	m_registry.view<cmpt::Wiggle, cmpt::Transform>().each([](auto entity, cmpt::Wiggle & wiggle, cmpt::Transform & transform) {
-		transform.position -= wiggle.latestMove;
-	});
+	model = glm::translate(model, glm::vec3(getPosition(m_registry,entityId), transform.zIndex));
+	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
+	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
+    return model;
 }
 
 glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) const {
-    glm::mat4 model(1.0f);
-    model = glm::translate(model, glm::vec3(transform.position, transform.zIndex));
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(transform.position, transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
-    model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
-    return model;
+	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
+	return model;
 }
