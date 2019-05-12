@@ -30,7 +30,7 @@ RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 			if (m_registry.has<cmpt::Shake>(event.targetId)) {
 				IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 				float agl = randomService.random(imaths::TAU);
-				m_registry.get<cmpt::Shake>(event.targetId).offset = 0.5f*glm::vec2(cos(agl), sin(agl));
+				m_registry.get<cmpt::Shake>(event.targetId).offset = 0.3f*glm::vec2(cos(agl), sin(agl));
 			}
 		}
 	});
