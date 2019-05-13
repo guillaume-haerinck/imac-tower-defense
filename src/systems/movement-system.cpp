@@ -139,7 +139,7 @@ void MovementSystem::update(float deltatime) {
 				if (m_registry.has<projectileType::Slow>(entity)) {
 					cmpt::Velocity& vel = m_registry.get<cmpt::Velocity>(targeting.targetId);
 					vel.multiplierAge = 0;
-					vel.velMultiplier = TOWER_SLOW;
+					vel.velMultiplier = TOWER_SLOW_AMOUNT;
 					vel.multiplierLifespan = SLOW_DURATION;
 					m_registry.destroy(entity);
 				}
