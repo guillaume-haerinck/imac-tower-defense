@@ -42,7 +42,12 @@ void AttackSystem::update(float deltatime) {
 	m_registry.view<cmpt::Targeting, cmpt::Transform, cmpt::ShootAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::ShootAt & shootAt) {
 		if (m_registry.valid(targeting.targetId) ) {
 			if (shootAt.timer == shootAt.loadingTime) {
-				m_projectileFactory.create(transform.position, targeting.targetId);
+				if (m_registry.has<projectileType::Slow>(entity)) {
+					m_projectileFactory.createSlow(transform.position, targeting.targetId);
+				}
+				if (m_registry.has<projectileType::Damage>(entity)) {
+					m_projectileFactory.createDamage(transform.position, targeting.targetId);
+				}
 				shootAt.timer = 0;
 			}
 			else {
@@ -52,7 +57,7 @@ void AttackSystem::update(float deltatime) {
 	});
 
 	// Pick a new target if current one is out of range or dead
-	m_registry.view<cmpt::Transform, cmpt::Targeting>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting) {
+	m_registry.view<cmpt::Transform, cmpt::Targeting, entityTag::Tower>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting,auto) {
 		//IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
 		//dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
 

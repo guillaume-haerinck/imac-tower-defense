@@ -9,6 +9,8 @@
 #include "components/follow.hpp"
 #include "components/targeting.hpp"
 
+#include "spdlog/spdlog.h"
+
 ProjectileFactory::ProjectileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
 	m_projectileSprite = m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(2.0f));
 }
@@ -18,12 +20,22 @@ ProjectileFactory::~ProjectileFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_projectileSprite.vaID));
 }
 
-void ProjectileFactory::create(glm::vec2 initialPos, unsigned int targetId) {
-	//spdlog::info("{}", targetId);
+unsigned int ProjectileFactory::create(glm::vec2 initialPos, unsigned int targetId) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_projectileSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, initialPos, Z_INDEX_VISUAL_EFFECTS);
 	m_registry.assign<cmpt::Follow>(myEntity, 2.5);
-	m_registry.assign<cmpt::Targeting>(myEntity,targetId,PROJECTILE_HITBOX_RADIUS);
+	m_registry.assign<cmpt::Targeting>(myEntity, targetId, PROJECTILE_HITBOX_RADIUS);
+	return myEntity;
+}
+
+void ProjectileFactory::createSlow(glm::vec2 initialPos, unsigned int targetId) {
+	unsigned int myEntity = create(initialPos, targetId);
+	m_registry.assign<projectileType::Slow>(myEntity);
+}
+
+void ProjectileFactory::createDamage(glm::vec2 initialPos, unsigned int targetId) {
+	unsigned int myEntity = create(initialPos, targetId);
+	m_registry.assign<projectileType::Damage>(myEntity);
 }

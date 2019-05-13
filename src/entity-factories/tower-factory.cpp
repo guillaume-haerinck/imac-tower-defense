@@ -62,11 +62,12 @@ unsigned int TowerFactory::createSlow(float posX, float posY) {
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);
 	m_registry.assign<cmpt::LookAt>(myEntity);
-	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 60));
+	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 25));
 	m_registry.assign<cmpt::Targeting>(myEntity, -1, TOWER_ATTACK_RANGE);
 	m_registry.assign<cmpt::Hitbox>(myEntity, TOWER_HITBOX_RADIUS);
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Shake>(myEntity);
+	m_registry.assign<projectileType::Slow>(myEntity);
 	return myEntity;
 }

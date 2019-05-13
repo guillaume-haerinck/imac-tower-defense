@@ -20,6 +20,12 @@ namespace entityTag {
 	TAG(Tower);
 	TAG(Mirror);
 	TAG(Enemy);
+	TAG(SlowProjectile);
+}
+
+namespace projectileType {
+	TAG(Slow);
+	TAG(Damage);
 }
 
 namespace stateTag {

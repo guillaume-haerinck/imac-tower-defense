@@ -129,8 +129,16 @@ void MovementSystem::update(float deltatime) {
 				transform.position += direction;
 			}
 			else {
-				m_emitter.publish<evnt::EnemyDamaged>(targeting.targetId, targetPosition,1.0f);
-				m_registry.destroy(entity);
+				if (m_registry.has<projectileType::Damage>(entity)) {
+					m_emitter.publish<evnt::EnemyDamaged>(targeting.targetId, targetPosition, 1.0f);
+					m_registry.destroy(entity);
+				}
+				if (m_registry.has<projectileType::Slow>(entity)) {
+					cmpt::Velocity& vel = m_registry.get<cmpt::Velocity>(targeting.targetId);
+					vel.velMultiplier = 0.5;
+					vel.multiplierLifespan = 1;
+					m_registry.destroy(entity);
+				}
 			}
 		}
 		else {
