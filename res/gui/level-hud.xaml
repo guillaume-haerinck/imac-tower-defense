@@ -30,14 +30,11 @@
       <TextBlock Text="Towers" HorizontalAlignment="Left"/>
 
       <StackPanel Orientation="Horizontal">
-        <Button  Click="onSelectTower">
+        <Button  Click="onSelectTowerLaser">
           <Image Source="../images/icons/tower.png" Width="24" Height="24"/>
         </Button>
-        <Button Click="onSelectTower">
-          <Image Source="../images/icons/tower.png" Width="24" Height="24"/>
-        </Button>
-        <Button Click="onSelectTower">
-          <Image Source="../images/icons/tower.png" Width="24" Height="24"/>
+        <Button Click="onSelectTowerSlow">
+          <Image Source="../images/icons/snowflake.png" Width="24" Height="24"/>
         </Button>
       </StackPanel>
     </StackPanel>

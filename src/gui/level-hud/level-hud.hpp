@@ -26,7 +26,8 @@ private:
 
 	// Events
 	bool ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) override;
-	void onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
+	void onSelectTowerSlow(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
+	void onSelectTowerLaser(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	void onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	void onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 

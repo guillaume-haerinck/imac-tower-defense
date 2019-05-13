@@ -26,7 +26,8 @@ void LevelHud::InitializeComponent() {
 }
 
 bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
-	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTower);
+	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerSlow);
+	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerLaser);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectMirror);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onDeleteEntity);
 	return false;
@@ -47,8 +48,12 @@ void LevelHud::OnMouseLeave(const Noesis::MouseEventArgs& e) {
 void LevelHud::OnMouseDown(const Noesis::MouseButtonEventArgs& e) {
 }
 
-void LevelHud::onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+void LevelHud::onSelectTowerSlow(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
 	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_SLOW);
+}
+
+void LevelHud::onSelectTowerLaser(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_LASER);
 }
 
 void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
