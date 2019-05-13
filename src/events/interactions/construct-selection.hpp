@@ -1,7 +1,8 @@
 #pragma once
 
 enum ConstructibleType {
-	TOWER_BASIC,
+	TOWER_LASER,
+	TOWER_SLOW,
 	MIRROR_BASIC
 };
 

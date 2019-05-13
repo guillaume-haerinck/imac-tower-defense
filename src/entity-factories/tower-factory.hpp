@@ -13,7 +13,8 @@ public:
 	TowerFactory(entt::DefaultRegistry& registry);
 	virtual ~TowerFactory();
 
-	unsigned int create(float posX, float posY);
+	unsigned int createLaser(float posX, float posY);
+	unsigned int createSlow(float posX, float posY);
 
 private:
 	SpriteFactory m_spriteFactory;

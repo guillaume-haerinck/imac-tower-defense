@@ -48,7 +48,7 @@ void LevelHud::OnMouseDown(const Noesis::MouseButtonEventArgs& e) {
 }
 
 void LevelHud::onSelectTower(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_BASIC);
+	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_SLOW);
 }
 
 void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {

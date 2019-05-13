@@ -16,7 +16,8 @@ const float ENEMY_VELOCITY = 18.0f;
 const float TOWER_HEALTH = 10;
 const float TOWER_HITBOX_RADIUS = 4.0f;
 const float TOWER_ATTACK_RANGE = 25.0f;
-const int TOWER_COST = 10;
+const int TOWER_LASER_COST = 20;
+const int TOWER_SLOW_COST = 10;
 const int MIRROR_COST = 10;
 const float MIRROR_RADIUS = TILE_SIZE / 2;
 

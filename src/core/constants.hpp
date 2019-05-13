@@ -16,7 +16,8 @@ extern const float ENEMY_VELOCITY;
 extern const float TOWER_HEALTH;
 extern const float TOWER_HITBOX_RADIUS;
 extern const float TOWER_ATTACK_RANGE;
-extern const int TOWER_COST;
+extern const int TOWER_LASER_COST;
+extern const int TOWER_SLOW_COST;
 extern const int MIRROR_COST;
 extern const float MIRROR_RADIUS;
 

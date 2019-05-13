@@ -33,7 +33,7 @@ TowerFactory::~TowerFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_towerSprite.vaID));
 }
 
-unsigned int TowerFactory::create(float posX, float posY) {
+unsigned int TowerFactory::createLaser(float posX, float posY) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 
 	auto myEntity = m_registry.create();
@@ -49,6 +49,24 @@ unsigned int TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
+	m_registry.assign<cmpt::Shake>(myEntity);
+	return myEntity;
+}
+
+unsigned int TowerFactory::createSlow(float posX, float posY) {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+
+	auto myEntity = m_registry.create();
+	m_registry.assign<entityTag::Tower>(myEntity);
+	m_registry.assign<cmpt::Sprite>(myEntity, m_towerSprite);
+	m_registry.assign<renderTag::Single>(myEntity);
+	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);
+	m_registry.assign<cmpt::LookAt>(myEntity);
+	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 60));
+	m_registry.assign<cmpt::Targeting>(myEntity, -1, TOWER_ATTACK_RANGE);
+	m_registry.assign<cmpt::Hitbox>(myEntity, TOWER_HITBOX_RADIUS);
+	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
+	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Shake>(myEntity);
 	return myEntity;
 }

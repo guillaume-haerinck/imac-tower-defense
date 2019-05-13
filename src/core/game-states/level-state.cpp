@@ -224,9 +224,14 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 						m_game.progression.addToMoney(-MIRROR_COST);
 						break;
 
-					case TOWER_BASIC:
-						entityId = m_towerFactory.create(trans.position.x, trans.position.y);
-						m_game.progression.addToMoney(-TOWER_COST);
+					case TOWER_LASER:
+						entityId = m_towerFactory.createLaser(trans.position.x, trans.position.y);
+						m_game.progression.addToMoney(-TOWER_LASER_COST);
+						break;
+
+					case TOWER_SLOW:
+						entityId = m_towerFactory.createSlow(trans.position.x, trans.position.y);
+						m_game.progression.addToMoney(-TOWER_SLOW_COST);
 						break;
 
 					default:
