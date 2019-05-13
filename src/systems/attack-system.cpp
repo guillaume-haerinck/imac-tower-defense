@@ -12,6 +12,7 @@
 #include "components/shoot-laser.hpp"
 #include "components/health.hpp"
 #include "components/shake.hpp"
+#include "components/velocity.hpp"
 #include "events/enemy-damaged.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "services/locator.hpp"
@@ -58,16 +59,32 @@ void AttackSystem::update(float deltatime) {
 
 	// Pick a new target if current one is out of range or dead
 	m_registry.view<cmpt::Transform, cmpt::Targeting, entityTag::Tower>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting,auto) {
-		//IDebugDraw& dd = entt::ServiceLocator<IDebugDraw>::ref();
-		//dd.DrawCircle(b2Vec2(transform1.position.x, transform1.position.y), trigger1.radius, b2Color(1, 0, 0, 0.5f));
-
-		if ( !m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
-			targeting.targetId = -1;
-			m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
-				if (this->isInRange(transform1, targeting.targetingRange,transform2, enemyHitbox.radius) ) {
-					targeting.targetId = entity2;
-				}
-			});
+		//Damage towers
+		if (m_registry.has<projectileType::Damage>(entity1)) {
+			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
+				targeting.targetId = -1;
+				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+					if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius)) {
+						targeting.targetId = entity2;
+					}
+				});
+			}
+		}
+		//Slow towers pick a new target once they have slowed the current one
+		else if (m_registry.has<projectileType::Slow>(entity1)) {
+			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId) || m_registry.get<cmpt::Velocity>(targeting.targetId).velMultiplier < 0.999 ) {
+				float maxVelMult = 0;
+				targeting.targetId = -1;
+				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting, &maxVelMult](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+					if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius) ) {
+						float velMult = m_registry.get<cmpt::Velocity>(entity2).velMultiplier;
+						if (velMult > maxVelMult) {
+							targeting.targetId = entity2;
+							maxVelMult = velMult;
+						}
+					}
+				});
+			}
 		}
 	});
 
