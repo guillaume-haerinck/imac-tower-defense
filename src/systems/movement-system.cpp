@@ -26,6 +26,7 @@
 #include "components/attached-to.hpp"
 #include "components/velocity.hpp"
 #include "components/direction.hpp"
+#include "components/hitbox.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter)
@@ -71,9 +72,10 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 void MovementSystem::update(float deltatime) {
 	//Update velocity multiplier
 	m_registry.view<cmpt::Velocity>().each([this, deltatime](auto entity, cmpt::Velocity& velocity) {
-		velocity.multiplierLifespan -= deltatime;
-		if(velocity.multiplierLifespan < 0){
-			velocity.multiplierLifespan = 0;
+		velocity.multiplierAge += deltatime;
+		if( velocity.multiplierAge > velocity.multiplierLifespan){
+			velocity.multiplierLifespan = 1;
+			velocity.multiplierAge = 0;
 			velocity.velMultiplier = 1;
 		}
 	});
@@ -107,7 +109,8 @@ void MovementSystem::update(float deltatime) {
 		float norm = glm::length(direction);
 		if (norm > 1) {
 			direction /= norm;
-			transform.position += velocity.velocity*velocity.velMultiplier*deltatime*direction;
+			float vel = deltatime*velocity.velocity*imaths::rangeMapping(velocity.multiplierAge,0,velocity.multiplierLifespan,velocity.velMultiplier,1);
+			transform.position += vel*direction;
 		}
 		else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {
 			int tmp = pathfinding.currentTarget;
@@ -124,7 +127,7 @@ void MovementSystem::update(float deltatime) {
 			glm::vec2 targetPosition = m_registry.get<cmpt::Transform>(targeting.targetId).position;
 			glm::vec2 direction = targetPosition - transform.position;
 			float norm = glm::length(direction);
-			if (norm > 1) {
+			if (norm > m_registry.get<cmpt::Hitbox>(targeting.targetId).radius) {
 				direction *= follow.velocity / glm::length(direction);
 				transform.position += direction;
 			}
@@ -135,8 +138,9 @@ void MovementSystem::update(float deltatime) {
 				}
 				if (m_registry.has<projectileType::Slow>(entity)) {
 					cmpt::Velocity& vel = m_registry.get<cmpt::Velocity>(targeting.targetId);
-					vel.velMultiplier = 0.5;
-					vel.multiplierLifespan = 1;
+					vel.multiplierAge = 0;
+					vel.velMultiplier = 0.3;
+					vel.multiplierLifespan = 4;
 					m_registry.destroy(entity);
 				}
 			}

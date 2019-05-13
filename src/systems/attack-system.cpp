@@ -58,7 +58,7 @@ void AttackSystem::update(float deltatime) {
 	});
 
 	// Pick a new target if current one is out of range or dead
-	m_registry.view<cmpt::Transform, cmpt::Targeting, entityTag::Tower>().each([this](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting,auto) {
+	m_registry.view<cmpt::Transform, cmpt::Targeting, entityTag::Tower>().each([this,deltatime](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting,auto) {
 		//Damage towers
 		if (m_registry.has<projectileType::Damage>(entity1)) {
 			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
@@ -75,9 +75,10 @@ void AttackSystem::update(float deltatime) {
 			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId) || m_registry.get<cmpt::Velocity>(targeting.targetId).velMultiplier < 0.999 ) {
 				float maxVelMult = 0;
 				targeting.targetId = -1;
-				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting, &maxVelMult](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this,deltatime, entity1, transform1, &targeting, &maxVelMult](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
 					if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius) ) {
-						float velMult = m_registry.get<cmpt::Velocity>(entity2).velMultiplier;
+						cmpt::Velocity& velocity = m_registry.get<cmpt::Velocity>(entity2);
+						float velMult = deltatime * velocity.velocity*imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);;
 						if (velMult > maxVelMult) {
 							targeting.targetId = entity2;
 							maxVelMult = velMult;
