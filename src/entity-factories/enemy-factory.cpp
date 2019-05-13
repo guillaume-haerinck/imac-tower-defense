@@ -74,7 +74,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Wiggle>(myEntity,1);
 	m_registry.assign<cmpt::Velocity>(myEntity, ENEMY_VELOCITY);
 	m_registry.assign<cmpt::Shake>(myEntity);
-	m_registry.assign<cmpt::tintColour>(myEntity, glm::vec4(randomService.random(), randomService.random(), randomService.random(), 0.5));
+	m_registry.assign<cmpt::TintColour>(myEntity, glm::vec4(randomService.random(), randomService.random(), randomService.random(), 0.5));
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);

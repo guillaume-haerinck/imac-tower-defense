@@ -63,9 +63,12 @@ void RenderSystem::update(float deltatime) {
         glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
-		if (m_registry.valid(entity) && m_registry.has<cmpt::tintColour>(entity)) {
-			glm::vec4 col = m_registry.get<cmpt::tintColour>(entity).col;
-			primitive.shader->setUniform4f("tintColour", col.r, col.g, col.b, col.a);
+		if (m_registry.valid(entity) && m_registry.has<cmpt::TintColour>(entity)) {
+			cmpt::TintColour& tint = m_registry.get<cmpt::TintColour>(entity);
+			primitive.shader->setUniform4f("tintColour", tint.col.r, tint.col.g, tint.col.b, tint.col.a);
+			if (tint.bOneTimeOnly) {
+				m_registry.remove<cmpt::TintColour>(entity);
+			}
 		}
 		else {
 			primitive.shader->setUniform4f("tintColour", 0, 0, 0, 0);
@@ -89,9 +92,12 @@ void RenderSystem::update(float deltatime) {
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
-		if (m_registry.valid(entity) && m_registry.has<cmpt::tintColour>(entity)) {
-			glm::vec4 col = m_registry.get<cmpt::tintColour>(entity).col;
-			sprite.shader->setUniform4f("tintColour", col.r, col.g, col.b, col.a);
+		if (m_registry.valid(entity) && m_registry.has<cmpt::TintColour>(entity)) {
+			cmpt::TintColour& tint = m_registry.get<cmpt::TintColour>(entity);
+			sprite.shader->setUniform4f("tintColour", tint.col.r, tint.col.g, tint.col.b, tint.col.a);
+			if (tint.bOneTimeOnly) {
+				m_registry.remove<cmpt::TintColour>(entity);
+			}
 		}
 		else {
 			sprite.shader->setUniform4f("tintColour", 0, 0, 0, 0);
@@ -116,12 +122,17 @@ void RenderSystem::update(float deltatime) {
 		// Updates
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
-		if (m_registry.valid(entity) && m_registry.has<cmpt::tintColour>(entity)) {
-			glm::vec4 col = m_registry.get<cmpt::tintColour>(entity).col;
-			sprite.shader->setUniform4f("tintColour", col.r,col.g,col.b,col.a);
-		}
-		else {
-			sprite.shader->setUniform4f("tintColour", 0, 0, 0, 0);
+		if (m_registry.valid(entity)) {
+			if (m_registry.has<cmpt::TintColour>(entity)) {
+				cmpt::TintColour& tint = m_registry.get<cmpt::TintColour>(entity);
+				sprite.shader->setUniform4f("tintColour", tint.col.r, tint.col.g, tint.col.b, tint.col.a);
+				if (tint.bOneTimeOnly) {
+					m_registry.remove<cmpt::TintColour>(entity);
+				}
+			}
+			else {
+				sprite.shader->setUniform4f("tintColour", 0, 0, 0, 0);
+			}
 		}
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 
