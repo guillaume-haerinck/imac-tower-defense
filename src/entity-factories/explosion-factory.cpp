@@ -10,6 +10,7 @@
 #include "components/direction.hpp"
 #include "components/velocity.hpp"
 #include "components/age.hpp"
+#include "components/tint-colour.hpp"
 
 
 ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
@@ -40,6 +41,7 @@ void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION )
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
+	m_registry.assign<cmpt::tintColour>(myEntity, glm::vec4(1,0,0.5, 0.5));
 }
 
 void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
