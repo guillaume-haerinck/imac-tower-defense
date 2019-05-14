@@ -19,7 +19,8 @@ public:
 private:
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
-	cmpt::Sprite m_towerSprite;
+	cmpt::Sprite m_towerBasicSprite;
+	cmpt::Sprite m_towerSlowSprite;
 	cmpt::Primitive m_healthBackground;
 	cmpt::Primitive m_healthBar;
 };

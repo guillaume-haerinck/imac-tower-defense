@@ -12,7 +12,7 @@
 #include "spdlog/spdlog.h"
 
 ProjectileFactory::ProjectileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
-	m_projectileSprite = m_spriteFactory.createSingle("res/images/textures/missing.png", glm::vec2(2.0f));
+	m_projectileSprite = m_spriteFactory.createSingle("res/images/textures/projectile_snowflake.png", glm::vec2(6.0f));
 }
 
 ProjectileFactory::~ProjectileFactory() {
@@ -25,7 +25,7 @@ unsigned int ProjectileFactory::create(glm::vec2 initialPos, unsigned int target
 	m_registry.assign<cmpt::Sprite>(myEntity, m_projectileSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, initialPos, Z_INDEX_VISUAL_EFFECTS);
-	m_registry.assign<cmpt::Follow>(myEntity, 2.5);
+	m_registry.assign<cmpt::Follow>(myEntity, 1);
 	m_registry.assign<cmpt::Targeting>(myEntity, targetId, PROJECTILE_HITBOX_RADIUS);
 	return myEntity;
 }
