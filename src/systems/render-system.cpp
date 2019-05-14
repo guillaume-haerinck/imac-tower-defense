@@ -112,6 +112,7 @@ void RenderSystem::update(float deltatime) {
 	});
 
 	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite) {
+		IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
 		// Binding
 		sprite.shader->bind();
 		GLCall(glBindVertexArray(sprite.vaID));
@@ -123,16 +124,7 @@ void RenderSystem::update(float deltatime) {
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		if (m_registry.valid(entity)) {
-			if (m_registry.has<cmpt::TintColour>(entity)) {
-				cmpt::TintColour& tint = m_registry.get<cmpt::TintColour>(entity);
-				sprite.shader->setUniform4f("tintColour", tint.col.r, tint.col.g, tint.col.b, tint.col.a);
-				if (tint.bOneTimeOnly) {
-					m_registry.remove<cmpt::TintColour>(entity);
-				}
-			}
-			else {
-				sprite.shader->setUniform4f("tintColour", 0, 0, 0, 0);
-			}
+			sprite.shader->setUniform4f("tintColour", getPositionService.getColour(entity));
 		}
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 

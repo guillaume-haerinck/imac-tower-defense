@@ -18,3 +18,11 @@ glm::vec2 imaths::segmentsIntersection(glm::vec2 P, glm::vec2 Q, glm::vec2 P_, g
 		return glm::vec2(t,t_);
 	}
 }
+
+float imaths::min(float a, float b) {
+	return a < b ? a : b;
+}
+
+float imaths::max(float a, float b) {
+	return a > b ? a : b;
+}

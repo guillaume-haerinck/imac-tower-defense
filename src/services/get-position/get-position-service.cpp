@@ -7,12 +7,48 @@
 #include "components/wiggle.hpp"
 #include "components/move-towards-mouse.hpp"
 #include "components/shake.hpp"
+#include "components/tint-colour.hpp"
+#include "components/velocity.hpp"
 #include "core/constants.hpp"
 
 #include <SDL2/SDL.h>
 #include "core/maths.hpp"
 
+#include "spdlog/spdlog.h"
+
 GetPositionService::GetPositionService() {}
+
+glm::vec4 GetPositionService::getColour(unsigned int entityId) {
+	glm::vec4 actualColour = glm::vec4(0.0f);
+	if (m_registry->has<cmpt::TintColour>(entityId)) {
+		cmpt::TintColour tint = m_registry->get<cmpt::TintColour>(entityId);
+		actualColour = blend(actualColour, tint.col);
+		if (tint.bOneTimeOnly) {
+			m_registry->remove<cmpt::TintColour>(entityId);
+		}
+	}
+	if (m_registry->has<cmpt::Velocity>(entityId)) {
+		actualColour = blend(actualColour, glm::vec4( glm::vec3(0.49,0.62,0.84) , 1-getVelocityMultiplier(entityId)) );
+	}
+	return actualColour;
+}
+
+float GetPositionService::getVelocityMultiplier(unsigned int entityId) {
+	cmpt::Velocity velocity = m_registry->get<cmpt::Velocity>(entityId);
+	return imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);
+}
+
+glm::vec4 GetPositionService::blend(glm::vec4 col1, glm::vec4 col2) {
+	float aSum = col1.a + col2.a;
+	if (aSum == 0) {
+		return glm::vec4(0.0f);
+	}
+	float alpha1 = col1.a / aSum;
+	float alpha2 = col2.a / aSum;
+	glm::vec4 col = alpha1 * col1 + alpha2 * col2;
+	col.a = imaths::max(col1.a , col2.a );
+	return col;
+}
 
 glm::vec2 GetPositionService::get(unsigned int entityId) {
 	glm::vec2 actualPos = glm::vec2(0.0f);
