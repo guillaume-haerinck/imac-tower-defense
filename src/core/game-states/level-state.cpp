@@ -31,6 +31,27 @@ LevelState::LevelState(Game& game)
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		this->m_constructType = event.type;
 		this->changeState(LevelInteractionState::BUILD);
+		unsigned int entityId;
+		switch (m_constructType) {
+		case MIRROR_BASIC:
+			entityId = m_mirrorFactory.create(0,0);
+			m_game.progression.addToMoney(-MIRROR_COST);
+			break;
+
+		case TOWER_LASER:
+			entityId = m_towerFactory.createLaser(0,0);
+			m_game.progression.addToMoney(-TOWER_LASER_COST);
+			break;
+
+		case TOWER_SLOW:
+			entityId = m_towerFactory.createSlow(0,0);
+			m_game.progression.addToMoney(-TOWER_SLOW_COST);
+			break;
+
+		default:
+			break;
+		}
+		m_lastSelectedEntity = entityId;
 	});
 
 	// TODO use a safer and more global way, because if tile is invalid, it will cause a problem
@@ -225,36 +246,17 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 			if (m_game.registry.valid(tileId)) {
 				if (m_game.registry.has<tileTag::Constructible>(tileId)) {
 					cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
-					unsigned int entityId = 0;
-
-					switch (m_constructType) {
-					case MIRROR_BASIC:
-						entityId = m_mirrorFactory.create(trans.position.x, trans.position.y);
-						m_game.progression.addToMoney(-MIRROR_COST);
-						break;
-
-					case TOWER_LASER:
-						entityId = m_towerFactory.createLaser(trans.position.x, trans.position.y);
-						m_game.progression.addToMoney(-TOWER_LASER_COST);
-						break;
-
-					case TOWER_SLOW:
-						entityId = m_towerFactory.createSlow(trans.position.x, trans.position.y);
-						m_game.progression.addToMoney(-TOWER_SLOW_COST);
-						break;
-
-					default:
-						break;
-					}
 
 					m_game.registry.remove<tileTag::Constructible>(tileId);
-					m_game.registry.assign<cmpt::EntityOn>(tileId, entityId);
+					m_game.registry.assign<cmpt::EntityOn>(tileId, m_lastSelectedEntity);
+
+					m_game.registry.remove<positionTag::IsOnHoveredTile>(m_lastSelectedEntity);
+					m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).position += trans.position;
 
 					// Rotatable on build
-					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
-					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
+					m_game.registry.accommodate<stateTag::IsBeingControlled>(m_lastSelectedEntity);
+					m_game.registry.accommodate<cmpt::LookAtMouse>(m_lastSelectedEntity);
 					changeState(LevelInteractionState::ROTATE);
-					m_lastSelectedEntity = entityId;
 				}
 				else {
 					spdlog::warn("Not a constructible tile");

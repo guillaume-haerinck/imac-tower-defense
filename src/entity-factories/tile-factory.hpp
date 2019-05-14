@@ -24,7 +24,7 @@ private:
 	PrimitiveFactory m_primitiveFactory;
 
 	cmpt::Primitive m_spawn;
-	cmpt::Primitive m_arrival;
+	cmpt::Sprite m_arrival;
 	cmpt::Sprite m_path;
 	cmpt::Sprite m_constructible;
 	cmpt::Primitive m_locked;

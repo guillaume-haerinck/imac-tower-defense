@@ -19,7 +19,7 @@
 #include "services/debug-draw/debug-draw-service.hpp"
 #include "services/random/random-service.hpp"
 #include "services/audio/audio-service.hpp"
-#include "services/get-position/get-position-service.hpp"
+#include "services/helper/helper-service.hpp"
 #include "events/change-game-state.hpp"
 
 /* ------------------------ LIFETIME ------------------------ */
@@ -229,18 +229,6 @@ int Game::init() {
     Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
     Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
-	// Services
-	locator::debugDraw::set<DebugDrawService>();
-	IDebugDraw& debugDraw = locator::debugDraw::ref();
-	debugDraw.setProjMat(m_projMat);
-	debugDraw.setViewMat(m_viewMat);
-	locator::random::set<RandomService>();
-	locator::audio::set<AudioService>();
-	locator::getPosition::set<GetPositionService>();
-	IGetPosition& getPosition = locator::getPosition::ref();
-	getPosition.setRegistry(&registry);
-	getPosition.setEmitter(&emitter);
-
 	// Init Physics
 	/*
 	b2Vec2 gravity(0.0f, 0.0f);
@@ -255,6 +243,19 @@ int Game::init() {
 
 	// Level
 	level = new Level(registry, 1, m_viewTranslation, m_viewScale);
+
+	// Services
+	locator::debugDraw::set<DebugDrawService>();
+	IDebugDraw& debugDraw = locator::debugDraw::ref();
+	debugDraw.setProjMat(m_projMat);
+	debugDraw.setViewMat(m_viewMat);
+	locator::random::set<RandomService>();
+	locator::audio::set<AudioService>();
+	locator::helper::set<HelperService>();
+	IHelper& helper = locator::helper::ref();
+	helper.setRegistry(&registry);
+	helper.setEmitter(&emitter);
+	helper.setLevel(level);
 
 	// Systems
 	renderSystem = new RenderSystem(registry, emitter, m_viewMat, m_projMat);
@@ -338,7 +339,7 @@ Game::~Game() {
 	locator::debugDraw::reset();
 	locator::audio::reset();
 	locator::random::reset();
-	locator::getPosition::reset();
+	locator::helper::reset();
 
 	// Delete systems
 	delete renderSystem;

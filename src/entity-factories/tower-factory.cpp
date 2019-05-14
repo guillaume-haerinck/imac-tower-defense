@@ -53,6 +53,7 @@ unsigned int TowerFactory::createLaser(float posX, float posY) {
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
 	m_registry.assign<cmpt::Shake>(myEntity);
+	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	return myEntity;
 }
 

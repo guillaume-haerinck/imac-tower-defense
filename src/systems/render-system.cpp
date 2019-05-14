@@ -21,7 +21,7 @@
 #include "events/enemy-damaged.hpp"
 
 #include "services/locator.hpp"
-#include "services/get-position/i-get-position.hpp"
+#include "services/helper/i-helper.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -112,7 +112,7 @@ void RenderSystem::update(float deltatime) {
 	});
 
 	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite) {
-		IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
+		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 		// Binding
 		sprite.shader->bind();
 		GLCall(glBindVertexArray(sprite.vaID));
@@ -124,7 +124,7 @@ void RenderSystem::update(float deltatime) {
 		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		if (m_registry.valid(entity)) {
-			sprite.shader->setUniform4f("tintColour", getPositionService.getColour(entity));
+			sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
 		}
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 
@@ -137,7 +137,7 @@ void RenderSystem::update(float deltatime) {
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
 		if (health.current != health.max) {
-			IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
+			IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 			// Background
 			{
 				// Binding
@@ -145,7 +145,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.background.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(getPositionService.get(entity), Z_INDEX_HUD - 1);
+				cmpt::Transform healthTransform(helper.get(entity), Z_INDEX_HUD - 1);
 				healthTransform.position += healthbar.relativePos;
 
 				// Updates
@@ -166,7 +166,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.bar.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(getPositionService.get(entity), Z_INDEX_HUD);
+				cmpt::Transform healthTransform(helper.get(entity), Z_INDEX_HUD);
 				healthTransform.position += healthbar.relativePos;
 				float scale = imaths::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
@@ -191,11 +191,11 @@ void RenderSystem::update(float deltatime) {
 }
 
 glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
-	IGetPosition& getPositionService = entt::ServiceLocator<IGetPosition>::ref();
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 	glm::mat4 model(1.0f);
 	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
 
-	model = glm::translate(model, glm::vec3(getPositionService.get(entityId), transform.zIndex));
+	model = glm::translate(model, glm::vec3(helper.get(entityId), transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
     return model;

@@ -31,3 +31,7 @@ namespace projectileType {
 namespace stateTag {
 	TAG(IsBeingControlled);
 }
+
+namespace positionTag {
+	TAG(IsOnHoveredTile);
+}
