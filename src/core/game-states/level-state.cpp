@@ -17,6 +17,7 @@
 #include "components/look-at-mouse.hpp"
 #include "components/transform.hpp"
 #include "components/tint-colour.hpp"
+#include "components/shoot-laser.hpp"
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -40,6 +41,7 @@ LevelState::LevelState(Game& game)
 
 		case TOWER_LASER:
 			entityId = m_towerFactory.createLaser(0,0);
+			m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
 			m_game.progression.addToMoney(-TOWER_LASER_COST);
 			break;
 
@@ -207,16 +209,20 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		switch (m_state) {
 		case FREE:
 		{
-			// Get entity. If valid mirror rotate. Else Invalid
+			// Get entity. If valid mirror rotate. If laser then switch on or off. Else invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(entityId)) {
-				if (m_game.registry.has<entityTag::Mirror>(entityId) || m_game.registry.has<entityTag::Tower>(entityId)) {
+				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					changeState(LevelInteractionState::ROTATE);
 					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
 					m_game.registry.accommodate<cmpt::LookAtMouse>(entityId);
 
 					m_lastSelectedEntity = entityId;
 					m_levelHud.setSelectedEntity(entityId);
+				}
+				if (m_game.registry.has<cmpt::ShootLaser>(entityId)) {
+					cmpt::ShootLaser& shootLaser = m_game.registry.get<cmpt::ShootLaser>(entityId);
+					shootLaser.isActiv = !shootLaser.isActiv;
 				}
 			}
 			else {
@@ -252,6 +258,9 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 
 					m_game.registry.remove<positionTag::IsOnHoveredTile>(m_lastSelectedEntity);
 					m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).position += trans.position;
+					if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
+						m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity).isActiv = true;
+					}
 
 					// Rotatable on build
 					m_game.registry.accommodate<stateTag::IsBeingControlled>(m_lastSelectedEntity);
@@ -260,12 +269,12 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 				}
 				else {
 					spdlog::warn("Not a constructible tile");
-					changeState(LevelInteractionState::INVALID);
+					//changeState(LevelInteractionState::INVALID);
 				}
 			}
 			else {
 				spdlog::warn("Invalid tile");
-				changeState(LevelInteractionState::INVALID);
+				//changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}

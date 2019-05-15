@@ -94,7 +94,7 @@ void AttackSystem::update(float deltatime) {
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
 		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
-		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
+		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv);
 	});
 	glLineWidth(1);
 }
@@ -111,9 +111,9 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	float surfaceAngle;
 
 	float t = std::numeric_limits<float>::infinity();
-	bool mirrorIsBeingConstructed = false;
+	bool mirrorIsBeingControlled = false;
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingConstructed, &helper](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		glm::vec2 mirrorPos = helper.getPosition(mirror);
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
 		glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
@@ -121,7 +121,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
-			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingControlled>(mirror);
+			mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror);
 		}
 	});
 
@@ -182,7 +182,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	debugDraw.setColor(122, 249, 237, alpha);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingConstructed);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingControlled);
 	}
 }
 
