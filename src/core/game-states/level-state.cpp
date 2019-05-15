@@ -30,30 +30,36 @@ LevelState::LevelState(Game& game)
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
-		this->m_constructType = event.type;
-		this->changeState(LevelInteractionState::BUILD);
-		unsigned int entityId;
-		switch (m_constructType) {
-		case MIRROR_BASIC:
-			entityId = m_mirrorFactory.create(0,0);
-			m_game.progression.addToMoney(-MIRROR_COST);
-			break;
+		switch (m_state) {
+		case FREE : 
+			this->m_constructType = event.type;
+			this->changeState(LevelInteractionState::BUILD);
+			unsigned int entityId;
+			switch (m_constructType) {
+			case MIRROR_BASIC:
+				entityId = m_mirrorFactory.create(0, 0);
+				m_game.progression.addToMoney(-MIRROR_COST);
+				break;
 
-		case TOWER_LASER:
-			entityId = m_towerFactory.createLaser(0,0);
-			m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
-			m_game.progression.addToMoney(-TOWER_LASER_COST);
-			break;
+			case TOWER_LASER:
+				entityId = m_towerFactory.createLaser(0, 0);
+				m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
+				m_game.progression.addToMoney(-TOWER_LASER_COST);
+				break;
 
-		case TOWER_SLOW:
-			entityId = m_towerFactory.createSlow(0,0);
-			m_game.progression.addToMoney(-TOWER_SLOW_COST);
-			break;
+			case TOWER_SLOW:
+				entityId = m_towerFactory.createSlow(0, 0);
+				m_game.progression.addToMoney(-TOWER_SLOW_COST);
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
+			m_lastSelectedEntity = entityId;
+		break;
+		default :
+		break;
 		}
-		m_lastSelectedEntity = entityId;
 	});
 
 	// TODO use a safer and more global way, because if tile is invalid, it will cause a problem
