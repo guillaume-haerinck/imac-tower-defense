@@ -145,7 +145,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.background.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(helper.get(entity), Z_INDEX_HUD - 1);
+				cmpt::Transform healthTransform(helper.getPosition(entity), Z_INDEX_HUD - 1);
 				healthTransform.position += healthbar.relativePos;
 
 				// Updates
@@ -166,7 +166,7 @@ void RenderSystem::update(float deltatime) {
 				GLCall(glBindVertexArray(healthbar.bar.vaID));
 
 				// Update pos
-				cmpt::Transform healthTransform(helper.get(entity), Z_INDEX_HUD);
+				cmpt::Transform healthTransform(helper.getPosition(entity), Z_INDEX_HUD);
 				healthTransform.position += healthbar.relativePos;
 				float scale = imaths::rangeMapping(health.current, 0, health.max, 0, 1);
 				healthTransform.scale = glm::vec2(scale, 1.0f);
@@ -195,7 +195,7 @@ glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
 	glm::mat4 model(1.0f);
 	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
 
-	model = glm::translate(model, glm::vec3(helper.get(entityId), transform.zIndex));
+	model = glm::translate(model, glm::vec3(helper.getPosition(entityId), transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
     return model;

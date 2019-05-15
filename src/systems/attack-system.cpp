@@ -18,6 +18,7 @@
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "services/random/i-random.hpp"
+#include "services/helper/i-helper.hpp"
 
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
@@ -92,7 +93,8 @@ void AttackSystem::update(float deltatime) {
 	// Shoot laser
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
-		this->shootLaser(transform.position, transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
+		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, m_registry.has<stateTag::IsBeingControlled>(entity) || !laser.isActiv);
 	});
 	glLineWidth(1);
 }
@@ -100,19 +102,10 @@ void AttackSystem::update(float deltatime) {
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
 void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime, bool isTransparent) {
-
-	glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
-	glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
-	glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
-	glm::vec2 blCorner = glm::vec2(0, 0);
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 
 	glm::vec2 unitDirVector = glm::vec2(cos(agl), sin(agl));
 	glm::vec2 posPlusUnitVector = pos + unitDirVector;
-
-	glm::vec2 topInter = imaths::segmentsIntersection(pos, posPlusUnitVector, tlCorner, trCorner);
-	glm::vec2 rightInter = imaths::segmentsIntersection(pos, posPlusUnitVector, trCorner, brCorner);
-	glm::vec2 botInter = imaths::segmentsIntersection(pos, posPlusUnitVector, brCorner, blCorner);
-	glm::vec2 leftInter = imaths::segmentsIntersection(pos, posPlusUnitVector, blCorner, tlCorner);
 
 	glm::vec2 laserEnd;
 	float surfaceAngle;
@@ -120,21 +113,32 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	float t = std::numeric_limits<float>::infinity();
 	bool mirrorIsBeingConstructed = false;
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingConstructed](auto entity, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
-		glm::vec2 mirrorPos = mirrorTransform.position;
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingConstructed, &helper](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
+		glm::vec2 mirrorPos = helper.getPosition(mirror);
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
 		glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
 		if ( 0 <= inter.x && inter.x < t && 0 <= inter.y && inter.y <= 1) {
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
-			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingControlled>(entity);
+			mirrorIsBeingConstructed = m_registry.has<stateTag::IsBeingControlled>(mirror);
 		}
 	});
 
 	if (t == std::numeric_limits<float>::infinity()) {
 		nbBounce = 0;
 		//Walls
+
+		glm::vec2 tlCorner = glm::vec2(0, PROJ_HEIGHT);
+		glm::vec2 trCorner = glm::vec2(PROJ_WIDTH_RAT, PROJ_HEIGHT);
+		glm::vec2 brCorner = glm::vec2(PROJ_WIDTH_RAT, 0);
+		glm::vec2 blCorner = glm::vec2(0, 0);
+
+		glm::vec2 topInter = imaths::segmentsIntersection(pos, posPlusUnitVector, tlCorner, trCorner);
+		glm::vec2 rightInter = imaths::segmentsIntersection(pos, posPlusUnitVector, trCorner, brCorner);
+		glm::vec2 botInter = imaths::segmentsIntersection(pos, posPlusUnitVector, brCorner, blCorner);
+		glm::vec2 leftInter = imaths::segmentsIntersection(pos, posPlusUnitVector, blCorner, tlCorner);
+
 		if (0 <= topInter.y && topInter.y <= 1 && topInter.x >= 0) {
 			laserEnd = tlCorner + topInter.y * (trCorner - tlCorner);
 			surfaceAngle = 0;

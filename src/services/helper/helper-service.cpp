@@ -51,7 +51,7 @@ glm::vec4 HelperService::blend(glm::vec4 col1, glm::vec4 col2) {
 	return col;
 }
 
-glm::vec2 HelperService::get(unsigned int entityId) {
+glm::vec2 HelperService::getPosition(unsigned int entityId) {
 	glm::vec2 actualPos = glm::vec2(0.0f);
 	//Transform
 	if (m_registry->has<cmpt::Transform>(entityId)) {
@@ -81,7 +81,7 @@ glm::vec2 HelperService::get(unsigned int entityId) {
 	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
 		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
 		if (m_registry->valid(mainEntityId)) {
-			glm::vec2 mainPos = get(mainEntityId);
+			glm::vec2 mainPos = getPosition(mainEntityId);
 			actualPos += mainPos;
 			//Move towards mouse
 			//Must be added last because takes into account all the other accumulated positions as a center for its movement
