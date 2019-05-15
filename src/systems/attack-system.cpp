@@ -121,7 +121,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			t = inter.x;
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
-			mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror);
+			mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
 		}
 	});
 
