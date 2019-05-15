@@ -27,6 +27,7 @@
 #include "events/inputs/left-click-down.hpp"
 #include "events/inputs/right-click-up.hpp"
 #include "events/inputs/right-click-down.hpp"
+#include "events/inputs/mouse-scrolled.hpp"
 #include "events/interactions/translate-view.hpp"
 #include "events/interactions/scale-view.hpp"
 #include "events/inputs/mouse-move.hpp"
@@ -199,11 +200,12 @@ int main(int argc, char** argv) {
 				break;
 
 			case SDL_MOUSEWHEEL:
-				if (e.motion.x > 0.0f) {
-					emitter.publish<evnt::ScaleView>(1.0f);
-				} else {
-					emitter.publish<evnt::ScaleView>(-1.0f);
-				}
+				emitter.publish<evnt::MouseScrolled>((int)e.motion.x);
+				//if (e.motion.x > 0.0f) {
+				//	emitter.publish<evnt::ScaleView>(1.0f);
+				//} else {
+				//	emitter.publish<evnt::ScaleView>(-1.0f);
+				//}
 				break;
 			}
 		}

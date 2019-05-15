@@ -13,6 +13,7 @@
 #include "events/inputs/left-click-up.hpp"
 #include "events/inputs/right-click-down.hpp"
 #include "events/inputs/mouse-move.hpp"
+#include "events/inputs/mouse-scrolled.hpp"
 #include "gui/level-hud/level-hud.hpp"
 #include "events/interactions/construct-selection.hpp"
 
@@ -48,6 +49,7 @@ public:
 	void onLeftClickDown(const evnt::LeftClickDown& event) override;
 	void onRightClickDown(const evnt::RightClickDown& event) override;
 	void onMouseMove(const evnt::MouseMove& event) override;
+	void onMouseScrolled(const evnt::MouseScrolled& event) override;
 
 	// Getters
 	LevelInteractionState getInteractionState() const;

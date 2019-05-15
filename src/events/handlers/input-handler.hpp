@@ -9,6 +9,7 @@
 #include "events/inputs/right-click-up.hpp"
 #include "events/inputs/right-click-down.hpp"
 #include "events/inputs/mouse-move.hpp"
+#include "events/inputs/mouse-scrolled.hpp"
 
 class InputHandler {
 public:
@@ -25,6 +26,8 @@ public:
 	virtual void onRightClickUp(const evnt::RightClickUp& event);
 	virtual void onRightClickDown(const evnt::RightClickDown& event);
 
+	virtual void onMouseScrolled(const evnt::MouseScrolled& event);
+
 protected:
 	InputHandler(EventEmitter& emitter) : m_emitter(emitter), m_bConnected(false) {}
 	EventEmitter& m_emitter;
@@ -37,4 +40,5 @@ private:
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickUp>> m_rightClickUp;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::RightClickDown>> m_rightClickDown;
 	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::MouseMove>> m_mouseMove;
+	std::unique_ptr<entt::Emitter<EventEmitter>::Connection<evnt::MouseScrolled>> m_mouseScrolled;
 };

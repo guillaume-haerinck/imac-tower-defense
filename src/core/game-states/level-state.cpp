@@ -18,6 +18,7 @@
 #include "components/transform.hpp"
 #include "components/tint-colour.hpp"
 #include "components/shoot-laser.hpp"
+#include "components/constrained-rotation.hpp"
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -284,6 +285,15 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	}
 }
 
+void LevelState::onMouseScrolled(const evnt::MouseScrolled& event) {
+	if (m_game.registry.valid(m_lastSelectedEntity)) {
+		if (m_game.registry.has<cmpt::ConstrainedRotation>(m_lastSelectedEntity)) {
+			cmpt::ConstrainedRotation& constRot = m_game.registry.get<cmpt::ConstrainedRotation>(m_lastSelectedEntity);
+			m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).rotation += constRot.angleStep*event.value;
+		}
+	}
+}
+
 void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 	this->m_ui->MouseButtonUp(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
 
@@ -295,6 +305,7 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 		case ROTATE:
 			// Stop rotating when mouse not pressed
 			changeState(LevelInteractionState::FREE);
+			m_lastSelectedEntity = entt::null;
 			break;
 
 		case INVALID:

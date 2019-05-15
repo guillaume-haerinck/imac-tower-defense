@@ -31,6 +31,11 @@ void InputHandler::connectInputs() {
 			});
 		m_rightClickDown = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::RightClickDown>>(conRightClickDown);
 
+		auto conMouseScrolled = m_emitter.on<evnt::MouseScrolled>([this](const evnt::MouseScrolled & event, EventEmitter & emitter) {
+			this->onMouseScrolled(event);
+		});
+		m_mouseScrolled = std::make_unique<entt::Emitter<EventEmitter>::Connection<evnt::MouseScrolled>>(conMouseScrolled);
+
 		m_bConnected = true;
 	}
 }
@@ -52,6 +57,9 @@ void InputHandler::disconnectInputs() {
 		m_emitter.erase(*m_rightClickDown);
 		m_rightClickDown.reset();
 
+		m_emitter.erase(*m_mouseScrolled);
+		m_mouseScrolled.reset();
+
 		m_bConnected = false;
 	}
 }
@@ -63,3 +71,5 @@ void InputHandler::onLeftClickDown(const evnt::LeftClickDown& event) {}
 
 void InputHandler::onRightClickUp(const evnt::RightClickUp& event) {}
 void InputHandler::onRightClickDown(const evnt::RightClickDown& event) {}
+
+void InputHandler::onMouseScrolled(const evnt::MouseScrolled& event) {}
