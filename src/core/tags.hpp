@@ -21,6 +21,7 @@ namespace entityTag {
 	TAG(Mirror);
 	TAG(Enemy);
 	TAG(SlowProjectile);
+	TAG(Tile);
 }
 
 namespace projectileType {

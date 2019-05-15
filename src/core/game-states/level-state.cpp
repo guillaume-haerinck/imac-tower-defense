@@ -169,13 +169,6 @@ void LevelState::update(float deltatime) {
 	// Need to restore the GPU state because noesis changes it
 	restoreGpuState();
 
-	//Highlight current tile
-	unsigned int tileId = m_game.level->getTileFromProjCoord(m_game.emitter.mousePos.x, m_game.emitter.mousePos.y);
-	if (m_game.registry.valid(tileId)) {
-		if (!m_game.registry.has<cmpt::TintColour>(tileId))
-			m_game.registry.assign<cmpt::TintColour>(tileId, glm::vec4(0, 0.8, 0.1, 0.15), true);
-	}
-
 	//Updates
 	m_game.animationSystem->update(deltatime); 
 	m_game.movementSystem->update(deltatime);
