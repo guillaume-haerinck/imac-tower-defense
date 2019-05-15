@@ -23,7 +23,7 @@ private:
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
 
-	cmpt::Primitive m_spawn;
+	cmpt::Sprite m_spawn;
 	cmpt::Sprite m_arrival;
 	cmpt::Sprite m_path;
 	cmpt::Sprite m_constructible;
