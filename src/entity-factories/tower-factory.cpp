@@ -54,6 +54,7 @@ unsigned int TowerFactory::createLaser(float posX, float posY) {
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
 	m_registry.assign<cmpt::Shake>(myEntity);
 	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
+	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
 	return myEntity;
 }
 

@@ -259,13 +259,18 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					m_game.registry.remove<positionTag::IsOnHoveredTile>(m_lastSelectedEntity);
 					m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).position += trans.position;
 					if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
-						m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity).isActiv = true;
+						m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity).isActiv = false;
 					}
 
 					// Rotatable on build
-					m_game.registry.accommodate<stateTag::IsBeingControlled>(m_lastSelectedEntity);
-					m_game.registry.accommodate<cmpt::LookAtMouse>(m_lastSelectedEntity);
-					changeState(LevelInteractionState::ROTATE);
+					if (m_game.registry.has<stateTag::RotateableByMouse>(m_lastSelectedEntity)) {
+						m_game.registry.accommodate<stateTag::IsBeingControlled>(m_lastSelectedEntity);
+						m_game.registry.accommodate<cmpt::LookAtMouse>(m_lastSelectedEntity);
+						changeState(LevelInteractionState::ROTATE);
+					}
+					else {
+						changeState(LevelInteractionState::FREE);
+					}
 				}
 				else {
 					spdlog::warn("Not a constructible tile");
@@ -286,10 +291,13 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 }
 
 void LevelState::onMouseScrolled(const evnt::MouseScrolled& event) {
-	if (m_game.registry.valid(m_lastSelectedEntity)) {
+	if (m_game.registry.valid(m_lastSelectedEntity) && m_game.registry.has<stateTag::RotateableByMouse>(m_lastSelectedEntity)) {
 		if (m_game.registry.has<cmpt::ConstrainedRotation>(m_lastSelectedEntity)) {
 			cmpt::ConstrainedRotation& constRot = m_game.registry.get<cmpt::ConstrainedRotation>(m_lastSelectedEntity);
 			m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).rotation += constRot.angleStep*event.value;
+		}
+		else {
+			m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).rotation += imaths::TAU/32*event.value;
 		}
 	}
 }
@@ -305,6 +313,9 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 		case ROTATE:
 			// Stop rotating when mouse not pressed
 			changeState(LevelInteractionState::FREE);
+			if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
+				m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity) = true;
+			}
 			m_lastSelectedEntity = entt::null;
 			break;
 

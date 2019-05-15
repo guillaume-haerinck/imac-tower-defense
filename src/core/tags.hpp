@@ -31,6 +31,7 @@ namespace projectileType {
 
 namespace stateTag {
 	TAG(IsBeingControlled);
+	TAG(RotateableByMouse);
 }
 
 namespace positionTag {
