@@ -33,6 +33,7 @@ LevelState::LevelState(Game& game)
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		switch (m_state) {
 		case FREE : 
+			m_game.emitter.entityBeingPlaced = true;
 			this->m_constructType = event.type;
 			this->changeState(LevelInteractionState::BUILD);
 			unsigned int entityId;
@@ -251,6 +252,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 			int tileId = m_game.level->getTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(tileId)) {
 				if (m_game.registry.has<tileTag::Constructible>(tileId)) {
+					m_game.emitter.entityBeingPlaced = false;
 					cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
 
 					m_game.registry.remove<tileTag::Constructible>(tileId);

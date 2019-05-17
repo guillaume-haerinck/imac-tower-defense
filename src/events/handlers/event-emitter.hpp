@@ -9,7 +9,8 @@ enum FocusMode {
 };
 
 struct EventEmitter : entt::Emitter<EventEmitter> {
-	EventEmitter() : focus(GAME) {}
+	EventEmitter() : focus(GAME) , entityBeingPlaced(false) {}
 	FocusMode focus;
 	glm::vec2 mousePos;
+	bool entityBeingPlaced;
 };
