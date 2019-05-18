@@ -18,6 +18,9 @@
 #include "components/shake.hpp"
 #include "components/tint-colour.hpp"
 #include "components/animated.hpp"
+#include "components/animation-dark.hpp"
+#include "components/animation-scale.hpp"
+#include "components/animation-pixels-vanish.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "events/enemy-damaged.hpp"
 
@@ -59,7 +62,14 @@ void RenderSystem::update(float deltatime) {
 	m_registry.view<cmpt::Animated>().each([this, deltatime](auto entity, cmpt::Animated & animated) {
 		animated.age += deltatime;
 		if (animated.age > animated.duration) {
+			bool destroyEntity = animated.bDestroyAfterAnimation;
 			m_registry.remove<cmpt::Animated>(entity);
+			m_registry.reset<cmpt::AnimationScale>(entity);
+			m_registry.reset<cmpt::AnimationDark>(entity);
+			m_registry.reset<cmpt::AnimationPixelsVanish>(entity);
+			if (destroyEntity) {
+				m_registry.destroy(entity);
+			}
 		}
 	});
 
@@ -128,6 +138,27 @@ void RenderSystem::update(float deltatime) {
 		sprite.shader->setUniformMat4f("u_mvp", mvp);
 		if (m_registry.valid(entity)) {
 			sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
+			if (m_registry.has<cmpt::AnimationPixelsVanish>(entity) || ( m_registry.has<cmpt::AttachedTo>(entity) && m_registry.has<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).entityId))) {
+				cmpt::Animated animated = cmpt::Animated(0);
+				bool bForward;
+				if (m_registry.has<cmpt::AnimationPixelsVanish>(entity)) {
+					animated = m_registry.get<cmpt::Animated>(entity);
+					bForward = m_registry.get<cmpt::AnimationPixelsVanish>(entity).bForward;
+				}
+				else {
+					animated = m_registry.get<cmpt::Animated>(m_registry.get<cmpt::AttachedTo>(entity).entityId);
+					bForward = m_registry.get<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).entityId).bForward;
+				}
+				if (bForward) {
+					sprite.shader->setUniform1f("probaDisappear", 1 - animated.age / animated.duration);
+				}
+				else {
+					sprite.shader->setUniform1f("probaDisappear", animated.age / animated.duration);
+				}
+			}
+			else {
+				sprite.shader->setUniform1f("probaDisappear", 0);
+			}
 		}
 		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 

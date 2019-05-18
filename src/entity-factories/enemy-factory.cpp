@@ -78,7 +78,7 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Velocity>(myEntity, ENEMY_VELOCITY);
 	m_registry.assign<cmpt::Shake>(myEntity);
 	//m_registry.assign<cmpt::TintColour>(myEntity, glm::vec4(randomService.random(), randomService.random(), randomService.random(), 0.5));
-	m_registry.assign<cmpt::Animated>(myEntity, 2);
+	m_registry.assign<cmpt::Animated>(myEntity, 2 , false);
 	m_registry.assign<cmpt::AnimationScale>(myEntity, true);
 	m_registry.assign<cmpt::AnimationDark>(myEntity, true);
 

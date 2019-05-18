@@ -2,10 +2,11 @@
 
 namespace cmpt {
 	struct Animated {
-		Animated(float duration)
-			: age(0), duration(duration) {}
+		Animated(float duration, bool bDestroyAfterAnimation = false)
+			: age(0), duration(duration), bDestroyAfterAnimation(bDestroyAfterAnimation) {}
 
 		float age;
 		float duration;
+		bool bDestroyAfterAnimation;
 	};
 }

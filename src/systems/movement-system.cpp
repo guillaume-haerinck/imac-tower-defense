@@ -28,6 +28,7 @@
 #include "components/direction.hpp"
 #include "components/hitbox.hpp"
 #include "components/animated.hpp"
+#include "components/animation-pixels-vanish.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter)
@@ -120,7 +121,8 @@ void MovementSystem::update(float deltatime) {
 				pathfinding.previousNode = tmp;
 			}
 			else {
-				m_registry.destroy(entity);
+				m_registry.assign<cmpt::Animated>(entity,2,true);
+				m_registry.assign<cmpt::AnimationPixelsVanish>(entity, false);
 			}
 		}
 	});
