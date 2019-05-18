@@ -17,6 +17,7 @@
 #include "components/age.hpp"
 #include "components/shake.hpp"
 #include "components/tint-colour.hpp"
+#include "components/animated.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "events/enemy-damaged.hpp"
 
@@ -51,6 +52,14 @@ void RenderSystem::update(float deltatime) {
 		if (age.lifespan < age.age) {
 			m_emitter.publish<evnt::LaserParticleDead>(m_registry.get<cmpt::Transform>(entity).position);
 			m_registry.destroy(entity);
+		}
+	});
+
+	//Update animation
+	m_registry.view<cmpt::Animated>().each([this, deltatime](auto entity, cmpt::Animated & animated) {
+		animated.age += deltatime;
+		if (animated.age > animated.duration) {
+			m_registry.remove<cmpt::Animated>(entity);
 		}
 	});
 
@@ -191,7 +200,7 @@ glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
 
 	model = glm::translate(model, glm::vec3(helper.getPosition(entityId), transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
-	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
+	model = glm::scale(model, glm::vec3(helper.getScale(entityId), 0.0f));
     return model;
 }
 

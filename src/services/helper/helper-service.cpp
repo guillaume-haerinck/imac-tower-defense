@@ -9,6 +9,8 @@
 #include "components/shake.hpp"
 #include "components/tint-colour.hpp"
 #include "components/velocity.hpp"
+#include "components/animated.hpp"
+#include "components/animation-scale.hpp"
 #include "core/constants.hpp"
 #include "core/tags.hpp"
 
@@ -110,6 +112,39 @@ glm::vec2 HelperService::getPosition(unsigned int entityId) {
 		}
 	}
 	return actualPos;
+}
+
+glm::vec2 HelperService::getScale(unsigned int entityId) {
+	glm::vec2 actualScale = glm::vec2(1.0f);
+	if (m_registry->valid(entityId)) {
+		//Transform
+		if (m_registry->has<cmpt::Transform>(entityId)) {
+			actualScale *= m_registry->get<cmpt::Transform>(entityId).scale;
+		}
+		if (m_registry->has<cmpt::Animated>(entityId)) {
+			//Animation scale
+			if (m_registry->has<cmpt::AnimationScale>(entityId)) {
+				cmpt::Animated& animated = m_registry->get<cmpt::Animated>(entityId);
+				if (m_registry->get<cmpt::AnimationScale>(entityId).bForward) {
+					actualScale *= animated.age / animated.duration;
+				}
+				else {
+					actualScale *= 1 - animated.age / animated.duration;
+				}
+			}
+		}
+		//Attached to a main entity
+		if (m_registry->has<cmpt::AttachedTo>(entityId)) {
+			unsigned int mainId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
+			if (m_registry->valid(mainId)) {
+				actualScale *= getScale(mainId);
+			}
+			else {
+				m_registry->destroy(entityId);
+			}
+		}
+	}
+	return actualScale;
 }
 
 void HelperService::setRegistry(entt::DefaultRegistry* registry) {

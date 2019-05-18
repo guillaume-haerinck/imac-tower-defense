@@ -27,6 +27,7 @@
 #include "components/velocity.hpp"
 #include "components/direction.hpp"
 #include "components/hitbox.hpp"
+#include "components/animated.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter)
@@ -104,21 +105,23 @@ void MovementSystem::update(float deltatime) {
 
 
 	m_registry.view<cmpt::Transform, cmpt::Velocity, cmpt::Pathfinding>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Velocity& velocity, cmpt::Pathfinding& pathfinding) {
-		Level* level = pathfinding.level;
-		glm::vec2 direction = level->getNodePosition(pathfinding.currentTarget) - transform.position;
-		float norm = glm::length(direction);
-		if (norm > 1) {
-			direction /= norm;
-			float vel = deltatime*velocity.velocity*imaths::rangeMapping(velocity.multiplierAge,0,velocity.multiplierLifespan,velocity.velMultiplier,1);
-			transform.position += vel*direction;
-		}
-		else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {
-			int tmp = pathfinding.currentTarget;
-			pathfinding.currentTarget = level->getPathfindingGraph()->pickNextNode(pathfinding.currentTarget,pathfinding.previousNode);
-			pathfinding.previousNode = tmp;
-		}
-		else {
-			m_registry.destroy(entity);
+		if (!m_registry.has<cmpt::Animated>(entity)) {
+			Level* level = pathfinding.level;
+			glm::vec2 direction = level->getNodePosition(pathfinding.currentTarget) - transform.position;
+			float norm = glm::length(direction);
+			if (norm > 1) {
+				direction /= norm;
+				float vel = deltatime * velocity.velocity*imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);
+				transform.position += vel * direction;
+			}
+			else if (pathfinding.currentTarget != level->getGraph()->getEndNode()) {
+				int tmp = pathfinding.currentTarget;
+				pathfinding.currentTarget = level->getPathfindingGraph()->pickNextNode(pathfinding.currentTarget, pathfinding.previousNode);
+				pathfinding.previousNode = tmp;
+			}
+			else {
+				m_registry.destroy(entity);
+			}
 		}
 	});
 
