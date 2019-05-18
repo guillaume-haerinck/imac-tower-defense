@@ -170,7 +170,7 @@ void RenderSystem::update(float deltatime) {
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
-		if (health.current != health.max) {
+		if (health.current != health.max && !m_registry.has<cmpt::Animated>(entity)) {
 			IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 			// Background
 			{
