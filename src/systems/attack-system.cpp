@@ -19,6 +19,7 @@
 #include "services/debug-draw/i-debug-draw.hpp"
 #include "services/random/i-random.hpp"
 #include "services/helper/i-helper.hpp"
+#include "components/animated.hpp"
 
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
@@ -166,7 +167,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
 		normal /= glm::length(normal);
 		m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
-			if (!m_registry.has<stateTag::IsBeingControlled>(entity)) {
+			if (!m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
 				float orthoComp = abs(normal.x*(targetTransform.position.x - pos.x) + normal.y*(targetTransform.position.y - pos.y));
 				float colinComp = ((laserEnd.x - pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y - pos.y)*(targetTransform.position.y - pos.y)) / laserLength;
 				if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
