@@ -25,6 +25,7 @@
 #include "components/tint-colour.hpp"
 #include "components/animated.hpp"
 #include "components/animation-scale.hpp"
+#include "components/animation-dark.hpp"
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimis�s en m�moire
 
@@ -79,6 +80,7 @@ void EnemyFactory::create() {
 	//m_registry.assign<cmpt::TintColour>(myEntity, glm::vec4(randomService.random(), randomService.random(), randomService.random(), 0.5));
 	m_registry.assign<cmpt::Animated>(myEntity, 2);
 	m_registry.assign<cmpt::AnimationScale>(myEntity, true);
+	m_registry.assign<cmpt::AnimationDark>(myEntity, true);
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);

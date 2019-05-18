@@ -11,6 +11,7 @@
 #include "components/velocity.hpp"
 #include "components/animated.hpp"
 #include "components/animation-scale.hpp"
+#include "components/animation-dark.hpp"
 #include "core/constants.hpp"
 #include "core/tags.hpp"
 
@@ -30,8 +31,21 @@ glm::vec4 HelperService::getColour(unsigned int entityId) {
 			m_registry->remove<cmpt::TintColour>(entityId);
 		}
 	}
+	//Blue when slowed
 	if (m_registry->has<cmpt::Velocity>(entityId)) {
 		actualColour = blend(actualColour, glm::vec4( glm::vec3(0.49,0.62,0.84) , 1-getVelocityMultiplier(entityId)) );
+	}
+	if (m_registry->has<cmpt::Animated>(entityId)) {
+		cmpt::Animated& animated = m_registry->get<cmpt::Animated>(entityId);
+		//Animation darken
+		if (m_registry->has<cmpt::AnimationDark>(entityId)) {
+			if (m_registry->get<cmpt::AnimationDark>(entityId).bForward) {
+				actualColour = blend(actualColour , glm::vec4(0.0f,0.0f,0.0f, 1 - animated.age / animated.duration));
+			}
+			else {
+				actualColour = blend(actualColour, glm::vec4(0.0f, 0.0f, 0.0f, animated.age / animated.duration));
+			}
+		}
 	}
 	//Highlight hovered tile
 	if (m_registry->has<entityTag::Tile>(entityId)) {
@@ -45,6 +59,16 @@ glm::vec4 HelperService::getColour(unsigned int entityId) {
 					actualColour = blend(actualColour, glm::vec4(1, 0, 0, 0.3));
 				}
 			}
+		}
+	}
+	//Attached to another entity
+	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
+		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
+		if (m_registry->valid(mainEntityId)) {
+			actualColour = blend( actualColour, getColour(mainEntityId));
+		}
+		else {
+			m_registry->destroy(entityId);
 		}
 	}
 	return actualColour;
@@ -122,9 +146,9 @@ glm::vec2 HelperService::getScale(unsigned int entityId) {
 			actualScale *= m_registry->get<cmpt::Transform>(entityId).scale;
 		}
 		if (m_registry->has<cmpt::Animated>(entityId)) {
+			cmpt::Animated& animated = m_registry->get<cmpt::Animated>(entityId);
 			//Animation scale
 			if (m_registry->has<cmpt::AnimationScale>(entityId)) {
-				cmpt::Animated& animated = m_registry->get<cmpt::Animated>(entityId);
 				if (m_registry->get<cmpt::AnimationScale>(entityId).bForward) {
 					actualScale *= animated.age / animated.duration;
 				}
