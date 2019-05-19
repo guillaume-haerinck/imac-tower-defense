@@ -15,6 +15,8 @@ public:
 	glm::vec2 getScale(unsigned int entityId) override;
 	float getVelocityMultiplier(unsigned int entityId) override;
 
+	bool mouseIsOn(unsigned int entityId) override;
+
 	void setRegistry(entt::DefaultRegistry* registry) override;
 	void setEmitter(EventEmitter* emitter) override;
 	void setLevel(Level* level) override;

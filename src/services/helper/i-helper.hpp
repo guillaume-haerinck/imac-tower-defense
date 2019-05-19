@@ -11,6 +11,7 @@ public:
 	virtual glm::vec2 getScale(unsigned int entityId) = 0;
 	virtual glm::vec4 blend(glm::vec4 col1, glm::vec4 col2) = 0;
 	virtual float getVelocityMultiplier(unsigned int entityId) = 0;
+	virtual bool mouseIsOn(unsigned int entityId) = 0;
 	virtual void setRegistry(entt::DefaultRegistry* registry) = 0;
 	virtual void setEmitter(EventEmitter* emitter) = 0;
 	virtual void setLevel(Level* level) = 0;

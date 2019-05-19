@@ -97,7 +97,11 @@ void AttackSystem::update(float deltatime) {
 	glLineWidth(LASER_WIDTH);
 	m_registry.view<cmpt::ShootLaser, cmpt::Transform>().each([this, deltatime](auto entity, cmpt::ShootLaser & laser, cmpt::Transform & transform) {
 		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
-		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,laser.col);
+		glm::vec3 col = laser.col;
+		if (helper.mouseIsOn(entity)) {
+			col = glm::vec3(255.0f);
+		}
+		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col);
 	});
 	glLineWidth(1);
 }

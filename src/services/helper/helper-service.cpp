@@ -12,6 +12,7 @@
 #include "components/animated.hpp"
 #include "components/animation-scale.hpp"
 #include "components/animation-dark.hpp"
+#include "components/hitbox.hpp"
 #include "core/constants.hpp"
 #include "core/tags.hpp"
 
@@ -169,6 +170,17 @@ glm::vec2 HelperService::getScale(unsigned int entityId) {
 		}
 	}
 	return actualScale;
+}
+
+bool HelperService::mouseIsOn(unsigned int entityId) {
+	if (m_registry->has<cmpt::Hitbox>(entityId)) {
+		cmpt::Hitbox& hitbox = m_registry->get<cmpt::Hitbox>(entityId);
+		glm::vec2 pos = m_registry->get<cmpt::Transform>(entityId).position;
+		return hitbox.radiusSq > (pos.x - m_emitter->mousePos.x*WIN_RATIO)*(pos.x - m_emitter->mousePos.x*WIN_RATIO) + (pos.y - m_emitter->mousePos.y)*(pos.y - m_emitter->mousePos.y);
+	}
+	else {
+		return false;
+	}
 }
 
 void HelperService::setRegistry(entt::DefaultRegistry* registry) {
