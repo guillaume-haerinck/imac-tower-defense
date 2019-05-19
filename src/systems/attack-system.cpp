@@ -21,6 +21,7 @@
 #include "services/random/i-random.hpp"
 #include "services/helper/i-helper.hpp"
 #include "components/animated.hpp"
+#include <SDL2/SDL.h>
 
 AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
@@ -171,14 +172,12 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		float orthoComp = abs(normal.x*(entityPos.x - pos.x) + normal.y*(entityPos.y - pos.y));
 		float colinComp = ((laserEnd.x - pos.x)*(entityPos.x - pos.x) + (laserEnd.y - pos.y)*(entityPos.y - pos.y)) / laserLength;
 		if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
-			spdlog::info("a");
+			if (m_registry.has<entityTag::Tower>(entity)) {
+				m_registry.accommodate<cmpt::TintColour>(entity, glm::vec4(1, 0.4, 0.047, 0.55*(sin(SDL_GetTicks()*0.006) + 1)), true);
+			}
 			if (!isTransparent && !m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
 				m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
 				trySpawnLaserParticle(targetTransform.position, deltatime);
-			}
-			if (m_registry.has<entityTag::Tower>(entity)) {
-				spdlog::info("b");
-				m_registry.accommodate<cmpt::TintColour>(entity, glm::vec4(255./255, 113./255, 12./255, 0.5),true);
 			}
 		}
 	});
