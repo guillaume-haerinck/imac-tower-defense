@@ -45,12 +45,14 @@ LevelState::LevelState(Game& game)
 
 			case TOWER_LASER:
 				entityId = m_towerFactory.createLaser(0, 0);
+				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
 				m_game.progression.addToMoney(-TOWER_LASER_COST);
 				break;
 
 			case TOWER_SLOW:
 				entityId = m_towerFactory.createSlow(0, 0);
+				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.progression.addToMoney(-TOWER_SLOW_COST);
 				break;
 
@@ -259,6 +261,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					m_game.registry.assign<cmpt::EntityOn>(tileId, m_lastSelectedEntity);
 
 					m_game.registry.remove<positionTag::IsOnHoveredTile>(m_lastSelectedEntity);
+					m_game.registry.reset<stateTag::IsBeingControlled>(m_lastSelectedEntity);
 					m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).position += trans.position;
 					if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
 						m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity).isActiv = false;

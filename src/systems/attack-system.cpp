@@ -13,6 +13,7 @@
 #include "components/health.hpp"
 #include "components/shake.hpp"
 #include "components/velocity.hpp"
+#include "components/tint-colour.hpp"
 #include "events/enemy-damaged.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "services/locator.hpp"
@@ -162,21 +163,25 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	}
 
 	//Damage entities
-	if (!isTransparent) {
-		float laserLength = sqrt((pos.x - laserEnd.x)*(pos.x - laserEnd.x) + (pos.y - laserEnd.y)*(pos.y - laserEnd.y));
-		glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
-		normal /= glm::length(normal);
-		m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
-			if (!m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
-				float orthoComp = abs(normal.x*(targetTransform.position.x - pos.x) + normal.y*(targetTransform.position.y - pos.y));
-				float colinComp = ((laserEnd.x - pos.x)*(targetTransform.position.x - pos.x) + (laserEnd.y - pos.y)*(targetTransform.position.y - pos.y)) / laserLength;
-				if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
-					m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
-					trySpawnLaserParticle(targetTransform.position, deltatime);
-				}
+	float laserLength = sqrt((pos.x - laserEnd.x)*(pos.x - laserEnd.x) + (pos.y - laserEnd.y)*(pos.y - laserEnd.y));
+	glm::vec2 normal = glm::vec2(laserEnd.y - pos.y, pos.x - laserEnd.x);
+	normal /= glm::length(normal);
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, cmpt::Health>().each([this, normal, launcherId, pos, laserEnd, laserLength, deltatime, isTransparent, &helper](auto entity, cmpt::Transform & targetTransform, cmpt::Hitbox& targetTrigger, cmpt::Health& targetHealth) {
+		glm::vec2 entityPos = helper.getPosition(entity);
+		float orthoComp = abs(normal.x*(entityPos.x - pos.x) + normal.y*(entityPos.y - pos.y));
+		float colinComp = ((laserEnd.x - pos.x)*(entityPos.x - pos.x) + (laserEnd.y - pos.y)*(entityPos.y - pos.y)) / laserLength;
+		if (0 <= colinComp && colinComp <= laserLength && orthoComp < targetTrigger.radius && launcherId != entity) {
+			spdlog::info("a");
+			if (!isTransparent && !m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
+				m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
+				trySpawnLaserParticle(targetTransform.position, deltatime);
 			}
-		});
-	}
+			if (m_registry.has<entityTag::Tower>(entity)) {
+				spdlog::info("b");
+				m_registry.accommodate<cmpt::TintColour>(entity, glm::vec4(255./255, 113./255, 12./255, 0.5),true);
+			}
+		}
+	});
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
 	float alpha = isTransparent ? 0.25 : 1;
