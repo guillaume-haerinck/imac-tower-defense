@@ -393,8 +393,20 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
 		case FREE:
-			// TODO move camera if close to screen
+		{
+			std::uint32_t entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
+			if (m_game.registry.valid(entityId)) {
+				if (m_game.registry.has<entityTag::Mirror>(entityId) ||
+					m_game.registry.has<entityTag::Tower>(entityId)) {
+					m_emitter.publish<evnt::ChangeCursor>(CursorType::CLICK);
+				} else {
+					m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
+				}
+			} else {
+				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
+			}
 			break;
+		}
 
 		case ROTATE:
 			m_game.emitter.publish<evnt::SelectRotation>(event.mousePos);
