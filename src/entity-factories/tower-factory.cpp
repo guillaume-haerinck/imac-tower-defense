@@ -7,7 +7,6 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
-#include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
 #include "components/rigid-body.hpp"
 #include "components/targeting.hpp"
@@ -66,7 +65,7 @@ unsigned int TowerFactory::createSlow(float posX, float posY) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_towerSlowSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);
-	m_registry.assign<cmpt::LookAt>(myEntity);
+	m_registry.assign<targetingTag::LookAt>(myEntity);
 	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 25));
 	m_registry.assign<cmpt::Targeting>(myEntity, -1, TOWER_ATTACK_RANGE);
 	m_registry.assign<cmpt::Hitbox>(myEntity, TOWER_HITBOX_RADIUS);

@@ -3,9 +3,10 @@
 #include <glm/glm.hpp>
 
 namespace cmpt {
-		struct AttachedTo {
-		AttachedTo(unsigned int entityId) : entityId(entityId) {}
+struct AttachedTo {
+	//Entity will inherit proporties such as position and colour from the main entity
+	AttachedTo(unsigned int mainEntity) : mainEntity(mainEntity) {}
 
-		unsigned int entityId;
-	};
+	unsigned int mainEntity;
+};
 }

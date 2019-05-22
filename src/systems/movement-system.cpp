@@ -14,12 +14,10 @@
 #include "events/interactions/select-rotation.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
-#include "components/look-at.hpp"
 #include "components/look-at-mouse.hpp"
 #include "components/rotated-by-mouse.hpp"
 #include "components/constrained-rotation.hpp"
 #include "components/trajectory.hpp"
-#include "components/follow.hpp"
 #include "components/pathfinding.hpp"
 #include "components/targeting.hpp"
 #include "components/move-towards-mouse.hpp"
@@ -127,13 +125,13 @@ void MovementSystem::update(float deltatime) {
 		}
 	});
 
-	m_registry.view<cmpt::Transform, cmpt::Follow, cmpt::Targeting>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Follow& follow, cmpt::Targeting& targeting) {
+	m_registry.view<cmpt::Transform, cmpt::Velocity, targetingTag::Follow, cmpt::Targeting>().each([this, deltatime](auto entity, cmpt::Transform& transform, cmpt::Velocity& vel, auto, cmpt::Targeting& targeting) {
 		if (m_registry.valid(targeting.targetId)) {
 			glm::vec2 targetPosition = m_registry.get<cmpt::Transform>(targeting.targetId).position;
 			glm::vec2 direction = targetPosition - transform.position;
 			float norm = glm::length(direction);
 			if (norm > m_registry.get<cmpt::Hitbox>(targeting.targetId).radius) {
-				direction *= follow.velocity / glm::length(direction);
+				direction *= vel.velocity / glm::length(direction);
 				transform.position += direction;
 			}
 			else {

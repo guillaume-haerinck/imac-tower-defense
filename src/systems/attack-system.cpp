@@ -7,7 +7,6 @@
 #include "core/maths.hpp"
 #include "core/constants.hpp"
 #include "components/targeting.hpp"
-#include "components/look-at.hpp"
 #include "components/shoot-at.hpp"
 #include "components/shoot-laser.hpp"
 #include "components/health.hpp"
@@ -36,7 +35,7 @@ AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 void AttackSystem::update(float deltatime) {
 
 	// Look at target
-	m_registry.view<cmpt::Targeting, cmpt::Transform , cmpt::LookAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::LookAt lookAt) {
+	m_registry.view<cmpt::Targeting, cmpt::Transform , targetingTag::LookAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, auto) {
 		if ( m_registry.valid(targeting.targetId) ) {
 			glm::vec2 direction = m_registry.get<cmpt::Transform>(targeting.targetId).position - transform.position;
 			transform.rotation = atan2(direction.y, direction.x);

@@ -64,7 +64,7 @@ glm::vec4 HelperService::getColour(unsigned int entityId) {
 	}
 	//Attached to another entity
 	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
-		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
+		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
 		if (m_registry->valid(mainEntityId)) {
 			actualColour = blend( actualColour, getColour(mainEntityId));
 		}
@@ -120,21 +120,17 @@ glm::vec2 HelperService::getPosition(unsigned int entityId) {
 	}
 	//Attached to another entity
 	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
-		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
+		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
 		if (m_registry->valid(mainEntityId)) {
-			glm::vec2 mainPos = getPosition(mainEntityId);
-			actualPos += mainPos;
-			//Move towards mouse
-			//Must be added last because takes into account all the other accumulated positions as a center for its movement
-			if (m_registry->has<cmpt::MoveTowardsMouse>(entityId)) {
-				cmpt::MoveTowardsMouse& move = m_registry->get<cmpt::MoveTowardsMouse>(entityId);
-				float agl = atan2(m_emitter->mousePos.y - actualPos.y, m_emitter->mousePos.x * WIN_RATIO - actualPos.x);
-				actualPos += move.maxDist * glm::vec2(cos(agl), sin(agl));
-			}
+			actualPos += getPosition(mainEntityId);
 		}
-		else {
-			m_registry->destroy(entityId);
-		}
+	}
+	//Move towards mouse
+	//Must be added last because takes into account all the other accumulated positions as a center for its movement
+	if (m_registry->has<cmpt::MoveTowardsMouse>(entityId)) {
+		float maxDist = m_registry->get<cmpt::MoveTowardsMouse>(entityId).maxDist;
+		float agl = atan2(m_emitter->mousePos.y - actualPos.y, m_emitter->mousePos.x * WIN_RATIO - actualPos.x);
+		actualPos += maxDist * glm::vec2(cos(agl), sin(agl));
 	}
 	return actualPos;
 }
@@ -160,7 +156,7 @@ glm::vec2 HelperService::getScale(unsigned int entityId) {
 		}
 		//Attached to a main entity
 		if (m_registry->has<cmpt::AttachedTo>(entityId)) {
-			unsigned int mainId = m_registry->get<cmpt::AttachedTo>(entityId).entityId;
+			unsigned int mainId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
 			if (m_registry->valid(mainId)) {
 				actualScale *= getScale(mainId);
 			}

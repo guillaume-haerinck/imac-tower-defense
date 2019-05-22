@@ -164,8 +164,8 @@ std::uint32_t Level::getEntityOnTileFromProjCoord(float x, float y) const {
 	glm::vec2 tilePosition = projToGrid(x, y);
 	unsigned int tileId = getTile(tilePosition.x, tilePosition.y);
 	if (m_registry.valid(tileId)) {
-		if (m_registry.has<cmpt::EntityOn>(tileId)) {
-			return m_registry.get<cmpt::EntityOn>(tileId).entityId;
+		if (m_registry.has<cmpt::EntityOnTile>(tileId)) {
+			return m_registry.get<cmpt::EntityOnTile>(tileId).entityId;
 		} else {
 			return entt::null;
 		}

@@ -75,7 +75,7 @@ LevelState::LevelState(Game& game)
 
 			std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(position.x / WIN_RATIO, position.y);
 			this->m_game.registry.assign<tileTag::Constructible>(tileId);
-			this->m_game.registry.remove<cmpt::EntityOn>(tileId);
+			this->m_game.registry.remove<cmpt::EntityOnTile>(tileId);
 
 			this->changeState(LevelInteractionState::FREE);
 		}
@@ -84,7 +84,7 @@ LevelState::LevelState(Game& game)
 	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
 		std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(event.position.x / WIN_RATIO, event.position.y);
 		this->m_game.registry.assign<tileTag::Constructible>(tileId);
-		this->m_game.registry.remove<cmpt::EntityOn>(tileId);
+		this->m_game.registry.remove<cmpt::EntityOnTile>(tileId);
 	});
 }
 
@@ -259,7 +259,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(tileId);
 
 					m_game.registry.remove<tileTag::Constructible>(tileId);
-					m_game.registry.assign<cmpt::EntityOn>(tileId, m_lastSelectedEntity);
+					m_game.registry.assign<cmpt::EntityOnTile>(tileId, m_lastSelectedEntity);
 
 					m_game.registry.remove<positionTag::IsOnHoveredTile>(m_lastSelectedEntity);
 					m_game.registry.reset<stateTag::IsBeingControlled>(m_lastSelectedEntity);

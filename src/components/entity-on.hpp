@@ -1,11 +1,9 @@
 #pragma once
 
-// Used on tile to get the entity built on it
-// TODO rename
-
 namespace cmpt {
-	struct EntityOn {
-		EntityOn(unsigned int entityId) : entityId(entityId) {}
+	struct EntityOnTile {
+		//Gives the id of the building constructed on the tile that owns this component
+		EntityOnTile(unsigned int entityId) : entityId(entityId) {}
 
 		unsigned int entityId;
 	};

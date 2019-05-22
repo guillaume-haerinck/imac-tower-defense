@@ -16,6 +16,11 @@ namespace tileTag {
 	TAG(Constructible);
 }
 
+namespace targetingTag {
+	TAG(LookAt);
+	TAG(Follow);
+}
+
 namespace entityTag {
 	TAG(Tower);
 	TAG(Mirror);

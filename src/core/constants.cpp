@@ -25,6 +25,7 @@ const float MIRROR_RADIUS = TILE_SIZE / 2;
 const float LASER_DAMAGE_PER_SECOND = 2.0f;
 const float LASER_WIDTH = 13;
 const float PROJECTILE_HITBOX_RADIUS = 1.0f;
+const float SLOW_PROJECTILE_VELOCITY = 1.0f;
 
 const float TOWER_SLOW_AMOUNT = 0.4;
 const float SLOW_DURATION = 4;

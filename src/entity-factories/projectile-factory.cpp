@@ -6,8 +6,8 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
-#include "components/follow.hpp"
 #include "components/targeting.hpp"
+#include "components/velocity.hpp"
 
 #include "spdlog/spdlog.h"
 
@@ -25,8 +25,9 @@ unsigned int ProjectileFactory::create(glm::vec2 initialPos, unsigned int target
 	m_registry.assign<cmpt::Sprite>(myEntity, m_projectileSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, initialPos, Z_INDEX_VISUAL_EFFECTS);
-	m_registry.assign<cmpt::Follow>(myEntity, 1);
+	m_registry.assign<targetingTag::Follow>(myEntity);
 	m_registry.assign<cmpt::Targeting>(myEntity, targetId, PROJECTILE_HITBOX_RADIUS);
+	m_registry.assign<cmpt::Velocity>(myEntity,SLOW_PROJECTILE_VELOCITY);
 	return myEntity;
 }
 
