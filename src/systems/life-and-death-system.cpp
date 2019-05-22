@@ -1,4 +1,4 @@
-#include "health-system.hpp"
+#include "life-and-death-system.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -9,6 +9,11 @@
 #include "components/transform.hpp"
 #include "components/shake.hpp"
 #include "components/attached-to.hpp"
+#include "components/age.hpp"
+#include "components/animated.hpp"
+#include "components/animation-dark.hpp"
+#include "components/animation-scale.hpp"
+#include "components/animation-pixels-vanish.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
 #include "entity-factories/enemy-factory.hpp"
@@ -16,7 +21,7 @@
 #include "services/locator.hpp"
 #include "services/helper/i-helper.hpp"
 
-HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression)
+LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression)
 : ISystem(registry, emitter), m_progression(progression)
 {
 	m_emitter.on<evnt::EntityDamaged>([this](const evnt::EntityDamaged & event, EventEmitter & emitter) {
@@ -33,7 +38,31 @@ HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 	});
 }
 
-void HealthSystem::update(float deltatime) {
+void LifeAndDeathSystem::update(float deltatime) {
+	//Update age
+	m_registry.view<cmpt::Age>().each([this, deltatime](auto entity, cmpt::Age & age) {
+		age.age += deltatime;
+		//Destroy entities that have reached their max lifespan
+		if (age.age > age.lifespan) {
+			m_registry.destroy(entity);
+		}
+	});
+	//Update animation's age
+	m_registry.view<cmpt::Animated>().each([this, deltatime](auto entity, cmpt::Animated & animated) {
+		animated.age += deltatime;
+		//Remove animation once max duration has been reached
+		if (animated.age > animated.duration) {
+			bool destroyEntity = animated.bDestroyAfterAnimation;
+			m_registry.remove<cmpt::Animated>(entity);
+			m_registry.reset<cmpt::AnimationScale>(entity);
+			m_registry.reset<cmpt::AnimationDark>(entity);
+			m_registry.reset<cmpt::AnimationPixelsVanish>(entity);
+			//Destroy entity if it was a disappear animation
+			if (destroyEntity) {
+				m_registry.destroy(entity);
+			}
+		}
+	});
 	//Destroy entities that have no more health
 	m_registry.view<cmpt::Health>().each([this](auto entity, cmpt::Health& health) {
 		if (health.current <= 0.0001f) {

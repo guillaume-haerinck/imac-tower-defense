@@ -18,7 +18,7 @@
 #include "systems/animation-system.hpp"
 #include "systems/wave-system.hpp"
 #include "systems/attack-system.hpp"
-#include "systems/health-system.hpp"
+#include "systems/life-and-death-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 
 class Game {
@@ -48,7 +48,7 @@ public:
 	MovementSystem* movementSystem;
 	WaveSystem* waveSystem;
 	AttackSystem* attackSystem;
-	HealthSystem* healthSystem;
+	LifeAndDeathSystem* lifeAndDeathSystem;
 
 	// Temp, only public to debug state machine
 	CinematicState* m_cinematicState;
