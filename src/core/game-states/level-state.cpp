@@ -33,6 +33,7 @@ LevelState::LevelState(Game& game)
 
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		switch (m_state) {
+		case INVALID :
 		case FREE : 
 			m_game.emitter.entityBeingPlaced = true;
 			this->m_constructType = event.type;
@@ -57,14 +58,9 @@ LevelState::LevelState(Game& game)
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.progression.addToMoney(-TOWER_SLOW_COST);
 				break;
-
-			default:
-				break;
 			}
 			m_lastSelectedEntity = entityId;
-		break;
-		default :
-		break;
+			break;
 		}
 	});
 
@@ -351,6 +347,7 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
 		case FREE:
+		case INVALID:
 		case OPTIONS:
 		{
 			// Get entity. If valid open options. Else Invalid
@@ -378,11 +375,6 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 		}
 
 		case ROTATE:
-			break;
-
-		case INVALID:
-			// Stop the invalid animation if click during
-			changeState(LevelInteractionState::FREE);
 			break;
 
 		case BUILD:
