@@ -61,6 +61,12 @@ int main(int argc, char** argv) {
 	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 	//audioService.playSound(audioFiles::CROWD_1);
 
+	
+
+	SDL_Cursor* cursor;
+	cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+	SDL_SetCursor(cursor);
+
 
 	// Game loop
 	bool bQuit = false;
