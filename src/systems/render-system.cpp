@@ -18,8 +18,6 @@
 #include "components/shake.hpp"
 #include "components/tint-colour.hpp"
 #include "components/animated.hpp"
-#include "components/animation-dark.hpp"
-#include "components/animation-scale.hpp"
 #include "components/animation-pixels-vanish.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "events/entity-damaged.hpp"
@@ -48,30 +46,6 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
-
-	//Update age
-	m_registry.view<cmpt::Age>().each([this,deltatime](auto entity, cmpt::Age & age) {
-		age.age += deltatime;
-		if (age.lifespan < age.age) {
-			m_emitter.publish<evnt::LaserParticleDead>(m_registry.get<cmpt::Transform>(entity).position);
-			m_registry.destroy(entity);
-		}
-	});
-
-	//Update animation
-	m_registry.view<cmpt::Animated>().each([this, deltatime](auto entity, cmpt::Animated & animated) {
-		animated.age += deltatime;
-		if (animated.age > animated.duration) {
-			bool destroyEntity = animated.bDestroyAfterAnimation;
-			m_registry.remove<cmpt::Animated>(entity);
-			m_registry.reset<cmpt::AnimationScale>(entity);
-			m_registry.reset<cmpt::AnimationDark>(entity);
-			m_registry.reset<cmpt::AnimationPixelsVanish>(entity);
-			if (destroyEntity) {
-				m_registry.destroy(entity);
-			}
-		}
-	});
 
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding

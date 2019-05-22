@@ -42,7 +42,7 @@ Game::Game(EventEmitter& emitter)
 	movementSystem(nullptr),
 	waveSystem(nullptr),
 	attackSystem(nullptr),
-	healthSystem(nullptr),
+	lifeAndDeathSystem(nullptr),
 
 	// States
 	m_cinematicState(nullptr),
@@ -264,7 +264,7 @@ int Game::init() {
 	movementSystem = new MovementSystem(registry, emitter);
 	waveSystem = new WaveSystem(registry, emitter, *level);
 	attackSystem = new AttackSystem(registry, emitter);
-	healthSystem = new HealthSystem(registry, emitter, progression);
+	lifeAndDeathSystem = new LifeAndDeathSystem(registry, emitter, progression);
 
 	// Init current state
 	switch (this->m_state) {
@@ -348,7 +348,7 @@ Game::~Game() {
 	delete movementSystem;
 	delete waveSystem;
 	delete attackSystem;
-	delete healthSystem;
+	delete lifeAndDeathSystem;
 
 	// Delete level manager
 	delete level;

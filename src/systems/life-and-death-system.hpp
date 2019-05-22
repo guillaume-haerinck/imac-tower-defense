@@ -7,9 +7,9 @@
 #include "core/progression.hpp"
 #include "events/handlers/event-emitter.hpp"
 
-class HealthSystem : public ISystem {
+class LifeAndDeathSystem : public ISystem {
 public:
-	HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression);
+	LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression);
 	void update(float deltatime) override;
 
 private:
