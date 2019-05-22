@@ -8,6 +8,7 @@
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 #include "components/transform.hpp"
+#include "events/interactions/change-cursor.hpp"
 
 /* TODO use framebuffer */
 
@@ -23,5 +24,5 @@ private:
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
 	const glm::mat4& m_view;
 	const glm::mat4& m_projection;
-	std::array<SDL_Cursor*, 12> cursors;
+	std::array<SDL_Cursor*, 5> cursors;
 };

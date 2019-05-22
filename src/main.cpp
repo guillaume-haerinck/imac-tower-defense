@@ -62,8 +62,6 @@ int main(int argc, char** argv) {
 	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 	//audioService.playSound(audioFiles::CROWD_1);
 
-	emitter.publish<evnt::ChangeCursor>(SDL_SYSTEM_CURSOR_IBEAM);
-
 	// Game loop
 	bool bQuit = false;
 	double deltatime = TARGET_DELTA_MS;

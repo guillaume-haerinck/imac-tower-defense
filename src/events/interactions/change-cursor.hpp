@@ -1,9 +1,17 @@
-#include <SDL2/SDL.h>
+#pragma once
+
+enum CursorType {
+	ROTATION,
+	ARROW,
+	LOADING,
+	NO,
+	CLICK
+};
 
 namespace evnt {
 	struct ChangeCursor {
-		ChangeCursor(SDL_SystemCursor type) : type(type) {}
+		ChangeCursor(CursorType cursor) : cursor(cursor) {}
 
-		SDL_SystemCursor type;
+		CursorType cursor;
 	};
 }

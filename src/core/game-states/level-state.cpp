@@ -12,6 +12,7 @@
 #include "events/interactions/select-rotation.hpp"
 #include "events/tower-dead.hpp"
 #include "events/interactions/delete-entity.hpp"
+#include "events/interactions/change-cursor.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/entity-on.hpp"
 #include "components/look-at-mouse.hpp"
@@ -37,6 +38,7 @@ LevelState::LevelState(Game& game)
 			this->m_constructType = event.type;
 			this->changeState(LevelInteractionState::BUILD);
 			unsigned int entityId;
+
 			switch (m_constructType) {
 			case MIRROR_BASIC:
 				entityId = m_mirrorFactory.create(0, 0);
@@ -100,6 +102,7 @@ LevelInteractionState LevelState::getInteractionState() const {
 }
 
 /* ------------------------ SETTERS ------------------------- */
+
 void LevelState::changeState(LevelInteractionState state) {
 	// Exit current state
 	switch (m_state) {
@@ -127,17 +130,25 @@ void LevelState::changeState(LevelInteractionState state) {
 	// Enter new state
 	switch (state) {
 	case FREE:
+		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
+		m_levelHud.setSelectedEntity(entt::null);
+		break;
+
 	case INVALID:
+		m_emitter.publish<evnt::ChangeCursor>(CursorType::NO);
 		m_levelHud.setSelectedEntity(entt::null);
 		break;
 
 	case ROTATE:
+		m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
 		break;
 
 	case OPTIONS:
+		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
 		break;
 
 	case BUILD:
+		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
 		break;
 
 	default:
@@ -212,6 +223,7 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
 		case FREE:
+		case INVALID:
 		{
 			// Get entity. If valid mirror rotate. If laser then switch on or off. Else invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
@@ -237,11 +249,6 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		}
 
 		case ROTATE:
-			break;
-
-		case INVALID:
-			// Stop the invalid animation if click during
-			changeState(LevelInteractionState::FREE);
 			break;
 
 		case OPTIONS:
