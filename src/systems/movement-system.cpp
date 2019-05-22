@@ -10,7 +10,7 @@
 #include "core/constants.hpp"
 #include "core/tags.hpp"
 #include "core/level/graph.hpp"
-#include "events/enemy-damaged.hpp"
+#include "events/entity-damaged.hpp"
 #include "events/interactions/select-rotation.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
@@ -138,7 +138,7 @@ void MovementSystem::update(float deltatime) {
 			}
 			else {
 				if (m_registry.has<projectileType::Damage>(entity)) {
-					m_emitter.publish<evnt::EnemyDamaged>(targeting.targetId, targetPosition, 1.0f);
+					m_emitter.publish<evnt::EntityDamaged>(targeting.targetId, 1.0f);
 					m_registry.destroy(entity);
 				}
 				if (m_registry.has<projectileType::Slow>(entity)) {

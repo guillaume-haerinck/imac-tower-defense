@@ -10,13 +10,20 @@
 
 #include "core/level/level.hpp"
 
+enum EnemyType {
+	DRONE,
+	KAMIKAZE
+};
+
 class EnemyFactory : public Factory {
 public:
 	EnemyFactory(entt::DefaultRegistry& registry, Level& level);
 	virtual ~EnemyFactory();
 
 	// void create(std::vector<glm::vec2> traj);
-	void create();
+	unsigned int create();
+	void createBasic();
+	void createKamikaze();
 
 private:
 	SpriteFactory m_spriteFactory;

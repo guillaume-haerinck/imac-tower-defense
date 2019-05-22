@@ -178,6 +178,7 @@ void LevelState::update(float deltatime) {
 	m_game.movementSystem->update(deltatime);
 	m_game.renderSystem->update(deltatime);
 	m_game.attackSystem->update(deltatime);
+	m_game.healthSystem->update(deltatime);
 	m_ui->GetRenderer()->Render();
 
 	switch (checkVictoryConditions()) {

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "entity-factories/enemy-factory.hpp"
 
 namespace evnt {
 	struct EnnemyDead {
-		EnnemyDead(glm::vec2 position) : position(position) {}
+		EnnemyDead(glm::vec2 position, EnemyType type) : position(position), type(type) {}
 
 		glm::vec2 position;
+		EnemyType type;
 	};
 }

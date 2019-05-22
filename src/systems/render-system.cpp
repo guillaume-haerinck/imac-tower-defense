@@ -22,7 +22,7 @@
 #include "components/animation-scale.hpp"
 #include "components/animation-pixels-vanish.hpp"
 #include "events/laser-particle-dead.hpp"
-#include "events/enemy-damaged.hpp"
+#include "events/entity-damaged.hpp"
 
 #include "services/locator.hpp"
 #include "services/helper/i-helper.hpp"
@@ -31,13 +31,13 @@
 
 RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat)
 : ISystem(registry, emitter), m_view(viewMat), m_projection(projMat) {
-	m_emitter.on<evnt::EnemyDamaged>([this](const evnt::EnemyDamaged & event, EventEmitter & emitter) {
-		if (m_registry.valid(event.targetId)) {
+	m_emitter.on<evnt::EntityDamaged>([this](const evnt::EntityDamaged & event, EventEmitter & emitter) {
+		if (m_registry.valid(event.entity)) {
 			//Shake
-			if (m_registry.has<cmpt::Shake>(event.targetId)) {
+			if (m_registry.has<cmpt::Shake>(event.entity)) {
 				IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 				float agl = randomService.random(imaths::TAU);
-				m_registry.get<cmpt::Shake>(event.targetId).offset = 0.3f*glm::vec2(cos(agl), sin(agl));
+				m_registry.get<cmpt::Shake>(event.entity).offset = 0.3f*glm::vec2(cos(agl), sin(agl));
 			}
 		}
 	});

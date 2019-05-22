@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include "events/entity-damaged.hpp"
 #include "events/enemy-dead.hpp"
 #include "events/tower-dead.hpp"
 #include "components/health.hpp"
@@ -9,27 +10,48 @@
 #include "components/shake.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
+#include "entity-factories/enemy-factory.hpp"
+
+#include "services/locator.hpp"
+#include "services/helper/i-helper.hpp"
 
 HealthSystem::HealthSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression)
 : ISystem(registry, emitter), m_progression(progression)
 {
-	m_emitter.on<evnt::EnemyDamaged>([this](const evnt::EnemyDamaged & event, EventEmitter & emitter) {
-		//Reduce health
-		cmpt::Health& health = m_registry.get<cmpt::Health>(event.targetId);
+	m_emitter.on<evnt::EntityDamaged>([this](const evnt::EntityDamaged & event, EventEmitter & emitter) {
+		cmpt::Health& health = m_registry.get<cmpt::Health>(event.entity);
 		health.current -= event.damage;
-		if (health.current <= 0.0001f) {
-			if (m_registry.has<entityTag::Enemy>(event.targetId)) {
-				m_emitter.publish<evnt::EnnemyDead>(event.position);
-				m_progression.addToMoney(ENEMY_MONEY_VALUE);
-			}
-			if (m_registry.has<entityTag::Tower>(event.targetId)) {
-				m_emitter.publish<evnt::TowerDead>(m_registry.get<cmpt::Transform>(event.targetId).position);
-			}
-			m_registry.destroy(event.targetId);
+	});
+
+	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+		if (event.type == EnemyType::KAMIKAZE) {
+			m_registry.view<cmpt::Health>().each([this](auto entity, cmpt::Health& health) {
+				health.current -= 2.0f;
+			});
 		}
 	});
 }
 
 void HealthSystem::update(float deltatime) {
-
+	m_registry.view<cmpt::Health>().each([this](auto entity, cmpt::Health& health) {
+		//Kill entities that have no more health
+		if (health.current <= 0.0001f) {
+			IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+			//Enemy
+			if (m_registry.has<entityTag::Enemy>(entity)) {
+				if (m_registry.has<enemyTag::Basic>(entity)) {
+					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::DRONE);
+				}
+				else if (m_registry.has<enemyTag::Kamikaze>(entity)) {
+					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);
+				}
+				m_progression.addToMoney(ENEMY_MONEY_VALUE);
+			}
+			//Tower
+			else if (m_registry.has<entityTag::Tower>(entity)) {
+				m_emitter.publish<evnt::TowerDead>(helper.getPosition(entity));
+			}
+			m_registry.destroy(entity);
+		}
+	});
 }

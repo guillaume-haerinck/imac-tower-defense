@@ -24,6 +24,11 @@ namespace entityTag {
 	TAG(Tile);
 }
 
+namespace enemyTag {
+	TAG(Basic);
+	TAG(Kamikaze);
+}
+
 namespace projectileType {
 	TAG(Slow);
 	TAG(Damage);

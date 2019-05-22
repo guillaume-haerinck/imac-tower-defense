@@ -8,7 +8,8 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 {
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		// TODO handle the number of enemies from the number in the event
-		this->m_enemyFactory.create();
+		this->m_enemyFactory.createBasic();
+		this->m_enemyFactory.createKamikaze();
 	});
 }
 

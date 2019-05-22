@@ -59,8 +59,7 @@ void EnemyFactory::create(std::vector<glm::vec2> traj) {
 }
 */
 
-void EnemyFactory::create() {
-	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+unsigned int EnemyFactory::create() {
 	int startNode = m_level.getGraph()->getStartNodeRandom();
 
 	auto myEntity = m_registry.create();
@@ -71,7 +70,6 @@ void EnemyFactory::create() {
 	m_registry.assign<cmpt::Transform>(myEntity, transform);
 	//m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 25, 5);
 	m_registry.assign<cmpt::Pathfinding>(myEntity, &m_level, startNode);
-	m_registry.assign<cmpt::Health>(myEntity, ENEMY_HEALTH + randomService.random(-ENEMY_HEALTH_RANDOM_VARIATION, ENEMY_HEALTH_RANDOM_VARIATION));
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Hitbox>(myEntity, 5.0f);
 	m_registry.assign<cmpt::Wiggle>(myEntity,1);
@@ -89,4 +87,21 @@ void EnemyFactory::create() {
 	m_registry.assign<renderTag::Single>(eye);
 	m_registry.assign<cmpt::MoveTowardsMouse>(eye,0.8);
 	//m_registry.assign<cmpt::Wiggle>(eye,0.7);
+
+	return myEntity;
+}
+
+void EnemyFactory::createBasic() {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	unsigned int entity = create();
+	m_registry.assign<enemyTag::Basic>(entity);
+	m_registry.assign<cmpt::Health>(entity, ENEMY_DRONE_HEALTH + randomService.random(-ENEMY_HEALTH_RANDOM_VARIATION, ENEMY_HEALTH_RANDOM_VARIATION));
+}
+
+void EnemyFactory::createKamikaze() {
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	unsigned int entity = create();
+	m_registry.assign<enemyTag::Kamikaze>(entity);
+	m_registry.assign<cmpt::Health>(entity, ENEMY_KAMIKAZE_HEALTH + randomService.random(-ENEMY_HEALTH_RANDOM_VARIATION, ENEMY_HEALTH_RANDOM_VARIATION));
+	m_registry.assign<cmpt::TintColour>(entity, glm::vec4(1, 0, 0, 0.5));
 }

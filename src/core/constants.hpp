@@ -9,7 +9,8 @@ extern const float PROJ_HEIGHT;
 extern const float TILE_SIZE;
 
 extern const int ENEMY_MONEY_VALUE;
-extern const float ENEMY_HEALTH;
+extern const float ENEMY_DRONE_HEALTH;
+extern const float ENEMY_KAMIKAZE_HEALTH;
 extern const float ENEMY_HEALTH_RANDOM_VARIATION;
 extern const float ENEMY_VELOCITY;
 

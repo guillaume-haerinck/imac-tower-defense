@@ -6,7 +6,6 @@
 #include "i-system.hpp"
 #include "core/progression.hpp"
 #include "events/handlers/event-emitter.hpp"
-#include "events/enemy-damaged.hpp"
 
 class HealthSystem : public ISystem {
 public:

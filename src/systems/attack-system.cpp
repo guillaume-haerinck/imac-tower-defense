@@ -14,7 +14,7 @@
 #include "components/shake.hpp"
 #include "components/velocity.hpp"
 #include "components/tint-colour.hpp"
-#include "events/enemy-damaged.hpp"
+#include "events/entity-damaged.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "services/locator.hpp"
 #include "services/debug-draw/i-debug-draw.hpp"
@@ -180,7 +180,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 				m_registry.accommodate<cmpt::TintColour>(entity, glm::vec4(1, 0.4, 0.047, 0.55*(sin(SDL_GetTicks()*0.006) + 1)), true);
 			}
 			if (!isTransparent && !m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
-				m_emitter.publish<evnt::EnemyDamaged>(entity, targetTransform.position, LASER_DAMAGE_PER_SECOND*deltatime);
+				m_emitter.publish<evnt::EntityDamaged>(entity, LASER_DAMAGE_PER_SECOND*deltatime);
 				trySpawnLaserParticle(targetTransform.position, deltatime);
 			}
 		}
