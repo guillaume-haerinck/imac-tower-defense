@@ -12,7 +12,6 @@
 #include "core/maths.hpp"
 #include "core/constants.hpp"
 #include "components/wiggle.hpp"
-#include <SDL2/SDL.h>
 #include "components/attached-to.hpp"
 #include "components/age.hpp"
 #include "components/shake.hpp"
@@ -21,6 +20,7 @@
 #include "components/animation-pixels-vanish.hpp"
 #include "events/laser-particle-dead.hpp"
 #include "events/entity-damaged.hpp"
+#include "events/interactions/change-cursor.hpp"
 
 #include "services/locator.hpp"
 #include "services/helper/i-helper.hpp"
@@ -39,6 +39,29 @@ RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 			}
 		}
 	});
+
+	cursors.at(SDL_SYSTEM_CURSOR_ARROW) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	cursors.at(SDL_SYSTEM_CURSOR_IBEAM) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+	cursors.at(SDL_SYSTEM_CURSOR_WAIT) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+	cursors.at(SDL_SYSTEM_CURSOR_CROSSHAIR) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+	cursors.at(SDL_SYSTEM_CURSOR_WAITARROW) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
+	cursors.at(SDL_SYSTEM_CURSOR_SIZENWSE) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
+	cursors.at(SDL_SYSTEM_CURSOR_SIZENESW) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
+	cursors.at(SDL_SYSTEM_CURSOR_SIZEWE) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+	cursors.at(SDL_SYSTEM_CURSOR_SIZENS) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+	cursors.at(SDL_SYSTEM_CURSOR_SIZEALL) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+	cursors.at(SDL_SYSTEM_CURSOR_NO) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+	cursors.at(SDL_SYSTEM_CURSOR_HAND) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+
+	m_emitter.on<evnt::ChangeCursor>([this](const evnt::ChangeCursor & event, EventEmitter & emitter) {
+		SDL_SetCursor(this->cursors.at(event.type));
+	});
+}
+
+RenderSystem::~RenderSystem() {
+	for (int i = 0; i < cursors.size(); i++) {
+		SDL_FreeCursor(cursors.at(i));
+	}
 }
 
 void RenderSystem::update(float deltatime) {

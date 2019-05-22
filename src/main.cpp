@@ -31,6 +31,7 @@
 #include "events/interactions/translate-view.hpp"
 #include "events/interactions/scale-view.hpp"
 #include "events/inputs/mouse-move.hpp"
+#include "events/interactions/change-cursor.hpp"
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
@@ -61,12 +62,7 @@ int main(int argc, char** argv) {
 	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 	//audioService.playSound(audioFiles::CROWD_1);
 
-	
-
-	SDL_Cursor* cursor;
-	cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-	SDL_SetCursor(cursor);
-
+	emitter.publish<evnt::ChangeCursor>(SDL_SYSTEM_CURSOR_IBEAM);
 
 	// Game loop
 	bool bQuit = false;

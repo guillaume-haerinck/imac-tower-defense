@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <entt/entt.hpp>
+#include <array>
+#include <SDL2/SDL.h>
 
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
@@ -12,6 +14,8 @@
 class RenderSystem : public ISystem {
 public:
     RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, glm::mat4& viewMat, glm::mat4& projMat);
+	virtual ~RenderSystem();
+
     void update(float deltatime) override;
 
 private:
@@ -19,4 +23,5 @@ private:
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
 	const glm::mat4& m_view;
 	const glm::mat4& m_projection;
+	std::array<SDL_Cursor*, 12> cursors;
 };
