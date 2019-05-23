@@ -198,10 +198,10 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 }
 
 void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
-	/*IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
+	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	if (randomService.random() < 12 * deltatime) {
 		m_explosionFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
-	}*/
+	}
 }
 
 bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {

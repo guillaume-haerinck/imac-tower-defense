@@ -24,7 +24,7 @@ MirrorFactory::~MirrorFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_mirrorSprite.vaID));
 }
 
-unsigned int MirrorFactory::create(float posX, float posY) {
+std::uint32_t MirrorFactory::create(float posX, float posY) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Mirror>(myEntity);
@@ -35,5 +35,6 @@ unsigned int MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 32);
 	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
+	m_registry.assign<renderOrderTag::Second>(myEntity);
 	return myEntity;
 }

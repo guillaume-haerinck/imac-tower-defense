@@ -11,7 +11,7 @@ public:
 	MirrorFactory(entt::DefaultRegistry& registry);
 	virtual ~MirrorFactory();
 
-	unsigned int create(float posX, float posY);
+	std::uint32_t create(float posX, float posY);
 
 private:
 	SpriteFactory m_spriteFactory;
