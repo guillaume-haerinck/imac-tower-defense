@@ -43,14 +43,15 @@ void AttackSystem::update(float deltatime) {
 	});
 
 	// Shoot a projectile at target
-	m_registry.view<cmpt::Targeting, cmpt::Transform, cmpt::ShootAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::Transform & transform, cmpt::ShootAt & shootAt) {
+	m_registry.view<cmpt::Targeting, cmpt::ShootAt>().each([this](auto entity, cmpt::Targeting & targeting, cmpt::ShootAt & shootAt) {
 		if (m_registry.valid(targeting.targetId) ) {
 			if (shootAt.timer == shootAt.loadingTime) {
+				IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 				if (m_registry.has<projectileType::Slow>(entity)) {
-					m_projectileFactory.createSlow(transform.position, targeting.targetId);
+					m_projectileFactory.createSlow(helper.getPosition(entity), targeting.targetId);
 				}
 				if (m_registry.has<projectileType::Damage>(entity)) {
-					m_projectileFactory.createDamage(transform.position, targeting.targetId);
+					m_projectileFactory.createDamage(helper.getPosition(entity), targeting.targetId);
 				}
 				shootAt.timer = 0;
 			}
@@ -62,32 +63,34 @@ void AttackSystem::update(float deltatime) {
 
 	// Pick a new target if current one is out of range or dead
 	m_registry.view<cmpt::Transform, cmpt::Targeting, entityTag::Tower>().each([this,deltatime](auto entity1, cmpt::Transform & transform1, cmpt::Targeting & targeting,auto) {
-		//Damage towers
-		if (m_registry.has<projectileType::Damage>(entity1)) {
-			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
-				targeting.targetId = -1;
-				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
-					if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius)) {
-						targeting.targetId = entity2;
-					}
-				});
-			}
-		}
-		//Slow towers pick a new target once they have slowed the current one
-		else if (m_registry.has<projectileType::Slow>(entity1)) {
-			if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId) || m_registry.get<cmpt::Velocity>(targeting.targetId).velMultiplier < 0.999 ) {
-				float maxVelMult = 0;
-				targeting.targetId = -1;
-				m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this,deltatime, entity1, transform1, &targeting, &maxVelMult](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
-					if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius) ) {
-						cmpt::Velocity& velocity = m_registry.get<cmpt::Velocity>(entity2);
-						float velMult = deltatime * velocity.velocity*imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);;
-						if (velMult > maxVelMult) {
+		if (!m_registry.has<stateTag::IsBeingControlled>(entity1)) {
+			//Damage towers
+			if (m_registry.has<projectileType::Damage>(entity1)) {
+				if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId)) {
+					targeting.targetId = -1;
+					m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, entity1, transform1, &targeting](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+						if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius)) {
 							targeting.targetId = entity2;
-							maxVelMult = velMult;
 						}
-					}
-				});
+					});
+				}
+			}
+			//Slow towers pick a new target once they have slowed the current one
+			else if (m_registry.has<projectileType::Slow>(entity1)) {
+				if (!m_registry.valid(targeting.targetId) || !this->isInRange(transform1, targeting.targetingRange, targeting.targetId) || m_registry.get<cmpt::Velocity>(targeting.targetId).velMultiplier < 0.999) {
+					float maxVelMult = 0;
+					targeting.targetId = -1;
+					m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Enemy>().each([this, deltatime, entity1, transform1, &targeting, &maxVelMult](auto entity2, cmpt::Transform & transform2, cmpt::Hitbox & enemyHitbox, auto) {
+						if (this->isInRange(transform1, targeting.targetingRange, transform2, enemyHitbox.radius)) {
+							cmpt::Velocity& velocity = m_registry.get<cmpt::Velocity>(entity2);
+							float velMult = deltatime * velocity.velocity*imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);;
+							if (velMult > maxVelMult) {
+								targeting.targetId = entity2;
+								maxVelMult = velMult;
+							}
+						}
+					});
+				}
 			}
 		}
 	});
