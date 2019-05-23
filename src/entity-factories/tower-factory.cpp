@@ -54,6 +54,7 @@ unsigned int TowerFactory::createLaser(float posX, float posY) {
 	m_registry.assign<cmpt::Shake>(myEntity);
 	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
+	m_registry.assign<renderOrderTag::Second>(myEntity);
 	return myEntity;
 }
 
@@ -74,5 +75,6 @@ unsigned int TowerFactory::createSlow(float posX, float posY) {
 	m_registry.assign<cmpt::Shake>(myEntity);
 	m_registry.assign<projectileType::Slow>(myEntity);
 	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
+	m_registry.assign<renderOrderTag::Second>(myEntity);
 	return myEntity;
 }
