@@ -1,6 +1,9 @@
 #include "render-system.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <stb_image/stb_image.h>
+#include <spdlog/spdlog.h>
+#include <debugbreak/debugbreak.h>
 
 #include "logger/gl-log-handler.hpp"
 #include "components/sprite.hpp"
@@ -45,8 +48,60 @@ RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 	cursors.at(CursorType::NO) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
 	cursors.at(CursorType::ROTATION) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 
+	int req_format = STBI_rgb_alpha;
+	int width, height, orig_format;
+	unsigned char* data = stbi_load("res/images/cursors/rotate.png", &width, &height, &orig_format, req_format);
+	if (data == nullptr) {
+		spdlog::warn("[Cursor] image invalide !");
+		debug_break();
+	}
+
+	// Set up the pixel format color masks for RGB(A) byte arrays.
+// Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
+	Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	int shift = (req_format == STBI_rgb) ? 8 : 0;
+	rmask = 0xff000000 >> shift;
+	gmask = 0x00ff0000 >> shift;
+	bmask = 0x0000ff00 >> shift;
+	amask = 0x000000ff >> shift;
+#else // little endian, like x86
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = (req_format == STBI_rgb) ? 0 : 0xff000000;
+#endif
+
+	int depth, pitch;
+	if (req_format == STBI_rgb) {
+		depth = 24;
+		pitch = 3 * width; // 3 bytes per pixel * pixels per row
+	}
+	else { // STBI_rgb_alpha (RGBA)
+		depth = 32;
+		pitch = 4 * width;
+	}
+
+	SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch, rmask, gmask, bmask, amask);
+
+	if (surf == nullptr) {
+		spdlog::warn("[Cursor] impossible de créer la surface ! {}", SDL_GetError());
+		debug_break();
+	}
+
+	SDL_Cursor* mycursor = SDL_CreateColorCursor(surf, 0, 0);
+	SDL_SetCursor(mycursor);
+
+	/*
+	// when you don't need the surface anymore, free it..
+	SDL_FreeSurface(surf);
+	// .. *and* the data used by the surface!
+	stbi_image_free(data);
+	*/
+
+	
 	m_emitter.on<evnt::ChangeCursor>([this](const evnt::ChangeCursor & event, EventEmitter & emitter) {
-		SDL_SetCursor(this->cursors.at(event.cursor));
+		//SDL_SetCursor(this->cursors.at(event.cursor));
 	});
 }
 

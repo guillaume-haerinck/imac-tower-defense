@@ -3,7 +3,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
-#include "stb_image/stb_image.h"
+#include <stb_image/stb_image.h>
 
 Texture::Texture(const std::string& path)
 	: m_rendererID(0), m_filePath(path), m_localBuffer(nullptr),

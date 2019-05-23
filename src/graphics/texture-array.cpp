@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <spdlog/spdlog.h>
-#include "stb_image/stb_image.h"
+#include <stb_image/stb_image.h>
 
 TextureArray::TextureArray(const std::string& path, GLsizei tileWidth, GLsizei tileHeight)
 	: m_rendererID(0), m_filePath(path), m_localBuffer(nullptr),
