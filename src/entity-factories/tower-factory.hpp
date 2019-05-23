@@ -13,10 +13,11 @@ public:
 	TowerFactory(entt::DefaultRegistry& registry);
 	virtual ~TowerFactory();
 
-	unsigned int createLaser(float posX, float posY);
-	unsigned int createSlow(float posX, float posY);
+	std::uint32_t createLaser(float posX, float posY);
+	std::uint32_t createSlow(float posX, float posY);
 
 private:
+	std::uint32_t m_create(float posX, float posY);
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
 	cmpt::Sprite m_towerBasicSprite;
