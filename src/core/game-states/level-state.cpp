@@ -85,8 +85,8 @@ LevelState::LevelState(Game& game)
 
 	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
 		std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(event.position.x / WIN_RATIO, event.position.y);
-		this->m_game.registry.assign<tileTag::Constructible>(tileId);
-		this->m_game.registry.remove<cmpt::EntityOnTile>(tileId);
+		this->m_game.registry.accommodate<tileTag::Constructible>(tileId);
+		this->m_game.registry.reset<cmpt::EntityOnTile>(tileId);
 	});
 }
 
