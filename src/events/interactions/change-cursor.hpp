@@ -5,7 +5,9 @@ enum CursorType {
 	ARROW,
 	LOADING,
 	NO,
-	CLICK
+	CLICK,
+	ACTIVATE,
+	DESACTIVATE
 };
 
 namespace evnt {

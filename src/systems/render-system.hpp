@@ -3,7 +3,9 @@
 #include <glm/glm.hpp>
 #include <entt/entt.hpp>
 #include <array>
+#include <vector>
 #include <SDL2/SDL.h>
+#include <string>
 
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
@@ -22,9 +24,15 @@ public:
 
 private:
 	void renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) const;
-    glm::mat4 getModelMatrix(unsigned int entityId) const;
+	glm::mat4 getModelMatrix(unsigned int entityId) const;
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
+	void initCursors();
+	SDL_Cursor* createCustomCursor(std::string imagePath);
+
+private:
 	const glm::mat4& m_view;
 	const glm::mat4& m_projection;
-	std::array<SDL_Cursor*, 5> cursors;
+	std::array<SDL_Cursor*, 7> m_cursors;
+	std::vector<unsigned char*> m_cursorImages;
+	std::vector<SDL_Surface*> m_cursorSurfaces;
 };

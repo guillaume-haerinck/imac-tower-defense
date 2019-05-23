@@ -42,72 +42,79 @@ RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 		}
 	});
 
-	cursors.at(CursorType::ARROW) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-	cursors.at(CursorType::CLICK) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-	cursors.at(CursorType::LOADING) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
-	cursors.at(CursorType::NO) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
-	cursors.at(CursorType::ROTATION) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+	initCursors();
+	m_emitter.on<evnt::ChangeCursor>([this](const evnt::ChangeCursor & event, EventEmitter & emitter) {
+		// SDL_SetCursor(this->m_cursors.at(event.cursor));
+	});
+}
 
+void RenderSystem::initCursors() {
+	m_cursors.at(CursorType::ARROW) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	m_cursors.at(CursorType::CLICK) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+	m_cursors.at(CursorType::LOADING) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+	m_cursors.at(CursorType::NO) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+	m_cursors.at(CursorType::ROTATION) = createCustomCursor("res/images/cursors/rotate.png");
+	m_cursors.at(CursorType::ACTIVATE) = createCustomCursor("res/images/cursors/rotate.png");
+	m_cursors.at(CursorType::DESACTIVATE) = createCustomCursor("res/images/cursors/rotate.png");
+
+	SDL_SetCursor(this->m_cursors.at(CursorType::ROTATION));
+}
+
+SDL_Cursor* RenderSystem::createCustomCursor(std::string imagePath) {
 	int req_format = STBI_rgb_alpha;
 	int width, height, orig_format;
-	unsigned char* data = stbi_load("res/images/cursors/rotate.png", &width, &height, &orig_format, req_format);
+	unsigned char* data = stbi_load(imagePath.c_str(), &width, &height, &orig_format, req_format);
 	if (data == nullptr) {
-		spdlog::warn("[Cursor] image invalide !");
+		spdlog::warn("[Cursor] image invalide ! {}", imagePath);
 		debug_break();
 	}
+	m_cursorImages.push_back(data);
 
 	// Set up the pixel format color masks for RGB(A) byte arrays.
-// Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
+	// Only STBI_rgb (3) and STBI_rgb_alpha (4) are supported here!
 	Uint32 rmask, gmask, bmask, amask;
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	int shift = (req_format == STBI_rgb) ? 8 : 0;
-	rmask = 0xff000000 >> shift;
-	gmask = 0x00ff0000 >> shift;
-	bmask = 0x0000ff00 >> shift;
-	amask = 0x000000ff >> shift;
-#else // little endian, like x86
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-	amask = (req_format == STBI_rgb) ? 0 : 0xff000000;
-#endif
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		int shift = (req_format == STBI_rgb) ? 8 : 0;
+		rmask = 0xff000000 >> shift;
+		gmask = 0x00ff0000 >> shift;
+		bmask = 0x0000ff00 >> shift;
+		amask = 0x000000ff >> shift;
+	#else // little endian, like x86
+		rmask = 0x000000ff;
+		gmask = 0x0000ff00;
+		bmask = 0x00ff0000;
+		amask = (req_format == STBI_rgb) ? 0 : 0xff000000;
+	#endif
 
 	int depth, pitch;
 	if (req_format == STBI_rgb) {
 		depth = 24;
 		pitch = 3 * width; // 3 bytes per pixel * pixels per row
-	}
-	else { // STBI_rgb_alpha (RGBA)
+	} else { // STBI_rgb_alpha (RGBA)
 		depth = 32;
 		pitch = 4 * width;
 	}
 
-	SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*)data, width, height, depth, pitch, rmask, gmask, bmask, amask);
-
+	SDL_Surface* surf = SDL_CreateRGBSurfaceFrom((void*) data, width, height, depth, pitch, rmask, gmask, bmask, amask);
 	if (surf == nullptr) {
 		spdlog::warn("[Cursor] impossible de créer la surface ! {}", SDL_GetError());
 		debug_break();
 	}
-
-	SDL_Cursor* mycursor = SDL_CreateColorCursor(surf, 0, 0);
-	SDL_SetCursor(mycursor);
-
-	/*
-	// when you don't need the surface anymore, free it..
-	SDL_FreeSurface(surf);
-	// .. *and* the data used by the surface!
-	stbi_image_free(data);
-	*/
-
-	
-	m_emitter.on<evnt::ChangeCursor>([this](const evnt::ChangeCursor & event, EventEmitter & emitter) {
-		//SDL_SetCursor(this->cursors.at(event.cursor));
-	});
+	m_cursorSurfaces.push_back(surf);
+	return SDL_CreateColorCursor(surf, width / 2, height / 2);
 }
 
 RenderSystem::~RenderSystem() {
-	for (int i = 0; i < cursors.size(); i++) {
-		SDL_FreeCursor(cursors.at(i));
+	for (int i = 0; i < m_cursors.size(); i++) {
+		SDL_FreeCursor(m_cursors.at(i));
+	}
+
+	for (int i = 0; i < m_cursorSurfaces.size(); i++) {
+		SDL_FreeSurface(m_cursorSurfaces.at(i));
+	}
+
+	for (int i = 0; i < m_cursorImages.size(); i++) {
+		stbi_image_free(m_cursorImages.at(i));
 	}
 }
 
