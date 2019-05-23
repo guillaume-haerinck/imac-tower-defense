@@ -56,6 +56,51 @@ RenderSystem::~RenderSystem() {
 	}
 }
 
+void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Transform & transform, cmpt::Sprite & sprite) const {
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+	// Binding
+	sprite.shader->bind();
+	GLCall(glBindVertexArray(sprite.vaID));
+	GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
+	GLCall(glBindTexture(sprite.target, sprite.textureID));
+	sprite.ib->bind();
+
+	// Updates
+	glm::mat4 mvp = m_projection * m_view * getModelMatrix(entity);
+	sprite.shader->setUniformMat4f("u_mvp", mvp);
+	if (m_registry.valid(entity)) {
+		sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
+		if (m_registry.has<cmpt::AnimationPixelsVanish>(entity) || (m_registry.has<cmpt::AttachedTo>(entity) && m_registry.has<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity))) {
+			cmpt::Animated animated = cmpt::Animated(0);
+			bool bForward;
+			if (m_registry.has<cmpt::AnimationPixelsVanish>(entity)) {
+				animated = m_registry.get<cmpt::Animated>(entity);
+				bForward = m_registry.get<cmpt::AnimationPixelsVanish>(entity).bForward;
+			}
+			else {
+				animated = m_registry.get<cmpt::Animated>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity);
+				bForward = m_registry.get<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity).bForward;
+			}
+			if (bForward) {
+				sprite.shader->setUniform1f("probaDisappear", 1 - animated.age / animated.duration);
+			}
+			else {
+				sprite.shader->setUniform1f("probaDisappear", animated.age / animated.duration);
+			}
+		}
+		else {
+			sprite.shader->setUniform1f("probaDisappear", 0);
+		}
+	}
+	GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
+
+	// Unbinding
+	sprite.ib->unbind();
+	GLCall(glBindTexture(sprite.target, 0));
+	GLCall(glBindVertexArray(0));
+	sprite.shader->unbind();
+}
+
 void RenderSystem::update(float deltatime) {
     /* 
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
@@ -113,49 +158,22 @@ void RenderSystem::update(float deltatime) {
 		sprite.shader->unbind();
 	});
 
+	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite,renderOrderTag::First>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite,auto) {
+		renderSprite(entity, transform, sprite);
+	});
+
+	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite, renderOrderTag::Second>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, transform, sprite);
+	});
+
+	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite, renderOrderTag::Third>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, transform, sprite);
+	});
+
 	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite) {
-		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
-		// Binding
-		sprite.shader->bind();
-		GLCall(glBindVertexArray(sprite.vaID));
-		GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
-		GLCall(glBindTexture(sprite.target, sprite.textureID));
-		sprite.ib->bind();
-
-		// Updates
-		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
-		sprite.shader->setUniformMat4f("u_mvp", mvp);
-		if (m_registry.valid(entity)) {
-			sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
-			if (m_registry.has<cmpt::AnimationPixelsVanish>(entity) || ( m_registry.has<cmpt::AttachedTo>(entity) && m_registry.has<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity))) {
-				cmpt::Animated animated = cmpt::Animated(0);
-				bool bForward;
-				if (m_registry.has<cmpt::AnimationPixelsVanish>(entity)) {
-					animated = m_registry.get<cmpt::Animated>(entity);
-					bForward = m_registry.get<cmpt::AnimationPixelsVanish>(entity).bForward;
-				}
-				else {
-					animated = m_registry.get<cmpt::Animated>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity);
-					bForward = m_registry.get<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity).bForward;
-				}
-				if (bForward) {
-					sprite.shader->setUniform1f("probaDisappear", 1 - animated.age / animated.duration);
-				}
-				else {
-					sprite.shader->setUniform1f("probaDisappear", animated.age / animated.duration);
-				}
-			}
-			else {
-				sprite.shader->setUniform1f("probaDisappear", 0);
-			}
+		if (!m_registry.has<renderOrderTag::First>(entity) && !m_registry.has<renderOrderTag::Second>(entity) && !m_registry.has<renderOrderTag::Third>(entity)) {
+			renderSprite(entity, transform, sprite);
 		}
-		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
-
-		// Unbinding
-		sprite.ib->unbind();
-		GLCall(glBindTexture(sprite.target, 0));
-		GLCall(glBindVertexArray(0));
-		sprite.shader->unbind();
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {

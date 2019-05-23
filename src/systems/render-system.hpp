@@ -8,6 +8,7 @@
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 #include "components/transform.hpp"
+#include "components/sprite.hpp"
 #include "events/interactions/change-cursor.hpp"
 
 /* TODO use framebuffer */
@@ -20,6 +21,7 @@ public:
     void update(float deltatime) override;
 
 private:
+	void renderSprite(std::uint32_t entity, cmpt::Transform & transform, cmpt::Sprite & sprite) const;
     glm::mat4 getModelMatrix(unsigned int entityId) const;
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
 	const glm::mat4& m_view;

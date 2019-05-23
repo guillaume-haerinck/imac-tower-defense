@@ -29,6 +29,7 @@ TileFactory::~TileFactory() {
 
 unsigned int TileFactory::createSpawn(glm::vec2 position) {
 	auto myEntity = m_registry.create();
+	m_registry.assign<renderOrderTag::First>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_spawn);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
@@ -38,6 +39,7 @@ unsigned int TileFactory::createSpawn(glm::vec2 position) {
 
 unsigned int TileFactory::createArrival(glm::vec2 position) {
 	auto myEntity = m_registry.create();
+	m_registry.assign<renderOrderTag::First>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_arrival);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
@@ -48,6 +50,7 @@ unsigned int TileFactory::createArrival(glm::vec2 position) {
 
 unsigned int TileFactory::createPath(glm::vec2 position) {
 	auto myEntity = m_registry.create();
+	m_registry.assign<renderOrderTag::First>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_path);
 	//m_registry.assign<cmpt::Primitive>(myEntity, m_path);
@@ -58,6 +61,7 @@ unsigned int TileFactory::createPath(glm::vec2 position) {
 
 unsigned int TileFactory::createConstructible(glm::vec2 position) {
 	auto myEntity = m_registry.create();
+	m_registry.assign<renderOrderTag::First>(myEntity);
 	//m_registry.assign<cmpt::Primitive>(myEntity, m_constructible);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_constructible);
 	m_registry.assign<renderTag::Single>(myEntity);
@@ -69,6 +73,7 @@ unsigned int TileFactory::createConstructible(glm::vec2 position) {
 
 unsigned int TileFactory::createLocked(glm::vec2 position) {
 	auto myEntity = m_registry.create();
+	m_registry.assign<renderOrderTag::First>(myEntity);
 	m_registry.assign<cmpt::Primitive>(myEntity, m_locked);
 	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
 	m_registry.assign<entityTag::Tile>(myEntity);

@@ -11,8 +11,5 @@ uniform vec4 tintColour ;
 void main() {
 	vec4 texColor = texture(u_texture, vec3(v_texCoord, u_activeTile));
 	texColor = vec4( texColor.rgb*(1-tintColour.a) + tintColour.rgb*tintColour.a , texColor.a );
-	if (texColor.a < 0.1) {
-		discard;
-	}
 	color = texColor;
 }

@@ -36,6 +36,6 @@ const float MAX_DELTA_MS = 1000.0f; // one second
 const int Z_INDEX_MAP = -9;
 const int Z_INDEX_ENEMY = 0;
 const int Z_INDEX_TOWER = 1;
-const int Z_INDEX_VISUAL_EFFECTS = 8;
+const int Z_INDEX_VISUAL_EFFECTS = 2;
 const int Z_INDEX_DEBUG_DRAW = 9;
 const int Z_INDEX_HUD = 9;;

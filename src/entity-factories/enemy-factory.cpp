@@ -79,6 +79,7 @@ unsigned int EnemyFactory::create() {
 	m_registry.assign<cmpt::Animated>(myEntity, 2 , false);
 	m_registry.assign<cmpt::AnimationScale>(myEntity, true);
 	m_registry.assign<cmpt::AnimationDark>(myEntity, true);
+	m_registry.assign<renderOrderTag::Second>(myEntity);
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);
