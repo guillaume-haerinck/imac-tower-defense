@@ -351,8 +351,8 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 		case OPTIONS:
 		{
 			// Get entity. If valid open options. Else Invalid
-			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
-			if (entityId != -1) {
+			std::uint32_t entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
+			if (m_game.registry.valid(entityId)) {
 				changeState(LevelInteractionState::OPTIONS);
 				m_levelHud.setSelectedEntity(entityId);
 				cmpt::Transform trans = m_game.registry.get<cmpt::Transform>(entityId);
