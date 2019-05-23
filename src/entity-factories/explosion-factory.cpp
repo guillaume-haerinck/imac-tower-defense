@@ -51,5 +51,5 @@ void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
 	m_registry.assign<cmpt::Direction>(myEntity, dirAgl);
 	m_registry.assign<cmpt::Velocity>(myEntity, 60.0f);
 	m_registry.assign<cmpt::Age>(myEntity, 0.05f);
-	m_registry.assign<renderOrderTag::Third>(myEntity);
+	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
 }

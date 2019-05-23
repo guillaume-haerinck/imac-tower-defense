@@ -79,7 +79,7 @@ unsigned int EnemyFactory::create() {
 	m_registry.assign<cmpt::Animated>(myEntity, 2 , false);
 	m_registry.assign<cmpt::AnimationScale>(myEntity, true);
 	m_registry.assign<cmpt::AnimationDark>(myEntity, true);
-	m_registry.assign<renderOrderTag::Second>(myEntity);
+	m_registry.assign<renderOrderTag::o_Enemy>(myEntity);
 
 	auto eye = m_registry.create();
 	m_registry.assign<cmpt::Transform>(eye, glm::vec2(0), Z_INDEX_ENEMY + 1);
@@ -87,6 +87,7 @@ unsigned int EnemyFactory::create() {
 	m_registry.assign<cmpt::Sprite>(eye, m_droneEyeSprite);
 	m_registry.assign<renderTag::Single>(eye);
 	m_registry.assign<cmpt::MoveTowardsMouse>(eye,0.8);
+	m_registry.assign<renderOrderTag::o_Enemy2>(eye);
 	//m_registry.assign<cmpt::Wiggle>(eye,0.7);
 
 	return myEntity;

@@ -45,7 +45,7 @@ std::uint32_t TowerFactory::m_create(float posX, float posY) {
 	m_registry.assign<cmpt::Shake>(myEntity);
 	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
-	m_registry.assign<renderOrderTag::Second>(myEntity);
+	m_registry.assign<renderOrderTag::o_Building>(myEntity);
 	return myEntity;
 }
 

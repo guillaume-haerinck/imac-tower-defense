@@ -25,9 +25,9 @@ TileFactory::~TileFactory() {
 
 std::uint32_t TileFactory::m_create(glm::vec2 position) {
 	auto myEntity = m_registry.create();
-	m_registry.assign<renderOrderTag::First>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
 	m_registry.assign<entityTag::Tile>(myEntity);
+	m_registry.assign<renderOrderTag::o_Tile>(myEntity);
 	return myEntity;
 }
 

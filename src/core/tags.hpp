@@ -7,9 +7,12 @@
 #pragma warning(disable: 4307) // EnTT throws a warning with the hashing in VS2017
 
 namespace renderOrderTag {
-	TAG(First);
-	TAG(Second);
-	TAG(Third);
+	TAG(o_Tile);
+	TAG(o_Building);
+	TAG(o_Enemy);
+	TAG(o_Enemy2); //For enemy eye
+	TAG(o_Projectile);
+	TAG(o_VFX);
 }
 
 namespace renderTag {

@@ -56,7 +56,7 @@ RenderSystem::~RenderSystem() {
 	}
 }
 
-void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Transform & transform, cmpt::Sprite & sprite) const {
+void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) const {
 	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 	// Binding
 	sprite.shader->bind();
@@ -106,7 +106,6 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
-
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
         primitive.shader->bind();
@@ -158,22 +157,28 @@ void RenderSystem::update(float deltatime) {
 		sprite.shader->unbind();
 	});
 
-	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite,renderOrderTag::First>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite,auto) {
-		renderSprite(entity, transform, sprite);
+	m_registry.view<renderTag::Single, cmpt::Sprite,renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite,auto) {
+		renderSprite(entity, sprite);
 	});
 
-	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite, renderOrderTag::Second>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, transform, sprite);
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Building>().each([this](auto entity, auto,cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
 	});
 
-	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite, renderOrderTag::Third>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, transform, sprite);
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
 	});
 
-	m_registry.view<renderTag::Single, cmpt::Transform, cmpt::Sprite>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite) {
-		if (!m_registry.has<renderOrderTag::First>(entity) && !m_registry.has<renderOrderTag::Second>(entity) && !m_registry.has<renderOrderTag::Third>(entity)) {
-			renderSprite(entity, transform, sprite);
-		}
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
+	});
+
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Projectile>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
+	});
+
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
@@ -235,7 +240,6 @@ glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
 	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 	glm::mat4 model(1.0f);
 	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
-
 	model = glm::translate(model, glm::vec3(helper.getPosition(entityId), transform.zIndex));
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(helper.getScale(entityId), 0.0f));

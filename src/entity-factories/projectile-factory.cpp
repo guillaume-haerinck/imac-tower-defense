@@ -28,6 +28,7 @@ unsigned int ProjectileFactory::create(glm::vec2 initialPos, unsigned int target
 	m_registry.assign<targetingTag::Follow>(myEntity);
 	m_registry.assign<cmpt::Targeting>(myEntity, targetId, PROJECTILE_HITBOX_RADIUS);
 	m_registry.assign<cmpt::Velocity>(myEntity,SLOW_PROJECTILE_VELOCITY);
+	m_registry.assign<renderOrderTag::o_Projectile>(myEntity);
 	return myEntity;
 }
 
