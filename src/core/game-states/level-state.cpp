@@ -400,11 +400,11 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 		{
 			std::uint32_t entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(entityId)) {
-				if (m_game.registry.has<entityTag::Mirror>(entityId) ||
-					m_game.registry.has<entityTag::Tower>(entityId)) {
-					m_emitter.publish<evnt::ChangeCursor>(CursorType::CLICK);
-				} else {
-					m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
+				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
+					m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
+				} else if (m_game.registry.has<entityTag::Tower>(entityId)) {
+					// TODO handle activated and desactivated towers
+					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
 				}
 			} else {
 				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);

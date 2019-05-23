@@ -44,7 +44,7 @@ RenderSystem::RenderSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 
 	initCursors();
 	m_emitter.on<evnt::ChangeCursor>([this](const evnt::ChangeCursor & event, EventEmitter & emitter) {
-		// SDL_SetCursor(this->m_cursors.at(event.cursor));
+		SDL_SetCursor(this->m_cursors.at(event.cursor));
 	});
 }
 
@@ -54,10 +54,8 @@ void RenderSystem::initCursors() {
 	m_cursors.at(CursorType::LOADING) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
 	m_cursors.at(CursorType::NO) = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
 	m_cursors.at(CursorType::ROTATION) = createCustomCursor("res/images/cursors/rotate.png");
-	m_cursors.at(CursorType::ACTIVATE) = createCustomCursor("res/images/cursors/rotate.png");
-	m_cursors.at(CursorType::DESACTIVATE) = createCustomCursor("res/images/cursors/rotate.png");
-
-	SDL_SetCursor(this->m_cursors.at(CursorType::ROTATION));
+	m_cursors.at(CursorType::ACTIVATE) = createCustomCursor("res/images/cursors/on.png");
+	m_cursors.at(CursorType::DESACTIVATE) = createCustomCursor("res/images/cursors/off.png");
 }
 
 SDL_Cursor* RenderSystem::createCustomCursor(std::string imagePath) {
