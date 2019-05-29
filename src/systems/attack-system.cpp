@@ -119,10 +119,12 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	glm::vec2 laserEnd;
 	float surfaceAngle;
 
+	std::uint32_t nextLauncherId = entt::null;
+
 	float t = std::numeric_limits<float>::infinity();
 	bool mirrorIsBeingControlled = false;
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&nextLauncherId,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		glm::vec2 mirrorPos = helper.getPosition(mirror);
 		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
 		glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
@@ -131,6 +133,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			laserEnd = pos + t*unitDirVector;
 			surfaceAngle = mirrorTransform.rotation;
 			mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+			nextLauncherId = mirror;
 		}
 	});
 
@@ -190,14 +193,12 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
 	float alpha = isTransparent ? 0.25 : 1;
-	if (m_registry.valid(launcherId)) {
-		launcherAlpha *= helper.getAlpha(launcherId);
-	}
+	launcherAlpha *= helper.getAlpha(launcherId);
 	alpha *= launcherAlpha;
 	debugDraw.setColor(col.r,col.g,col.b, alpha);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingControlled,col, launcherAlpha);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled,col, launcherAlpha);
 	}
 }
 
