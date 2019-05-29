@@ -130,6 +130,7 @@ void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) con
 	sprite.shader->setUniformMat4f("u_mvp", mvp);
 	if (m_registry.valid(entity)) {
 		sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
+		sprite.shader->setUniform1f("u_alpha", helper.getAlpha(entity));
 		if (m_registry.has<cmpt::AnimationPixelsVanish>(entity) || (m_registry.has<cmpt::AttachedTo>(entity) && m_registry.has<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity))) {
 			cmpt::Animated animated = cmpt::Animated(0);
 			bool bForward;

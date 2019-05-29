@@ -103,14 +103,14 @@ void AttackSystem::update(float deltatime) {
 		if (helper.mouseIsOn(entity)) {
 			col = glm::vec3(255.0f);
 		}
-		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col);
+		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col,helper.getAlpha(entity));
 	});
 	glLineWidth(1);
 }
 
 /* ---------------------------- PRIVATE METHODS ------------------------------- */
 
-void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime, bool isTransparent, glm::vec3 col) {
+void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned int launcherId, float deltatime, bool isTransparent, glm::vec3 col, float launcherAlpha) {
 	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 
 	glm::vec2 unitDirVector = glm::vec2(cos(agl), sin(agl));
@@ -190,10 +190,14 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
 	float alpha = isTransparent ? 0.25 : 1;
+	if (m_registry.valid(launcherId)) {
+		launcherAlpha *= helper.getAlpha(launcherId);
+	}
+	alpha *= launcherAlpha;
 	debugDraw.setColor(col.r,col.g,col.b, alpha);
 	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
 	if (nbBounce > 0) {
-		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingControlled,col);
+		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , -1, deltatime, isTransparent || mirrorIsBeingControlled,col, launcherAlpha);
 	}
 }
 

@@ -12,6 +12,7 @@
 #include "components/animated.hpp"
 #include "components/animation-scale.hpp"
 #include "components/animation-dark.hpp"
+#include "components/animation-alpha.hpp"
 #include "components/hitbox.hpp"
 #include "core/constants.hpp"
 #include "core/tags.hpp"
@@ -23,7 +24,7 @@
 
 HelperService::HelperService() {}
 
-glm::vec4 HelperService::getColour(unsigned int entityId) {
+glm::vec4 HelperService::getColour(std::uint32_t entityId) {
 	glm::vec4 actualColour = glm::vec4(0.0f);
 	if (m_registry->has<cmpt::TintColour>(entityId)) {
 		cmpt::TintColour tint = m_registry->get<cmpt::TintColour>(entityId);
@@ -75,7 +76,32 @@ glm::vec4 HelperService::getColour(unsigned int entityId) {
 	return actualColour;
 }
 
-float HelperService::getVelocityMultiplier(unsigned int entityId) {
+float HelperService::getAlpha(std::uint32_t entityId) {
+	float actualAlpha = 1;
+	//Animation
+	if (m_registry->has<cmpt::AnimationAlpha>(entityId)) {
+		cmpt::Animated& animated = m_registry->get<cmpt::Animated>(entityId);
+		if (m_registry->get<cmpt::AnimationAlpha>(entityId).bForward) {
+			actualAlpha *= animated.age / animated.duration;
+		}
+		else {
+			actualAlpha *= 1 - animated.age / animated.duration;
+		}
+	}
+	//Attached to another entity
+	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
+		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
+		if (m_registry->valid(mainEntityId)) {
+			actualAlpha *= getAlpha(mainEntityId);
+		}
+		else {
+			m_registry->destroy(entityId);
+		}
+	}
+	return actualAlpha;
+}
+
+float HelperService::getVelocityMultiplier(std::uint32_t entityId) {
 	cmpt::Velocity velocity = m_registry->get<cmpt::Velocity>(entityId);
 	return imaths::rangeMapping(velocity.multiplierAge, 0, velocity.multiplierLifespan, velocity.velMultiplier, 1);
 }
@@ -92,7 +118,7 @@ glm::vec4 HelperService::blend(glm::vec4 col1, glm::vec4 col2) {
 	return col;
 }
 
-glm::vec2 HelperService::getPosition(unsigned int entityId) {
+glm::vec2 HelperService::getPosition(std::uint32_t entityId) {
 	glm::vec2 actualPos = glm::vec2(0.0f);
 	//Transform
 	if (m_registry->has<cmpt::Transform>(entityId)) {
@@ -135,7 +161,7 @@ glm::vec2 HelperService::getPosition(unsigned int entityId) {
 	return actualPos;
 }
 
-glm::vec2 HelperService::getScale(unsigned int entityId) {
+glm::vec2 HelperService::getScale(std::uint32_t entityId) {
 	glm::vec2 actualScale = glm::vec2(1.0f);
 	if (m_registry->valid(entityId)) {
 		//Transform
@@ -168,7 +194,7 @@ glm::vec2 HelperService::getScale(unsigned int entityId) {
 	return actualScale;
 }
 
-bool HelperService::mouseIsOn(unsigned int entityId) {
+bool HelperService::mouseIsOn(std::uint32_t entityId) {
 	if (m_registry->has<cmpt::Hitbox>(entityId)) {
 		cmpt::Hitbox& hitbox = m_registry->get<cmpt::Hitbox>(entityId);
 		glm::vec2 pos = m_registry->get<cmpt::Transform>(entityId).position;

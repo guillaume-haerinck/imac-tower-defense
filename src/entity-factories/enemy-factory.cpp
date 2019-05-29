@@ -26,6 +26,7 @@
 #include "components/animated.hpp"
 #include "components/animation-scale.hpp"
 #include "components/animation-dark.hpp"
+#include "components/animation-alpha.hpp"
 
 // TODO doc ENTT partie "prototype" pour avoir des entity factory plus optimis�s en m�moire
 
@@ -79,6 +80,7 @@ unsigned int EnemyFactory::create() {
 	m_registry.assign<cmpt::Animated>(myEntity, 2 , false);
 	m_registry.assign<cmpt::AnimationScale>(myEntity, true);
 	m_registry.assign<cmpt::AnimationDark>(myEntity, true);
+	m_registry.assign<cmpt::AnimationAlpha>(myEntity, true);
 	m_registry.assign<renderOrderTag::o_Enemy>(myEntity);
 
 	auto eye = m_registry.create();

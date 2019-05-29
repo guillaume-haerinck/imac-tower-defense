@@ -12,6 +12,7 @@
 #include "components/age.hpp"
 #include "components/animated.hpp"
 #include "components/animation-dark.hpp"
+#include "components/animation-alpha.hpp"
 #include "components/animation-scale.hpp"
 #include "components/animation-pixels-vanish.hpp"
 #include "core/tags.hpp"
@@ -57,6 +58,7 @@ void LifeAndDeathSystem::update(float deltatime) {
 			m_registry.reset<cmpt::AnimationScale>(entity);
 			m_registry.reset<cmpt::AnimationDark>(entity);
 			m_registry.reset<cmpt::AnimationPixelsVanish>(entity);
+			m_registry.reset<cmpt::AnimationAlpha>(entity);
 			//Destroy entity if it was a disappear animation
 			if (destroyEntity) {
 				m_registry.destroy(entity);

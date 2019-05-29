@@ -21,7 +21,7 @@
 #include "components/shoot-laser.hpp"
 #include "components/constrained-rotation.hpp"
 #include "components/animated.hpp"
-#include "components/animation-pixels-vanish.hpp"
+#include "components/animation-alpha.hpp"
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -73,7 +73,7 @@ LevelState::LevelState(Game& game)
 			glm::vec2 position = this->m_game.registry.get<cmpt::Transform>(event.entityId).position;
 			//this->m_game.registry.destroy(event.entityId);
 			this->m_game.registry.assign<cmpt::Animated>(event.entityId,1,true);
-			this->m_game.registry.assign<cmpt::AnimationPixelsVanish>(event.entityId,false);
+			this->m_game.registry.assign<cmpt::AnimationAlpha>(event.entityId,false);
 
 			std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(position.x / WIN_RATIO, position.y);
 			this->m_game.registry.assign<tileTag::Constructible>(tileId);
