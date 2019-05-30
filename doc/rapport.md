@@ -4,7 +4,7 @@
 
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
-*Jules Fouchy, Cyrielle Lassarre, Guillaume Haerinck*
+*Cyrielle Lassarre, Guillaume Haerinck, Jules Fouchy*
 *Année 1 - Promotion 2021*
 
 ## Table des matières
@@ -16,30 +16,30 @@
 *	[**Game Design**](#game-design)
 *  [**Points forts**](#points-forts)
 
-[**II - L'architecture ECS**](#ii---l'architecture-ecs)
+[**II - L'architecture ECS**](#ii---larchitecture-ecs)
 *  [**Contexte**](#contexte)
 *  [**Principe**](#principe)
 *  [**Implémentation**](#implémentation)
 
-[**III -  En route vers le premier prototype**]()
-*	[**Utilisation d'openGL moderne**](#utilisation-d'opengl-moderne)
-*	[**Ajout des dépendences**](#ajout-des-dépendences)
+[**III -  En route vers le premier prototype**](#iii---en-route-vers-le-premier-prototype)
+*	[**Utilisation d'openGL 4.4 core**](#utilisation-dopengl-4.4-core)
+*	[**Ajout des dépendances**](#ajout-des-dépendances)
 *	[**Création des entités**](#création-des-entités)
 *	[**Construction du graphe**](#construction-du-graphe)
 
-[**IV -  L'ajout de mécaniques de jeu**]()
+[**IV -  L'ajout de mécaniques de jeu**](#iv---lajout-de-mécaniques-de-jeu)
 *	[**Déplacements et collisions**](#déplacements-et-collisions)
 *	[**Le lancer de rayons**](#le-lancer-de-rayons)
 *	[**Effets de feedbacks**](#effets-de-feedbacks)
 *	[**Interface graphique avec Noesis**](#interface-graphique-avec-noesis)
 
-[**V -  La solidification du projet**]()
+[**V -  La solidification du projet**](#v---la-solidification-du-projet)
 *	[**Direction artistique**](#direction-artistique)
 *	[**Système de tuiles**](#système-de-tuiles)
 *	[**Animations**](#animations)
 *	[**Level design**](#level-design)
 
-[**VI -  Post-Mortem**](#iv---post-mortem)
+[**VI -  Post-Mortem**](#vi---post-mortem)
 *	[**Cyrielle Lassarre**](#cyrielle-lassarre)
 *	[**Guillaume Haerinck**](#guillaume-haerinck)
 *	[**Jules Fouchy**](#jules-fouchy)
@@ -47,83 +47,92 @@
 [**Conclusion**](#conclusion)
 
 [**ANNEXE**](#annexe)
-*	[**Différences avec le cahier des charges**]()
-*	[**Design pattern utilisés**]()
-*	[**Bibliographie**]()
+*	[**Différences avec le cahier des charges**]
+*	[**Design pattern utilisés**]
+*	[**Schéma UML du projet**]
+*	[**Bibliographie**]
+*	[**Lexique**](#lexique)
 
 ## Introduction
 
-Notre projet de jeu 
+Avec ce projet, nous avions le souhait de créer une base de moteur de jeu assez solide pour être réutilisable lors de notre prochaine année à l'IMAC. En sachant que le temps passé à créer la structure d'un projet et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte de ce choix un projet avec de nombreuses dépendances, qui utilise de nombreux design patterns propre à l'industrie du jeu vidéo, et qui pousse ses systèmes dans leurs retranchements pour s'assurer qu'ils sont bien structurés. Les points techniques majeurs étant :
+
+- Architecture logicielle en ECS,
+- Utilisation de fichiers XAML pour les interfaces,
+- Utilisation de OpenGl 4.4 core,
+- Un jeu de Tower Defense aux mécaniques innovantes.
 
 ## I - Présentation du jeu
 
-> Mettre sitation création de jeux
+_Lasers, Mirrors & Robots_ est un jeu ...
 
-### Game design
+### Intentions
 
-- Camera :
-- Character :
-- Controler :
-
-Parler de ce qui se démarque d'un tower defense normal
+### Game Design
 
 ### Points forts
 
-Petite intro pour présenter le fait qu'un jeu regorge plein de trucs, mais qu'on a ces points qui ressortent
+## II - L'architecture ECS
 
-| Fonctionnalité| Description |
-|--|--|
-| Construction procédurale du graphe | ... |
-| OpenGL Moderne | ... |
-| Interfaces XAML | ... |
-| Architecture ECS | ... |
-| Nombreux design patterns | ... |
+### Contexte
 
-### Justification des différences face au cahier des charges
+### Principe
 
-Expliquer les pour et contres, et le fait qu'on ai fait valider ça par des profs  
+### Implémentation
 
-## II - L'architecture en Entity Component System
+## III - En route vers le premier prototype
 
-### Petit historique des moteurs de jeux
+### Utilisation d'openGL 4.4 core
 
-Reprendre video [https://www.youtube.com/watch?v=JxI3Eu5DPwE&t=546s](https://www.youtube.com/watch?v=JxI3Eu5DPwE&t=546s)
+### Ajout des dépendances
 
-### Explication du principe de l'ECS
+### Création des entités
 
+### Construction du graphe
 
+## IV - L'ajout de mécaniques de jeu
 
-### Les limites et avantages de l'ECS
+### Déplacements et collisions
 
-  
+### Le lancer de rayons
 
-## III - Étapes du projet et résolution de problèmes
+### Effets de feedbacks
 
-### OpenGl moderne (profil core version 4.4)
+### Interface graphique avec Noesis
 
-### Intégration de ENTT
+## V - La solidification du projet
 
-... (piocher dans le changelog.md)
+### Direction artistique
 
-## IV - Post-Mortem
+### Système de tuiles
 
-### Les problèmes à éviter
+### Animations
 
-### Les améliorations futures
+### Level design
 
-### Ce que le projet nous a appris
+## VI - Post-Mortem
 
+### Cyrielle Lassarre
+
+### Guillaume Haerinck
+
+### Jules Fouchy
 
 ## Conclusion
 
+## ANNEXE
 
-## Annexe
+### Différences avec le cahier des charges
 
-### Articles
+### Design pattern utilisés
 
-### Dépendances
+### Schéma UML du projet
 
-### Libertés prise face au cahier des charges 
+### Webographie
+
+### Lexique
+
+*[ECS]: Entity Component System
 
 # REMOVE ME
 
