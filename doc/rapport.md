@@ -55,7 +55,7 @@
 
 ## Introduction
 
-Avec ce projet, nous avions le souhait de créer une base de moteur de jeu assez solide pour être réutilisable lors de notre prochaine année à l'IMAC. En sachant que le temps passé à créer la structure d'un projet et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte de ce choix un projet avec de nombreuses dépendances, qui utilise de nombreux design patterns propre à l'industrie du jeu vidéo, et qui pousse ses systèmes dans leurs retranchements pour s'assurer qu'ils sont bien structurés. Les points techniques majeurs étant :
+Avec ce projet, nous avions le souhait de créer une base de moteur de jeu assez solide pour être réutilisable lors de notre prochaine année à l'IMAC. En sachant que le temps passé à créer la structure d'un projet et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte de ce choix un projet avec de nombreuses dépendances, qui utilise de nombreux design patterns propre à l'industrie du jeu vidéo, et qui pousse ses systèmes dans leurs retranchements pour s'assurer qu'ils soient bien structurés. Les points techniques majeurs étant :
 
 - Architecture logicielle en ECS,
 - Utilisation de fichiers XAML pour les interfaces,
@@ -64,13 +64,26 @@ Avec ce projet, nous avions le souhait de créer une base de moteur de jeu assez
 
 ## I - Présentation du jeu
 
-_Lasers, Mirrors & Robots_ est un jeu ...
+![Capture du premier niveau](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/gameplay.png?raw=true)
+
+*Lasers, Mirrors & Robots* est un jeu en vue de dessus où le joueur à la charge de placer des miroirs afin de rediriger des lasers sur ses assaillants. Les ressources disponibles étant rarement suffisantes, il faudra exploiter au maximum les unités déjà déployés pour arriver au bout de chaque niveau.
 
 ### Intentions
 
+
+
 ### Game Design
 
+
 ### Points forts
+
+Nom 		 					| Description
+------------------------------- | ------------
+Graphe par analyse d'image 		| TODO
+Animations avec Texture Atlas 	| TODO 
+Lancer de rayons				| TODO
+Système de tuiles 				| TODO 
+
 
 ## II - L'architecture ECS
 
@@ -130,9 +143,15 @@ _Lasers, Mirrors & Robots_ est un jeu ...
 
 ### Webographie
 
-### Lexique
+## LEXIQUE
 
+ECS
+: Design Pattern architectural utilisé principalement dans l'industrie du jeu-vidéo
 *[ECS]: Entity Component System
+
+XAML
+: Langage déclaratif développé par Microsoft semblable à du HTML
+*[XAML]: eXtensible Application Markup Language
 
 # REMOVE ME
 
