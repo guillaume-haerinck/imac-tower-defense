@@ -1,4 +1,4 @@
-# Rapport de projet - Imac Tower Defense
+﻿# Rapport de projet - Imac Tower Defense
 
 ![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/imac.png?raw=true)
 
@@ -11,19 +11,45 @@
 
 [**Introduction**](#introduction)
 
-[**I - Présentation du jeu**](#ii---présentation-du-jeu)
-
-*  [**Game Design**](#game-design)
-
+[**I - Présentation du jeu**](#i---présentation-du-jeu)
+*	[**Intentions**](#intentions)
+*	[**Game Design**](#game-design)
 *  [**Points forts**](#points-forts)
 
-*  [**Justification des choix**](#différences-face-au-cahier-des-charges)
+[**II - L'architecture ECS**](#ii---l'architecture-ecs)
+*  [**Contexte**](#contexte)
+*  [**Principe**](#principe)
+*  [**Implémentation**](#implémentation)
 
-[**II - L'architecture ECS**](#ii---l'architecture-en-entity-component-system)
+[**III -  En route vers le premier prototype**]()
+*	[**Utilisation d'openGL moderne**](#utilisation-d'opengl-moderne)
+*	[**Ajout des dépendences**](#ajout-des-dépendences)
+*	[**Création des entités**](#création-des-entités)
+*	[**Construction du graphe**](#construction-du-graphe)
 
-*  [**Historique**](#petit-historique-des-moteurs-de-jeux)
- (... todo quand ça sera terminé)
+[**IV -  L'ajout de mécaniques de jeu**]()
+*	[**Déplacements et collisions**](#déplacements-et-collisions)
+*	[**Le lancer de rayons**](#le-lancer-de-rayons)
+*	[**Effets de feedbacks**](#effets-de-feedbacks)
+*	[**Interface graphique avec Noesis**](#interface-graphique-avec-noesis)
 
+[**V -  La solidification du projet**]()
+*	[**Direction artistique**](#direction-artistique)
+*	[**Système de tuiles**](#système-de-tuiles)
+*	[**Animations**](#animations)
+*	[**Level design**](#level-design)
+
+[**VI -  Post-Mortem**](#iv---post-mortem)
+*	[**Cyrielle Lassarre**](#cyrielle-lassarre)
+*	[**Guillaume Haerinck**](#guillaume-haerinck)
+*	[**Jules Fouchy**](#jules-fouchy)
+
+[**Conclusion**](#conclusion)
+
+[**ANNEXE**](#annexe)
+*	[**Différences avec le cahier des charges**]()
+*	[**Design pattern utilisés**]()
+*	[**Bibliographie**]()
 
 ## Introduction
 
@@ -97,6 +123,8 @@ Reprendre video [https://www.youtube.com/watch?v=JxI3Eu5DPwE&t=546s](https://www
 
 ### Dépendances
 
+### Libertés prise face au cahier des charges 
+
 # REMOVE ME
 
 StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
@@ -142,7 +170,3 @@ A --> C(Round Rect)
 B --> D{Rhombus}
 C --> D
 ```
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgwNzI3NzQ0Nyw2Mjg3NDc1MDYsMTkzOD
-Y5NTQwMSwyMDIzNTE1ODcyXX0=
--->
