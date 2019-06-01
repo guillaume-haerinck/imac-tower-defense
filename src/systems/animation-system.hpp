@@ -6,7 +6,7 @@
 #include "i-system.hpp"
 #include "events/handlers/event-emitter.hpp"
 
-#include "entity-factories/explosion-factory.hpp"
+#include "entity-factories/vfx-factory.hpp"
 
 class AnimationSystem : public ISystem {
 public:
@@ -14,5 +14,5 @@ public:
     void update(float deltatime) override;
 
 private:
-	ExplosionFactory m_explosionFactory;
+	VFXFactory m_vfxFactory;
 };

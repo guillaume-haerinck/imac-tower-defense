@@ -8,6 +8,7 @@
 
 #include "logger/gl-log-handler.hpp"
 #include "core/constants.hpp"
+#include "core/maths.hpp"
 
 DebugDrawService::DebugDrawService(glm::mat4 viewMat, glm::mat4 projMat)
 :	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
@@ -342,6 +343,37 @@ void DebugDrawService::square(float x, float y, float extent) {
 
 void DebugDrawService::ellipse(float a, float b, float c, float d) {
 
+}
+
+void DebugDrawService::circleWithGlow(float x, float y, float r) {
+	// Binding
+	m_shaderBasic.bind();
+	m_va.bind();
+	m_vb.bind();
+
+	// Update buffer
+	unsigned int segmentNumber = 17; // TODO define segment number based on radius
+	std::vector<float> array;
+	array.push_back(x);
+	array.push_back(y);
+	for (unsigned int i = 0; i <= segmentNumber; i++) {
+		array.push_back(x + r * cos(i * imaths::TAU / segmentNumber));
+		array.push_back(y + r * sin(i * imaths::TAU / segmentNumber));
+	}
+	GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
+
+	// Update
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
+	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
+	m_shaderBasic.setUniform4f("u_color", m_color.r/255, m_color.g/255, m_color.b/255, m_color.a);
+	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderBasic.unbind();
 }
 
 void DebugDrawService::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {

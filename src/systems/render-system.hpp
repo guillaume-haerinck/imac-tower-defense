@@ -11,6 +11,7 @@
 #include "events/handlers/event-emitter.hpp"
 #include "components/transform.hpp"
 #include "components/sprite.hpp"
+#include "components/sprite-animation.hpp"
 #include "events/interactions/change-cursor.hpp"
 
 /* TODO use framebuffer */
@@ -24,6 +25,7 @@ public:
 
 private:
 	void renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) const;
+	void renderSpritesheet(std::uint32_t entity, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) const;
 	glm::mat4 getModelMatrix(unsigned int entityId) const;
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
 	void initCursors();

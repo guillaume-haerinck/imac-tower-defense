@@ -6,12 +6,12 @@
 #include "component-factories/sprite-factory.hpp"
 #include "components/sprite.hpp"
 
-class ExplosionFactory : public Factory {
+class VFXFactory : public Factory {
 public:
-	ExplosionFactory(entt::DefaultRegistry& registry);
-	virtual ~ExplosionFactory();
+	VFXFactory(entt::DefaultRegistry& registry);
+	virtual ~VFXFactory();
 
-	void create(glm::vec2 pos, ShaderType type);
+	void createExplosion(glm::vec2 pos, ShaderType type);
 	void createLaserParticle(glm::vec2 pos, float dirAgl);
 
 private:

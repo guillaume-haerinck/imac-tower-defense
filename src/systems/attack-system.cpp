@@ -22,7 +22,7 @@
 #include "components/animated.hpp"
 #include <SDL2/SDL.h>
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_vfxFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 		if (randomService.random() < 0.1) {
@@ -168,8 +168,11 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			surfaceAngle = imaths::TAU / 4;
 		}
 	}
-	else {
-		if(!mirrorIsBeingControlled && !isTransparent) trySpawnLaserParticle(laserEnd, deltatime);
+	else { //Effect on mirror bounce
+		if (!mirrorIsBeingControlled && !isTransparent) {
+			//trySpawnLaserParticle(laserEnd, deltatime);
+			glowOnMirror(laserEnd);
+		}
 	}
 
 	//Damage entities
@@ -205,8 +208,14 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	if (randomService.random() < 12 * deltatime) {
-		m_explosionFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
+		m_vfxFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
 	}
+}
+
+void AttackSystem::glowOnMirror(glm::vec2 pos) {
+	IDebugDraw & debugDraw = locator::debugDraw::ref();
+	debugDraw.setColor(122, 249, 237,1.0);
+	debugDraw.circleWithGlow(pos.x, pos.y,3);
 }
 
 bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {
