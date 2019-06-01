@@ -8,6 +8,7 @@
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/hitbox.hpp"
+#include "components/sprite-animation.hpp"
 
 #include "components/constrained-rotation.hpp"
 
@@ -16,7 +17,7 @@
 
 MirrorFactory::MirrorFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
-	m_mirrorSprite = m_spriteFactory.createSingle("res/images/textures/mirror.png", glm::vec2(2*MIRROR_RADIUS));
+	m_mirrorSprite = m_spriteFactory.createAtlas("res/images/spritesheets/tower-mirror-100x100.png", glm::vec2(2*MIRROR_RADIUS), glm::vec2(100));
 }
 
 MirrorFactory::~MirrorFactory() {
@@ -29,7 +30,8 @@ std::uint32_t MirrorFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Mirror>(myEntity);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_mirrorSprite);
-	m_registry.assign<renderTag::Single>(myEntity);
+	m_registry.assign<renderTag::Atlas>(myEntity);
+	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 0, 0);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);
 	m_registry.assign<cmpt::Hitbox>(myEntity, MIRROR_RADIUS);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 8);
