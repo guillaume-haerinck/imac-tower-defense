@@ -320,7 +320,9 @@ glm::mat4 RenderSystem::getModelMatrix(unsigned int entityId) const {
 	glm::mat4 model(1.0f);
 	cmpt::Transform& transform = m_registry.get<cmpt::Transform>(entityId);
 	model = glm::translate(model, glm::vec3(helper.getPosition(entityId), transform.zIndex));
-	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
+	if (!m_registry.has<entityTag::Tower>(entityId) && !m_registry.has<entityTag::Mirror>(entityId)) {
+		model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
+	}
 	model = glm::scale(model, glm::vec3(helper.getScale(entityId), 0.0f));
     return model;
 }

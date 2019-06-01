@@ -38,16 +38,14 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 			if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
 				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
 				rot.angleIndex = ((int)round(agl / rot.angleStep) + rot.nbAngles) % rot.nbAngles;
-
+				// Rotate
+				transform.rotation = rot.angleIndex * rot.angleStep + lookAtMouse.angleOffset;
+				// Update sprite
 				if (m_registry.has<cmpt::SpriteAnimation>(entity)) {
-					// Update sprite
 					cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(entity);
 					spriteAnim.activeTile = rot.angleIndex;
 					spriteAnim.startTile = rot.angleIndex;
 					spriteAnim.endTile = rot.angleIndex;
-				} else {
-					// Rotate
-					transform.rotation = rot.angleIndex * rot.angleStep + lookAtMouse.angleOffset;
 				}
 			}
 			else {
