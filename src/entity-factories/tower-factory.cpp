@@ -39,7 +39,7 @@ TowerFactory::~TowerFactory() {
 /* ---------------------- Public methods ----------------- */
 
 std::uint32_t TowerFactory::createLaser(float posX, float posY) {
-	auto myEntity = m_create(posX, posY);
+	auto myEntity = create(posX, posY);
 
 	m_registry.assign<cmpt::Sprite>(myEntity, m_laserTowerSprite);
 	m_registry.assign<renderTag::Atlas>(myEntity);
@@ -52,7 +52,7 @@ std::uint32_t TowerFactory::createLaser(float posX, float posY) {
 
 std::uint32_t TowerFactory::createSlow(float posX, float posY) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-	auto myEntity = m_create(posX, posY);
+	auto myEntity = create(posX, posY);
 
 	m_registry.assign<cmpt::Sprite>(myEntity, m_slowTowerSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
@@ -64,7 +64,7 @@ std::uint32_t TowerFactory::createSlow(float posX, float posY) {
 
 /*------------------  Private methods ---------- */
 
-std::uint32_t TowerFactory::m_create(float posX, float posY) {
+std::uint32_t TowerFactory::create(float posX, float posY) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<entityTag::Tower>(myEntity);
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);

@@ -17,7 +17,7 @@ public:
 	std::uint32_t createSlow(float posX, float posY);
 
 private: 
-	std::uint32_t m_create(float posX, float posY);
+	std::uint32_t create(float posX, float posY);
 
 private:
 	SpriteFactory m_spriteFactory;
