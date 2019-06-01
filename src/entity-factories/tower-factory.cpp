@@ -56,7 +56,6 @@ std::uint32_t TowerFactory::createSlow(float posX, float posY) {
 	m_registry.assign<cmpt::Sprite>(myEntity, m_slowTowerSprite);
 	m_registry.assign<renderTag::Single>(myEntity);
 	m_registry.assign<cmpt::Targeting>(myEntity, -1, TOWER_ATTACK_RANGE);
-	m_registry.assign<targetingTag::LookAt>(myEntity);
 	m_registry.assign<cmpt::ShootAt>(myEntity, randomService.randInt(20, 25));
 	m_registry.assign<projectileType::Slow>(myEntity);
 	return myEntity;
