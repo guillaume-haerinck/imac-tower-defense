@@ -11,7 +11,10 @@
 #include "logger/gl-log-handler.hpp"
 #include "core/constants.hpp"
 #include "core/maths.hpp"
+#include "core/tags.hpp"
 #include "components/entity-on.hpp"
+#include "components/transform.hpp"
+#include "components/sprite-animation.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
 : m_registry(registry), m_tileFactory(registry), m_viewTranslation(viewTranslation), m_viewScale(viewScale),
@@ -23,6 +26,25 @@ Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec
 Level::~Level() {
 	delete m_graph;
 	delete m_pathfindingGraph;
+}
+
+void Level::updateTileSystem() const {
+	m_registry.view<cmpt::SpriteAnimation, cmpt::Transform>().each([this](auto entity, cmpt::SpriteAnimation & spriteAnimation, cmpt::Transform& transform) {
+		if (m_registry.has<entityTag::Tile>(entity)) {
+			glm::vec2 gridPos = this->projToGrid(transform.position.x, transform.position.y);
+			if (gridPos.y > 0) {
+				// TODO fixme
+				uint32_t tileUp = this->getTile(gridPos.x, gridPos.y + 1);
+				if (m_registry.valid(tileUp)) {
+					if (m_registry.has<tileTag::Path>(tileUp)) {
+						spriteAnimation.startTile = 1;
+						spriteAnimation.endTile = 1;
+						spriteAnimation.activeTile = 1;
+					}
+				}
+			}
+		}
+	});
 }
 
 /* ----------------------- PUBLIC SETTERS --------------------------------- */
@@ -139,6 +161,9 @@ void Level::setLevel(unsigned int number) {
 			m_grid.at(y * m_gridWidth + x) = entityId;
 		}
 	}
+	// Use the right sprite for each tile depending on what is around
+	updateTileSystem();
+
 	stbi_image_free(image);
 }
 

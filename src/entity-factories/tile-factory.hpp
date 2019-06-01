@@ -20,10 +20,11 @@ public:
 	std::uint32_t createLocked(glm::vec2 position);
 
 private:
+	std::uint32_t create(glm::vec2 position);
+
+private:
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
-
-	std::uint32_t m_create(glm::vec2 position);
 
 	cmpt::Sprite m_spawn;
 	cmpt::Sprite m_arrival;

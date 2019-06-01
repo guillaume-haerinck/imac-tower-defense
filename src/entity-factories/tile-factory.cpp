@@ -24,44 +24,47 @@ TileFactory::~TileFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_locked.vaID));
 }
 
-std::uint32_t TileFactory::m_create(glm::vec2 position) {
-	auto myEntity = m_registry.create();
-	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
-	m_registry.assign<entityTag::Tile>(myEntity);
-	m_registry.assign<renderOrderTag::o_Tile>(myEntity);
-	return myEntity;
-}
-
 std::uint32_t TileFactory::createSpawn(glm::vec2 position) {
-	std::uint32_t myEntity = m_create(position);
+	std::uint32_t myEntity = create(position);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_spawn);
 	m_registry.assign<renderTag::Single>(myEntity);
 	return myEntity;
 }
 
 std::uint32_t TileFactory::createArrival(glm::vec2 position) {
-	std::uint32_t myEntity = m_create(position);
+	std::uint32_t myEntity = create(position);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_arrival);
 	m_registry.assign<renderTag::Single>(myEntity);
 	return myEntity;
 }
 
 std::uint32_t TileFactory::createPath(glm::vec2 position) {
-	std::uint32_t myEntity = m_create(position);
+	std::uint32_t myEntity = create(position);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_path);
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 0, 0);
+	m_registry.assign<tileTag::Path>(myEntity);
 	return myEntity;
 }
 
 std::uint32_t TileFactory::createConstructible(glm::vec2 position) {
-	std::uint32_t myEntity = m_create(position);
+	std::uint32_t myEntity = create(position);
 	m_registry.assign<tileTag::Constructible>(myEntity);
 	return myEntity;
 }
 
 std::uint32_t TileFactory::createLocked(glm::vec2 position) {
-	std::uint32_t myEntity = m_create(position);
+	std::uint32_t myEntity = create(position);
 	m_registry.assign<cmpt::Primitive>(myEntity, m_locked);
+	return myEntity;
+}
+
+/* ----------- PRIVATE METHODS ----------- */
+
+std::uint32_t TileFactory::create(glm::vec2 position) {
+	auto myEntity = m_registry.create();
+	m_registry.assign<cmpt::Transform>(myEntity, position, Z_INDEX_MAP);
+	m_registry.assign<entityTag::Tile>(myEntity);
+	m_registry.assign<renderOrderTag::o_Tile>(myEntity);
 	return myEntity;
 }

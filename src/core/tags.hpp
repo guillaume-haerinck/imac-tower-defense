@@ -23,6 +23,7 @@ namespace renderTag {
 
 namespace tileTag {
 	TAG(Constructible);
+	TAG(Path);
 }
 
 namespace targetingTag {

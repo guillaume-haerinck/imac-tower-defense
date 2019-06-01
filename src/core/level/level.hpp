@@ -33,6 +33,9 @@ public:
 	// Setters
 	void setLevel(unsigned int number);
 
+	// Update tile system
+	void updateTileSystem() const;
+
 	// Debug drawing
 	void drawGraph();
 	void drawGrid();
