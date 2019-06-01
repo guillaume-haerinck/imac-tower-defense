@@ -168,8 +168,11 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			surfaceAngle = imaths::TAU / 4;
 		}
 	}
-	else {
-		//if(!mirrorIsBeingControlled && !isTransparent) trySpawnLaserParticle(laserEnd, deltatime);
+	else { //Effect on mirror bounce
+		if (!mirrorIsBeingControlled && !isTransparent) {
+			//trySpawnLaserParticle(laserEnd, deltatime);
+			glowOnMirror(laserEnd);
+		}
 	}
 
 	//Damage entities
@@ -210,7 +213,9 @@ void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 }
 
 void AttackSystem::glowOnMirror(glm::vec2 pos) {
-
+	IDebugDraw & debugDraw = locator::debugDraw::ref();
+	debugDraw.setColor(122, 249, 237,1.0);
+	debugDraw.circleWithGlow(pos.x, pos.y,3);
 }
 
 bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {
