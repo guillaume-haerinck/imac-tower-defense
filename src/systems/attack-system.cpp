@@ -22,7 +22,7 @@
 #include "components/animated.hpp"
 #include <SDL2/SDL.h>
 
-AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_explosionFactory(registry) {
+AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitter) : ISystem(registry, emitter), m_projectileFactory(registry), m_vfxFactory(registry) {
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 		if (randomService.random() < 0.1) {
@@ -205,7 +205,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	if (randomService.random() < 12 * deltatime) {
-		m_explosionFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
+		m_vfxFactory.createLaserParticle(pos, randomService.random(imaths::TAU));
 	}
 }
 

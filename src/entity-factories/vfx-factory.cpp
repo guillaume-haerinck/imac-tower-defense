@@ -1,4 +1,4 @@
-#include "explosion-factory.hpp"
+#include "vfx-factory.hpp"
 
 #include <glad/glad.h>
 
@@ -15,7 +15,7 @@
 #include "components/tint-colour.hpp"
 
 
-ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
+VFXFactory::VFXFactory(entt::DefaultRegistry& registry)
 : Factory(registry)
 {
 	m_towerExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100),TOWER_EXPLOSION);
@@ -23,7 +23,7 @@ ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
 	m_laserParticleSprite = m_spriteFactory.createSingle("res/images/textures/etincelle.png", glm::vec2(5.0f));
 }
 
-ExplosionFactory::~ExplosionFactory() {
+VFXFactory::~VFXFactory() {
 	GLCall(glDeleteTextures(1, &m_towerExplosionSprite.textureID));
 	GLCall(glDeleteVertexArrays(1, &m_towerExplosionSprite.vaID));
 
@@ -31,7 +31,7 @@ ExplosionFactory::~ExplosionFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_enemyExplosionSprite.vaID));
 }
 
-void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION ) {
+void VFXFactory::createExplosion(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION ) {
 	auto myEntity = m_registry.create();
 	if (type == ENEMY_EXPLOSION) {
 		m_registry.assign<cmpt::Sprite>(myEntity, m_enemyExplosionSprite);
@@ -46,7 +46,7 @@ void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION )
 	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
 }
 
-void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
+void VFXFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Sprite>(myEntity, m_laserParticleSprite);
 	m_registry.assign<renderTag::Single>(myEntity);

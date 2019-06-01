@@ -9,7 +9,7 @@
 #include "events/handlers/event-emitter.hpp"
 #include "events/inputs/mouse-move.hpp"
 
-#include "entity-factories/explosion-factory.hpp"
+#include "entity-factories/vfx-factory.hpp"
 
 class AttackSystem : public ISystem {
 public:
@@ -25,5 +25,5 @@ private:
 	void glowOnMirror(glm::vec2 pos);
 	bool isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2);
 	bool isInRange(cmpt::Transform transform1, float radius1, unsigned int targetId);
-	ExplosionFactory m_explosionFactory;
+	VFXFactory m_vfxFactory;
 };
