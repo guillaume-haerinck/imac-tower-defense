@@ -214,6 +214,7 @@ int Game::init() {
     GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthMask(GL_TRUE));
 	GLCall(glDepthFunc(GL_LESS));
+	GLCall(glClearColor(1, 1, 1, 1));
 
     // ImGui
     IMGUI_CHECKVERSION();

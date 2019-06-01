@@ -28,7 +28,6 @@ private:
 	cmpt::Sprite m_spawn;
 	cmpt::Sprite m_arrival;
 	cmpt::Sprite m_path;
-	cmpt::Sprite m_constructible;
 	cmpt::Primitive m_locked;
 };
 
