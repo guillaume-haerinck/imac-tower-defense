@@ -161,6 +161,28 @@ glm::vec2 HelperService::getPosition(std::uint32_t entityId) {
 	return actualPos;
 }
 
+
+glm::vec2 HelperService::getPositionTowerTip(std::uint32_t entityId) {
+	glm::vec2 pos = getPosition(entityId);
+	//Go to the center of the tower
+	pos.y += 0.12f*(TOWER_HITBOX_RADIUS * 2);
+	//Move in the shooting direction, an amount equal to the gun length
+	float agl = m_registry->get<cmpt::Transform>(entityId).rotation;
+	float length;
+	if (abs(agl + imaths::TAU / 4) < 0.1) { //If it's pointing vertically, the tower is slightlty more on the left
+		pos.x -= 0.02*(TOWER_HITBOX_RADIUS * 2);
+	}
+	if (abs(agl - imaths::TAU / 4) < 0.1) { //If it's pointing up, the gun appears shorter
+		length = 0.36f;
+		pos.x -= 0.03*(TOWER_HITBOX_RADIUS * 2);
+	}
+	else {
+		length = 0.47f;
+	}
+	pos += length*(TOWER_HITBOX_RADIUS * 2.0f)*glm::vec2(cos(agl), sin(agl));
+	return pos;
+}
+
 glm::vec2 HelperService::getScale(std::uint32_t entityId) {
 	glm::vec2 actualScale = glm::vec2(1.0f);
 	if (m_registry->valid(entityId)) {

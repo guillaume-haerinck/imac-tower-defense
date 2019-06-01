@@ -13,6 +13,7 @@ public:
 	float getAlpha(std::uint32_t entityId) override;
 	glm::vec4 blend(glm::vec4 col1, glm::vec4 col2) override;
 	glm::vec2 getPosition(std::uint32_t entityId) override;
+	glm::vec2 getPositionTowerTip(std::uint32_t entityId) override;
 	glm::vec2 getScale(std::uint32_t entityId) override;
 	float getVelocityMultiplier(std::uint32_t entityId) override;
 

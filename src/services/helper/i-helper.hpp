@@ -9,6 +9,7 @@ public:
 	virtual glm::vec4 getColour(std::uint32_t entityId) = 0;
 	virtual float getAlpha(std::uint32_t entityId) = 0;
 	virtual glm::vec2 getPosition(std::uint32_t entityId) = 0;
+	virtual glm::vec2 getPositionTowerTip(std::uint32_t entityId) = 0;
 	virtual glm::vec2 getScale(std::uint32_t entityId) = 0;
 	virtual glm::vec4 blend(glm::vec4 col1, glm::vec4 col2) = 0;
 	virtual float getVelocityMultiplier(std::uint32_t entityId) = 0;

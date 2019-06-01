@@ -103,7 +103,7 @@ void AttackSystem::update(float deltatime) {
 		if (helper.mouseIsOn(entity)) {
 			col = glm::vec3(255.0f);
 		}
-		this->shootLaser(helper.getPosition(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col,helper.getAlpha(entity));
+		this->shootLaser(helper.getPositionTowerTip(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col,helper.getAlpha(entity));
 	});
 	glLineWidth(1);
 }
