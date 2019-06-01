@@ -169,7 +169,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 		}
 	}
 	else {
-		if(!mirrorIsBeingControlled && !isTransparent) trySpawnLaserParticle(laserEnd, deltatime);
+		//if(!mirrorIsBeingControlled && !isTransparent) trySpawnLaserParticle(laserEnd, deltatime);
 	}
 
 	//Damage entities

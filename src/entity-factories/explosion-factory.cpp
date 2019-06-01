@@ -10,6 +10,8 @@
 #include "components/direction.hpp"
 #include "components/velocity.hpp"
 #include "components/age.hpp"
+#include "components/animated.hpp"
+#include "components/animation-alpha.hpp"
 #include "components/tint-colour.hpp"
 
 
@@ -18,7 +20,7 @@ ExplosionFactory::ExplosionFactory(entt::DefaultRegistry& registry)
 {
 	m_towerExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100),TOWER_EXPLOSION);
 	m_enemyExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100), ENEMY_EXPLOSION);
-	m_laserParticleSprite = m_spriteFactory.createSingle("res/images/textures/laser-particle.png", glm::vec2(5.0f));
+	m_laserParticleSprite = m_spriteFactory.createSingle("res/images/textures/etincelle.png", glm::vec2(5.0f));
 }
 
 ExplosionFactory::~ExplosionFactory() {
@@ -50,6 +52,7 @@ void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
 	m_registry.assign<cmpt::Direction>(myEntity, dirAgl);
 	m_registry.assign<cmpt::Velocity>(myEntity, 60.0f);
-	m_registry.assign<cmpt::Age>(myEntity, 0.05f);
+	m_registry.assign<cmpt::Animated>(myEntity, 0.1f,true);
+	//m_registry.assign<cmpt::AnimationAlpha>(myEntity, false);
 	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
 }
