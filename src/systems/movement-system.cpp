@@ -25,6 +25,7 @@
 #include "components/direction.hpp"
 #include "components/hitbox.hpp"
 #include "components/animated.hpp"
+#include "components/sprite-animation.hpp"
 #include "components/animation-pixels-vanish.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
@@ -36,9 +37,19 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 			float agl = atan2(event.mousePos.y - transform.position.y, event.mousePos.x * WIN_RATIO - transform.position.x);
 			if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
 				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
-				rot.angleIndex = ((int)round(agl / rot.angleStep) + rot.nbAngles)%rot.nbAngles;
-				transform.rotation = rot.angleIndex * rot.angleStep + lookAtMouse.angleOffset;
+				rot.angleIndex = ((int)round(agl / rot.angleStep) + rot.nbAngles) % rot.nbAngles;
 				spdlog::info(rot.angleIndex);
+
+				if (m_registry.has<cmpt::SpriteAnimation>(entity)) {
+					// Update sprite
+					cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(entity);
+					spriteAnim.activeTile = rot.angleIndex;
+					spriteAnim.startTile = rot.angleIndex;
+					spriteAnim.endTile = rot.angleIndex;
+				} else {
+					// Rotate
+					transform.rotation = rot.angleIndex * rot.angleStep + lookAtMouse.angleOffset;
+				}
 			}
 			else {
 				transform.rotation = agl + lookAtMouse.angleOffset;
