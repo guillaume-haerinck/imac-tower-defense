@@ -53,6 +53,7 @@ LevelState::LevelState(Game& game)
 				entityId = m_towerFactory.createLaser(0, 0);
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
+				m_game.registry.assign<stateTag::RotateableByMouse>(entityId);
 				m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
 				m_game.progression.addToMoney(-TOWER_LASER_COST);
 				break;
@@ -307,22 +308,30 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 }
 
 void LevelState::onMouseScrolled(const evnt::MouseScrolled& event) {
-	if (m_game.registry.valid(m_lastSelectedEntity) && m_game.registry.has<stateTag::RotateableByMouse>(m_lastSelectedEntity)) {
-		if (m_game.registry.has<cmpt::ConstrainedRotation>(m_lastSelectedEntity)) {
-			cmpt::ConstrainedRotation& constRot = m_game.registry.get<cmpt::ConstrainedRotation>(m_lastSelectedEntity);
+	std::uint32_t entity;
+	if (m_game.registry.valid(m_lastSelectedEntity)) {
+		entity = m_lastSelectedEntity;
+	}
+	else {
+		glm::vec2 mousePos = m_game.emitter.mousePos;
+		entity = m_game.level->getEntityOnTileFromProjCoord(mousePos.x, mousePos.y);
+	}
+	if (m_game.registry.valid(entity) && m_game.registry.has<stateTag::RotateableByMouse>(entity)) {
+		if (m_game.registry.has<cmpt::ConstrainedRotation>(entity)) {
+			cmpt::ConstrainedRotation& constRot = m_game.registry.get<cmpt::ConstrainedRotation>(entity);
 			constRot.angleIndex = (constRot.angleIndex +event.value+ constRot.nbAngles) % constRot.nbAngles;
 			// Rotate
-			m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).rotation += event.value*constRot.angleStep;
+			m_game.registry.get<cmpt::Transform>(entity).rotation += event.value*constRot.angleStep;
 			// Update sprite
-			if (m_game.registry.has<cmpt::SpriteAnimation>(m_lastSelectedEntity)) {
-				cmpt::SpriteAnimation& spriteAnim = m_game.registry.get<cmpt::SpriteAnimation>(m_lastSelectedEntity);
+			if (m_game.registry.has<cmpt::SpriteAnimation>(entity)) {
+				cmpt::SpriteAnimation& spriteAnim = m_game.registry.get<cmpt::SpriteAnimation>(entity);
 				spriteAnim.activeTile = constRot.angleIndex;
 				spriteAnim.startTile = constRot.angleIndex;
 				spriteAnim.endTile = constRot.angleIndex;
 			}
 		}
 		else {
-			m_game.registry.get<cmpt::Transform>(m_lastSelectedEntity).rotation += imaths::TAU/32*event.value;
+			m_game.registry.get<cmpt::Transform>(entity).rotation += imaths::TAU/32*event.value;
 		}
 	}
 }
@@ -340,6 +349,9 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 			changeState(LevelInteractionState::FREE);
 			if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
 				m_game.registry.get<cmpt::ShootLaser>(m_lastSelectedEntity) = true;
+			}
+			if (m_game.registry.has<entityTag::Tower>(m_lastSelectedEntity)) {
+				m_game.registry.reset<stateTag::RotateableByMouse>(m_lastSelectedEntity);
 			}
 			m_lastSelectedEntity = entt::null;
 			break;
