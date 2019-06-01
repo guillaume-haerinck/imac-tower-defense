@@ -38,7 +38,6 @@ MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& em
 			if (m_registry.has<cmpt::ConstrainedRotation>(entity)) {
 				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(entity);
 				rot.angleIndex = ((int)round(agl / rot.angleStep) + rot.nbAngles) % rot.nbAngles;
-				spdlog::info(rot.angleIndex);
 
 				if (m_registry.has<cmpt::SpriteAnimation>(entity)) {
 					// Update sprite
