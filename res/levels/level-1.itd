@@ -8,3 +8,5 @@ construct 0 0 200
 in 0 200 0
 out 200 0 0
 build-laser 7 2 3
+build-mirror 9 2 3
+build-slow 2 2 3

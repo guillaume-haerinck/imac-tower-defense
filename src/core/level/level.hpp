@@ -7,6 +7,7 @@
 
 #include "entity-factories/tile-factory.hpp"
 #include "entity-factories/tower-factory.hpp"
+#include "entity-factories/mirror-factory.hpp"
 #include "graph.hpp"
 
 class Level {
@@ -76,6 +77,7 @@ private:
 	entt::DefaultRegistry& m_registry;
 	TileFactory m_tileFactory;
 	TowerFactory m_towerFactory;
+	MirrorFactory m_mirrorFactory;
 
 	// External info
 	const glm::vec2& m_viewTranslation;

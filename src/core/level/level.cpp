@@ -18,7 +18,7 @@
 #include "components/shoot-laser.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
-: m_registry(registry), m_tileFactory(registry), m_towerFactory(registry),
+: m_registry(registry), m_tileFactory(registry), m_towerFactory(registry), m_mirrorFactory(registry),
   m_viewTranslation(viewTranslation), m_viewScale(viewScale),
   m_graph(nullptr), m_pathfindingGraph(nullptr), m_energy(0), m_gridHeight(0), m_gridWidth(0)
 {
@@ -102,6 +102,28 @@ void Level::setLevel(unsigned int number) {
 				 //Put tower on tile
 				 m_registry.reset<tileTag::Constructible>(tile);
 				 m_registry.assign<cmpt::EntityOnTile>(tile, tower);
+			}
+			else if (line.find("build-slow") != std::string::npos) {
+				glm::vec3 position = getVec3FromString(line);
+				//Get tile
+				std::uint32_t tile = getTile(position.x, position.y);
+				glm::vec2 tilePos = gridToProj(position.x, position.y);
+				//Create tower
+				int tower = m_towerFactory.createSlow(tilePos.x, tilePos.y);
+				//Put tower on tile
+				m_registry.reset<tileTag::Constructible>(tile);
+				m_registry.assign<cmpt::EntityOnTile>(tile, tower);
+			}
+			else if (line.find("build-mirror") != std::string::npos) {
+				glm::vec3 position = getVec3FromString(line);
+				//Get tile
+				std::uint32_t tile = getTile(position.x, position.y);
+				glm::vec2 tilePos = gridToProj(position.x, position.y);
+				//Create tower
+				int mirror = m_mirrorFactory.create(tilePos.x, tilePos.y);
+				//Put tower on tile
+				m_registry.reset<tileTag::Constructible>(tile);
+				m_registry.assign<cmpt::EntityOnTile>(tile, mirror);
 			}
 		}
 		// Use the right sprite for each tile depending on what is around
