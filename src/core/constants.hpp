@@ -39,3 +39,17 @@ extern const int Z_INDEX_TOWER;
 extern const int Z_INDEX_VISUAL_EFFECTS;
 extern const int Z_INDEX_DEBUG_DRAW;
 extern const int Z_INDEX_HUD;
+
+/* Shared enums */
+
+enum Direction
+{
+	DOWN = 0,
+	DOWN_LEFT = 1,
+	LEFT = 2,
+	LEFT_UP = 3,
+	UP = 4,
+	UP_RIGHT = 5,
+	RIGHT = 6,
+	RIGHT_DOWN = 7
+};
