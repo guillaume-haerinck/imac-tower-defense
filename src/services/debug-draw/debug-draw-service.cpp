@@ -13,6 +13,7 @@
 DebugDrawService::DebugDrawService(glm::mat4 viewMat, glm::mat4 projMat)
 :	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
 	m_shaderLaser("res/shaders/basic/basic.vert", "res/shaders/basic/laser.frag"),
+	m_shaderCircleWithGlow("res/shaders/basic/basic.vert", "res/shaders/basic/circle-with-glow.frag"),
 	m_vbMaxSize(32),
 	m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
 	m_viewMat(viewMat),
@@ -347,7 +348,7 @@ void DebugDrawService::ellipse(float a, float b, float c, float d) {
 
 void DebugDrawService::circleWithGlow(float x, float y, float r) {
 	// Binding
-	m_shaderBasic.bind();
+	m_shaderCircleWithGlow.bind();
 	m_va.bind();
 	m_vb.bind();
 
@@ -366,14 +367,17 @@ void DebugDrawService::circleWithGlow(float x, float y, float r) {
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
-	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
-	m_shaderBasic.setUniform4f("u_color", m_color.r/255, m_color.g/255, m_color.b/255, m_color.a);
+	m_shaderCircleWithGlow.setUniformMat4f("u_mvp", mvp);
+	m_shaderCircleWithGlow.setUniform4f("u_color", m_color.r/255, m_color.g/255, m_color.b/255, m_color.a);
+	m_shaderCircleWithGlow.setUniform2f("u_pos", x/100/WIN_RATIO*WIN_WIDTH, y/100*WIN_HEIGHT);
+	m_shaderCircleWithGlow.setUniform1f("u_radius", r/100/WIN_RATIO*WIN_WIDTH);
+	m_shaderCircleWithGlow.setUniform1f("u_waveR", imaths::rangeMapping(SDL_GetTicks()%500,0,500,0,r / 100 / WIN_RATIO * WIN_WIDTH));
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
 
 	// Unbinding
 	m_vb.unbind();
 	m_va.unbind();
-	m_shaderBasic.unbind();
+	m_shaderCircleWithGlow.unbind();
 }
 
 void DebugDrawService::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {

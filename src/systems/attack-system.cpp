@@ -214,8 +214,9 @@ void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 
 void AttackSystem::glowOnMirror(glm::vec2 pos) {
 	IDebugDraw & debugDraw = locator::debugDraw::ref();
+	IRandom & random = locator::random::ref();
 	debugDraw.setColor(122, 249, 237,1.0);
-	debugDraw.circleWithGlow(pos.x, pos.y,3);
+	debugDraw.circleWithGlow(pos.x, pos.y, 4+2*0.5*random.noise(SDL_GetTicks()*0.0005));
 }
 
 bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {

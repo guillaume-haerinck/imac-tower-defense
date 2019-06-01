@@ -54,6 +54,7 @@ public:
 private:
     Shader m_shaderBasic;
 	Shader m_shaderLaser;
+	Shader m_shaderCircleWithGlow;
 	VertexArray m_va;
 	VertexBuffer m_vb;
 	unsigned int m_vbMaxSize;
