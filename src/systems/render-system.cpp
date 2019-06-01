@@ -116,6 +116,31 @@ RenderSystem::~RenderSystem() {
 	}
 }
 
+void RenderSystem::renderSpritesheet(std::uint32_t entity, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) const {
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+	// Binding
+	sprite.shader->bind();
+	GLCall(glBindVertexArray(sprite.vaID));
+	GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
+	GLCall(glBindTexture(sprite.target, sprite.textureID));
+	sprite.ib->bind();
+
+	// Updates
+	glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
+	sprite.shader->setUniformMat4f("u_mvp", mvp);
+	sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
+	if (m_registry.valid(entity)) {
+		sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
+	}
+	GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
+
+	// Unbinding
+	sprite.ib->unbind();
+	GLCall(glBindTexture(sprite.target, 0));
+	GLCall(glBindVertexArray(0));
+	sprite.shader->unbind();
+}
+
 void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) const {
 	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 	// Binding
@@ -193,53 +218,46 @@ void RenderSystem::update(float deltatime) {
         primitive.shader->unbind();
     });
 
-	m_registry.view<renderTag::Atlas, cmpt::Transform, cmpt::Sprite, cmpt::SpriteAnimation>().each([this](auto entity, auto, cmpt::Transform & transform, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation) {
-		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
-		// Binding
-		sprite.shader->bind();
-		GLCall(glBindVertexArray(sprite.vaID));
-		GLCall(glActiveTexture(GL_TEXTURE0)); // Texture unit 0 for images, must be called before binding texture
-		GLCall(glBindTexture(sprite.target, sprite.textureID));
-		sprite.ib->bind();
-
-		// Updates
-		glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
-		sprite.shader->setUniformMat4f("u_mvp", mvp);
-		sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
-		if (m_registry.valid(entity)) {
-			sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
-		}
-		GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
-
-		// Unbinding
-		sprite.ib->unbind();
-		GLCall(glBindTexture(sprite.target, 0));
-		GLCall(glBindVertexArray(0));
-		sprite.shader->unbind();
-	});
-
-	m_registry.view<renderTag::Single, cmpt::Sprite,renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite,auto) {
+	//Render tiles
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
 	});
-
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
+	//Render buildings
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Building>().each([this](auto entity, auto,cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
 	});
-
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
+	//Render enemies
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
 	});
-
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
 	});
-
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
+	//Render projectiles
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Projectile>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
 	});
-
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Projectile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
+	//Render VFX
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
+	});
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {

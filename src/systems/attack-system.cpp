@@ -209,6 +209,10 @@ void AttackSystem::trySpawnLaserParticle(glm::vec2 pos, float deltatime) {
 	}
 }
 
+void AttackSystem::glowOnMirror(glm::vec2 pos) {
+
+}
+
 bool AttackSystem::isInRange(cmpt::Transform transform1, float radius1, cmpt::Transform transform2, float radius2) {
 	const glm::vec2 deltaPos = transform2.position - transform1.position;
 	const float distanceSq = deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y;

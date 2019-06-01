@@ -43,6 +43,7 @@ void ExplosionFactory::create(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION )
 	m_registry.assign<renderTag::OneTimeAtlas>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
+	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
 }
 
 void ExplosionFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
