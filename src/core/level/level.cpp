@@ -16,6 +16,7 @@
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/shoot-laser.hpp"
+#include "components/constrained-rotation.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
 : m_registry(registry), m_tileFactory(registry), m_towerFactory(registry), m_mirrorFactory(registry),
@@ -99,6 +100,15 @@ void Level::setLevel(unsigned int number) {
 				 //Create tower
 				 int tower = m_towerFactory.createLaser(tilePos.x, tilePos.y);
 				 m_registry.get<cmpt::ShootLaser>(tower).isActiv = true;
+				 //Set rotation
+				 cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(tower);
+				 m_registry.get<cmpt::Transform>(tower).rotation = rot.angleStep*position.z ;
+				 rot.angleIndex = position.z;
+					//Choose right sprite orientation
+				 cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(tower);
+				 spriteAnim.activeTile = rot.angleIndex;
+				 spriteAnim.startTile = rot.angleIndex;
+				 spriteAnim.endTile = rot.angleIndex;
 				 //Put tower on tile
 				 m_registry.reset<tileTag::Constructible>(tile);
 				 m_registry.assign<cmpt::EntityOnTile>(tile, tower);
@@ -119,9 +129,18 @@ void Level::setLevel(unsigned int number) {
 				//Get tile
 				std::uint32_t tile = getTile(position.x, position.y);
 				glm::vec2 tilePos = gridToProj(position.x, position.y);
-				//Create tower
+				//Create mirror
 				int mirror = m_mirrorFactory.create(tilePos.x, tilePos.y);
-				//Put tower on tile
+				//Set rotation
+				cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(mirror);
+				m_registry.get<cmpt::Transform>(mirror).rotation = rot.angleStep*position.z;
+				rot.angleIndex = position.z;
+				//Choose right sprite orientation
+				cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(mirror);
+				spriteAnim.activeTile = rot.angleIndex;
+				spriteAnim.startTile = rot.angleIndex;
+				spriteAnim.endTile = rot.angleIndex;
+				//Put mirror on tile
 				m_registry.reset<tileTag::Constructible>(tile);
 				m_registry.assign<cmpt::EntityOnTile>(tile, mirror);
 			}
