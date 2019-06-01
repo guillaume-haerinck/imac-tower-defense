@@ -16,12 +16,14 @@ public:
 	std::uint32_t createLaser(float posX, float posY);
 	std::uint32_t createSlow(float posX, float posY);
 
-private:
+private: 
 	std::uint32_t m_create(float posX, float posY);
+
+private:
 	SpriteFactory m_spriteFactory;
 	PrimitiveFactory m_primitiveFactory;
-	cmpt::Sprite m_towerBasicSprite;
-	cmpt::Sprite m_towerSlowSprite;
+	cmpt::Sprite m_laserTowerSprite;
+	cmpt::Sprite m_slowTowerSprite;
 	cmpt::Primitive m_healthBackground;
 	cmpt::Primitive m_healthBar;
 };

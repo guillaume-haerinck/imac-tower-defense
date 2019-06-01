@@ -15,8 +15,11 @@ TileFactory::TileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
 }
 
 TileFactory::~TileFactory() {
+	GLCall(glDeleteTextures(1, &m_spawn.textureID));
 	GLCall(glDeleteVertexArrays(1, &m_spawn.vaID));
+	GLCall(glDeleteTextures(1, &m_arrival.textureID));
 	GLCall(glDeleteVertexArrays(1, &m_arrival.vaID));
+	GLCall(glDeleteTextures(1, &m_path.textureID));
 	GLCall(glDeleteVertexArrays(1, &m_path.vaID));
 	GLCall(glDeleteVertexArrays(1, &m_locked.vaID));
 }
