@@ -72,7 +72,6 @@ std::uint32_t TowerFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Health>(myEntity, TOWER_HEALTH);
 	m_registry.assign<cmpt::HealthBar>(myEntity, glm::vec2(-3.0f, -7.0f), m_healthBackground, m_healthBar);
 	m_registry.assign<cmpt::Shake>(myEntity);
-	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	m_registry.assign<renderOrderTag::o_Building>(myEntity);
 	return myEntity;
 }

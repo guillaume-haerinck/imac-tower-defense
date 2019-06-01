@@ -15,6 +15,7 @@
 #include "components/entity-on.hpp"
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
+#include "components/shoot-laser.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
 : m_registry(registry), m_tileFactory(registry), m_towerFactory(registry),
@@ -89,83 +90,27 @@ void Level::setLevel(unsigned int number) {
 			else if (line.find("noeud") != std::string::npos) { m_nodeColor = getVec3FromString(line); }
 			else if (line.find("construct") != std::string::npos) { m_constructColor = getVec3FromString(line); }
 			else if (line.find("in") != std::string::npos) { m_startColor = getVec3FromString(line); }
-			else if (line.find("out") != std::string::npos) { m_endColor = getVec3FromString(line); }
+			else if (line.find("out") != std::string::npos) { m_endColor = getVec3FromString(line); readMapImage(); }
 			else if (line.find("build-laser") != std::string::npos) {
 				 glm::vec3 position = getVec3FromString(line);
-				 m_towerFactory.createLaser(position.x, position.y);
+				 //Get tile
+				 std::uint32_t tile = getTile(position.x, position.y);
+				 glm::vec2 tilePos = gridToProj(position.x, position.y);
+				 //Create tower
+				 int tower = m_towerFactory.createLaser(tilePos.x, tilePos.y);
+				 m_registry.get<cmpt::ShootLaser>(tower).isActiv = true;
+				 //Put tower on tile
+				 m_registry.reset<tileTag::Constructible>(tile);
+				 m_registry.assign<cmpt::EntityOnTile>(tile, tower);
 			}
 		}
+		// Use the right sprite for each tile depending on what is around
+		updateTileSystem();
 		file.close();
 	}
 	else {
 		spdlog::critical("[ITD] Unable to open file");
 	}
-
-	// Read Png file
-	int imgWidth, imgHeight, imgChannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
-	if (nullptr == image) {
-		spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
-		debug_break();
-	}
-	stbi_set_flip_vertically_on_load(false);
-
-	m_gridWidth = imgWidth;
-	m_gridHeight = imgHeight;
-	m_grid.resize(m_gridWidth * m_gridHeight);
-
-	glm::vec3 color = glm::vec3(0);
-	// TODO fix décallage des tuiles
-	for (int y = 0; y < imgHeight; y++) {
-		for (int x = 0; x < imgWidth; x++) {
-			color = getPixelColorFromImage(image, imgWidth, x, y);
-			glm::vec2 position = gridToProj(x, y);
-			unsigned int entityId = 0;
-
-			if (color == m_pathColor) {
-				entityId = m_tileFactory.createPath(position);
-			}
-			else if (color == m_nodeColor) {
-				entityId = m_tileFactory.createPath(position);
-			}
-			else if (color == m_startColor) {
-				entityId = m_tileFactory.createSpawn(position);
-			}
-			else if (color == m_endColor) {
-				entityId = m_tileFactory.createArrival(position);
-				// Construct graph
-				// We start from the endpoint because there will always be only one on the map
-				m_graph->addEndNode(m_graph->addNode(x, y));
-				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x + 1, y, 1, 0, 1);
-				}
-				if (isPath(image, imgWidth, imgHeight, x - 1, y)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x - 1, y, -1, 0, 1);
-				}
-				if (isPath(image, imgWidth, imgHeight, x, y + 1)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x, y + 1, 0, 1, 1);
-				}
-				if (isPath(image, imgWidth, imgHeight, x, y - 1)) {
-					lookForNodes(image, imgWidth, imgHeight, 0, x, y - 1, 0, -1, 1);
-				}
-				// Construct pathfinfing graph
-				constructPathfindingGraph();
-			}
-			else if (color == m_constructColor) {
-				entityId = m_tileFactory.createConstructible(position);
-			}
-			else {
-				entityId = m_tileFactory.createLocked(position);
-			}
-			// Saves entity Id of tiles
-			m_grid.at(y * m_gridWidth + x) = entityId;
-		}
-	}
-	// Use the right sprite for each tile depending on what is around
-	updateTileSystem();
-
-	stbi_image_free(image);
 }
 
 
@@ -297,6 +242,72 @@ glm::vec3 Level::getVec3FromString(std::string line) {
 	}
 
 	return color;
+}
+
+// Read Png file
+void Level::readMapImage(){
+	int imgWidth, imgHeight, imgChannels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* image = stbi_load(m_mapPath.c_str(), &imgWidth, &imgHeight, &imgChannels, STBI_rgb);
+	if (nullptr == image) {
+		spdlog::critical("Echec du chargement de l'image de carte '{}'", m_mapPath);
+		debug_break();
+	}
+	stbi_set_flip_vertically_on_load(false);
+
+	m_gridWidth = imgWidth;
+	m_gridHeight = imgHeight;
+	m_grid.resize(m_gridWidth * m_gridHeight);
+
+	glm::vec3 color = glm::vec3(0);
+	// TODO fix décallage des tuiles
+	for (int y = 0; y < imgHeight; y++) {
+		for (int x = 0; x < imgWidth; x++) {
+			color = getPixelColorFromImage(image, imgWidth, x, y);
+			glm::vec2 position = gridToProj(x, y);
+			unsigned int entityId = 0;
+
+			if (color == m_pathColor) {
+				entityId = m_tileFactory.createPath(position);
+			}
+			else if (color == m_nodeColor) {
+				entityId = m_tileFactory.createPath(position);
+			}
+			else if (color == m_startColor) {
+				entityId = m_tileFactory.createSpawn(position);
+			}
+			else if (color == m_endColor) {
+				entityId = m_tileFactory.createArrival(position);
+				// Construct graph
+				// We start from the endpoint because there will always be only one on the map
+				m_graph->addEndNode(m_graph->addNode(x, y));
+				if (isPath(image, imgWidth, imgHeight, x + 1, y)) {
+					lookForNodes(image, imgWidth, imgHeight, 0, x + 1, y, 1, 0, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x - 1, y)) {
+					lookForNodes(image, imgWidth, imgHeight, 0, x - 1, y, -1, 0, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x, y + 1)) {
+					lookForNodes(image, imgWidth, imgHeight, 0, x, y + 1, 0, 1, 1);
+				}
+				if (isPath(image, imgWidth, imgHeight, x, y - 1)) {
+					lookForNodes(image, imgWidth, imgHeight, 0, x, y - 1, 0, -1, 1);
+				}
+				// Construct pathfinfing graph
+				constructPathfindingGraph();
+			}
+			else if (color == m_constructColor) {
+				entityId = m_tileFactory.createConstructible(position);
+			}
+			else {
+				entityId = m_tileFactory.createLocked(position);
+			}
+			// Saves entity Id of tiles
+			m_grid.at(y * m_gridWidth + x) = entityId;
+		}
+	}
+
+	stbi_image_free(image);
 }
 
 /* ----------------------- AUXILARY FUNCTIONS FOR GRAPH CONSTRUCTION ----------------- */

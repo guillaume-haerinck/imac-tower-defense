@@ -43,6 +43,7 @@ public:
 
 private:
 	// Read Itd and PPM
+	void readMapImage();
 	glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
 	glm::vec3 getVec3FromString(std::string line);
 	float getFloatFromString(std::string line);

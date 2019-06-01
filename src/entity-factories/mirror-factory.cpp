@@ -35,7 +35,6 @@ std::uint32_t MirrorFactory::create(float posX, float posY) {
 	m_registry.assign<cmpt::Transform>(myEntity, glm::vec2(posX, posY), Z_INDEX_TOWER);
 	m_registry.assign<cmpt::Hitbox>(myEntity, MIRROR_RADIUS);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 8);
-	m_registry.assign<positionTag::IsOnHoveredTile>(myEntity);
 	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
 	m_registry.assign<renderOrderTag::o_Building>(myEntity);
 	return myEntity;

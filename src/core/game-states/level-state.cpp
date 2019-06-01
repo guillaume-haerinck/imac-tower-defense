@@ -45,12 +45,14 @@ LevelState::LevelState(Game& game)
 			switch (m_constructType) {
 			case MIRROR_BASIC:
 				entityId = m_mirrorFactory.create(0, 0);
+				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
 				m_game.progression.addToMoney(-MIRROR_COST);
 				break;
 
 			case TOWER_LASER:
 				entityId = m_towerFactory.createLaser(0, 0);
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
+				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
 				m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv = false;
 				m_game.progression.addToMoney(-TOWER_LASER_COST);
 				break;
@@ -58,6 +60,7 @@ LevelState::LevelState(Game& game)
 			case TOWER_SLOW:
 				entityId = m_towerFactory.createSlow(0, 0);
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
+				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
 				m_game.progression.addToMoney(-TOWER_SLOW_COST);
 				break;
 			}
