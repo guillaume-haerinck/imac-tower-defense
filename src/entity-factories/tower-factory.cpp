@@ -45,7 +45,6 @@ std::uint32_t TowerFactory::createLaser(float posX, float posY) {
 	m_registry.assign<renderTag::Atlas>(myEntity);
 	m_registry.assign<cmpt::ShootLaser>(myEntity);
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 0, 0);
-	m_registry.assign<stateTag::RotateableByMouse>(myEntity);
 	m_registry.assign<cmpt::ConstrainedRotation>(myEntity, 4);
 	return myEntity;
 }
