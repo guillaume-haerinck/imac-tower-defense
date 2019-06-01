@@ -131,6 +131,28 @@ void RenderSystem::renderSpritesheet(std::uint32_t entity, cmpt::Sprite& sprite,
 	sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
 	if (m_registry.valid(entity)) {
 		sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
+		sprite.shader->setUniform1f("u_alpha", helper.getAlpha(entity));
+		if (m_registry.has<cmpt::AnimationPixelsVanish>(entity) || (m_registry.has<cmpt::AttachedTo>(entity) && m_registry.has<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity))) {
+			cmpt::Animated animated = cmpt::Animated(0);
+			bool bForward;
+			if (m_registry.has<cmpt::AnimationPixelsVanish>(entity)) {
+				animated = m_registry.get<cmpt::Animated>(entity);
+				bForward = m_registry.get<cmpt::AnimationPixelsVanish>(entity).bForward;
+			}
+			else {
+				animated = m_registry.get<cmpt::Animated>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity);
+				bForward = m_registry.get<cmpt::AnimationPixelsVanish>(m_registry.get<cmpt::AttachedTo>(entity).mainEntity).bForward;
+			}
+			if (bForward) {
+				sprite.shader->setUniform1f("probaDisappear", 1 - animated.age / animated.duration);
+			}
+			else {
+				sprite.shader->setUniform1f("probaDisappear", animated.age / animated.duration);
+			}
+		}
+		else {
+			sprite.shader->setUniform1f("probaDisappear", 0);
+		}
 	}
 	GLCall(glDrawElements(GL_TRIANGLES, sprite.ib->getCount(), GL_UNSIGNED_INT, nullptr));
 
