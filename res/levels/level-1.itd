@@ -7,3 +7,4 @@ noeud 0 0 0
 construct 0 0 200
 in 0 200 0
 out 200 0 0
+build-laser 7 2 3

@@ -243,9 +243,6 @@ int Game::init() {
 	physicWorld->SetDebugDraw(&debugDraw);
 	*/
 
-	// Level
-	level = new Level(registry, 1, m_viewTranslation, m_viewScale);
-
 	// Services
 	locator::debugDraw::set<DebugDrawService>();
 	IDebugDraw& debugDraw = locator::debugDraw::ref();
@@ -254,6 +251,11 @@ int Game::init() {
 	locator::random::set<RandomService>();
 	locator::audio::set<AudioService>();
 	locator::helper::set<HelperService>();
+
+	// Level
+	level = new Level(registry, 1, m_viewTranslation, m_viewScale);
+
+	// Special service helper
 	IHelper& helper = locator::helper::ref();
 	helper.setRegistry(&registry);
 	helper.setEmitter(&emitter);

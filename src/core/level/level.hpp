@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "entity-factories/tile-factory.hpp"
+#include "entity-factories/tower-factory.hpp"
 #include "graph.hpp"
 
 class Level {
@@ -43,8 +44,8 @@ public:
 private:
 	// Read Itd and PPM
 	glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
-	glm::vec3 getColorFromString(std::string line);
-	float getNumberFromString(std::string line);
+	glm::vec3 getVec3FromString(std::string line);
+	float getFloatFromString(std::string line);
 
 	// Graph construction
 	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
@@ -73,6 +74,7 @@ private:
 	// Aggregation
 	entt::DefaultRegistry& m_registry;
 	TileFactory m_tileFactory;
+	TowerFactory m_towerFactory;
 
 	// External info
 	const glm::vec2& m_viewTranslation;

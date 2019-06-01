@@ -17,7 +17,8 @@
 #include "components/sprite-animation.hpp"
 
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
-: m_registry(registry), m_tileFactory(registry), m_viewTranslation(viewTranslation), m_viewScale(viewScale),
+: m_registry(registry), m_tileFactory(registry), m_towerFactory(registry),
+  m_viewTranslation(viewTranslation), m_viewScale(viewScale),
   m_graph(nullptr), m_pathfindingGraph(nullptr), m_energy(0), m_gridHeight(0), m_gridWidth(0)
 {
 	setLevel(levelNumber);
@@ -83,12 +84,16 @@ void Level::setLevel(unsigned int number) {
 		while (std::getline(file, line)) {
 			if (line.find("#") != std::string::npos) { continue; } // Skip comments
 			else if (line.find("carte") != std::string::npos) { m_mapPath += line.substr(6, line.size()); }
-			else if (line.find("energie") != std::string::npos) { m_energy = getNumberFromString(line); }
-			else if (line.find("chemin") != std::string::npos) { m_pathColor = getColorFromString(line); }
-			else if (line.find("noeud") != std::string::npos) { m_nodeColor = getColorFromString(line); }
-			else if (line.find("construct") != std::string::npos) { m_constructColor = getColorFromString(line); }
-			else if (line.find("in") != std::string::npos) { m_startColor = getColorFromString(line); }
-			else if (line.find("out") != std::string::npos) { m_endColor = getColorFromString(line); }
+			else if (line.find("energie") != std::string::npos) { m_energy = getFloatFromString(line); }
+			else if (line.find("chemin") != std::string::npos) { m_pathColor = getVec3FromString(line); }
+			else if (line.find("noeud") != std::string::npos) { m_nodeColor = getVec3FromString(line); }
+			else if (line.find("construct") != std::string::npos) { m_constructColor = getVec3FromString(line); }
+			else if (line.find("in") != std::string::npos) { m_startColor = getVec3FromString(line); }
+			else if (line.find("out") != std::string::npos) { m_endColor = getVec3FromString(line); }
+			else if (line.find("build-laser") != std::string::npos) {
+				 glm::vec3 position = getVec3FromString(line);
+				 m_towerFactory.createLaser(position.x, position.y);
+			}
 		}
 		file.close();
 	}
@@ -249,7 +254,7 @@ glm::vec3 Level::getPixelColorFromImage(unsigned char* image, int imageWidth, in
 	return pixel;
 }
 
-float Level::getNumberFromString(std::string line) {
+float Level::getFloatFromString(std::string line) {
 	std::string temp;
 	float data;
 	std::stringstream ss(line);
@@ -266,7 +271,7 @@ float Level::getNumberFromString(std::string line) {
 	return 0.0f;
 }
 
-glm::vec3 Level::getColorFromString(std::string line) {
+glm::vec3 Level::getVec3FromString(std::string line) {
 	std::string temp;
 	float data;
 	std::stringstream ss(line);
