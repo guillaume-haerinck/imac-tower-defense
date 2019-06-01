@@ -29,22 +29,18 @@ Level::~Level() {
 }
 
 void Level::updateTileSystem() const {
-	m_registry.view<cmpt::SpriteAnimation, cmpt::Transform>().each([this](auto entity, cmpt::SpriteAnimation & spriteAnimation, cmpt::Transform& transform) {
-		if (m_registry.has<entityTag::Tile>(entity)) {
-			glm::vec2 gridPos = this->projToGrid(transform.position.x, transform.position.y);
-			if (gridPos.y > 0) {
-				// TODO fixme
-				uint32_t tileUp = this->getTile(gridPos.x, gridPos.y + 1);
-				if (m_registry.valid(tileUp)) {
-					if (m_registry.has<tileTag::Path>(tileUp)) {
-						spriteAnimation.startTile = 1;
-						spriteAnimation.endTile = 1;
-						spriteAnimation.activeTile = 1;
-					}
-				}
+	for (int y = 0; y < m_gridHeight - 1; y++) {
+		for (int x = 0; x < m_gridWidth; x++) {
+			uint32_t tile = this->getTile(x, y);
+			uint32_t tileUp = this->getTile(x, y + 1);
+			if (m_registry.has<tileTag::Path>(tile) && m_registry.has<tileTag::Path>(tileUp)) {
+				cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(tile);
+				spriteAnim.startTile = 1;
+				spriteAnim.endTile = 1;
+				spriteAnim.activeTile = 1;
 			}
 		}
-	});
+	}
 }
 
 /* ----------------------- PUBLIC SETTERS --------------------------------- */

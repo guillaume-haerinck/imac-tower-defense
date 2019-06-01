@@ -66,7 +66,7 @@ private:
 	float m_energy;
 
 	// Level details
-	std::vector<unsigned int> m_grid;
+	std::vector<std::uint32_t> m_grid;
 	unsigned int m_gridWidth;
 	unsigned int m_gridHeight;
 
