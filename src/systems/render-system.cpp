@@ -247,13 +247,6 @@ void RenderSystem::update(float deltatime) {
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
 		renderSpritesheet(entity, sprite, animation);
 	});
-	//Render buildings
-	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Building>().each([this](auto entity, auto,cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
-	});
-	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
-	});
 	//Render enemies
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);
@@ -265,6 +258,13 @@ void RenderSystem::update(float deltatime) {
 		renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
+		renderSpritesheet(entity, sprite, animation);
+	});
+	//Render buildings
+	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
+		renderSprite(entity, sprite);
+	});
+	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
 		renderSpritesheet(entity, sprite, animation);
 	});
 	//Render projectiles
