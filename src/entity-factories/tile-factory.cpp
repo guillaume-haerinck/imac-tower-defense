@@ -9,7 +9,7 @@
 
 TileFactory::TileFactory(entt::DefaultRegistry& registry) : Factory(registry) {
 	m_spawn = m_spriteFactory.createSingle("res/images/textures/spawn.png", glm::vec2(TILE_SIZE));
-	m_arrival = m_spriteFactory.createAtlas("res/images/spritesheets/arrival_portal-200x200.png", glm::vec2(TILE_SIZE), glm::vec2(200, 200));
+	m_arrival = m_spriteFactory.createSingle("res/images/textures/exit.png", glm::vec2(TILE_SIZE));
 	m_path = m_spriteFactory.createAtlas("res/images/spritesheets/tile-100x100.png", glm::vec2(TILE_SIZE), glm::vec2(100));
 	m_locked = m_primitiveFactory.createRect(glm::vec4(0.5, 0.5, 0.5, 1), glm::vec2(TILE_SIZE));
 }
@@ -39,8 +39,7 @@ std::uint32_t TileFactory::createSpawn(glm::vec2 position) {
 std::uint32_t TileFactory::createArrival(glm::vec2 position) {
 	std::uint32_t myEntity = m_create(position);
 	m_registry.assign<cmpt::Sprite>(myEntity, m_arrival);
-	m_registry.assign<renderTag::Atlas>(myEntity);
-	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
+	m_registry.assign<renderTag::Single>(myEntity);
 	return myEntity;
 }
 
