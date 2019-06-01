@@ -306,7 +306,7 @@ void DebugDrawService::triangle(float x1, float y1, float x2, float y2, float x3
 	m_shaderBasic.unbind();
 }
 
-void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
+void DebugDrawService::rect(float x1, float y1, float x2, float y2, int zIndex) {
 	// Binding
 	m_shaderBasic.bind();
 	m_va.bind();
@@ -326,7 +326,7 @@ void DebugDrawService::rect(float x1, float y1, float x2, float y2) {
 
 	// Render
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, zIndex));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderBasic.setUniformMat4f("u_mvp", mvp);
 	m_shaderBasic.setUniform4f("u_color", m_color.r / 255.0f, m_color.g / 255.0f, m_color.b / 255.0f, m_color.a);

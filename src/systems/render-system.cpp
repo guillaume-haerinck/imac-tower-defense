@@ -247,6 +247,20 @@ void RenderSystem::update(float deltatime) {
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
 		renderSpritesheet(entity, sprite, animation);
 	});
+	//Highlight tile under mouse while an entity is being placed
+	if (m_emitter.entityBeingPlaced) {
+		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+		IDebugDraw& debugDraw = entt::ServiceLocator<IDebugDraw>::ref();
+		std::uint32_t tile = helper.getTileFromProjCoord(m_emitter.mousePos.x, m_emitter.mousePos.y);
+		if (m_registry.has<tileTag::Constructible>(tile)) {
+			debugDraw.setColor(glm::vec4(0, 255, 0, 0.3));
+		}
+		else {
+			debugDraw.setColor(glm::vec4(255, 0, 0, 0.3));
+		}
+		glm::vec2 tilePos = m_registry.get<cmpt::Transform>(tile).position;
+		debugDraw.rect(tilePos.x-TILE_SIZE/2, tilePos.y-TILE_SIZE/2, tilePos.x+TILE_SIZE/2, tilePos.y+TILE_SIZE/2, Z_INDEX_TOWER);
+	}
 	//Render enemies
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
 		renderSprite(entity, sprite);

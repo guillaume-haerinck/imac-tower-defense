@@ -19,6 +19,12 @@ public:
 
 	bool mouseIsOn(std::uint32_t entityId) override;
 
+	std::uint32_t getTile(unsigned int x, unsigned int y) override;
+
+	std::uint32_t getTileFromProjCoord(float x, float y) override;
+
+	std::uint32_t getEntityOnTileFromProjCoord(float x, float y) override;
+
 	void setRegistry(entt::DefaultRegistry* registry) override;
 	void setEmitter(EventEmitter* emitter) override;
 	void setLevel(Level* level) override;

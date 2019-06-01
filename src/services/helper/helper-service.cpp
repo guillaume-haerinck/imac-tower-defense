@@ -49,20 +49,6 @@ glm::vec4 HelperService::getColour(std::uint32_t entityId) {
 			}
 		}
 	}
-	//Highlight hovered tile
-	if (m_registry->has<entityTag::Tile>(entityId)) {
-		glm::vec2 tilePos = m_registry->get<cmpt::Transform>(entityId).position;
-		if (m_emitter->entityBeingPlaced) {
-			if (abs(m_emitter->mousePos.x*WIN_RATIO - tilePos.x) < TILE_SIZE / 2 && abs(m_emitter->mousePos.y - tilePos.y) < TILE_SIZE / 2) {
-				if (m_registry->has<tileTag::Constructible>(entityId)) {
-					actualColour = blend(actualColour, glm::vec4(0, 1, 0, 0.3));
-				}
-				else {
-					actualColour = blend(actualColour, glm::vec4(1, 0, 0, 0.3));
-				}
-			}
-		}
-	}
 	//Attached to another entity
 	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
 		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
@@ -225,6 +211,18 @@ bool HelperService::mouseIsOn(std::uint32_t entityId) {
 	else {
 		return false;
 	}
+}
+
+std::uint32_t HelperService::getTile(unsigned int x, unsigned int y) {
+	return m_level->getTile(x, y);
+}
+
+std::uint32_t HelperService::getTileFromProjCoord(float x, float y) {
+	return m_level->getTileFromProjCoord(x, y);
+}
+
+std::uint32_t HelperService::getEntityOnTileFromProjCoord(float x, float y) {
+	return m_level->getEntityOnTileFromProjCoord(x, y);
 }
 
 void HelperService::setRegistry(entt::DefaultRegistry* registry) {

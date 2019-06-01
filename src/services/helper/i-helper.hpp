@@ -14,6 +14,11 @@ public:
 	virtual glm::vec4 blend(glm::vec4 col1, glm::vec4 col2) = 0;
 	virtual float getVelocityMultiplier(std::uint32_t entityId) = 0;
 	virtual bool mouseIsOn(std::uint32_t entityId) = 0;
+
+	virtual std::uint32_t getTile(unsigned int x, unsigned int y) = 0;
+	virtual std::uint32_t getTileFromProjCoord(float x, float y) = 0;
+	virtual std::uint32_t getEntityOnTileFromProjCoord(float x, float y) = 0;
+
 	virtual void setRegistry(entt::DefaultRegistry* registry) = 0;
 	virtual void setEmitter(EventEmitter* emitter) = 0;
 	virtual void setLevel(Level* level) = 0;

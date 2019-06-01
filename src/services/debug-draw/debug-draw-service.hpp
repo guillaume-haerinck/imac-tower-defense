@@ -33,7 +33,7 @@ public:
 
 	/* Processing-Like API */
 	void triangle(float x1, float y1, float x2, float y2, float x3, float y3) override;
-	void rect(float x1, float y1, float x2, float y2) override;
+	void rect(float x1, float y1, float x2, float y2, int zIndex) override;
 	void square(float x, float y, float extent) override;
 	void ellipse(float a, float b, float c, float d) override;
 	void circleWithGlow(float x, float y, float r) override;

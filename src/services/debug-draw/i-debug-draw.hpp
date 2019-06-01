@@ -12,7 +12,7 @@ class IDebugDraw : public b2Draw {
 public:
 	/* Processing-Like API */
 	virtual void triangle(float x1, float y1, float x2, float y2, float x3, float y3) = 0;
-	virtual void rect(float x1, float y1, float x2, float y2) = 0;
+	virtual void rect(float x1, float y1, float x2, float y2,int zIndex) = 0;
 	virtual void square(float x, float y, float extent) = 0;
 	virtual void ellipse(float a, float b, float c, float d) = 0;
 	virtual void circleWithGlow(float x, float y, float r) = 0;
