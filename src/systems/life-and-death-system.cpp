@@ -71,8 +71,8 @@ void LifeAndDeathSystem::update(float deltatime) {
 			IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 			//Enemy
 			if (m_registry.has<entityTag::Enemy>(entity)) {
-				if (m_registry.has<enemyTag::Basic>(entity)) {
-					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::DRONE);
+				if (m_registry.has<enemyTag::Robot>(entity)) {
+					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::ROBOT);
 				}
 				else if (m_registry.has<enemyTag::Kamikaze>(entity)) {
 					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);

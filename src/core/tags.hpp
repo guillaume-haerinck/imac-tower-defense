@@ -40,7 +40,7 @@ namespace entityTag {
 }
 
 namespace enemyTag {
-	TAG(Basic);
+	TAG(Robot);
 	TAG(Kamikaze);
 }
 

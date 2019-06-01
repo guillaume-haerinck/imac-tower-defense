@@ -15,7 +15,7 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 : ISystem(registry, emitter), m_vfxFactory(registry)
 {
 	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
-		if (event.type == EnemyType::DRONE) {
+		if (event.type == EnemyType::ROBOT) {
 			m_vfxFactory.createExplosion(event.position, ENEMY_EXPLOSION);
 		}
 		if (event.type == EnemyType::KAMIKAZE) {
