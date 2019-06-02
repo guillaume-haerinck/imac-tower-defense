@@ -19,46 +19,34 @@
   </Canvas>
 
   <!-- Bottom selection menu -->
-  <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
+  <Grid x:Name="Page" Margin="0,0,-4,0">
+    <Grid x:Name="BottomMenu" Height="104" Width="226" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+        <Grid.Background>
+            <ImageBrush ImageSource="../images/textures/panel.png"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="19*"/>
+            <ColumnDefinition Width="94*"/>
+            <ColumnDefinition Width="94*"/>
+            <ColumnDefinition Width="19*"/>
+        </Grid.ColumnDefinitions>
 
-    <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center"  HorizontalAlignment="Left" Background="Black">
-      <TextBlock Text="Towers" HorizontalAlignment="Left"/>
-
-      <StackPanel Orientation="Horizontal">
-        <Button  Click="onSelectTowerLaser">
-          <Image Source="../images/icons/tower.png" Width="24" Height="24"/>
+        <Button Click="onSelectMirror" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
+            </Grid>
         </Button>
-        <Button Click="onSelectTowerSlow">
-          <Image Source="../images/icons/snowflake.png" Width="24" Height="24"/>
+        <Button Click="onSelectTowerSlow" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="textBlock2" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
+            </Grid>
         </Button>
-      </StackPanel>
-    </StackPanel>
-
-    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="50, 5">
-      <TextBlock HorizontalAlignment="Center" Text="Time"/>
-      <TextBlock HorizontalAlignment="Center" Text="00:00:00:00"/>
-      <TextBlock HorizontalAlignment="Center" Text="Energy"/>
-    </StackPanel>
-
-    <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" Background="Black">
-      <TextBlock Text="Mirrors" HorizontalAlignment="Right"/>
-
-      <StackPanel Orientation="Horizontal">
-        <Button  Click="onSelectMirror">
-          <Image Source="../images/icons/mirror.png" Width="24" Height="24"/>
-        </Button>
-        <Button Click="onSelectMirror">
-          <Image Source="../images/icons/mirror.png" Width="24" Height="24"/>
-        </Button>
-        <Button Click="onSelectMirror">
-          <Image Source="../images/icons/mirror.png" Width="24" Height="24"/>
-        </Button>
-      </StackPanel>
-    </StackPanel>
+    </Grid>
+    
+    <Grid x:Name="TopMenu" HorizontalAlignment="Center" Height="33" Margin="0" Width="111" VerticalAlignment="Top">
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="35.5,10,0,0" VerticalAlignment="Top" Width="75" Background="#FFCFCBCB"/>
+    </Grid>
   </Grid>
 </Grid>

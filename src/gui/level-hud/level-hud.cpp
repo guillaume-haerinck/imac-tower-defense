@@ -27,7 +27,7 @@ void LevelHud::InitializeComponent() {
 
 bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) {
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerSlow);
-	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerLaser);
+	//NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerLaser);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectMirror);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onDeleteEntity);
 	return false;
