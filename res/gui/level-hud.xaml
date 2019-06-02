@@ -1,6 +1,23 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="LevelHud">
+  <!-- Global Styling -->
+  <Grid.Resources>
+    <Style x:Key="MenuBtn" TargetType="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+              <!-- Inner Rectangle with rounded corners. -->
+              <Rectangle x:Name="innerRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Transparent" StrokeThickness="2" Fill="{TemplateBinding Background}" RadiusX="4" RadiusY="4" />
+              <!-- Present Content (text) of the button. -->
+              <ContentPresenter x:Name="myContentPresenter" Content="{TemplateBinding Content}" />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Grid.Resources>
 
   <!-- Option floating menu -->
   <Canvas>
@@ -18,8 +35,9 @@
     </Grid>
   </Canvas>
 
-  <!-- Bottom selection menu -->
+  <!-- Page layout -->
   <Grid x:Name="Page" Margin="0,0,-4,0">
+    <!-- Bottom menu -->
     <Grid x:Name="BottomMenu" Height="104" Width="226" HorizontalAlignment="Center" VerticalAlignment="Bottom">
         <Grid.Background>
             <ImageBrush ImageSource="../images/textures/panel.png"/>
@@ -31,20 +49,21 @@
             <ColumnDefinition Width="19*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Click="onSelectMirror" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
+        <Button Style="{StaticResource MenuBtn}" Click="onSelectMirror" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <TextBlock x:Name="textBlock" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
             </Grid>
         </Button>
-        <Button Click="onSelectTowerSlow" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
+        <Button Style="{StaticResource MenuBtn}" Click="onSelectTowerSlow" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <TextBlock x:Name="textBlock2" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
             </Grid>
         </Button>
     </Grid>
-    
+
+    <!-- Top menu -->
     <Grid x:Name="TopMenu" HorizontalAlignment="Center" Height="33" Margin="0" Width="111" VerticalAlignment="Top">
         <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="35.5,10,0,0" VerticalAlignment="Top" Width="75" Background="#FFCFCBCB"/>
     </Grid>
