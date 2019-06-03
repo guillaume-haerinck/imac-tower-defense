@@ -1,4 +1,163 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="TitleScreen">
+    x:Class="TitleScreen" Background="White">
+  <Grid.Resources>
+    <Style x:Key="Btn" TargetType="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <!-- Inner Rectangle with rounded corners. -->
+              <Rectangle x:Name="innerRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Transparent" StrokeThickness="2" Fill="{TemplateBinding Background}" RadiusX="4" RadiusY="4" />
+              <ContentPresenter x:Name="myContentPresenter" Content="{TemplateBinding Content}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,5" />
+            </Grid>
+
+            <!-- Event Triggers -->
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Rectangle.Opacity" Value="0.5" TargetName="innerRectangle" />
+              </Trigger>
+
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Storyboard x:Key="Reveal">
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Credits">
+        <EasingThicknessKeyFrame KeyTime="0:0:3.2" Value="0,0,0,-36"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:4.2" Value="0,0,0,20"/>
+      </ThicknessAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Play">
+        <EasingThicknessKeyFrame KeyTime="0:0:3.2" Value="0,0,0,31"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:4" Value="0,0,0,88"/>
+      </ThicknessAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Robots">
+        <EasingThicknessKeyFrame KeyTime="0" Value="38,458,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:2.2" Value="38,520,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:2.6" Value="38,89,0,0"/>
+      </ThicknessAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Laser">
+        <EasingThicknessKeyFrame KeyTime="0" Value="0,0,0,-529"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1.6" Value="0,520,0,20"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:2" Value="0"/>
+      </ThicknessAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Mirror">
+        <EasingThicknessKeyFrame KeyTime="0" Value="0,0,32,-526"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1" Value="0,0,0,-526"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1.4" Value="0,0,32,80">
+          <EasingThicknessKeyFrame.EasingFunction>
+            <QuadraticEase EasingMode="EaseInOut"/>
+          </EasingThicknessKeyFrame.EasingFunction>
+        </EasingThicknessKeyFrame>
+      </ThicknessAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="Magnet">
+        <EasingThicknessKeyFrame KeyTime="0" Value="0,-293,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1" Value="0,-147,0,0">
+          <EasingThicknessKeyFrame.EasingFunction>
+            <ElasticEase EasingMode="EaseInOut" Oscillations="2" Springiness="2"/>
+          </EasingThicknessKeyFrame.EasingFunction>
+        </EasingThicknessKeyFrame>
+      </ThicknessAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Mirror">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.4" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Laser">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.6" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Robots">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:2.2" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Play">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:3.2" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:3.6" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Credits">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:3.2" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:3.8" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:4.2" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="image">
+        <EasingThicknessKeyFrame KeyTime="0" Value="-184,0,12,-2"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1.3" Value="-184,0,12,-2"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1.7" Value="0,0,12,-2">
+          <EasingThicknessKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseOut"/>
+          </EasingThicknessKeyFrame.EasingFunction>
+        </EasingThicknessKeyFrame>
+      </ThicknessAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.7" Value="1">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <SineEase EasingMode="EaseOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="image1">
+        <EasingThicknessKeyFrame KeyTime="0" Value="335,0,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:1.9" Value="204,0,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:2.3" Value="0">
+          <EasingThicknessKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseInOut"/>
+          </EasingThicknessKeyFrame.EasingFunction>
+        </EasingThicknessKeyFrame>
+      </ThicknessAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image1">
+        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:1.9" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:2.3" Value="1">
+          <EasingDoubleKeyFrame.EasingFunction>
+            <CubicEase EasingMode="EaseInOut"/>
+          </EasingDoubleKeyFrame.EasingFunction>
+        </EasingDoubleKeyFrame>
+      </DoubleAnimationUsingKeyFrames>
+      <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="image2">
+        <EasingThicknessKeyFrame KeyTime="0:0:2.5" Value="25,0,0,0"/>
+        <EasingThicknessKeyFrame KeyTime="0:0:2.9" Value="0"/>
+      </ThicknessAnimationUsingKeyFrames>
+      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="image2">
+        <EasingDoubleKeyFrame KeyTime="0:0:2.5" Value="0"/>
+        <EasingDoubleKeyFrame KeyTime="0:0:2.9" Value="1"/>
+      </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+  </Grid.Resources>
+  <Page.Triggers>
+    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+      <BeginStoryboard Storyboard="{StaticResource Reveal}"/>
+    </EventTrigger>
+  </Page.Triggers>
+
+  <Grid>
+    <Image x:Name="Magnet"  Source="../images/textures/magnet.png" OpacityMask="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Top" Height="449.9" Width="149" Margin="0,-147,0,0"/>
+
+    <StackPanel x:Name="Mirror" Orientation="Horizontal" Width="160" Height="49" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,32,80">
+      <Image x:Name="image"  Source="../images/textures/title-mirror.png" OpacityMask="{x:Null}" Margin="0,0,12,-2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="42"/>
+      <TextBlock   x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="MIRRORS" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
+    </StackPanel>
+
+    <Grid x:Name="Laser" Width="314" Height="47" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Image x:Name="image1" Source="../images/textures/title-laser.png" OpacityMask="{x:Null}" Margin="0" Width="220"/>
+      <TextBlock   x:Name="textBlock2" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="LASERS AND" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="24" Grid.RowSpan="2"/>
+    </Grid>
+
+    <StackPanel x:Name="Robots" Orientation="Horizontal" Width="135" Height="51" HorizontalAlignment="Center" Margin="38,89,0,0">
+      <TextBlock  x:Name="textBlock3" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,13,0" TextWrapping="Wrap" Text="ROBOTS" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
+      <Image x:Name="image2"  Source="../images/textures/title-robot.png" OpacityMask="{x:Null}" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="22"/>
+    </StackPanel>
+
+    <Button Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18" Background="#FFD4D4D4"/>
+    <TextBlock x:Name="Credits" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" Text="Cyrielle Lassarre, Guillaume Haerinck &amp; Jules Fouchy" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="14"/>
+  </Grid>
 </Grid>

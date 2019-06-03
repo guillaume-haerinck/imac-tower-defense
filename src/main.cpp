@@ -15,7 +15,6 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
-#include <Box2D/Box2D.h>
 
 #include "core/game.hpp"
 #include "core/maths.hpp"
@@ -35,9 +34,8 @@
 #include "events/start-wave.hpp"
 #include "events/change-game-state.hpp"
 
+// DEBUG ONLY
 #include "core/game-states/level-state.hpp"
-#include "services/locator.hpp"
-#include "services/random/i-random.hpp"
 
 
 int main(int argc, char** argv) {
@@ -67,9 +65,6 @@ int main(int argc, char** argv) {
 	double deltatime = TARGET_DELTA_MS;
 	Uint64 beginTicks = SDL_GetPerformanceCounter();
 	while (!bQuit) {
-		//IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
-		//spdlog::info(randomService.noise((float)SDL_GetTicks()/1000));
-		//spdlog::info(SDL_GetTicks()/1000);
 
 		// Imgui main debug window
 		{
