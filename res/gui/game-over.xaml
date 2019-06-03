@@ -1,4 +1,44 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="GameOver">
+  <Grid.Resources>
+    <Style x:Key="Btn" TargetType="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <!-- Inner Rectangle with rounded corners. -->
+              <Rectangle x:Name="innerRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Transparent" StrokeThickness="2" Fill="{TemplateBinding Background}" RadiusX="4" RadiusY="4" />
+              <ContentPresenter x:Name="myContentPresenter" Content="{TemplateBinding Content}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,5" />
+            </Grid>
+
+            <!-- Event Triggers -->
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Rectangle.Opacity" Value="0.5" TargetName="innerRectangle" />
+              </Trigger>
+
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Grid.Resources>
+
+  <Grid>
+    <Grid Margin="303,193.666,303,165.415" HorizontalAlignment="Center" VerticalAlignment="Center" Height="90.919">
+      <Grid.Background>
+        <ImageBrush ImageSource="../images/textures/panel-level-end.png"/>
+      </Grid.Background>
+
+      <Image Grid.Row="0" x:Name="image2"  Source="../images/textures/panel-title.png" OpacityMask="{x:Null}" Margin="48.255,-14,39.255,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="106.49"/>
+      <TextBlock x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="27.605,25.126,19,21.126" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="Sniglet" Text="Almost there, try again !" TextAlignment="Center"/>
+      <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="0,-10,-6,0" TextWrapping="Wrap" Text="DEFEAT" VerticalAlignment="Top" FontFamily="Sunrise International Demo" Foreground="White" FontSize="22"/>
+    </Grid>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-41">
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18"/>
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18"/>
+    </StackPanel>
+  </Grid>
 </Grid>
