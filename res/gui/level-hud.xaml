@@ -35,37 +35,45 @@
     </Grid>
   </Canvas>
 
-  <!-- Page layout -->
-  <Grid x:Name="Page" Margin="0,0,-4,0">
-    <!-- Bottom menu -->
-    <Grid x:Name="BottomMenu" Height="104" Width="226" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-        <Grid.Background>
-            <ImageBrush ImageSource="../images/textures/panel.png"/>
-        </Grid.Background>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="19*"/>
-            <ColumnDefinition Width="94*"/>
-            <ColumnDefinition Width="94*"/>
-            <ColumnDefinition Width="19*"/>
-        </Grid.ColumnDefinitions>
+  <Grid x:Name="BottomMenu" Height="104" Width="226" HorizontalAlignment="Center" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Margin="269,0">
+    <Grid.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+        <SkewTransform/>
+        <RotateTransform/>
+        <TranslateTransform X="-8"/>
+      </TransformGroup>
+    </Grid.RenderTransform>
+    <Grid.Background>
+      <ImageBrush ImageSource="../images/textures/panel.png"/>
+    </Grid.Background>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="19*"/>
+      <ColumnDefinition Width="94*"/>
+      <ColumnDefinition Width="94*"/>
+      <ColumnDefinition Width="19*"/>
+    </Grid.ColumnDefinitions>
 
-        <Button Style="{StaticResource MenuBtn}" Click="onSelectMirror" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock x:Name="textBlock" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
-            </Grid>
-        </Button>
-        <Button Style="{StaticResource MenuBtn}" Click="onSelectTowerSlow" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock x:Name="textBlock2" HorizontalAlignment="Right" Height="23" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="17.174" Background="#FF303030" TextAlignment="Center" Foreground="White" FontFamily="Kristen ITC" FontSize="16" Margin="0,1,1,0"/>
-            </Grid>
-        </Button>
-    </Grid>
+    <Button Style="{StaticResource MenuBtn}" Click="onSelectTowerSlow" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
+      <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Button>
+    <Button Style="{StaticResource MenuBtn}" Click="onSelectMirror" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
+      <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Button>
+  </Grid>
 
-    <!-- Top menu -->
-    <Grid x:Name="TopMenu" HorizontalAlignment="Center" Height="33" Margin="0" Width="111" VerticalAlignment="Top">
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="35.5,10,0,0" VerticalAlignment="Top" Width="75" Background="#FFCFCBCB"/>
-    </Grid>
+  <Grid x:Name="TopMenu" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="auto"/>
+      <ColumnDefinition Width="auto"/>
+      <ColumnDefinition Width="25"/>
+      <ColumnDefinition Width="auto"/>
+      <ColumnDefinition Width="auto"/>
+    </Grid.ColumnDefinitions>
+
+    <Image  Grid.Column="0" Source="../images/icons/heart.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
+    <TextBlock  Grid.Column="1" x:Name="textBlock" TextWrapping="Wrap" Text="50 / 100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,13.186,0,13.187" FontFamily="Sniglet" FontSize="16"/>
+    <Image  Grid.Column="3" Source="../images/icons/clock.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
+    <TextBlock  Grid.Column="4" x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="30&quot;" VerticalAlignment="Center" Height="15.96" Margin="0,13.186,0,13.187" Width="49.29" FontFamily="Sniglet" FontSize="16"/>
   </Grid>
 </Grid>
