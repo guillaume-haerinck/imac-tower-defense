@@ -160,7 +160,7 @@
       <Image x:Name="image2"  Source="../images/textures/title-robot.png" OpacityMask="{x:Null}" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="22"/>
     </StackPanel>
 
-    <Button Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18" Background="#FFD4D4D4"/>
+    <Button Style="{StaticResource Btn}" x:Name="Play" Click="onStartGame" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18" Background="#FFD4D4D4"/>
     <TextBlock x:Name="Credits" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" Text="Cyrielle Lassarre, Guillaume Haerinck &amp; Jules Fouchy" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="14"/>
   </Grid>
 </Grid>

@@ -14,6 +14,8 @@ public:
 private:
     // Events
     bool ConnectEvent(Noesis::BaseComponent* source, const char* event, const char* handler) override;
+	void onStartGame(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
+	void onQuitGame(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 
     // Init 
     void InitializeComponent();
