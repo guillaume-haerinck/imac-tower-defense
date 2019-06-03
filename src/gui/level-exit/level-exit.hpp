@@ -7,9 +7,9 @@
 
 #include "events/handlers/event-emitter.hpp"
 
-class GameOver : public Noesis::Grid {
+class LevelExit : public Noesis::Grid {
 public:
-	GameOver(EventEmitter& emitter);
+	LevelExit(EventEmitter& emitter);
 
 private:
 	// Events
@@ -19,6 +19,6 @@ private:
 	void InitializeComponent();
 
 private:
-	NS_DECLARE_REFLECTION(GameOver, Grid);
+	NS_DECLARE_REFLECTION(LevelExit, Grid);
 	EventEmitter& m_emitter;
 };

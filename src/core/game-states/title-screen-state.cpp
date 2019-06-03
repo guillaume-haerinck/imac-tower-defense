@@ -1,12 +1,10 @@
 #include "title-screen-state.hpp"
 
-#include <glad/glad.h>
 #include <SDL2/SDL.h>
 #include <spdlog/spdlog.h>
 
 #include "core/constants.hpp"
 #include "core/game.hpp"
-#include "logger/gl-log-handler.hpp"
 
 TitleScreenState::TitleScreenState(Game& game) : IGameState(game), m_titleScreen(game.emitter)
 {
@@ -51,4 +49,9 @@ void TitleScreenState::onLeftClickUp(const evnt::LeftClickUp& event) {
 
 void TitleScreenState::onLeftClickDown(const evnt::LeftClickDown& event) {
 	this->m_ui->MouseButtonDown(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y, Noesis::MouseButton_Left);
+}
+
+void TitleScreenState::onMouseMove(const evnt::MouseMove& event) {
+	this->m_ui->MouseMove(event.mousePosSdlCoord.x, event.mousePosSdlCoord.y);
+	m_game.emitter.mousePos = event.mousePos;
 }
