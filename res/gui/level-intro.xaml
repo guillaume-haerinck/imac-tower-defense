@@ -37,17 +37,14 @@
       </Grid.Background>
 
       <Image Grid.Row="0" x:Name="image2"  Source="../images/textures/panel-title.png" OpacityMask="{x:Null}" Margin="48.255,-14,39.255,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="106.49"/>
-      <TextBlock Grid.Row="2" x:Name="textBlock" Foreground="Black" HorizontalAlignment="Left" Height="52.667" Margin="43.755,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="110.99" FontFamily="./#Sniglet">
-        <Run Text="Difficulty : Easy"/>
-        <LineBreak/>
-        <Run Text="Tips: Rotate the mirror !"/>
+      <TextBlock Grid.Row="2" x:Name="textBlock" Text="{Binding Text}" Foreground="Black" HorizontalAlignment="Left" Height="52.667" Margin="43.755,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="110.99" FontFamily="./#Sniglet">
       </TextBlock>
-      <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="0,-10,-6,0" TextWrapping="Wrap" Text="LEVEL I" VerticalAlignment="Top" FontFamily="./#Sunrise International Demo" Foreground="White" FontSize="22"/>
+      <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="0,-10,-6,0" TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Top" FontFamily="./#Sunrise International Demo" Foreground="White" FontSize="22"/>
     </Grid>
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-41">
-      <Button Style="{StaticResource Btn}" Background="#FFDDDDDD" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
-      <Button Style="{StaticResource Btn}" Background="#FFDDDDDD" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
+      <Button Style="{StaticResource Btn}" Background="#FFDDDDDD" Click="onExit" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
+      <Button Style="{StaticResource Btn}" Background="#FFDDDDDD" Click="onStartLevel" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
     </StackPanel>
   </Grid>
 </Grid>

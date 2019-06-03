@@ -5,7 +5,7 @@
 #include "core/game.hpp"
 #include "core/constants.hpp"
 
-LevelIntroState::LevelIntroState(Game& game) : IGameState(game), m_levelIntro(game.emitter)
+LevelIntroState::LevelIntroState(Game& game) : IGameState(game), m_levelIntro(game.emitter, game.progression)
 {
 	m_xaml = m_levelIntro;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
