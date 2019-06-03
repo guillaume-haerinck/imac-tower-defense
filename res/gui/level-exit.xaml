@@ -32,13 +32,13 @@
       </Grid.Background>
 
       <Image Grid.Row="0" x:Name="image2"  Source="../images/textures/panel-title.png" OpacityMask="{x:Null}" Margin="48.255,-14,39.255,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="35" Width="106.49"/>
-      <TextBlock x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="27.605,25.126,19,21.126" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="Sniglet" Text="You defeated the first level !" TextAlignment="Center"/>
-      <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="0,-10,-6,0" TextWrapping="Wrap" Text="VICTORY" VerticalAlignment="Top" FontFamily="Sunrise International Demo" Foreground="White" FontSize="22"/>
+      <TextBlock x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="27.605,25.126,19,21.126" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="./#Sniglet" Text="You defeated the first level !" TextAlignment="Center"/>
+      <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="0,-10,-6,0" TextWrapping="Wrap" Text="VICTORY" VerticalAlignment="Top" FontFamily="./#Sunrise International Demo" Foreground="White" FontSize="22"/>
     </Grid>
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-41">
-      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18"/>
-      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18"/>
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
     </StackPanel>
   </Grid>
 </Grid>

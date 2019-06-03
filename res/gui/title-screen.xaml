@@ -147,20 +147,20 @@
 
     <StackPanel x:Name="Mirror" Orientation="Horizontal" Width="160" Height="49" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,32,80">
       <Image x:Name="image"  Source="../images/textures/title-mirror.png" OpacityMask="{x:Null}" Margin="0,0,12,-2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="42"/>
-      <TextBlock   x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="MIRRORS" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
+      <TextBlock   x:Name="textBlock" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="MIRRORS" VerticalAlignment="Center" FontFamily="./#Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
     </StackPanel>
 
     <Grid x:Name="Laser" Width="314" Height="47" HorizontalAlignment="Center" VerticalAlignment="Center">
       <Image x:Name="image1" Source="../images/textures/title-laser.png" OpacityMask="{x:Null}" Margin="0" Width="220"/>
-      <TextBlock   x:Name="textBlock2" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="LASERS AND" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="24" Grid.RowSpan="2"/>
+      <TextBlock   x:Name="textBlock2" Foreground="Black" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="LASERS AND" VerticalAlignment="Center" FontFamily="./#Sunrise International Demo" FontSize="24" Grid.RowSpan="2"/>
     </Grid>
 
     <StackPanel x:Name="Robots" Orientation="Horizontal" Width="135" Height="51" HorizontalAlignment="Center" Margin="38,89,0,0">
-      <TextBlock  x:Name="textBlock3" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,13,0" TextWrapping="Wrap" Text="ROBOTS" VerticalAlignment="Center" FontFamily="Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
+      <TextBlock  x:Name="textBlock3" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,13,0" TextWrapping="Wrap" Text="ROBOTS" VerticalAlignment="Center" FontFamily="./#Sunrise International Demo" FontSize="48" Grid.RowSpan="2"/>
       <Image x:Name="image2"  Source="../images/textures/title-robot.png" OpacityMask="{x:Null}" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="22"/>
     </StackPanel>
 
-    <Button Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="18" Background="#FFD4D4D4"/>
-    <TextBlock x:Name="Credits" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" Text="Cyrielle Lassarre, Guillaume Haerinck &amp; Jules Fouchy" VerticalAlignment="Bottom" FontFamily="Sniglet" FontSize="14"/>
+    <Button Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18" Background="#FFD4D4D4"/>
+    <TextBlock x:Name="Credits" Foreground="Black" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" Text="Cyrielle Lassarre, Guillaume Haerinck &amp; Jules Fouchy" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="14"/>
   </Grid>
 </Grid>
