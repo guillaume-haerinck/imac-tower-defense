@@ -127,6 +127,14 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER, 1);
 			}
 
+			if (ImGui::Button("Load level 1 intro")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 1);
+			}
+
+			if (ImGui::Button("Load level 1 exit")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, 1);
+			}
+
 			// Check cursor position
 			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
 				bAllowClickEvent = false;

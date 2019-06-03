@@ -22,6 +22,7 @@ void IGameState::restoreGpuState() {
 	// Blending
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	GLCall(glClearColor(1, 1, 1, 1));
 
 	// Clear window
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
