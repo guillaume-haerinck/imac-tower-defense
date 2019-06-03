@@ -26,8 +26,8 @@ AttackSystem::AttackSystem(entt::DefaultRegistry& registry, EventEmitter& emitte
 	m_emitter.on<evnt::LaserParticleDead>([this](const evnt::LaserParticleDead & event, EventEmitter & emitter) {
 		IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 		if (randomService.random() < 0.1) {
-			trySpawnLaserParticle(event.position, 1);
-			trySpawnLaserParticle(event.position, 1);
+			this->trySpawnLaserParticle(event.position, 1);
+			this->trySpawnLaserParticle(event.position, 1);
 		}
 	});
 }
@@ -170,7 +170,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	}
 	else { //Effect on mirror bounce
 		if (!mirrorIsBeingControlled && !isTransparent) {
-			//trySpawnLaserParticle(laserEnd, deltatime);
+			//this->trySpawnLaserParticle(laserEnd, deltatime);
 			glowOnMirror(laserEnd);
 		}
 	}
@@ -189,7 +189,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			}
 			if (!isTransparent && !m_registry.has<stateTag::IsBeingControlled>(entity) && !m_registry.has<cmpt::Animated>(entity)) {
 				m_emitter.publish<evnt::EntityDamaged>(entity, LASER_DAMAGE_PER_SECOND*deltatime);
-				trySpawnLaserParticle(targetTransform.position, deltatime);
+				this->trySpawnLaserParticle(targetTransform.position, deltatime);
 			}
 		}
 	});

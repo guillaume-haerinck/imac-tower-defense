@@ -1,5 +1,3 @@
-#pragma once
-
 #include "helper-service.hpp"
 
 #include "components/transform.hpp"

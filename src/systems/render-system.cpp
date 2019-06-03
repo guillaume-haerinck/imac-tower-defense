@@ -242,10 +242,10 @@ void RenderSystem::update(float deltatime) {
 
 	//Render tiles
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Tile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 	//Highlight tile under mouse while an entity is being placed
 	if (m_emitter.entityBeingPlaced) {
@@ -263,37 +263,37 @@ void RenderSystem::update(float deltatime) {
 	}
 	//Render enemies
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Enemy>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Enemy2>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 	//Render buildings
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Building>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 	//Render projectiles
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_Projectile>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_Projectile>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 	//Render VFX
 	m_registry.view<renderTag::Single, cmpt::Sprite, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, auto) {
-		renderSprite(entity, sprite);
+		this->renderSprite(entity, sprite);
 	});
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
-		renderSpritesheet(entity, sprite, animation);
+		this->renderSpritesheet(entity, sprite, animation);
 	});
 
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
