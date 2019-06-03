@@ -70,15 +70,15 @@ void LevelHud::setOptionsPosition(glm::vec2 pos) {
 	pos.x += 25;
 
 	setOptionsVisibilityTo(true);
-	m_bindings->setPosX(pos.x);
-	m_bindings->setPosY(pos.y);
+	m_bindings->setOptionsPosX(pos.x);
+	m_bindings->setOptionsPosY(pos.y);
 }
 
 void LevelHud::setOptionsVisibilityTo(bool show) {
 	if (show) {
-		m_bindings->setVisibility("Visible");
+		m_bindings->setOptionsVisibility("Visible");
 	} else {
-		m_bindings->setVisibility("Collapsed");
+		m_bindings->setOptionsVisibility("Collapsed");
 	}
 }
 

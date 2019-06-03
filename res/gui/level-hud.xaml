@@ -48,7 +48,7 @@
 
   <!-- Option floating menu -->
   <Canvas>
-    <Grid Canvas.Left="{Binding PosX}" Canvas.Top="{Binding PosY}" Visibility="{Binding Visibility}">
+    <Grid Canvas.Left="{Binding OptionsPosX}" Canvas.Top="{Binding OptionsPosY}" Visibility="{Binding OptionsVisibility}">
       <Grid.RowDefinitions>
         <RowDefinition/>
       </Grid.RowDefinitions>
@@ -85,7 +85,7 @@
       <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <!-- Top Button with number -->
         <Border BorderThickness="1" CornerRadius="3" BorderBrush="#014D4D4D" Background="#FF4D4D4D"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="27.47" Height="27.363">
-          <TextBlock x:Name="textBlock3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="5" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="./#Sniglet"/>
+          <TextBlock x:Name="textBlock3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding MirrorNumber}" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="./#Sniglet"/>
         </Border>
         <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
       </Grid>
@@ -95,7 +95,7 @@
       <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <!-- Top Button with number -->
         <Border BorderThickness="1" CornerRadius="3" BorderBrush="#014D4D4D" Background="#FF4D4D4D"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="27.47" Height="27.363">
-          <TextBlock x:Name="textBlock4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="5" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="./#Sniglet"/>
+          <TextBlock x:Name="textBlock4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="{Binding SlowNumber}" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="./#Sniglet"/>
         </Border>
         <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
       </Grid>
@@ -112,8 +112,8 @@
     </Grid.ColumnDefinitions>
 
     <Image  Grid.Column="0" Source="../images/icons/heart.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
-    <TextBlock  Grid.Column="1" x:Name="textBlock" TextWrapping="Wrap" Text="50 / 100" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,13.186,0,13.187" FontFamily="./#Sniglet" FontSize="16"/>
+    <TextBlock  Grid.Column="1" x:Name="textBlock" TextWrapping="Wrap" Text="{Binding Life}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,13.186,0,13.187" FontFamily="./#Sniglet" FontSize="16"/>
     <Image  Grid.Column="3" Source="../images/icons/clock.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
-    <TextBlock  Grid.Column="4" x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="30&quot;" VerticalAlignment="Center" Height="15.96" Margin="0,13.186,0,13.187" Width="49.29" FontFamily="./#Sniglet" FontSize="16"/>
+    <TextBlock  Grid.Column="4" x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Timer}" VerticalAlignment="Center" Height="15.96" Margin="0,13.186,0,13.187" Width="49.29" FontFamily="./#Sniglet" FontSize="16"/>
   </Grid>
 </Grid>
