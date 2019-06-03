@@ -13,6 +13,33 @@
               <!-- Present Content (text) of the button. -->
               <ContentPresenter x:Name="myContentPresenter" Content="{TemplateBinding Content}" />
             </Grid>
+
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Rectangle.Opacity" Value="0.5" TargetName="innerRectangle" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="Btn" TargetType="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <!-- Inner Rectangle with rounded corners. -->
+              <Rectangle x:Name="innerRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Transparent" StrokeThickness="2" Fill="{TemplateBinding Background}" RadiusX="4" RadiusY="4" />
+              <ContentPresenter x:Name="myContentPresenter" Content="{TemplateBinding Content}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5" />
+            </Grid>
+
+            <!-- Event Triggers -->
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Rectangle.Opacity" Value="0.5" TargetName="innerRectangle" />
+              </Trigger>
+            </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
@@ -23,13 +50,13 @@
   <Canvas>
     <Grid Canvas.Left="{Binding PosX}" Canvas.Top="{Binding PosY}" Visibility="{Binding Visibility}">
       <Grid.RowDefinitions>
-        <RowDefinition Height="*"/>
+        <RowDefinition/>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
+        <ColumnDefinition/>
       </Grid.ColumnDefinitions>
 
-      <Button Grid.Column="0" Grid.Row="0" Click="onDeleteEntity">
+      <Button Background="#FF4D4D4D" Style="{StaticResource Btn}" Click="onDeleteEntity">
         <Image Source="../images/icons/delete.png" Width="24" Height="24"/>
       </Button>
     </Grid>
@@ -54,11 +81,24 @@
       <ColumnDefinition Width="19*"/>
     </Grid.ColumnDefinitions>
 
-    <Button Style="{StaticResource MenuBtn}" Click="onSelectTowerSlow" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
-      <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Button Style="{StaticResource MenuBtn}" Click="onSelectMirror" Grid.Column="1" x:Name="Mirror" Height="70" Margin="12,17" VerticalAlignment="Center" Width="69.3" HorizontalAlignment="Center" Background="White" Padding="0" Grid.IsSharedSizeScope="True">
+      <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Top Button with number -->
+        <Border BorderThickness="1" CornerRadius="3" BorderBrush="#014D4D4D" Background="#FF4D4D4D"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="27.47" Height="27.363">
+          <TextBlock x:Name="textBlock3" HorizontalAlignment="Center" TextWrapping="Wrap" Text="5" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="Sniglet"/>
+        </Border>
+        <Image Source="../images/icons/mirror.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Grid>
+      
     </Button>
-    <Button Style="{StaticResource MenuBtn}" Click="onSelectMirror" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
-      <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Button Style="{StaticResource MenuBtn}" Click="onSelectTowerSlow" Grid.Column="2" x:Name="Slow" Height="70" Margin="12,17" VerticalAlignment="Center" Width="70" HorizontalAlignment="Center" Background="White">
+      <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Top Button with number -->
+        <Border BorderThickness="1" CornerRadius="3" BorderBrush="#014D4D4D" Background="#FF4D4D4D"  HorizontalAlignment="Right" VerticalAlignment="Top" Width="27.47" Height="27.363">
+          <TextBlock x:Name="textBlock4" HorizontalAlignment="Center" TextWrapping="Wrap" Text="5" VerticalAlignment="Center" Foreground="White" FontSize="20" FontWeight="Normal" FontFamily="Sniglet"/>
+        </Border>
+        <Image Source="../images/icons/snowflake.png" OpacityMask="{x:Null}" Margin="10,10,10.333,7.333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Grid>
     </Button>
   </Grid>
 
