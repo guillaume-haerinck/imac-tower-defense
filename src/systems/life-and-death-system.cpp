@@ -23,7 +23,7 @@
 #include "services/helper/i-helper.hpp"
 
 LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression)
-: ISystem(registry, emitter), m_progression(progression)
+: ISystem(registry, emitter), m_progression(progression), m_vfxFactory(registry)
 {
 	m_emitter.on<evnt::EntityDamaged>([this](const evnt::EntityDamaged & event, EventEmitter & emitter) {
 		cmpt::Health& health = m_registry.get<cmpt::Health>(event.entity);
@@ -35,6 +35,7 @@ LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmi
 			m_registry.view<cmpt::Health>().each([this](auto entity, cmpt::Health& health) {
 				health.current -= 2.0f;
 			});
+			m_vfxFactory.createKamikazeExplosion(event.position, 100.0f);
 		}
 	});
 }

@@ -14,6 +14,7 @@ DebugDrawService::DebugDrawService(glm::mat4 viewMat, glm::mat4 projMat)
 :	m_shaderBasic("res/shaders/basic/basic.vert", "res/shaders/basic/basic.frag"),
 	m_shaderLaser("res/shaders/basic/basic.vert", "res/shaders/basic/laser.frag"),
 	m_shaderCircleWithGlow("res/shaders/basic/basic.vert", "res/shaders/basic/circle-with-glow.frag"),
+	m_shaderCircleExplosion("res/shaders/basic/basic.vert", "res/shaders/basic/circle-explosion.frag"),
 	m_vbMaxSize(32),
 	m_vb(nullptr, 0, GL_DYNAMIC_DRAW),
 	m_viewMat(viewMat),
@@ -344,6 +345,39 @@ void DebugDrawService::square(float x, float y, float extent) {
 
 void DebugDrawService::ellipse(float a, float b, float c, float d) {
 
+}
+
+void DebugDrawService::circleExplosion(float x, float y, float r) {
+	// Binding
+	m_shaderCircleExplosion.bind();
+	m_va.bind();
+	m_vb.bind();
+
+	// Update buffer
+	unsigned int segmentNumber = imaths::max(floor(r),35);
+	std::vector<float> array;
+	array.push_back(x);
+	array.push_back(y);
+	for (unsigned int i = 0; i <= segmentNumber; i++) {
+		array.push_back(x + r * cos(i * imaths::TAU / segmentNumber));
+		array.push_back(y + r * sin(i * imaths::TAU / segmentNumber));
+	}
+	GLCall(glBufferData(GL_ARRAY_BUFFER, array.size() * 2 * sizeof(float), array.data(), GL_DYNAMIC_DRAW));
+
+	// Update
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
+	glm::mat4 mvp = m_projMat * m_viewMat * model;
+	m_shaderCircleExplosion.setUniformMat4f("u_mvp", mvp);
+	m_shaderCircleExplosion.setUniform4f("u_color", 0.8f, 0.2f, 0.1f, 1.0f);
+	m_shaderCircleExplosion.setUniform2f("u_pos", x / 100 / WIN_RATIO * WIN_WIDTH, y / 100 * WIN_HEIGHT);
+	m_shaderCircleExplosion.setUniform1f("u_radius", r / 100 / WIN_RATIO * WIN_WIDTH);
+	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
+
+	// Unbinding
+	m_vb.unbind();
+	m_va.unbind();
+	m_shaderCircleExplosion.unbind();
 }
 
 void DebugDrawService::circleWithGlow(float x, float y, float r) {

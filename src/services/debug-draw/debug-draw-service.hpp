@@ -36,6 +36,7 @@ public:
 	void rect(float x1, float y1, float x2, float y2, int zIndex) override;
 	void square(float x, float y, float extent) override;
 	void ellipse(float a, float b, float c, float d) override;
+	void circleExplosion(float x, float y, float r) override;
 	void circleWithGlow(float x, float y, float r) override;
 	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) override;
 	void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BASIC) override;
@@ -55,6 +56,7 @@ private:
     Shader m_shaderBasic;
 	Shader m_shaderLaser;
 	Shader m_shaderCircleWithGlow;
+	Shader m_shaderCircleExplosion;
 	VertexArray m_va;
 	VertexBuffer m_vb;
 	unsigned int m_vbMaxSize;

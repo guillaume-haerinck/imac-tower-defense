@@ -54,7 +54,8 @@ EnemyFactory::~EnemyFactory() {
 void EnemyFactory::createRobot() {
 	IRandom& randomService = entt::ServiceLocator<IRandom>::ref();
 	std::uint32_t entity = create();
-	m_registry.assign<enemyTag::Robot>(entity);
+	//m_registry.assign<enemyTag::Robot>(entity);
+	m_registry.assign<enemyTag::Kamikaze>(entity);
 	m_registry.assign<cmpt::Health>(entity, ENEMY_DRONE_HEALTH + randomService.random(-ENEMY_HEALTH_RANDOM_VARIATION, ENEMY_HEALTH_RANDOM_VARIATION));
 	m_registry.assign<cmpt::Sprite>(entity, m_robotSprite);
 	m_registry.assign<renderTag::Atlas>(entity);

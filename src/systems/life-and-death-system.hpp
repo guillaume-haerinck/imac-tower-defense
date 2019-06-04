@@ -6,6 +6,7 @@
 #include "i-system.hpp"
 #include "core/progression.hpp"
 #include "events/handlers/event-emitter.hpp"
+#include "entity-factories/vfx-factory.hpp"
 
 class LifeAndDeathSystem : public ISystem {
 public:
@@ -14,4 +15,5 @@ public:
 
 private:
 	Progression& m_progression;
+	VFXFactory m_vfxFactory;
 };

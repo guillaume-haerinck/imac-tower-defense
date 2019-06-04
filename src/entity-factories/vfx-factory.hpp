@@ -12,6 +12,7 @@ public:
 	virtual ~VFXFactory();
 
 	void createExplosion(glm::vec2 pos, ShaderType type);
+	void createKamikazeExplosion(glm::vec2 pos, float maxRadius);
 	void createLaserParticle(glm::vec2 pos, float dirAgl);
 
 private:

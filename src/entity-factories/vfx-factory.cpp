@@ -4,6 +4,7 @@
 
 #include "core/tags.hpp"
 #include "core/constants.hpp"
+#include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
 #include "components/sprite-animation.hpp"
@@ -13,6 +14,7 @@
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
 #include "components/tint-colour.hpp"
+#include "components/growing-circle.hpp"
 
 
 VFXFactory::VFXFactory(entt::DefaultRegistry& registry)
@@ -44,6 +46,14 @@ void VFXFactory::createExplosion(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSIO
 	m_registry.assign<cmpt::SpriteAnimation>(myEntity, 0, 99, 2);
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
 	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
+}
+
+void VFXFactory::createKamikazeExplosion(glm::vec2 pos, float maxRadius) {
+	auto myEntity = m_registry.create();
+	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
+	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
+	m_registry.assign<cmpt::GrowingCircle>(myEntity,KAMIKAZE_EXPLOSION_GROWTH_SPEED);
+	m_registry.assign<cmpt::Age>(myEntity, maxRadius/KAMIKAZE_EXPLOSION_GROWTH_SPEED);
 }
 
 void VFXFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {
