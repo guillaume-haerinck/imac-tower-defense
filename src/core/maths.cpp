@@ -19,6 +19,15 @@ glm::vec2 imaths::segmentsIntersection(glm::vec2 P, glm::vec2 Q, glm::vec2 P_, g
 	}
 }
 
+float imaths::distance(glm::vec2 v1, glm::vec2 v2) {
+	return sqrt((v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y));
+}
+
+float imaths::distanceSq(glm::vec2 v1, glm::vec2 v2) {
+	return (v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y);
+}
+
+
 float imaths::min(float a, float b) {
 	return a < b ? a : b;
 }

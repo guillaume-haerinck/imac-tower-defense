@@ -7,6 +7,8 @@
 #include "events/tower-dead.hpp"
 #include "components/health.hpp"
 #include "components/transform.hpp"
+#include "components/entity-explosion-association.hpp"
+#include "components/growing-circle.hpp"
 #include "components/shake.hpp"
 #include "components/attached-to.hpp"
 #include "components/age.hpp"
@@ -17,6 +19,7 @@
 #include "components/animation-pixels-vanish.hpp"
 #include "core/tags.hpp"
 #include "core/constants.hpp"
+#include "core/maths.hpp"
 #include "entity-factories/enemy-factory.hpp"
 
 #include "services/locator.hpp"
@@ -75,6 +78,21 @@ void LifeAndDeathSystem::update(float deltatime) {
 			else if (m_registry.has<entityTag::Tower>(entity)) {
 				m_emitter.publish<evnt::TowerDead>(helper.getPosition(entity));
 			}
+			m_registry.destroy(entity);
+		}
+	});
+
+	//Check if a global explosion has reached an entity
+	m_registry.view<cmpt::EntityExplosionAssociation>().each([this](auto entity, cmpt::EntityExplosionAssociation& assoc) {
+		if (m_registry.valid(assoc.explosion) && m_registry.valid(assoc.entity)) {
+			cmpt::GrowingCircle circle = m_registry.get<cmpt::GrowingCircle>(assoc.explosion);
+			float r = circle.growthSpeed * m_registry.get<cmpt::Age>(assoc.explosion).age;
+			if (imaths::distanceSq(m_registry.get<cmpt::Transform>(assoc.entity).position, m_registry.get<cmpt::Transform>(assoc.explosion).position) < r*r) {
+				m_emitter.publish<evnt::EntityDamaged>(assoc.entity, KAMIKAZE_EXPLOSION_DAMAGE);
+				m_registry.destroy(entity);
+			}
+		}
+		else {
 			m_registry.destroy(entity);
 		}
 	});

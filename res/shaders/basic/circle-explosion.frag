@@ -2,9 +2,12 @@
 
 layout(location = 0) out vec4 color;
 
-uniform vec4 u_color;
 uniform vec2 u_pos;
 uniform float u_radius;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main() {
 	float midRadiusRatio = 0.1 ;
@@ -13,6 +16,9 @@ void main() {
 	if( n_d < (1-2*midRadiusRatio)){
 		discard;
 	}
-	color = u_color;
+	vec4 colorRed = vec4(0.8f, 0.2f, 0.1f, 1.0f) ;
+	vec4 colorYellow = vec4(0.75f, 0.5f, 0.15f, 1.0f) ;
+	float rand = rand(gl_FragCoord.xy) ;
+	color = colorRed * rand + colorYellow *(1-rand);
 	color.a = 1 - abs(n_d - (1-midRadiusRatio))/midRadiusRatio ;
 }

@@ -14,6 +14,8 @@ const float ENEMY_KAMIKAZE_HEALTH = 2.0f;
 const float ENEMY_HEALTH_RANDOM_VARIATION = 0.5f;
 const float ENEMY_VELOCITY = 18.0f;
 const float KAMIKAZE_EXPLOSION_GROWTH_SPEED = 30.0f;
+const float KAMIKAZE_EXPLOSION_DAMAGE = 5.0f;
+const float KAMIKAZE_EXPLOSION_RADIUS = 25.0f;
 
 const float TOWER_HEALTH = 10;
 const float TOWER_HITBOX_RADIUS = 4.0f;

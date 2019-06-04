@@ -20,5 +20,7 @@ private:
 	cmpt::Sprite m_towerExplosionSprite;
 	cmpt::Sprite m_enemyExplosionSprite;
 	cmpt::Sprite m_laserParticleSprite;
+
+	void m_createEntityExplosionAssociation(std::uint32_t entity, std::uint32_t explosion);
 };
 

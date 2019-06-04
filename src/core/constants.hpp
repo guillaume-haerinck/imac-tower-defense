@@ -14,6 +14,8 @@ extern const float ENEMY_KAMIKAZE_HEALTH;
 extern const float ENEMY_HEALTH_RANDOM_VARIATION;
 extern const float ENEMY_VELOCITY;
 extern const float KAMIKAZE_EXPLOSION_GROWTH_SPEED;
+extern const float KAMIKAZE_EXPLOSION_DAMAGE;
+extern const float KAMIKAZE_EXPLOSION_RADIUS;
 
 extern const float TOWER_HEALTH;
 extern const float TOWER_HITBOX_RADIUS;

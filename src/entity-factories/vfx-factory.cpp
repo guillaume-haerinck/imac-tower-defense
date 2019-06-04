@@ -7,6 +7,8 @@
 #include "core/constants.hpp"
 #include "logger/gl-log-handler.hpp"
 #include "components/transform.hpp"
+#include "components/health.hpp"
+#include "components/entity-explosion-association.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/direction.hpp"
 #include "components/velocity.hpp"
@@ -54,6 +56,16 @@ void VFXFactory::createKamikazeExplosion(glm::vec2 pos, float maxRadius) {
 	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
 	m_registry.assign<cmpt::GrowingCircle>(myEntity,KAMIKAZE_EXPLOSION_GROWTH_SPEED);
 	m_registry.assign<cmpt::Age>(myEntity, maxRadius/KAMIKAZE_EXPLOSION_GROWTH_SPEED);
+	//Create the association between each entity that has health and the explosion
+	//It will be removed when the explosion hits and damages the entity (allows the keep track of who has already been damaged and who has not)
+	m_registry.view<cmpt::Health>().each([this,myEntity](auto entity, auto) {
+		m_createEntityExplosionAssociation(entity, myEntity);
+	});
+}
+
+void VFXFactory::m_createEntityExplosionAssociation(std::uint32_t entity, std::uint32_t explosion) {
+	std::uint32_t association = m_registry.create();
+	m_registry.assign<cmpt::EntityExplosionAssociation>(association, entity, explosion);
 }
 
 void VFXFactory::createLaserParticle(glm::vec2 pos, float dirAgl) {

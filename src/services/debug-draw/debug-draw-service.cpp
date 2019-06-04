@@ -369,7 +369,6 @@ void DebugDrawService::circleExplosion(float x, float y, float r) {
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, Z_INDEX_DEBUG_DRAW));
 	glm::mat4 mvp = m_projMat * m_viewMat * model;
 	m_shaderCircleExplosion.setUniformMat4f("u_mvp", mvp);
-	m_shaderCircleExplosion.setUniform4f("u_color", 0.8f, 0.2f, 0.1f, 1.0f);
 	m_shaderCircleExplosion.setUniform2f("u_pos", x / 100 / WIN_RATIO * WIN_WIDTH, y / 100 * WIN_HEIGHT);
 	m_shaderCircleExplosion.setUniform1f("u_radius", r / 100 / WIN_RATIO * WIN_WIDTH);
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
