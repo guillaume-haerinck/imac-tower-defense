@@ -54,7 +54,7 @@ void VFXFactory::createKamikazeExplosion(glm::vec2 pos, float maxRadius) {
 	auto myEntity = m_registry.create();
 	m_registry.assign<cmpt::Transform>(myEntity, pos, Z_INDEX_VISUAL_EFFECTS);
 	m_registry.assign<renderOrderTag::o_VFX>(myEntity);
-	m_registry.assign<cmpt::GrowingCircle>(myEntity,KAMIKAZE_EXPLOSION_GROWTH_SPEED);
+	m_registry.assign<cmpt::GrowingCircle>(myEntity,KAMIKAZE_EXPLOSION_GROWTH_SPEED, maxRadius);
 	m_registry.assign<cmpt::Age>(myEntity, maxRadius/KAMIKAZE_EXPLOSION_GROWTH_SPEED);
 	//Create the association between each entity that has health and the explosion
 	//It will be removed when the explosion hits and damages the entity (allows the keep track of who has already been damaged and who has not)
