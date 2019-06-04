@@ -29,7 +29,7 @@ void GameOverState::enter() {
 
 void GameOverState::update(float deltatime) {
 	// Noesis gui update
-	m_ui->Update(SDL_GetTicks());
+	m_ui->Update(SDL_GetTicks() / 1000.0f);
 	m_ui->GetRenderer()->UpdateRenderTree();
 	m_ui->GetRenderer()->RenderOffscreen();
 
