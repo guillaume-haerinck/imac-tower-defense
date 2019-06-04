@@ -15,5 +15,4 @@ public:
 
 private:
 	Progression& m_progression;
-	VFXFactory m_vfxFactory;
 };

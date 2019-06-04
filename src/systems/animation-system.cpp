@@ -19,10 +19,7 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 			m_vfxFactory.createExplosion(event.position, ENEMY_EXPLOSION);
 		}
 		if (event.type == EnemyType::KAMIKAZE) {
-			m_vfxFactory.createExplosion(event.position+glm::vec2(5,5), ENEMY_EXPLOSION);
-			m_vfxFactory.createExplosion(event.position + glm::vec2(-5, 5), ENEMY_EXPLOSION);
-			m_vfxFactory.createExplosion(event.position + glm::vec2(5, -5), ENEMY_EXPLOSION);
-			m_vfxFactory.createExplosion(event.position + glm::vec2(-5, -5), ENEMY_EXPLOSION);
+			m_vfxFactory.createKamikazeExplosion(event.position, 100.0f);
 		}
 	});
 
