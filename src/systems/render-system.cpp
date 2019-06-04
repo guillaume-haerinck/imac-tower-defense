@@ -296,12 +296,6 @@ void RenderSystem::update(float deltatime) {
 	m_registry.view<renderTag::Atlas, cmpt::Sprite, cmpt::SpriteAnimation, renderOrderTag::o_VFX>().each([this](auto entity, auto, cmpt::Sprite & sprite, cmpt::SpriteAnimation & animation, auto) {
 		this->renderSpritesheet(entity, sprite, animation);
 	});
-		//Growing kamikaze explosion
-	m_registry.view<cmpt::GrowingCircle, cmpt::Age, cmpt::Transform, renderOrderTag::o_VFX>().each([this](auto entity, cmpt::GrowingCircle& growingCircle, cmpt::Age& age, cmpt::Transform& transform, auto) {
-		IDebugDraw& debugDraw = entt::ServiceLocator<IDebugDraw>::ref();
-		float r = growingCircle.growthSpeed * age.age;
-		debugDraw.circleExplosion(transform.position.x, transform.position.y, r , growingCircle.maxRadius);
-	});
 
 	//Healthbars
 	m_registry.view<cmpt::Transform, cmpt::Health, cmpt::HealthBar>().each([this](auto entity, cmpt::Transform & transform, cmpt::Health & health, cmpt::HealthBar & healthbar) {
@@ -356,6 +350,13 @@ void RenderSystem::update(float deltatime) {
 				healthbar.background.shader->unbind();
 			}
 		}
+	});
+
+	//Growing kamikaze explosion
+	m_registry.view<cmpt::GrowingCircle, cmpt::Age, cmpt::Transform, renderOrderTag::o_VFX>().each([this](auto entity, cmpt::GrowingCircle& growingCircle, cmpt::Age& age, cmpt::Transform& transform, auto) {
+		IDebugDraw& debugDraw = entt::ServiceLocator<IDebugDraw>::ref();
+		float r = growingCircle.growthSpeed * age.age;
+		debugDraw.circleExplosion(transform.position.x, transform.position.y, r, growingCircle.maxRadius);
 	});
 }
 
