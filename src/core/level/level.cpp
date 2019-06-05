@@ -21,7 +21,8 @@
 Level::Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale)
 : m_registry(registry), m_tileFactory(registry), m_towerFactory(registry), m_mirrorFactory(registry),
   m_viewTranslation(viewTranslation), m_viewScale(viewScale),
-  m_graph(nullptr), m_pathfindingGraph(nullptr), m_energy(0), m_gridHeight(0), m_gridWidth(0)
+  m_graph(nullptr), m_pathfindingGraph(nullptr), m_maxLife(0),
+  m_maxLaserNumber(0), m_maxMirrorNumber(0), m_gridHeight(0), m_gridWidth(0)
 {
 	setLevel(levelNumber);
 }
@@ -53,6 +54,8 @@ void Level::setLevel(unsigned int number) {
 	m_itdPath += std::to_string(number);
 	m_itdPath += ".itd";
 	m_mapPath = "res/levels/";
+	m_backgroundImgPath = "res/levels/";
+	m_introImgPath = "res/levels/";
 
 	// Delete last map if any
 	m_registry.reset();
@@ -80,18 +83,24 @@ void Level::setLevel(unsigned int number) {
 		}
 		*/
 
-		// TODO increment count valid, related to itd version, if a field is missing say it
+		// TODO use bitmasking to check if everything exist, if not throw an error
 
 		std::string line;
 		while (std::getline(file, line)) {
 			if (line.find("#") != std::string::npos) { continue; } // Skip comments
 			else if (line.find("carte") != std::string::npos) { m_mapPath += line.substr(6, line.size()); }
-			else if (line.find("energie") != std::string::npos) { m_energy = getFloatFromString(line); }
+			else if (line.find("background-img") != std::string::npos) { m_backgroundImgPath += line.substr(15, line.size()); }
+			else if (line.find("intro-img") != std::string::npos) { m_introImgPath += line.substr(10, line.size()); }
+			else if (line.find("intro-text") != std::string::npos) { m_introText = line.substr(11, line.size()); }
+			else if (line.find("exit-text") != std::string::npos) { m_exitText = line.substr(10, line.size()); }
 			else if (line.find("chemin") != std::string::npos) { m_pathColor = getVec3FromString(line); }
 			else if (line.find("noeud") != std::string::npos) { m_nodeColor = getVec3FromString(line); }
 			else if (line.find("construct") != std::string::npos) { m_constructColor = getVec3FromString(line); }
 			else if (line.find("in") != std::string::npos) { m_startColor = getVec3FromString(line); }
 			else if (line.find("out") != std::string::npos) { m_endColor = getVec3FromString(line); readMapImage(); }
+			else if (line.find("energie") != std::string::npos) { m_maxLife = getFloatFromString(line); }
+			else if (line.find("max-laser") != std::string::npos) { m_maxLaserNumber = getIntFromString(line); }
+			else if (line.find("max-mirror") != std::string::npos) { m_maxMirrorNumber = getIntFromString(line); }
 			else if (line.find("build-laser") != std::string::npos) {
 				 glm::vec3 position = getVec3FromString(line);
 				 //Get tile
@@ -104,7 +113,7 @@ void Level::setLevel(unsigned int number) {
 				 cmpt::ConstrainedRotation& rot = m_registry.get<cmpt::ConstrainedRotation>(tower);
 				 m_registry.get<cmpt::Transform>(tower).rotation = rot.angleStep*position.z ;
 				 rot.angleIndex = position.z;
-					//Choose right sprite orientation
+				 //Choose right sprite orientation
 				 cmpt::SpriteAnimation& spriteAnim = m_registry.get<cmpt::SpriteAnimation>(tower);
 				 spriteAnim.activeTile = rot.angleIndex;
 				 spriteAnim.startTile = rot.angleIndex;
@@ -255,6 +264,21 @@ float Level::getFloatFromString(std::string line) {
 
 	spdlog::warn("[ITD] no valid data at : {}", line);
 	return 0.0f;
+}
+
+int Level::getIntFromString(std::string line) {
+	std::string temp;
+	int data;
+	std::stringstream ss(line);
+	while (!ss.eof()) {
+		ss >> temp;
+		if (std::stringstream(temp) >> data) {
+			return data;
+		}
+	}
+
+	spdlog::warn("[ITD] no valid data at : {}", line);
+	return 0;
 }
 
 glm::vec3 Level::getVec3FromString(std::string line) {

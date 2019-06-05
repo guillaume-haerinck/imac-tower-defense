@@ -48,6 +48,7 @@ private:
 	glm::vec3 getPixelColorFromImage(unsigned char* image, int imageWidth, int x, int y);
 	glm::vec3 getVec3FromString(std::string line);
 	float getFloatFromString(std::string line);
+	int getIntFromString(std::string line);
 
 	// Graph construction
 	bool isPath(unsigned char* image, int imageWidth, int imageHeight, int x, int y);
@@ -66,7 +67,13 @@ private:
 	glm::vec3 m_constructColor;
 	std::string m_mapPath;
 	std::string m_itdPath;
-	float m_energy;
+	std::string m_backgroundImgPath;
+	std::string m_introImgPath;
+	std::string m_introText;
+	std::string m_exitText;
+	float m_maxLife;
+	int m_maxLaserNumber;
+	int m_maxMirrorNumber;
 
 	// Level details
 	std::vector<std::uint32_t> m_grid;

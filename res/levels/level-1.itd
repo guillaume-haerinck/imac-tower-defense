@@ -1,12 +1,22 @@
 @ITD 1++
-# ITD ameliore, pas besoin de donnees de graphes.
+# ITD ameliore, pas besoin de donnees de graphes, et infos en plus.
+
 carte level-1.png
-energie 100
+background-img level-1-background.png
+intro-img level-1-intro.png
+intro-text Good luck on this level
+exit-text Well done !
+
 chemin 255 255 255
 noeud 0 0 0
 construct 0 0 200
 in 0 200 0
 out 200 0 0
+
+energie 100
+max-laser 5
+max-mirror 6
+
 build-laser 7 2 0
 build-mirror 9 2 1
 build-slow 2 2 3
