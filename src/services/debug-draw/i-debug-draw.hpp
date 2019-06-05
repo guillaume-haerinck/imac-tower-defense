@@ -3,7 +3,7 @@
 #include <Box2D/Box2D.h>
 #include <glm/glm.hpp>
 
-enum BasicShaderType {
+enum class BasicShaderType {
 	BASIC,
 	LASER
 };
@@ -18,7 +18,7 @@ public:
 	virtual void circleWithGlow(float x, float y, float r) = 0;
 	virtual void circleExplosion(float x, float y, float r, float maxR) = 0;
 	virtual void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) = 0;
-	virtual void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BASIC) = 0;
+	virtual void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BasicShaderType::BASIC) = 0;
 	virtual void point(float x, float y) = 0;
 	virtual void shape(glm::vec2* vertices) = 0;
 

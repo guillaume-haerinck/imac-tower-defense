@@ -19,7 +19,7 @@
 
 class Game; // Forward declaration
 
-enum LevelInteractionState {
+enum class LevelInteractionState {
 	FREE,
 	ROTATE,
 	INVALID,

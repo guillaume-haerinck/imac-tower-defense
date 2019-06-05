@@ -491,10 +491,10 @@ void DebugDrawService::setColor(float r, float g, float b, float a) { m_color = 
 
 Shader& DebugDrawService::getShader(BasicShaderType shaderType) {
 	switch (shaderType) {
-	case BASIC:
+	case BasicShaderType::BASIC:
 		return m_shaderBasic;
 		break;
-	case LASER:
+	case BasicShaderType::LASER:
 		return m_shaderLaser;
 		break;
 	}

@@ -39,7 +39,7 @@ public:
 	void circleExplosion(float x, float y, float r, float maxR) override;
 	void circleWithGlow(float x, float y, float r) override;
 	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) override;
-	void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BASIC) override;
+	void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BasicShaderType::BASIC) override;
 	void point(float x, float y) override;
 	void shape(glm::vec2* vertices) override;
 

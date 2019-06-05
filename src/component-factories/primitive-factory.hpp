@@ -9,7 +9,7 @@
 #include "components/primitive.hpp"
 #include "core/constants.hpp"
 
-enum PivotPoint {
+enum class PivotPoint {
 	CENTER,
 	MIDDLE_LEFT
 };
@@ -18,8 +18,8 @@ class PrimitiveFactory {
 public:
     PrimitiveFactory();
 
-    cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot = CENTER);
-    cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot = CENTER);
+    cmpt::Primitive createRect(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot = PivotPoint::CENTER);
+    cmpt::Primitive createRectOutline(glm::vec4 color, glm::vec2 displaySize, PivotPoint pivot = PivotPoint::CENTER);
 
     // TODO circle and line
 

@@ -10,7 +10,7 @@
 
 #include "core/level/level.hpp"
 
-enum EnemyType {
+enum class EnemyType {
 	ROBOT,
 	KAMIKAZE
 };

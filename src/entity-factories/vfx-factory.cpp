@@ -22,8 +22,8 @@
 VFXFactory::VFXFactory(entt::DefaultRegistry& registry)
 : Factory(registry)
 {
-	m_towerExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100),TOWER_EXPLOSION);
-	m_enemyExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100), ENEMY_EXPLOSION);
+	m_towerExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100), ShaderType::TOWER_EXPLOSION);
+	m_enemyExplosionSprite = m_spriteFactory.createAtlas("res/images/spritesheets/explosion0-100x100.png", glm::vec2(30.0f), glm::vec2(100, 100), ShaderType::ENEMY_EXPLOSION);
 	m_laserParticleSprite = m_spriteFactory.createSingle("res/images/textures/etincelle.png", glm::vec2(5.0f));
 }
 
@@ -35,9 +35,9 @@ VFXFactory::~VFXFactory() {
 	GLCall(glDeleteVertexArrays(1, &m_enemyExplosionSprite.vaID));
 }
 
-void VFXFactory::createExplosion(glm::vec2 pos, ShaderType type = ENEMY_EXPLOSION ) {
+void VFXFactory::createExplosion(glm::vec2 pos, ShaderType type = ShaderType::ENEMY_EXPLOSION ) {
 	auto myEntity = m_registry.create();
-	if (type == ENEMY_EXPLOSION) {
+	if (type == ShaderType::ENEMY_EXPLOSION) {
 		m_registry.assign<cmpt::Sprite>(myEntity, m_enemyExplosionSprite);
 	}
 	else {

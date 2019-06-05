@@ -16,7 +16,7 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 {
 	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
 		if (event.type == EnemyType::ROBOT) {
-			m_vfxFactory.createExplosion(event.position, ENEMY_EXPLOSION);
+			m_vfxFactory.createExplosion(event.position, ShaderType::ENEMY_EXPLOSION);
 		}
 		if (event.type == EnemyType::KAMIKAZE) {
 			m_vfxFactory.createKamikazeExplosion(event.position, KAMIKAZE_EXPLOSION_RADIUS);
@@ -24,7 +24,7 @@ AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& 
 	});
 
 	m_emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
-		m_vfxFactory.createExplosion(event.position, TOWER_EXPLOSION);
+		m_vfxFactory.createExplosion(event.position, ShaderType::TOWER_EXPLOSION);
 	});
 }
 

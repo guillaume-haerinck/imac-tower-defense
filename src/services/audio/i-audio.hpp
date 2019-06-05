@@ -1,6 +1,6 @@
 #pragma once
 
-enum audioFiles {
+enum class audioFiles {
 	CROWD_1
 };
 

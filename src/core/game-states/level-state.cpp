@@ -35,21 +35,21 @@ LevelState::LevelState(Game& game)
 
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		switch (m_state) {
-		case INVALID :
-		case FREE : 
+		case LevelInteractionState::INVALID :
+		case LevelInteractionState::FREE :
 			m_game.emitter.entityBeingPlaced = true;
 			this->m_constructType = event.type;
 			this->changeState(LevelInteractionState::BUILD);
 			unsigned int entityId;
 
 			switch (m_constructType) {
-			case MIRROR_BASIC:
+			case ConstructibleType::MIRROR_BASIC:
 				entityId = m_mirrorFactory.create(0, 0);
 				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
 				m_game.progression.addToMoney(-MIRROR_COST);
 				break;
 
-			case TOWER_LASER:
+			case ConstructibleType::TOWER_LASER:
 				entityId = m_towerFactory.createLaser(0, 0);
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
@@ -58,7 +58,7 @@ LevelState::LevelState(Game& game)
 				m_game.progression.addToMoney(-TOWER_LASER_COST);
 				break;
 
-			case TOWER_SLOW:
+			case ConstructibleType::TOWER_SLOW:
 				entityId = m_towerFactory.createSlow(0, 0);
 				m_game.registry.assign<stateTag::IsBeingControlled>(entityId);
 				m_game.registry.assign<positionTag::IsOnHoveredTile>(entityId);
@@ -110,22 +110,22 @@ LevelInteractionState LevelState::getInteractionState() const {
 void LevelState::changeState(LevelInteractionState state) {
 	// Exit current state
 	switch (m_state) {
-	case FREE:
+	case LevelInteractionState::FREE:
 		break;
 
-	case ROTATE:
+	case LevelInteractionState::ROTATE:
 		m_game.registry.remove<stateTag::IsBeingControlled>(m_lastSelectedEntity);
 		m_game.registry.remove<cmpt::LookAtMouse>(m_lastSelectedEntity);
 		break;
 
-	case INVALID:
+	case LevelInteractionState::INVALID:
 		break;
 
-	case OPTIONS:
+	case LevelInteractionState::OPTIONS:
 		m_levelHud.setOptionsVisibilityTo(false);
 		break;
 
-	case BUILD:
+	case LevelInteractionState::BUILD:
 		break;
 	default:
 		break;
@@ -133,25 +133,25 @@ void LevelState::changeState(LevelInteractionState state) {
 
 	// Enter new state
 	switch (state) {
-	case FREE:
+	case LevelInteractionState::FREE:
 		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
 		m_levelHud.setSelectedEntity(entt::null);
 		break;
 
-	case INVALID:
+	case LevelInteractionState::INVALID:
 		m_emitter.publish<evnt::ChangeCursor>(CursorType::NO);
 		m_levelHud.setSelectedEntity(entt::null);
 		break;
 
-	case ROTATE:
+	case LevelInteractionState::ROTATE:
 		m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
 		break;
 
-	case OPTIONS:
+	case LevelInteractionState::OPTIONS:
 		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
 		break;
 
-	case BUILD:
+	case LevelInteractionState::BUILD:
 		m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
 		break;
 
@@ -210,8 +210,8 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
-		case FREE:
-		case INVALID:
+		case LevelInteractionState::FREE:
+		case LevelInteractionState::INVALID:
 		{
 			// Get entity. If valid mirror rotate. If laser then switch on or off. Else invalid
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
@@ -236,15 +236,15 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 			break;
 		}
 
-		case ROTATE:
+		case LevelInteractionState::ROTATE:
 			break;
 
-		case OPTIONS:
+		case LevelInteractionState::OPTIONS:
 			// Click outside option menu closes it
 			changeState(LevelInteractionState::FREE);
 			break;
 
-		case BUILD:
+		case LevelInteractionState::BUILD:
 		{
 			// Build selected type on tile if valid
 			int tileId = m_game.level->getTileFromProjCoord(event.mousePos.x, event.mousePos.y);
@@ -325,10 +325,10 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
-		case FREE:
+		case LevelInteractionState::FREE:
 			break;
 
-		case ROTATE:
+		case LevelInteractionState::ROTATE:
 			// Stop rotating when mouse not pressed
 			changeState(LevelInteractionState::FREE);
 			if (m_game.registry.has<cmpt::ShootLaser>(m_lastSelectedEntity)) {
@@ -340,13 +340,13 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 			m_lastSelectedEntity = entt::null;
 			break;
 
-		case INVALID:
+		case LevelInteractionState::INVALID:
 			break;
 
-		case OPTIONS:
+		case LevelInteractionState::OPTIONS:
 			break;
 
-		case BUILD:
+		case LevelInteractionState::BUILD:
 			break;
 
 		default:
@@ -358,9 +358,9 @@ void LevelState::onLeftClickUp(const evnt::LeftClickUp& event) {
 void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
-		case FREE:
-		case INVALID:
-		case OPTIONS:
+		case LevelInteractionState::FREE:
+		case LevelInteractionState::INVALID:
+		case LevelInteractionState::OPTIONS:
 		{
 			// Get entity. If valid open options. Else Invalid
 			std::uint32_t entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
@@ -386,10 +386,10 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			break;
 		}
 
-		case ROTATE:
+		case LevelInteractionState::ROTATE:
 			break;
 
-		case BUILD:
+		case LevelInteractionState::BUILD:
 			break;
 
 		default:
@@ -404,7 +404,7 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 
 	if (m_game.emitter.focus == FocusMode::GAME) {
 		switch (m_state) {
-		case FREE:
+		case LevelInteractionState::FREE:
 		{
 			std::uint32_t entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(entityId)) {
@@ -420,17 +420,17 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 			break;
 		}
 
-		case ROTATE:
+		case LevelInteractionState::ROTATE:
 			m_game.emitter.publish<evnt::SelectRotation>(event.mousePos);
 			break;
 
-		case INVALID:
+		case LevelInteractionState::INVALID:
 			break;
 
-		case OPTIONS:
+		case LevelInteractionState::OPTIONS:
 			break;
 
-		case BUILD:
+		case LevelInteractionState::BUILD:
 			// TODO follow mouse with transparent entity to be built
 			break;
 		default:

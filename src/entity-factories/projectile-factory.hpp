@@ -4,7 +4,7 @@
 #include "component-factories/sprite-factory.hpp"
 #include "components/sprite.hpp"
 
-enum ProjectileType {
+enum class ProjectileType {
 	SLOW,
 	DAMAGE
 };

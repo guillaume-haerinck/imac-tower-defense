@@ -1,6 +1,6 @@
 #pragma once
 
-enum ConstructibleType {
+enum class ConstructibleType {
 	TOWER_LASER,
 	TOWER_SLOW,
 	MIRROR_BASIC

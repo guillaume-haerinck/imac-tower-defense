@@ -199,7 +199,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	launcherAlpha *= helper.getAlpha(launcherId);
 	alpha *= launcherAlpha;
 	debugDraw.setColor(col.r,col.g,col.b, alpha);
-	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y,LASER);
+	debugDraw.line(pos.x, pos.y, laserEnd.x, laserEnd.y, BasicShaderType::LASER);
 	if (nbBounce > 0) {
 		shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1 , nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled,col, launcherAlpha);
 	}

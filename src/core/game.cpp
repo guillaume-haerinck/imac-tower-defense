@@ -61,27 +61,27 @@ Game::Game(EventEmitter& emitter)
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
 		// Exit current state
 		switch (this->m_state) {
-		case CINEMATIC:
+		case GameState::CINEMATIC:
 			m_cinematicState->exit();
 			break;
 
-		case TITLE_SCREEN:
+		case GameState::TITLE_SCREEN:
 			m_titleState->exit();
 			break;
 
-		case LEVEL_INTRO:
+		case GameState::LEVEL_INTRO:
 			m_levelIntroState->exit();
 			break;
 
-		case LEVEL:
+		case GameState::LEVEL:
 			m_levelState->exit();
 			break;
 
-		case LEVEL_EXIT:
+		case GameState::LEVEL_EXIT:
 			m_levelExitState->exit();
 			break;
 
-		case GAME_OVER:
+		case GameState::GAME_OVER:
 			m_gameOverState->exit();
 			break;
 
@@ -91,28 +91,28 @@ Game::Game(EventEmitter& emitter)
 
 		// Enter new state
 		switch (event.state) {
-		case CINEMATIC:
+		case GameState::CINEMATIC:
 			if (m_cinematicState == nullptr) {
 				m_cinematicState = new CinematicState(*this);
 			}
 			m_cinematicState->enter();
 			break;
 
-		case TITLE_SCREEN:
+		case GameState::TITLE_SCREEN:
 			if (m_titleState == nullptr) {
 				m_titleState = new TitleScreenState(*this);
 			}
 			m_titleState->enter();
 			break;
 
-		case LEVEL_INTRO:
+		case GameState::LEVEL_INTRO:
 			if (m_levelIntroState == nullptr) {
 				m_levelIntroState = new LevelIntroState(*this);
 			}
 			m_levelIntroState->enter();
 			break;
 
-		case LEVEL:
+		case GameState::LEVEL:
 			if (m_levelState == nullptr) {
 				m_levelState = new LevelState(*this);
 			}
@@ -120,14 +120,14 @@ Game::Game(EventEmitter& emitter)
 			m_levelState->enter();
 			break;
 
-		case LEVEL_EXIT:
+		case GameState::LEVEL_EXIT:
 			if (m_levelExitState == nullptr) {
 				m_levelExitState = new LevelExitState(*this);
 			}
 			m_levelExitState->enter();
 			break;
 
-		case GAME_OVER:
+		case GameState::GAME_OVER:
 			if (m_gameOverState == nullptr) {
 				m_gameOverState = new GameOverState(*this);
 			}
@@ -271,32 +271,32 @@ int Game::init() {
 
 	// Init current state
 	switch (this->m_state) {
-	case CINEMATIC:
+	case GameState::CINEMATIC:
 		m_cinematicState = new CinematicState(*this);
 		m_cinematicState->enter();
 		break;
 
-	case TITLE_SCREEN:
+	case GameState::TITLE_SCREEN:
 		m_titleState = new TitleScreenState(*this);
 		m_titleState->enter();
 		break;
 
-	case LEVEL_INTRO:
+	case GameState::LEVEL_INTRO:
 		m_levelIntroState = new LevelIntroState(*this);
 		m_levelIntroState->enter();
 		break;
 
-	case LEVEL:
+	case GameState::LEVEL:
 		m_levelState = new LevelState(*this);
 		m_levelState->enter();
 		break;
 
-	case LEVEL_EXIT:
+	case GameState::LEVEL_EXIT:
 		m_levelExitState = new LevelExitState(*this);
 		m_levelExitState->enter();
 		break;
 
-	case GAME_OVER:
+	case GameState::GAME_OVER:
 		m_gameOverState = new GameOverState(*this);
 		m_gameOverState->enter();
 		break;
@@ -308,28 +308,28 @@ int Game::init() {
 
 void Game::update(float deltatime) {
 	switch (m_state) {
-	case CINEMATIC:
+	case GameState::CINEMATIC:
 		break;
 
-	case TITLE_SCREEN:
+	case GameState::TITLE_SCREEN:
 		m_titleState->update(deltatime);
 		break;
 
-	case LEVEL_INTRO:
+	case GameState::LEVEL_INTRO:
 		m_levelIntroState->update(deltatime);
 		break;
 
-	case LEVEL:
+	case GameState::LEVEL:
 		m_levelState->update(deltatime);
 		//level->drawGraph();
 		//level->drawGrid();
 		break;
 
-	case LEVEL_EXIT:
+	case GameState::LEVEL_EXIT:
 		m_levelExitState->update(deltatime);
 		break;
 
-	case GAME_OVER:
+	case GameState::GAME_OVER:
 		m_gameOverState->update(deltatime);
 		break;
 

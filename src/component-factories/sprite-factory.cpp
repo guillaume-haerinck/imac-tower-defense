@@ -61,7 +61,7 @@ cmpt::Sprite SpriteFactory::createSingle(const std::string& textureFilepath, glm
 }
 
 cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize) {
-	return createAtlas(textureFilepath, displaySize, tileSize, BASIC_ATLAS);
+	return createAtlas(textureFilepath, displaySize, tileSize, ShaderType::BASIC_ATLAS);
 }
 
 cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm::vec2 displaySize, glm::vec2 tileSize, ShaderType shaderType) {
@@ -108,16 +108,16 @@ cmpt::Sprite SpriteFactory::createAtlas(const std::string& textureFilepath, glm:
 
 Shader& SpriteFactory::getShader(ShaderType shaderType) {
 	switch (shaderType) {
-	case BASIC_SINGLE :
+	case ShaderType::BASIC_SINGLE :
 		return m_shaderTex;
 		break;
-	case BASIC_ATLAS :
+	case ShaderType::BASIC_ATLAS :
 		return m_shaderTexArray;
 		break;
-	case TOWER_EXPLOSION :
+	case ShaderType::TOWER_EXPLOSION :
 		return m_towerExplosionShader;
 		break;
-	case ENEMY_EXPLOSION:
+	case ShaderType::ENEMY_EXPLOSION:
 		return m_enemyExplosionShader;
 		break;
 	}

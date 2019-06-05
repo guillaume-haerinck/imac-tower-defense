@@ -6,7 +6,7 @@
 #include "graphics/index-buffer.hpp"
 #include "components/sprite.hpp"
 
-enum ShaderType {
+enum class ShaderType {
 	BASIC_SINGLE,
 	BASIC_ATLAS,
 	TOWER_EXPLOSION,

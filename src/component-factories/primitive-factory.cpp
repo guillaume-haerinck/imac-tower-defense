@@ -62,7 +62,7 @@ std::array<float, 8> PrimitiveFactory::getVertexPositions(glm::vec2 displaySize,
 	displaySize /= 2;
 
 	switch (pivot) {
-		case MIDDLE_LEFT:
+	case PivotPoint::MIDDLE_LEFT:
 		{
 			const std::array<float, 8> vertexPositions = {
 				 0,					 displaySize.y, // 0

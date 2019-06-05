@@ -3,13 +3,13 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
-enum FocusMode {
+enum class FocusMode {
 	GAME,
 	HUD
 };
 
 struct EventEmitter : entt::Emitter<EventEmitter> {
-	EventEmitter() : focus(GAME) , entityBeingPlaced(false) {}
+	EventEmitter() : focus(FocusMode::GAME) , entityBeingPlaced(false) {}
 	FocusMode focus;
 	glm::vec2 mousePos;
 	bool entityBeingPlaced;

@@ -4,7 +4,7 @@
 
 class Game; // Forward declaration
 
-enum GameState {
+enum class GameState {
 	CINEMATIC,
 	TITLE_SCREEN,
 	LEVEL_INTRO,
