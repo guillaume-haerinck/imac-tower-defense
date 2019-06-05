@@ -6,7 +6,7 @@
 #include "core/constants.hpp"
 #include "core/game.hpp"
 
-LevelExitState::LevelExitState(Game& game) : IGameState(game), m_levelExit(game.emitter)
+LevelExitState::LevelExitState(Game& game) : IGameState(game), m_levelExit(game.emitter, game.progression)
 {
 	m_xaml = m_levelExit;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();

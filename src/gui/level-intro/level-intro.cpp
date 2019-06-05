@@ -1,7 +1,9 @@
 #include "level-intro.hpp"
 
 #include <NsGui/Button.h>
+
 #include "events/change-game-state.hpp"
+#include "events/progression-updated.hpp"
 #include "core/game-states/i-game-state.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelIntro) {
@@ -12,6 +14,10 @@ LevelIntro::LevelIntro(EventEmitter& emitter, Progression& progression) : m_emit
 	m_bindings = *new LevelIntroBindings();
 	Initialized() += MakeDelegate(this, &LevelIntro::OnInitialized);
 	InitializeComponent();
+
+	m_emitter.on<evnt::ProgressionUpdated>([this](const evnt::ProgressionUpdated & event, EventEmitter & emitter) {
+
+	});
 }
 
 void LevelIntro::InitializeComponent() {

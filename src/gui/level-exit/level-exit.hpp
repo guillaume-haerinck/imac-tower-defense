@@ -6,10 +6,11 @@
 #include <glm/glm.hpp>
 
 #include "events/handlers/event-emitter.hpp"
+#include "core/progression.hpp"
 
 class LevelExit : public Noesis::Grid {
 public:
-	LevelExit(EventEmitter& emitter);
+	LevelExit(EventEmitter& emitter, Progression& progression);
 
 private:
 	// Events
@@ -20,5 +21,7 @@ private:
 
 private:
 	NS_DECLARE_REFLECTION(LevelExit, Grid);
+
 	EventEmitter& m_emitter;
+	Progression& m_progression;
 };

@@ -9,6 +9,7 @@
 #include "core/game-states/i-game-state.hpp"
 #include "events/interactions/construct-selection.hpp"
 #include "events/interactions/delete-entity.hpp"
+#include "events/progression-updated.hpp"
 #include "events/wave-updated.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelHud) {
@@ -20,6 +21,18 @@ LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(
 	m_bindings = *new LevelHudBindings();
 	Initialized() += MakeDelegate(this, &LevelHud::OnInitialized);
 	InitializeComponent();
+
+	std::string life = std::to_string(m_progression.getLife()) + " / " + std::to_string(m_progression.getMaxLife());
+	m_bindings->setLife(life.c_str());
+	m_bindings->setMirrorNumber(std::to_string(m_progression.getMirrorNumbers()).c_str());
+	m_bindings->setSlowNumber(std::to_string(m_progression.getSlowNumbers()).c_str());
+
+	m_emitter.on<evnt::ProgressionUpdated>([this](const evnt::ProgressionUpdated & event, EventEmitter & emitter) {
+		std::string life = std::to_string(this->m_progression.getLife()) + " / " + std::to_string(this->m_progression.getMaxLife());
+		this->m_bindings->setLife(life.c_str());
+		this->m_bindings->setMirrorNumber(std::to_string(this->m_progression.getMirrorNumbers()).c_str());
+		this->m_bindings->setSlowNumber(std::to_string(this->m_progression.getSlowNumbers()).c_str());
+	});
 
 	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
 		switch (event.state) {

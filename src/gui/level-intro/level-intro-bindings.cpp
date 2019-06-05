@@ -18,46 +18,37 @@ NS_IMPLEMENT_REFLECTION(LevelIntroBindings) {
 }
 
 LevelIntroBindings::LevelIntroBindings() : m_title("LEVEL I"), m_imagePath(""), m_text("Good luck !") {
-	/*
-	std::string text = std::to_string(this->m_progression.getMoney());
-	this->SetOutput(text.c_str());
-
-	m_emitter.on<evnt::ProgressionUpdated>([this](const evnt::ProgressionUpdated & event, EventEmitter & emitter) {
-		std::string text = std::to_string(this->m_progression.getMoney());
-		this->SetOutput(text.c_str());
-		});
-	*/
 }
 
 const char* LevelIntroBindings::getTitle() const {
-	return m_title;
+	return m_title.c_str();
 }
 
 void LevelIntroBindings::setTitle(const char* value) {
-	if (!Noesis::String::Equals(m_title, value)) {
-		Noesis::String::Copy(m_title, sizeof(m_title), value);
+	if (m_title != value) {
+		m_title = value;
 		OnPropertyChanged("Title");
 	}
 }
 
 const char* LevelIntroBindings::getImagePath() const {
-	return m_imagePath;
+	return m_imagePath.c_str();
 }
 
 void LevelIntroBindings::setImagePath(const char* value) {
-	if (!Noesis::String::Equals(m_imagePath, value)) {
-		Noesis::String::Copy(m_imagePath, sizeof(m_imagePath), value);
+	if (m_imagePath != value) {
+		m_imagePath = value;
 		OnPropertyChanged("ImagePath");
 	}
 }
 
 const char* LevelIntroBindings::getText() const {
-	return m_text;
+	return m_text.c_str();
 }
 
 void LevelIntroBindings::setText(const char* value) {
-	if (!Noesis::String::Equals(m_text, value)) {
-		Noesis::String::Copy(m_text, sizeof(m_text), value);
+	if (m_text != value) {
+		m_text = value;
 		OnPropertyChanged("Text");
 	}
 }

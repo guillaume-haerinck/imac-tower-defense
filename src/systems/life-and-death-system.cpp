@@ -72,7 +72,7 @@ void LifeAndDeathSystem::update(float deltatime) {
 				else if (m_registry.has<enemyTag::Kamikaze>(entity)) {
 					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);
 				}
-				m_progression.addToMoney(ENEMY_MONEY_VALUE);
+				m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
 			}
 			//Tower
 			else if (m_registry.has<entityTag::Tower>(entity)) {

@@ -8,11 +8,12 @@
 #include "entity-factories/tile-factory.hpp"
 #include "entity-factories/tower-factory.hpp"
 #include "entity-factories/mirror-factory.hpp"
+#include "core/progression.hpp"
 #include "graph.hpp"
 
 class Level {
 public:
-	Level(entt::DefaultRegistry& registry, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale);
+	Level(entt::DefaultRegistry& registry, Progression& progression, unsigned int levelNumber, glm::vec2& viewTranslation, float& viewScale);
 	~Level();
 
 	// Position interpolation
@@ -68,12 +69,6 @@ private:
 	std::string m_mapPath;
 	std::string m_itdPath;
 	std::string m_backgroundImgPath;
-	std::string m_introImgPath;
-	std::string m_introText;
-	std::string m_exitText;
-	float m_maxLife;
-	int m_maxLaserNumber;
-	int m_maxMirrorNumber;
 
 	// Level details
 	std::vector<std::uint32_t> m_grid;
@@ -82,6 +77,7 @@ private:
 
 	// Aggregation
 	entt::DefaultRegistry& m_registry;
+	Progression& m_progression;
 	TileFactory m_tileFactory;
 	TowerFactory m_towerFactory;
 	MirrorFactory m_mirrorFactory;

@@ -253,7 +253,7 @@ int Game::init() {
 	locator::helper::set<HelperService>();
 
 	// Level
-	level = new Level(registry, 1, m_viewTranslation, m_viewScale);
+	level = new Level(registry, progression, 1, m_viewTranslation, m_viewScale);
 
 	// Special service helper
 	IHelper& helper = locator::helper::ref();

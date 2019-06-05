@@ -73,7 +73,6 @@ int main(int argc, char** argv) {
 			ImGui::NewFrame();
 			ImGui::Begin("Main debug window");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::Text("Current money : %.d", game.progression.getMoney());
 
 			if (game.m_levelState != nullptr) {
 				switch (game.m_levelState->getInteractionState()) {

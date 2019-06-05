@@ -1,13 +1,9 @@
 #pragma once
 
-#include <NsGui/StackPanel.h>
+#include <NsGui/Grid.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsApp/DelegateCommand.h>
 #include <NsApp/NotifyPropertyChangedBase.h>
-#include <entt/entt.hpp>
-
-#include "events/handlers/event-emitter.hpp"
-#include "core/progression.hpp"
 
 class LevelIntroBindings : public NoesisApp::NotifyPropertyChangedBase {
 public:
@@ -25,7 +21,7 @@ public:
 private:
 	NS_DECLARE_REFLECTION(LevelIntroBindings, NotifyPropertyChangedBase)
 
-	char m_title[256];
-	char m_text[256];
-	char m_imagePath[256];
+	NsString m_title;
+	NsString m_text;
+	NsString m_imagePath;
 };

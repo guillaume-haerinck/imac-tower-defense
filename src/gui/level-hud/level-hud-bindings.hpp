@@ -1,14 +1,9 @@
 #pragma once
 
-#include <NsGui/StackPanel.h>
+#include <NsGui/Grid.h>
 #include <NsGui/IntegrationAPI.h>
 #include <NsApp/DelegateCommand.h>
 #include <NsApp/NotifyPropertyChangedBase.h>
-#include <entt/entt.hpp>
-
-#include "events/handlers/event-emitter.hpp"
-#include "core/progression.hpp"
-
 
 class LevelHudBindings : public NoesisApp::NotifyPropertyChangedBase {
 public:

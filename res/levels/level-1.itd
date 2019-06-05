@@ -14,7 +14,7 @@ in 0 200 0
 out 200 0 0
 
 energie 100
-max-laser 5
+max-slow 5
 max-mirror 6
 
 build-laser 7 2 0
