@@ -33,7 +33,8 @@ const float SLOW_PROJECTILE_VELOCITY = 1.0f;
 const float TOWER_SLOW_AMOUNT = 0.4;
 const float SLOW_DURATION = 4;
 
-const float TARGET_DELTA_MS = 1000.0f / 60.0f; // 60 FPS
+const float FRAMERATE = 60.0f;
+const float TARGET_DELTA_MS = 1000.0f / FRAMERATE; // 60 FPS
 const float MAX_DELTA_MS = 1000.0f; // one second
 
 const int Z_INDEX_MAP = -9;

@@ -27,12 +27,6 @@ enum LevelInteractionState {
 	BUILD
 };
 
-enum GameplayState {
-	PLAY,
-	WIN,
-	LOOSE
-};
-
 class LevelState : public IGameState {
 public:
 	LevelState(Game& game);
@@ -41,8 +35,6 @@ public:
 	void enter() override;
 	void update(float deltatime) override;
 	void exit() override;
-
-	GameplayState checkVictoryConditions();
 
 	// Events
 	void onLeftClickUp(const evnt::LeftClickUp& event) override;
