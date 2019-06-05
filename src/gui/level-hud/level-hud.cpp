@@ -9,6 +9,7 @@
 #include "core/game-states/i-game-state.hpp"
 #include "events/interactions/construct-selection.hpp"
 #include "events/interactions/delete-entity.hpp"
+#include "events/wave-updated.hpp"
 
 NS_IMPLEMENT_REFLECTION(LevelHud) {
 	NsMeta<Noesis::TypeId>("LevelHud");
@@ -19,6 +20,25 @@ LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(
 	m_bindings = *new LevelHudBindings();
 	Initialized() += MakeDelegate(this, &LevelHud::OnInitialized);
 	InitializeComponent();
+
+	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
+		switch (event.state) {
+		case WaveState::PENDING:
+			this->m_bindings->setTimer(std::to_string(event.timer).c_str());
+			break;
+
+		case WaveState::DURING:
+			this->m_bindings->setTimer("ALMOST DONE !");
+			break;
+
+		case WaveState::NO:
+			this->m_bindings->setTimer("-");
+			break;
+
+		default:
+			break;
+		}
+	});
 }
 
 void LevelHud::InitializeComponent() {

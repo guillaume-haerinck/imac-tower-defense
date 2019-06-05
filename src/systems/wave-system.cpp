@@ -10,7 +10,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
 		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
-		this->m_secondsUntilWaveStart = 0;
+		this->m_secondsUntilWaveStart = 30;
 	});
 }
 

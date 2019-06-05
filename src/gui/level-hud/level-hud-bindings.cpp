@@ -26,7 +26,7 @@ NS_IMPLEMENT_REFLECTION(LevelHudBindings) {
 LevelHudBindings::LevelHudBindings()
 : m_optionsVisibility("Visible"), m_optionsPosX(0.0f), m_optionsPosY(-500.0f),
   m_startWaveBtnVisibility("Visible"), m_startWaveBtnPosY(0.0f),
-  m_timer("-"), m_life("100 / 100"), m_mirrorNumber("-"), m_slowNumber("-")
+  m_timer("5"), m_life("100 / 100"), m_mirrorNumber("-"), m_slowNumber("-")
 {
 	/*
 	std::string text = std::to_string(this->m_progression.getMoney());
@@ -111,12 +111,12 @@ float LevelHudBindings::getStartWaveBtnPosY() const {
 }
 
 const char* LevelHudBindings::getTimer() const {
-	return m_timer;
+	return m_timer.c_str();
 }
 
 void LevelHudBindings::setTimer(const char* value) {
-	if (!Noesis::String::Equals(m_timer, value)) {
-		Noesis::String::Copy(m_timer, sizeof(m_timer), value);
+	if (m_timer != value) {
+		m_timer = value;
 		OnPropertyChanged("Timer");
 	}
 }

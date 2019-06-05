@@ -112,8 +112,8 @@
     </Grid.ColumnDefinitions>
 
     <Image  Grid.Column="0" Source="../images/icons/heart.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
-    <TextBlock  Grid.Column="1" x:Name="textBlock" TextWrapping="Wrap" Text="{Binding Life}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,13.186,0,13.187" FontFamily="./#Sniglet" FontSize="16"/>
+    <TextBlock  Grid.Column="1" x:Name="textBlock" TextWrapping="Wrap" Text="{Binding Timer}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,13.186,0,13.187" FontFamily="./#Sniglet" FontSize="16"/>
     <Image  Grid.Column="3" Source="../images/icons/clock.png" OpacityMask="{x:Null}" Margin="0,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Width="35"/>
-    <TextBlock  Grid.Column="4" x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Timer}" VerticalAlignment="Center" Height="15.96" Margin="0,13.186,0,13.187" Width="49.29" FontFamily="./#Sniglet" FontSize="16"/>
+    <TextBlock  Grid.Column="4" x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Life}" VerticalAlignment="Center" Height="15.96" Margin="0,13.186,0,13.187" Width="49.29" FontFamily="./#Sniglet" FontSize="16"/>
   </Grid>
 </Grid>

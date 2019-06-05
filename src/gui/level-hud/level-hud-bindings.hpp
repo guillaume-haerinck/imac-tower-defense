@@ -52,7 +52,7 @@ private:
 	char m_optionsVisibility[256];
 	char m_startWaveBtnVisibility[256];
 	float m_startWaveBtnPosY;
-	char m_timer[256];
+	NsString m_timer;
 	char m_life[256];
 	char m_mirrorNumber[256];
 	char m_slowNumber[256];
