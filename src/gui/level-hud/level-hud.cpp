@@ -43,7 +43,7 @@ LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(
 			break;
 
 		case WaveState::NO:
-			this->m_bindings->setTimer("Kill what remains");
+			this->m_bindings->setTimer("-");
 			break;
 
 		default:

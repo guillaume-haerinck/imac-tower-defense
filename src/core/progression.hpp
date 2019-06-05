@@ -29,6 +29,7 @@ public:
 
 	void setMirrorNumber(int value);
 	void reduceMirrorNumberBy1();
+	void increaseMirrorNumberBy1();
 	int getMirrorNumbers();
 
 	void setMaxSlowNumber(int value);
@@ -36,6 +37,7 @@ public:
 
 	void setSlowNumber(int value);
 	void reduceSlowNumberBy1();
+	void increaseSlowNumberBy1();
 	int getSlowNumbers();
 
 	void setLevelNumber(int value);

@@ -78,6 +78,13 @@ LevelState::LevelState(Game& game)
 			this->m_game.registry.assign<cmpt::Animated>(event.entityId,1,true);
 			this->m_game.registry.assign<cmpt::AnimationAlpha>(event.entityId,false);
 
+			if (this->m_game.registry.has<entityTag::Mirror>(event.entityId)) {
+				this->m_game.progression.increaseMirrorNumberBy1();
+			}
+			if (this->m_game.registry.has<entityTag::Tower>(event.entityId)) {
+				this->m_game.progression.increaseSlowNumberBy1();
+			}
+
 			std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(position.x / WIN_RATIO, position.y);
 			this->m_game.registry.assign<tileTag::Constructible>(tileId);
 			this->m_game.registry.remove<cmpt::EntityOnTile>(tileId);
@@ -374,8 +381,10 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					m_levelHud.setOptionsPosition(posWindow);
-				} else if (m_game.registry.has<entityTag::Tower>(entityId)) {
+				} else if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
 					m_levelHud.setOptionsPosition(posWindow);
+				} else {
+					changeState(LevelInteractionState::INVALID);
 				}
 			}
 			else {
@@ -409,7 +418,7 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 			if (m_game.registry.valid(entityId)) {
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
-				} else if (m_game.registry.has<entityTag::Tower>(entityId)) {
+				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
 					// TODO handle activated and desactivated towers
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
 				}

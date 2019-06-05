@@ -74,6 +74,12 @@ void Progression::reduceMirrorNumberBy1() {
 		m_emitter.publish<evnt::ProgressionUpdated>();
 	}
 }
+void Progression::increaseMirrorNumberBy1() {
+	if (m_mirrorNumber < m_maxMirrorNumber) {
+		m_mirrorNumber++;
+		m_emitter.publish<evnt::ProgressionUpdated>();
+	}
+}
 int Progression::getMirrorNumbers() {
 	return m_mirrorNumber;
 }
@@ -92,6 +98,12 @@ void Progression::setSlowNumber(int value) {
 void Progression::reduceSlowNumberBy1() {
 	if (m_slowNumber >= 0) {
 		m_slowNumber--;
+		m_emitter.publish<evnt::ProgressionUpdated>();
+	}
+}
+void Progression::increaseSlowNumberBy1() {
+	if (m_slowNumber < m_maxSlowNumber) {
+		m_slowNumber++;
 		m_emitter.publish<evnt::ProgressionUpdated>();
 	}
 }

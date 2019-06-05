@@ -13,7 +13,7 @@ namespace renderOrderTag {
 	TAG(o_Enemy2); //For enemy eye
 	TAG(o_Projectile);
 	TAG(o_VFX);
-}
+};
 
 namespace renderTag {
     TAG(Atlas);
@@ -24,12 +24,12 @@ namespace renderTag {
 namespace tileTag {
 	TAG(Constructible);
 	TAG(Path);
-}
+};
 
 namespace targetingTag {
 	TAG(LookAt);
 	TAG(Follow);
-}
+};
 
 namespace entityTag {
 	TAG(Tower);
@@ -37,23 +37,28 @@ namespace entityTag {
 	TAG(Enemy);
 	TAG(SlowProjectile);
 	TAG(Tile);
-}
+};
+
+namespace towerTag {
+	TAG(SlowTower);
+	TAG(LaserTower);
+};
 
 namespace enemyTag {
 	TAG(Robot);
 	TAG(Kamikaze);
-}
+};
 
 namespace projectileType {
 	TAG(Slow);
 	TAG(Damage);
-}
+};
 
 namespace stateTag {
 	TAG(IsBeingControlled);
 	TAG(RotateableByMouse);
-}
+};
 
 namespace positionTag {
 	TAG(IsOnHoveredTile);
-}
+};
