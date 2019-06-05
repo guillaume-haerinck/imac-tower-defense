@@ -5,12 +5,13 @@
 
 WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
 : ISystem(registry, emitter), m_enemyFactory(registry, level), m_waveState(WaveState::NO),
-  m_frameCount(0), m_secondsUntilWaveStart(0), m_timeUntilNextSpawn(0)
+  m_frameCount(0), m_timer(0), m_spawnRate(0)
 {
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
 		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
-		this->m_secondsUntilWaveStart = 30;
+		this->m_spawnRate = event.spawnRate;
+		this->m_timer = 3; // Time for the animation
 	});
 }
 
@@ -22,23 +23,26 @@ void WaveSystem::update(float deltatime) {
 	case WaveState::PENDING:
 		m_frameCount++;
 		if (m_frameCount >= FRAMERATE) {
-			m_secondsUntilWaveStart--;
+			m_timer--;
 			m_frameCount = 0;
-			m_emitter.publish<evnt::WaveUpdated>(m_secondsUntilWaveStart, m_waveState);
+			m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
 		}
-		if (m_secondsUntilWaveStart <= 0) {
+		if (m_timer <= 0) {
 			m_waveState = WaveState::DURING;
+			m_timer = m_nbEnemyRemaingToSpawn * m_spawnRate;
 		}
 		break;
 
 	case WaveState::DURING:
-		m_timeUntilNextSpawn--;
-		if (m_timeUntilNextSpawn <= 0) {
+		m_frameCount++;
+		if (m_frameCount >= FRAMERATE) {
+			// Spawn one robot per second
+			m_frameCount = 0;
+			m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
 			m_enemyFactory.createRobot();
-			m_nbEnemyRemaingToSpawn--;
-			m_timeUntilNextSpawn = FRAMERATE / 2;
+			m_timer--;
 		}
-		if (m_nbEnemyRemaingToSpawn <= 0) {
+		if (m_timer <= 0) {
 			m_waveState = WaveState::NO;
 			m_emitter.publish<evnt::WaveUpdated>(0, m_waveState);
 		}

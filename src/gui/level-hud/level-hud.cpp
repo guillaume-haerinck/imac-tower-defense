@@ -24,15 +24,15 @@ LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(
 	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
 		switch (event.state) {
 		case WaveState::PENDING:
-			this->m_bindings->setTimer(std::to_string(event.timer).c_str());
+			this->m_bindings->setTimer("Get ready...");
 			break;
 
 		case WaveState::DURING:
-			this->m_bindings->setTimer("ALMOST DONE !");
+			this->m_bindings->setTimer(std::to_string(event.timer).c_str());
 			break;
 
 		case WaveState::NO:
-			this->m_bindings->setTimer("-");
+			this->m_bindings->setTimer("Kill what remains");
 			break;
 
 		default:

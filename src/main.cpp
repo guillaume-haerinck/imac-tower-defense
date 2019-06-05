@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
 			}
 			
 			if (ImGui::Button("Send wave event")) {
-				emitter.publish<evnt::StartWave>(10);
+				emitter.publish<evnt::StartWave>(10, 2);
 			}
 
 			if (ImGui::Button("Load level 1")) {

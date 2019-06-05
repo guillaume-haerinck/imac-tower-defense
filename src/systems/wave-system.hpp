@@ -23,7 +23,7 @@ private:
 	EnemyFactory m_enemyFactory;
 	WaveState m_waveState;
 	unsigned int m_frameCount;
-	int m_secondsUntilWaveStart;
-	int m_timeUntilNextSpawn;
+	int m_timer;
+	int m_spawnRate;
 	int m_nbEnemyRemaingToSpawn;
 };

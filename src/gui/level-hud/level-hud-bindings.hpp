@@ -49,11 +49,11 @@ private:
 
 	float m_optionsPosX;
 	float m_optionsPosY;
-	char m_optionsVisibility[256];
-	char m_startWaveBtnVisibility[256];
+	NsString m_optionsVisibility;
+	NsString m_startWaveBtnVisibility;
 	float m_startWaveBtnPosY;
 	NsString m_timer;
-	char m_life[256];
-	char m_mirrorNumber[256];
-	char m_slowNumber[256];
+	NsString m_life;
+	NsString m_mirrorNumber;
+	NsString m_slowNumber;
 };

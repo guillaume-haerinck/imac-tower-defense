@@ -26,7 +26,7 @@ NS_IMPLEMENT_REFLECTION(LevelHudBindings) {
 LevelHudBindings::LevelHudBindings()
 : m_optionsVisibility("Visible"), m_optionsPosX(0.0f), m_optionsPosY(-500.0f),
   m_startWaveBtnVisibility("Visible"), m_startWaveBtnPosY(0.0f),
-  m_timer("5"), m_life("100 / 100"), m_mirrorNumber("-"), m_slowNumber("-")
+  m_timer("-"), m_life("-"), m_mirrorNumber("-"), m_slowNumber("-")
 {
 	/*
 	std::string text = std::to_string(this->m_progression.getMoney());
@@ -65,13 +65,13 @@ float LevelHudBindings::getOptionsPosY() const {
 
 
 const char* LevelHudBindings::getOptionsVisibility() const {
-	return m_optionsVisibility;
+	return m_optionsVisibility.c_str();
 }
 
 void LevelHudBindings::setOptionsVisibility(const char* value) {
-	if (!Noesis::String::Equals(m_optionsVisibility, value)) {
-		Noesis::String::Copy(m_optionsVisibility, sizeof(m_optionsVisibility), value);
-		//OnPropertyChanged("Visibitity");
+	if (m_optionsVisibility != value) {
+		m_optionsVisibility = value;
+		// OnPropertyChanged("Visibitity");
 
 		// Temp fix because does not work at runtime
 		if (Noesis::String::Equals("Collapsed", value)) {
@@ -83,13 +83,13 @@ void LevelHudBindings::setOptionsVisibility(const char* value) {
 
 /* ------------------- TopBar ---------------------- */
 const char* LevelHudBindings::getStartWaveBtnVisibility() const {
-	return m_startWaveBtnVisibility;
+	return m_startWaveBtnVisibility.c_str();
 }
 
 void LevelHudBindings::setStartWaveBtnVisibility(const char* value) {
-	if (!Noesis::String::Equals(m_startWaveBtnVisibility, value)) {
-		Noesis::String::Copy(m_startWaveBtnVisibility, sizeof(m_startWaveBtnVisibility), value);
-		//OnPropertyChanged("Visibitity");
+	if (m_startWaveBtnVisibility != value) {
+		m_startWaveBtnVisibility = value;
+		// OnPropertyChanged("Visibitity");
 
 		// Temp fix because does not work at runtime
 		if (Noesis::String::Equals("Collapsed", value)) {
@@ -122,12 +122,12 @@ void LevelHudBindings::setTimer(const char* value) {
 }
 
 const char* LevelHudBindings::getLife() const {
-	return m_life;
+	return m_life.c_str();
 }
 
 void LevelHudBindings::setLife(const char* value) {
-	if (!Noesis::String::Equals(m_life, value)) {
-		Noesis::String::Copy(m_life, sizeof(m_life), value);
+	if (m_life != value) {
+		m_life = value;
 		OnPropertyChanged("Life");
 	}
 }
@@ -135,23 +135,23 @@ void LevelHudBindings::setLife(const char* value) {
 /* ------------ BottomBar ------------------ */
 
 const char* LevelHudBindings::getMirrorNumber() const {
-	return m_mirrorNumber;
+	return m_mirrorNumber.c_str();
 }
 
 void LevelHudBindings::setMirrorNumber(const char* value) {
-	if (!Noesis::String::Equals(m_mirrorNumber, value)) {
-		Noesis::String::Copy(m_mirrorNumber, sizeof(m_mirrorNumber), value);
+	if (m_mirrorNumber != value) {
+		m_mirrorNumber = value;
 		OnPropertyChanged("MirrorNumber");
 	}
 }
 
 const char* LevelHudBindings::getSlowNumber() const {
-	return m_slowNumber;
+	return m_slowNumber.c_str();
 }
 
 void LevelHudBindings::setSlowNumber(const char* value) {
-	if (!Noesis::String::Equals(m_slowNumber, value)) {
-		Noesis::String::Copy(m_slowNumber, sizeof(m_slowNumber), value);
+	if (m_slowNumber != value) {
+		m_slowNumber = value;
 		OnPropertyChanged("SlowNumber");
 	}
 }

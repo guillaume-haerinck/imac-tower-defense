@@ -2,8 +2,9 @@
 
 namespace evnt {
 	struct StartWave {
-		StartWave(int nbEnemyToSpawn) : nbEnemyToSpawn(nbEnemyToSpawn) {}
+		StartWave(int nbEnemyToSpawn, int spawnRate) : nbEnemyToSpawn(nbEnemyToSpawn), spawnRate(spawnRate) {}
 
 		int nbEnemyToSpawn;
+		int spawnRate;
 	};
 }
