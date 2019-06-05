@@ -56,6 +56,9 @@ void LifeAndDeathSystem::update(float deltatime) {
 			m_registry.reset<cmpt::AnimationAlpha>(entity);
 			//Destroy entity if it was a disappear animation
 			if (destroyEntity) {
+				if (m_registry.has<entityTag::Enemy>(entity)) {
+					m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
+				}
 				m_registry.destroy(entity);
 			}
 		}
@@ -72,7 +75,6 @@ void LifeAndDeathSystem::update(float deltatime) {
 				else if (m_registry.has<enemyTag::Kamikaze>(entity)) {
 					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);
 				}
-				m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
 			}
 			//Tower
 			else if (m_registry.has<entityTag::Tower>(entity)) {

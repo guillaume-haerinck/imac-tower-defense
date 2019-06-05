@@ -98,3 +98,10 @@ void Progression::reduceSlowNumberBy1() {
 int Progression::getSlowNumbers() {
 	return m_slowNumber;
 }
+
+void Progression::setLevelNumber(int value) {
+	m_levelNumber = value;
+}
+int Progression::getLevelNumber() {
+	return m_levelNumber;
+}

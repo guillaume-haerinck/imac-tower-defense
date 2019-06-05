@@ -49,6 +49,7 @@ void Level::updateTileSystem() const {
 /* ----------------------- PUBLIC SETTERS --------------------------------- */
 
 void Level::setLevel(unsigned int number) {
+	m_progression.setLevelNumber(number);
 	m_itdPath = "res/levels/level-";
 	m_itdPath += std::to_string(number);
 	m_itdPath += ".itd";

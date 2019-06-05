@@ -38,6 +38,9 @@ public:
 	void reduceSlowNumberBy1();
 	int getSlowNumbers();
 
+	void setLevelNumber(int value);
+	int getLevelNumber();
+
 private:
 	EventEmitter& m_emitter;
 
@@ -50,4 +53,5 @@ private:
 	int m_slowNumber;
 	int m_maxMirrorNumber;
 	int m_mirrorNumber;
+	int m_levelNumber;
 };
