@@ -155,6 +155,10 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 							t = sqrt(dSq2);
 							laserEnd = mirrorPt2;
 						}
+						/*glm::vec2 dir = mirrorPos - pos;
+						float distToMirrorCenter = sqrt(dir.x*dir.x + dir.y*dir.y);
+						t = distToMirrorCenter - MIRROR_RADIUS;
+						laserEnd = pos + (1- MIRROR_RADIUS/ distToMirrorCenter)*dir;*/
 						mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
 						nextLauncherId = mirror;
 						arrivedOnMirrorEdge = true;

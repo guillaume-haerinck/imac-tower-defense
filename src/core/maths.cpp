@@ -9,7 +9,7 @@ glm::vec2 imaths::segmentsIntersection(glm::vec2 P, glm::vec2 Q, glm::vec2 P_, g
 {//Returns t and t_ such that the intersection point is equal to P+t*PQ and P_+t_*P_Q_.
 //(note : there is an actual intersection iff 0 <= t <= 1 and 0 <= t_ <= 1
 	float det = (Q.x - P.x)*(P_.y - Q_.y) - (Q.y - P.y)*(P_.x - Q_.x);
-	if (det != 0) {
+	if (abs(det) > 0.01) {
 		float t = ((P_.y - Q_.y)*(P_.x - P.x) + (Q_.x - P_.x)*(P_.y - P.y)) / det;
 		float t_ = ((P.y - Q.y)*(P_.x - P.x) + (Q.x - P.x)*(P_.y - P.y)) / det;
 		return glm::vec2(t, t_);
