@@ -143,20 +143,22 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 				glm::vec2 mirrorPt2 = mirrorPos - MIRROR_RADIUS * mirrorDir;
 				glm::vec2 dir1 = mirrorPt1 - pos;
 				glm::vec2 dir2 = mirrorPt2 - pos;
-				if ( abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned
-					float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
-					float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
-					if (dSq1 < dSq2 ){
-						t = sqrt(dSq1);
-						laserEnd = mirrorPt1;
+				if (dir1.x*unitDirVector.x + dir2.y*unitDirVector.y > 0) { //The mirror is in the right direction
+					if (abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned 
+						float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
+						float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
+						if (dSq1 < dSq2) {
+							t = sqrt(dSq1);
+							laserEnd = mirrorPt1;
+						}
+						else {
+							t = sqrt(dSq2);
+							laserEnd = mirrorPt2;
+						}
+						mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+						nextLauncherId = mirror;
+						arrivedOnMirrorEdge = true;
 					}
-					else {
-						t = sqrt(dSq2);
-						laserEnd = mirrorPt2;
-					}
-					mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
-					nextLauncherId = mirror;
-					arrivedOnMirrorEdge = true;
 				}
 			}
 		}
