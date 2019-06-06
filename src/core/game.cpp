@@ -50,8 +50,8 @@ Game::Game(EventEmitter& emitter)
 	m_levelIntroState(nullptr),
 	m_levelState(nullptr),
 	m_levelExitState(nullptr),
-	m_gameOverState(nullptr)
-	
+	m_gameOverState(nullptr),
+	m_endScreenState(nullptr)
 {
 	assert(!m_bInstanciated);
 	m_bInstanciated = true;
@@ -82,6 +82,10 @@ Game::Game(EventEmitter& emitter)
 
 		case GameState::GAME_OVER:
 			m_gameOverState->exit();
+			break;
+
+		case GameState::END_SCREEN:
+			m_endScreenState->exit();
 			break;
 
 		default:
@@ -132,6 +136,13 @@ Game::Game(EventEmitter& emitter)
 				m_gameOverState = new GameOverState(*this);
 			}
 			m_gameOverState->enter();
+			break;
+
+		case GameState::END_SCREEN:
+			if (m_endScreenState == nullptr) {
+				m_endScreenState = new EndScreenState(*this);
+			}
+			m_endScreenState->enter();
 			break;
 
 		default:
@@ -300,6 +311,11 @@ int Game::init() {
 		m_gameOverState = new GameOverState(*this);
 		m_gameOverState->enter();
 		break;
+
+	case GameState::END_SCREEN:
+		m_endScreenState = new EndScreenState(*this);
+		m_endScreenState->enter();
+		break;
 	}
 
     m_bInit = true;
@@ -333,6 +349,10 @@ void Game::update(float deltatime) {
 		m_gameOverState->update(deltatime);
 		break;
 
+	case GameState::END_SCREEN:
+		m_endScreenState->update(deltatime);
+		break;
+
 	default:
 		break;
 	}
@@ -363,6 +383,7 @@ Game::~Game() {
 	delete m_levelState;
 	delete m_levelExitState;
 	delete m_gameOverState;
+	delete m_endScreenState;
 
 	// Shutdown 
 	ImGui_ImplOpenGL3_Shutdown();

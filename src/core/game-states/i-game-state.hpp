@@ -10,7 +10,8 @@ enum class GameState {
 	LEVEL_INTRO,
 	LEVEL,
 	LEVEL_EXIT,
-	GAME_OVER
+	GAME_OVER,
+	END_SCREEN
 };
 
 class IGameState : public InputHandler {

@@ -174,6 +174,7 @@ void Level::setLevel(unsigned int number) {
 		file.close();
 	}
 	else {
+		// TODO move to game end state ?
 		spdlog::critical("[ITD] Unable to open file");
 	}
 }

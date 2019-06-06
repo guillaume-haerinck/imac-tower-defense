@@ -11,6 +11,7 @@
 #include "game-states/level-intro-state.hpp"
 #include "game-states/level-exit-state.hpp"
 #include "game-states/cinematic-state.hpp"
+#include "game-states/end-screen-state.hpp"
 #include "level/level.hpp"
 #include "progression.hpp"
 #include "systems/render-system.hpp"
@@ -57,7 +58,8 @@ public:
 	LevelState* m_levelState;
 	LevelExitState* m_levelExitState;
 	GameOverState* m_gameOverState;
-
+	EndScreenState* m_endScreenState;
+		
 private:
 	// Lifetime
     static bool m_bInit;
