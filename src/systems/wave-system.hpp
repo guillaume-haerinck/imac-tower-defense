@@ -9,9 +9,10 @@
 #include "entity-factories/enemy-factory.hpp"
 
 enum class WaveState {
-	NO,
+	NOT_STARTED,
 	PENDING,
-	DURING
+	DURING,
+	DONE
 };
 
 class WaveSystem : public ISystem {

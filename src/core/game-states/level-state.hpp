@@ -27,12 +27,6 @@ enum class LevelInteractionState {
 	BUILD
 };
 
-enum class VictoryState {
-	PLAY,
-	LOOSE,
-	WIN
-};
-
 class LevelState : public IGameState {
 public:
 	LevelState(Game& game);

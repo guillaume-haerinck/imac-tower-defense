@@ -51,15 +51,13 @@ LevelState::~LevelState() {
 void LevelState::handleVictoryConditions() {
 	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
 		switch (event.state) {
+		case WaveState::NOT_STARTED:
 		case WaveState::PENDING:
-			this->m_bWaveDone = false;
-			break;
-
 		case WaveState::DURING:
 			this->m_bWaveDone = false;
 			break;
 
-		case WaveState::NO:
+		case WaveState::DONE:
 			this->m_bWaveDone = true;
 			break;
 
@@ -70,8 +68,14 @@ void LevelState::handleVictoryConditions() {
 
 	m_emitter.on<evnt::EnemyDead>([this](const evnt::EnemyDead & event, EventEmitter & emitter) {
 		if (this->m_bWaveDone) {
-			// TODO check if some enemy remains, if not, go to win
-			this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+			int enemyRemaining = 0;
+			this->m_game.registry.view<entityTag::Enemy>().each([this, &enemyRemaining](auto entity, auto) {
+				enemyRemaining++;
+			});
+			spdlog::info("{}", enemyRemaining);
+			if (enemyRemaining == 0) {
+				this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+			}
 		}
 	});
 

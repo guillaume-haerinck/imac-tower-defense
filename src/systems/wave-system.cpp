@@ -5,11 +5,16 @@
 #include "services/locator.hpp"
 #include "services/audio/i-audio.hpp"
 #include "events/wave-updated.hpp"
+#include "events/change-game-state.hpp"
 
 WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
-: ISystem(registry, emitter), m_enemyFactory(registry, level), m_waveState(WaveState::NO),
+: ISystem(registry, emitter), m_enemyFactory(registry, level), m_waveState(WaveState::NOT_STARTED),
   m_frameCount(0), m_timer(0), m_spawnRate(0)
 {
+	m_emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
+		this->m_waveState = WaveState::NOT_STARTED;
+	});
+
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
 		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
@@ -23,7 +28,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 
 void WaveSystem::update(float deltatime) {
 	switch (m_waveState) {
-	case WaveState::NO:
+	case WaveState::NOT_STARTED:
 		break;
 
 	case WaveState::PENDING:
@@ -49,9 +54,12 @@ void WaveSystem::update(float deltatime) {
 			m_timer--;
 		}
 		if (m_timer <= 0) {
-			m_waveState = WaveState::NO;
+			m_waveState = WaveState::DONE;
 			m_emitter.publish<evnt::WaveUpdated>(0, m_waveState);
 		}
+		break;
+
+	case WaveState::DONE:
 		break;
 
 	default:
