@@ -28,6 +28,7 @@ private:
 	void renderSpritesheet(std::uint32_t entity, cmpt::Sprite& sprite, cmpt::SpriteAnimation& animation) const;
 	glm::mat4 getModelMatrix(unsigned int entityId) const;
 	glm::mat4 getModelMatrix(cmpt::Transform& transform) const;
+	glm::mat4 getViewMatrix() const;
 	void initCursors();
 	SDL_Cursor* createCustomCursor(std::string imagePath);
 

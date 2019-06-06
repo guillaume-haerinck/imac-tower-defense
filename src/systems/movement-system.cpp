@@ -11,6 +11,7 @@
 #include "core/tags.hpp"
 #include "core/level/graph.hpp"
 #include "events/entity-damaged.hpp"
+#include "events/enemy-reached-end.hpp"
 #include "events/interactions/select-rotation.hpp"
 #include "components/transform.hpp"
 #include "components/rigid-body.hpp"
@@ -107,8 +108,11 @@ void MovementSystem::update(float deltatime) {
 				pathfinding.previousNode = tmp;
 			}
 			else {
-				m_registry.assign<cmpt::Animated>(entity,2,true);
-				m_registry.assign<cmpt::AnimationPixelsVanish>(entity, false);
+				if (m_registry.has<entityTag::Enemy>(entity)) {
+					m_registry.assign<cmpt::Animated>(entity, 2, true);
+					m_registry.assign<cmpt::AnimationPixelsVanish>(entity, false);
+					m_emitter.publish<evnt::EnemyReachedEnd>();
+				}
 			}
 		}
 	});

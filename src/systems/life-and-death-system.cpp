@@ -5,6 +5,7 @@
 #include "events/entity-damaged.hpp"
 #include "events/enemy-dead.hpp"
 #include "events/tower-dead.hpp"
+#include "events/enemy-reached-end.hpp"
 #include "components/health.hpp"
 #include "components/transform.hpp"
 #include "components/entity-explosion-association.hpp"
@@ -32,6 +33,12 @@ LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmi
 		cmpt::Health& health = m_registry.get<cmpt::Health>(event.entity);
 		health.current -= event.damage;
 	});
+
+	m_emitter.on<evnt::EnemyReachedEnd>([this](const evnt::EnemyReachedEnd& event, EventEmitter & emitter) {
+		m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
+		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+		helper.startScreenShake(SCREEN_SHAKE_DURATION);
+	});
 }
 
 void LifeAndDeathSystem::update(float deltatime) {
@@ -56,9 +63,6 @@ void LifeAndDeathSystem::update(float deltatime) {
 			m_registry.reset<cmpt::AnimationAlpha>(entity);
 			//Destroy entity if it was a disappear animation
 			if (destroyEntity) {
-				if (m_registry.has<entityTag::Enemy>(entity)) {
-					m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
-				}
 				m_registry.destroy(entity);
 			}
 		}

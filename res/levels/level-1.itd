@@ -13,7 +13,7 @@ construct 0 0 200
 in 0 200 0
 out 200 0 0
 
-energie 10
+energie 5
 max-slow 5
 max-mirror 6
 

@@ -30,6 +30,8 @@ extern const float SLOW_PROJECTILE_VELOCITY;
 extern const float TOWER_SLOW_AMOUNT;
 extern const float SLOW_DURATION;
 
+extern const float SCREEN_SHAKE_DURATION;
+
 extern const float FRAMERATE;
 extern const float TARGET_DELTA_MS;
 extern const float MAX_DELTA_MS;

@@ -20,7 +20,7 @@
 
 #include "spdlog/spdlog.h"
 
-HelperService::HelperService() {}
+HelperService::HelperService() : m_screenShaking(false) {}
 
 glm::vec4 HelperService::getColour(std::uint32_t entityId) {
 	glm::vec4 actualColour = glm::vec4(0.0f);
@@ -128,6 +128,8 @@ glm::vec2 HelperService::getPosition(std::uint32_t entityId) {
 	if (m_registry->has<cmpt::Shake>(entityId)) {
 		actualPos += m_registry->get<cmpt::Shake>(entityId).offset;
 	}
+	//ScreenShake
+	actualPos += getScreenShake();
 	//Attached to another entity
 	if (m_registry->has<cmpt::AttachedTo>(entityId)) {
 		unsigned int mainEntityId = m_registry->get<cmpt::AttachedTo>(entityId).mainEntity;
@@ -209,6 +211,31 @@ bool HelperService::mouseIsOn(std::uint32_t entityId) {
 	else {
 		return false;
 	}
+}
+
+glm::vec2 HelperService::getScreenShake() {
+	return m_screenShake;
+}
+
+void HelperService::updateScreenShake(float deltatime) {
+	if (m_screenShaking) {
+		m_screenShakeTimeRemmaining -= deltatime;
+		if (m_screenShakeTimeRemmaining > 0) {
+			IRandom& random = entt::ServiceLocator<IRandom>::ref();
+			m_screenShake = glm::vec2(random.random(-1, 1), random.random(-1, 1));
+		}
+		else {
+			m_screenShaking = false;
+		}
+	}
+	else {
+		m_screenShake = glm::vec2(0.0f);
+	}
+}
+
+void HelperService::startScreenShake(float duration) {
+	m_screenShaking = true;
+	m_screenShakeTimeRemmaining = duration;
 }
 
 std::uint32_t HelperService::getTile(unsigned int x, unsigned int y) {

@@ -14,6 +14,9 @@ public:
 	virtual glm::vec4 blend(glm::vec4 col1, glm::vec4 col2) = 0;
 	virtual float getVelocityMultiplier(std::uint32_t entityId) = 0;
 	virtual bool mouseIsOn(std::uint32_t entityId) = 0;
+	virtual glm::vec2 getScreenShake() = 0;
+	virtual void updateScreenShake(float deltatime) = 0;
+	virtual void startScreenShake(float duration) = 0;
 
 	virtual std::uint32_t getTile(unsigned int x, unsigned int y) = 0;
 	virtual std::uint32_t getTileFromProjCoord(float x, float y) = 0;
