@@ -125,6 +125,38 @@ int Progression::getSlowNumbers() {
 	return m_slowNumber;
 }
 
+int Progression::getMaxRobotNumber() {
+	return m_maxRobotNumber;
+}
+int Progression::getRobotNumber() {
+	return m_robotNumber;
+}
+void Progression::setMaxRobotNumber(int value) {
+	m_maxRobotNumber = value;
+}
+void Progression::setRobotNumber(int value) {
+	m_robotNumber = value;
+}
+void Progression::decreaseRobotNumber() {
+	m_robotNumber -= 1;
+}
+
+int Progression::getMaxKamikazeNumber() {
+	return m_maxKamikazeNumber;
+}
+int Progression::getKamikazeNumber() {
+	return m_kamikazeNumber;
+}
+void Progression::setMaxKamikazeNumber(int value) {
+	m_maxKamikazeNumber = value;
+}
+void Progression::setKamikazeNumber(int value) {
+	m_kamikazeNumber = value;
+}
+void Progression::decreaseKamikazeNumber() {
+	m_kamikazeNumber -= 1;
+}
+
 void Progression::setLevelNumber(int value) {
 	m_levelNumber = value;
 }

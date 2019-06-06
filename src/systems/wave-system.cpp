@@ -7,8 +7,8 @@
 #include "events/wave-updated.hpp"
 #include "events/change-game-state.hpp"
 
-WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
-: ISystem(registry, emitter), m_enemyFactory(registry, level), m_waveState(WaveState::NOT_STARTED),
+WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression, Level& level)
+: ISystem(registry, emitter), m_progression(progression), m_enemyFactory(registry, level), m_waveState(WaveState::NOT_STARTED),
   m_frameCount(0), m_timer(0), m_spawnRate(0)
 {
 	m_emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
@@ -17,7 +17,11 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
-		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
+		int maxRobotNb = this->m_progression.getMaxRobotNumber();
+		int maxKamikazeNb = this->m_progression.getMaxKamikazeNumber();
+		this->m_progression.setRobotNumber(maxRobotNb);
+		this->m_progression.setKamikazeNumber(maxKamikazeNb);
+		this->m_probaSpawnKamikaze = (float)maxKamikazeNb / (maxRobotNb + maxKamikazeNb);
 		this->m_spawnRate = event.spawnRate;
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
@@ -40,7 +44,7 @@ void WaveSystem::update(float deltatime) {
 		}
 		if (m_timer <= 0) {
 			m_waveState = WaveState::DURING;
-			m_timer = m_nbEnemyRemaingToSpawn * m_spawnRate;
+			m_timer = (m_progression.getRobotNumber()+m_progression.getKamikazeNumber()) * m_spawnRate;
 		}
 		break;
 
@@ -50,7 +54,27 @@ void WaveSystem::update(float deltatime) {
 			// Spawn one robot per second
 			m_frameCount = 0;
 			m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
-			m_enemyFactory.createRobot();
+			int robotNb = m_progression.getRobotNumber();
+			int kamikazeNb = m_progression.getKamikazeNumber();
+			if (robotNb > 0 && kamikazeNb > 0) {
+				IRandom& random = entt::ServiceLocator<IRandom>::ref();
+				if (random.random() < m_probaSpawnKamikaze) {
+					m_enemyFactory.createKamikaze();
+					m_progression.decreaseKamikazeNumber();
+				}
+				else {
+					m_enemyFactory.createRobot();
+					m_progression.decreaseRobotNumber();
+				}
+			}
+			else if (robotNb > 0) {
+				m_enemyFactory.createRobot();
+				m_progression.decreaseRobotNumber();
+			}
+			else {
+				m_enemyFactory.createKamikaze();
+				m_progression.decreaseKamikazeNumber();
+			}
 			m_timer--;
 		}
 		if (m_timer <= 0) {
