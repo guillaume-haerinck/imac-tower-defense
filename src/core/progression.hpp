@@ -3,19 +3,21 @@
 #include <string>
 #include "events/handlers/event-emitter.hpp"
 
+// TODO find a way to limit the set values of the itd only by the map ?
+
 class Progression {
 public:
 	Progression(EventEmitter& emitter);
 	~Progression();
 
 	void setIntroImgPath(std::string imgPath);
-	std::string getIntoImgPath();
+	const char* getIntroImgPath();
 
 	void setIntroText(std::string text);
-	std::string getIntoText();
+	const char* getIntroText();
 
 	void setExitText(std::string text);
-	std::string getExitText();
+	const char* getExitText();
 
 	void setMaxLife(int value);
 	int getMaxLife();

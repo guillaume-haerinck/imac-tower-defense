@@ -15,7 +15,7 @@ NS_IMPLEMENT_REFLECTION(LevelExitBindings) {
 	NsProp("Text", &LevelExitBindings::getText, &LevelExitBindings::setText);
 }
 
-LevelExitBindings::LevelExitBindings() : m_text("Good luck !") {
+LevelExitBindings::LevelExitBindings() : m_text("") {
 }
 
 const char* LevelExitBindings::getText() const {

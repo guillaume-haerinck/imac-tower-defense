@@ -23,6 +23,9 @@ private:
 	void onStartLevel(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	void onExit(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 
+	// Converters
+	std::string decimalToRoman(int num);
+
 private:
 	NS_DECLARE_REFLECTION(LevelIntro, Grid);
 

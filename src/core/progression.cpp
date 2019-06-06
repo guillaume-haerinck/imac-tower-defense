@@ -13,24 +13,24 @@ void Progression::setIntroImgPath(std::string imgPath) {
 	m_introImgPath = imgPath;
 	m_emitter.publish<evnt::ProgressionUpdated>();
 }
-std::string Progression::getIntoImgPath() {
-	return m_introImgPath;
+const char* Progression::getIntroImgPath() {
+	return m_introImgPath.c_str();
 }
 
 void Progression::setIntroText(std::string text) {
 	m_introText = text;
 	m_emitter.publish<evnt::ProgressionUpdated>();
 }
-std::string Progression::getIntoText() {
-	return m_introText;
+const char* Progression::getIntroText() {
+	return m_introText.c_str();
 }
 
 void Progression::setExitText(std::string text) {
 	m_exitText = text;
 	m_emitter.publish<evnt::ProgressionUpdated>();
 }
-std::string Progression::getExitText() {
-	return m_exitText;
+const char* Progression::getExitText() {
+	return m_exitText.c_str();
 }
 
 void Progression::setMaxLife(int value) {

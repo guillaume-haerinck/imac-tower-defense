@@ -17,7 +17,7 @@ NS_IMPLEMENT_REFLECTION(LevelIntroBindings) {
 	NsProp("Text", &LevelIntroBindings::getText, &LevelIntroBindings::setText);
 }
 
-LevelIntroBindings::LevelIntroBindings() : m_title("LEVEL I"), m_imagePath(""), m_text("Good luck !") {
+LevelIntroBindings::LevelIntroBindings() : m_title("-"), m_imagePath(""), m_text("-") {
 }
 
 const char* LevelIntroBindings::getTitle() const {

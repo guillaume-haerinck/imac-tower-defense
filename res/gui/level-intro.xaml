@@ -17,7 +17,6 @@
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Rectangle.Opacity" Value="0.5" TargetName="innerRectangle" />
               </Trigger>
-
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
