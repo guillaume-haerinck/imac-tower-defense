@@ -59,6 +59,9 @@ Game::Game(EventEmitter& emitter)
 	// Handle state changes
 	// TODO do this automatically without switch case
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
+		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
+		audioService.stopAllSounds();
+
 		// Exit current state
 		switch (this->m_state) {
 		case GameState::CINEMATIC:
