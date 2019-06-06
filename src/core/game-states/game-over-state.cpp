@@ -8,7 +8,7 @@
 #include "logger/gl-log-handler.hpp"
 #include "core/game.hpp"
 
-GameOverState::GameOverState(Game& game) : IGameState(game), m_gameOver(m_game.emitter)
+GameOverState::GameOverState(Game& game) : IGameState(game), m_gameOver(m_game.emitter, m_game.progression)
 {
 	m_xaml = m_gameOver;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();

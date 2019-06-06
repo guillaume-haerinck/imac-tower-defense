@@ -37,8 +37,8 @@
     </Grid>
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-41">
-      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
-      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" x:Name="Play" Content="PLAY" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" Click="onExit" x:Name="Exit" Content="EXIT" HorizontalAlignment="Center" Margin="0,0,46,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
+      <Button Background="#FFDDDDDD" Style="{StaticResource Btn}" Click="onRestart" x:Name="Play" Content="RESTART" HorizontalAlignment="Center" Margin="0,0,0,88" VerticalAlignment="Bottom" FontFamily="./#Sniglet" FontSize="18"/>
     </StackPanel>
   </Grid>
 </Grid>
