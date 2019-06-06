@@ -56,6 +56,10 @@ public:
 	void changeState(LevelInteractionState state);
 
 private:
+	void handleVictoryConditions();
+	void handleConstructions();
+
+private:
 	Noesis::Ptr<Noesis::FrameworkElement> m_xaml;
 	Noesis::IView* m_ui;
 	LevelHud m_levelHud;

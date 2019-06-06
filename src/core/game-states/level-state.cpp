@@ -37,6 +37,18 @@ LevelState::LevelState(Game& game)
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 
+	handleVictoryConditions();
+	handleConstructions();
+}
+
+LevelState::~LevelState() {
+	m_ui->GetRenderer()->Shutdown();
+	delete m_ui;
+}
+
+/* ------------- EVENT HANDLING --------------- */
+
+void LevelState::handleVictoryConditions() {
 	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
 		switch (event.state) {
 		case WaveState::PENDING:
@@ -56,8 +68,6 @@ LevelState::LevelState(Game& game)
 		}
 	});
 
-	// Check victory conditions
-
 	m_emitter.on<evnt::EnemyDead>([this](const evnt::EnemyDead & event, EventEmitter & emitter) {
 		if (this->m_bWaveDone) {
 			// TODO check if some enemy remains, if not, go to win
@@ -69,11 +79,13 @@ LevelState::LevelState(Game& game)
 		// TODO play an outro
 		this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER);
 	});
+}
 
-	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
+void LevelState::handleConstructions() {
+	m_game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		switch (m_state) {
-		case LevelInteractionState::INVALID :
-		case LevelInteractionState::FREE :
+		case LevelInteractionState::INVALID:
+		case LevelInteractionState::FREE:
 			m_game.emitter.entityBeingPlaced = true;
 			this->m_constructType = event.type;
 			this->changeState(LevelInteractionState::BUILD);
@@ -108,12 +120,12 @@ LevelState::LevelState(Game& game)
 
 	// TODO use a safer and more global way, because if tile is invalid, it will cause a problem
 	// Start by using only one type of event for entity deletion, and see if there is a way to check the grid for deletion
-	game.emitter.on<evnt::DeleteEntity>([this](const evnt::DeleteEntity & event, EventEmitter & emitter) {
+	m_game.emitter.on<evnt::DeleteEntity>([this](const evnt::DeleteEntity & event, EventEmitter & emitter) {
 		if (this->m_game.registry.valid(event.entityId)) {
 			glm::vec2 position = this->m_game.registry.get<cmpt::Transform>(event.entityId).position;
 			//this->m_game.registry.destroy(event.entityId);
-			this->m_game.registry.assign<cmpt::Animated>(event.entityId,1,true);
-			this->m_game.registry.assign<cmpt::AnimationAlpha>(event.entityId,false);
+			this->m_game.registry.assign<cmpt::Animated>(event.entityId, 1, true);
+			this->m_game.registry.assign<cmpt::AnimationAlpha>(event.entityId, false);
 
 			if (this->m_game.registry.has<entityTag::Mirror>(event.entityId)) {
 				this->m_game.progression.increaseMirrorNumberBy1();
@@ -130,16 +142,11 @@ LevelState::LevelState(Game& game)
 		}
 	});
 
-	game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
+	m_game.emitter.on<evnt::TowerDead>([this](const evnt::TowerDead & event, EventEmitter & emitter) {
 		std::uint32_t tileId = this->m_game.level->getTileFromProjCoord(event.position.x / WIN_RATIO, event.position.y);
 		this->m_game.registry.accommodate<tileTag::Constructible>(tileId);
 		this->m_game.registry.reset<cmpt::EntityOnTile>(tileId);
 	});
-}
-
-LevelState::~LevelState() {
-	m_ui->GetRenderer()->Shutdown();
-	delete m_ui;
 }
 
 /* ----------------------- GETTERS ------------------------ */
