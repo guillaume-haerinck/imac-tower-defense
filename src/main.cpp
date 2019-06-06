@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 			}
 			
 			if (ImGui::Button("Send wave event")) {
-				emitter.publish<evnt::StartWave>(1);
+				emitter.publish<evnt::StartWave>();
 			}
 
 			if (ImGui::Button("Load title screen")) {

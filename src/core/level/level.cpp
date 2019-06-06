@@ -68,7 +68,7 @@ void Level::setLevel(unsigned int number) {
 	m_itdPath += ".itd";
 	m_mapPath = "res/levels/";
 	m_backgroundImgPath = "res/levels/";
-	std::string introImgPath = "res/levels/";
+	std::string introImgPath = "../levels/";
 
 	// Delete last map if any
 	m_registry.reset();
@@ -119,25 +119,18 @@ void Level::setLevel(unsigned int number) {
 				m_progression.setMaxLife(maxLife);
 				m_progression.setLife(maxLife);
 			}
-			else if (line.find("max-slow") != std::string::npos) {
-				int maxSlow = getIntFromString(line);
-				m_progression.setMaxSlowNumber(maxSlow);
-				m_progression.setSlowNumber(maxSlow);
-			}
-			else if (line.find("max-mirror") != std::string::npos) {
-				int maxMirror = getIntFromString(line);
-				m_progression.setMaxMirrorNumber(maxMirror);
-				m_progression.setMirrorNumber(maxMirror);
-			}
-			else if (line.find("max-robot") != std::string::npos) {
+			else if (line.find("robot") != std::string::npos) {
 				int maxRobot = getIntFromString(line);
 				m_progression.setMaxRobotNumber(maxRobot);
 				m_progression.setRobotNumber(maxRobot);
 			}
-			else if (line.find("max-kamikaze") != std::string::npos) {
+			else if (line.find("kamikaze") != std::string::npos) {
 				int maxKamikaze = getIntFromString(line);
 				m_progression.setMaxKamikazeNumber(maxKamikaze);
 				m_progression.setKamikazeNumber(maxKamikaze);
+			}
+			else if (line.find("wave-rate") != std::string::npos) {
+				m_progression.setWaveRate(getIntFromString(line));
 			}
 			else if (line.find("build-laser") != std::string::npos) {
 				 glm::vec3 position = getVec3FromString(line);
@@ -190,6 +183,16 @@ void Level::setLevel(unsigned int number) {
 				//Put mirror on tile
 				m_registry.reset<tileTag::Constructible>(tile);
 				m_registry.assign<cmpt::EntityOnTile>(tile, mirror);
+			}
+			else if (line.find("slow") != std::string::npos) {
+				int maxSlow = getIntFromString(line);
+				m_progression.setMaxSlowNumber(maxSlow);
+				m_progression.setSlowNumber(maxSlow);
+			}
+			else if (line.find("mirror") != std::string::npos) {
+				int maxMirror = getIntFromString(line);
+				m_progression.setMaxMirrorNumber(maxMirror);
+				m_progression.setMirrorNumber(maxMirror);
 			}
 		}
 		// Use the right sprite for each tile depending on what is around

@@ -3,8 +3,6 @@
 #include <string>
 #include "events/handlers/event-emitter.hpp"
 
-// TODO find a way to limit the set values of the itd only by the map ?
-
 class Progression {
 public:
 	Progression(EventEmitter& emitter);
@@ -56,6 +54,9 @@ public:
 	void setKamikazeNumber(int value);
 	void decreaseKamikazeNumber();
 
+	void setWaveRate(int value);
+	int getWaveRate();
+
 	void setLevelNumber(int value);
 	int getLevelNumber();
 
@@ -76,4 +77,5 @@ private:
 	int m_maxKamikazeNumber;
 	int m_kamikazeNumber;
 	int m_levelNumber;
+	int m_waveRate;
 };

@@ -157,6 +157,13 @@ void Progression::decreaseKamikazeNumber() {
 	m_kamikazeNumber -= 1;
 }
 
+void Progression::setWaveRate(int value) {
+	m_waveRate = value;
+}
+int Progression::getWaveRate() {
+	return m_waveRate;
+}
+
 void Progression::setLevelNumber(int value) {
 	m_levelNumber = value;
 }

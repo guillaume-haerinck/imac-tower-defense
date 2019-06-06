@@ -4,22 +4,22 @@
 carte level-1.png
 background-img level-1-background.png
 intro-img level-1-intro.png
-intro-text Good luck on this level
-exit-text Well done !
+intro-text Use your wheel to rotate the mirror
+exit-text Good start ! Ready for what's next ?
 
 chemin 255 255 255
 noeud 0 0 0
-construct 0 0 200
-in 0 200 0
-out 200 0 0
+construct 0 0 255
+in 0 255 0
+out 255 0 0
 
-energie 5
-max-slow 5
-max-mirror 6
+energie 6
+slow 0
+mirror 0
 
-max-robot 20
-max-kamikaze 3
+robot 20
+kamikaze 0
+wave-rate 2
 
-build-laser 7 2 0
-build-mirror 9 2 1
-build-slow 2 2 3
+build-laser 7 6 3
+build-mirror 7 3 1
