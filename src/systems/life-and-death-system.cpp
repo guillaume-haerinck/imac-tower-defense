@@ -6,6 +6,7 @@
 #include "events/enemy-dead.hpp"
 #include "events/tower-dead.hpp"
 #include "events/enemy-reached-end.hpp"
+#include "events/victory-delay-ends.hpp"
 #include "components/health.hpp"
 #include "components/transform.hpp"
 #include "components/entity-explosion-association.hpp"
@@ -47,6 +48,9 @@ void LifeAndDeathSystem::update(float deltatime) {
 		age.age += deltatime;
 		//Destroy entities that have reached their max lifespan
 		if (age.age > age.lifespan) {
+			if (m_registry.has<entityTag::VictoryDelayTimer>(entity)) {
+				m_emitter.publish<evnt::VictoryDelayEnds>();
+			}
 			m_registry.destroy(entity);
 		}
 	});

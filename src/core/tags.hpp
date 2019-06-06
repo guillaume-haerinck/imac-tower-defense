@@ -37,6 +37,7 @@ namespace entityTag {
 	TAG(Enemy);
 	TAG(SlowProjectile);
 	TAG(Tile);
+	TAG(VictoryDelayTimer);
 };
 
 namespace towerTag {
@@ -57,6 +58,7 @@ namespace projectileType {
 namespace stateTag {
 	TAG(IsBeingControlled);
 	TAG(RotateableByMouse);
+	TAG(IsDisappearing);
 };
 
 namespace positionTag {

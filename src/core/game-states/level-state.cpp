@@ -13,8 +13,10 @@
 #include "events/tower-dead.hpp"
 #include "events/wave-updated.hpp"
 #include "events/loose.hpp"
+#include "events/victory-delay-ends.hpp"
 #include "events/enemy-dead.hpp"
 #include "events/change-game-state.hpp"
+#include "events/enemy-reached-end.hpp"
 #include "events/interactions/delete-entity.hpp"
 #include "events/interactions/change-cursor.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -26,6 +28,8 @@
 #include "components/constrained-rotation.hpp"
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
+#include "components/age.hpp"
+
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -70,11 +74,36 @@ void LevelState::handleVictoryConditions() {
 		if (this->m_bWaveDone) {
 			int enemyRemaining = 0;
 			this->m_game.registry.view<entityTag::Enemy>().each([this, &enemyRemaining](auto entity, auto) {
-				enemyRemaining++;
+				if (!this->m_game.registry.has<stateTag::IsDisappearing>(entity)) {
+					enemyRemaining++;
+				}
 			});
-			spdlog::info("{}", enemyRemaining);
 			if (enemyRemaining == 1) {
-				this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+				//Set delay before victory and changing game state
+				std::uint32_t timer = this->m_game.registry.create();
+				this->m_game.registry.assign<cmpt::Age>(timer,DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE);
+				this->m_game.registry.assign<entityTag::VictoryDelayTimer>(timer);
+			}
+		}
+	});
+
+	m_emitter.on<evnt::VictoryDelayEnds>([this](const evnt::VictoryDelayEnds & event, EventEmitter & emitter) {
+		this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+	});
+
+	m_emitter.on<evnt::EnemyReachedEnd>([this](const evnt::EnemyReachedEnd & event, EventEmitter & emitter) {
+		if (this->m_bWaveDone) {
+			int enemyRemaining = 0;
+			this->m_game.registry.view<entityTag::Enemy>().each([this, &enemyRemaining](auto entity, auto) {
+				if (!this->m_game.registry.has<stateTag::IsDisappearing>(entity)) {
+					enemyRemaining++;
+				}
+			});
+			if (enemyRemaining == 0) {
+				//Set delay before victory and changing game state
+				std::uint32_t timer = this->m_game.registry.create();
+				this->m_game.registry.assign<cmpt::Age>(timer, DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE);
+				this->m_game.registry.assign<entityTag::VictoryDelayTimer>(timer);
 			}
 		}
 	});

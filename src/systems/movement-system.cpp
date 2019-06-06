@@ -28,6 +28,7 @@
 #include "components/animated.hpp"
 #include "components/sprite-animation.hpp"
 #include "components/animation-pixels-vanish.hpp"
+#include "components/health.hpp"
 
 MovementSystem::MovementSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter)
@@ -111,6 +112,8 @@ void MovementSystem::update(float deltatime) {
 				if (m_registry.has<entityTag::Enemy>(entity)) {
 					m_registry.assign<cmpt::Animated>(entity, 2, true);
 					m_registry.assign<cmpt::AnimationPixelsVanish>(entity, false);
+					m_registry.assign<stateTag::IsDisappearing>(entity);
+					m_registry.reset<cmpt::Health>(entity);
 					m_emitter.publish<evnt::EnemyReachedEnd>();
 				}
 			}
