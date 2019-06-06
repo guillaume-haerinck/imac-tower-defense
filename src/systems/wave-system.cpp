@@ -18,6 +18,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 		audioService.stopAllSounds();
 		audioService.playSound(AudioFiles::MUSIC_WAVE);
+		audioService.playSound(AudioFiles::EFFECT_CLICK);
 	});
 }
 

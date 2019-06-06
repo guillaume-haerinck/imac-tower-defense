@@ -1,7 +1,8 @@
 #pragma once
 
 enum AudioFiles {
-	MUSIC_WAVE = 0
+	MUSIC_WAVE,
+	EFFECT_CLICK
 };
 
 class IAudio {

@@ -28,6 +28,12 @@ AudioService::AudioService() : m_fmodSystem(nullptr)
 		debug_break();
 	}
 	m_sounds.at(AudioFiles::MUSIC_WAVE) = sound;
+
+	if (FMOD_OK != m_fmodSystem->createSound("res/audio/effects/clink.mp3", FMOD_DEFAULT, 0, &sound)) {
+		spdlog::error("[FMOD] Error while loading a sound");
+		debug_break();
+	}
+	m_sounds.at(AudioFiles::EFFECT_CLICK) = sound;
 }
 
 AudioService::~AudioService() {
