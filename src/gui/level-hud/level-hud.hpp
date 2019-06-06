@@ -19,6 +19,8 @@ public:
 
 	void setSelectedEntity(std::uint32_t id);
 
+	// Getters
+
 private:
 	// Init 
 	void InitializeComponent();

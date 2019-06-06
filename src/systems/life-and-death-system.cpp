@@ -70,10 +70,10 @@ void LifeAndDeathSystem::update(float deltatime) {
 			//Enemy
 			if (m_registry.has<entityTag::Enemy>(entity)) {
 				if (m_registry.has<enemyTag::Robot>(entity)) {
-					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::ROBOT);
+					m_emitter.publish<evnt::EnemyDead>(helper.getPosition(entity), EnemyType::ROBOT);
 				}
 				else if (m_registry.has<enemyTag::Kamikaze>(entity)) {
-					m_emitter.publish<evnt::EnnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);
+					m_emitter.publish<evnt::EnemyDead>(helper.getPosition(entity), EnemyType::KAMIKAZE);
 				}
 			}
 			//Tower

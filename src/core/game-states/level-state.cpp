@@ -11,6 +11,10 @@
 #include "core/constants.hpp"
 #include "events/interactions/select-rotation.hpp"
 #include "events/tower-dead.hpp"
+#include "events/wave-updated.hpp"
+#include "events/loose.hpp"
+#include "events/enemy-dead.hpp"
+#include "events/change-game-state.hpp"
 #include "events/interactions/delete-entity.hpp"
 #include "events/interactions/change-cursor.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -32,6 +36,39 @@ LevelState::LevelState(Game& game)
 	m_ui->SetIsPPAAEnabled(true);
 	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
+
+	m_emitter.on<evnt::WaveUpdated>([this](const evnt::WaveUpdated & event, EventEmitter & emitter) {
+		switch (event.state) {
+		case WaveState::PENDING:
+			this->m_bWaveDone = false;
+			break;
+
+		case WaveState::DURING:
+			this->m_bWaveDone = false;
+			break;
+
+		case WaveState::NO:
+			this->m_bWaveDone = true;
+			break;
+
+		default:
+			break;
+		}
+	});
+
+	// Check victory conditions
+
+	m_emitter.on<evnt::EnemyDead>([this](const evnt::EnemyDead & event, EventEmitter & emitter) {
+		if (this->m_bWaveDone) {
+			// TODO check if some enemy remains, if not, go to win
+			this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+		}
+	});
+
+	m_emitter.on<evnt::Loose>([this](const evnt::Loose & event, EventEmitter & emitter) {
+		// TODO play an outro
+		this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER);
+	});
 
 	game.emitter.on<evnt::ConstructSelection>([this](const evnt::ConstructSelection & event, EventEmitter & emitter) {
 		switch (m_state) {

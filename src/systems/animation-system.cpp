@@ -14,7 +14,7 @@
 AnimationSystem::AnimationSystem(entt::DefaultRegistry& registry, EventEmitter& emitter)
 : ISystem(registry, emitter), m_vfxFactory(registry)
 {
-	m_emitter.on<evnt::EnnemyDead>([this](const evnt::EnnemyDead & event, EventEmitter & emitter) {
+	m_emitter.on<evnt::EnemyDead>([this](const evnt::EnemyDead & event, EventEmitter & emitter) {
 		if (event.type == EnemyType::ROBOT) {
 			m_vfxFactory.createExplosion(event.position, ShaderType::ENEMY_EXPLOSION);
 		}

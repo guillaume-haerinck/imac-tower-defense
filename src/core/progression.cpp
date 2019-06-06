@@ -1,6 +1,7 @@
 #include "progression.hpp"
 
 #include "events/progression-updated.hpp"
+#include "events/loose.hpp"
 
 Progression::Progression(EventEmitter& emitter)
 	: m_emitter(emitter), m_introImgPath(""), m_introText(""), m_exitText(""),
@@ -61,8 +62,8 @@ void Progression::setLife(int value) {
 void Progression::reduceLifeBy(int value) {
 	m_life -= value;
 	m_emitter.publish<evnt::ProgressionUpdated>();
-	if (m_life < 0) {
-		// TODO publish death event ? Or only say that progression is updated
+	if (m_life <= 0) {
+		m_emitter.publish<evnt::Loose>();
 	}
 }
 int Progression::getLife() {

@@ -27,6 +27,12 @@ enum class LevelInteractionState {
 	BUILD
 };
 
+enum class VictoryState {
+	PLAY,
+	LOOSE,
+	WIN
+};
+
 class LevelState : public IGameState {
 public:
 	LevelState(Game& game);
@@ -62,6 +68,7 @@ private:
 	unsigned int m_invalidTimeMax;
 	ConstructibleType m_constructType;
 	std::uint32_t m_lastSelectedEntity;
+	bool m_bWaveDone;
 };
 
 
