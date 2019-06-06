@@ -73,7 +73,7 @@ void LevelState::handleVictoryConditions() {
 				enemyRemaining++;
 			});
 			spdlog::info("{}", enemyRemaining);
-			if (enemyRemaining == 0) {
+			if (enemyRemaining == 1) {
 				this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
 			}
 		}

@@ -101,7 +101,7 @@ void AttackSystem::update(float deltatime) {
 		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 		glm::vec3 col = laser.col;
 		if (helper.mouseIsOn(entity)) {
-			col = glm::vec3(255.0f);
+			col *= 0.5;
 		}
 		this->shootLaser(helper.getPositionTowerTip(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col,helper.getAlpha(entity));
 	});
@@ -236,8 +236,8 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 		else {
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/12, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/12, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 	}
 }
