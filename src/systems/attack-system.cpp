@@ -125,6 +125,7 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	bool mirrorIsBeingControlled = false;
 	bool arrivedOnMirrorEdge = false;
 	//Mirrors
+	spdlog::info("---------------------");
 	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&nextLauncherId,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper, &arrivedOnMirrorEdge, launcherId](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
 		if (mirror != launcherId) { //Cannot bounce on the same mirror twice in a row to prevent bugs
 			glm::vec2 mirrorPos = helper.getPosition(mirror);
@@ -148,25 +149,19 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 						if (abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned 
 							float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
 							float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
-							if (dSq1 < dSq2) {
-								t = sqrt(dSq1);
-								laserEnd = mirrorPt1;
+							float minDsq = imaths::min(dSq1, dSq2);
+							if (t > minDsq) { //Closer than current end found
+								t = minDsq;
+								laserEnd = pos + t * unitDirVector;
+								mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+								nextLauncherId = mirror;
+								arrivedOnMirrorEdge = true;
 							}
-							else {
-								t = sqrt(dSq2);
-								laserEnd = mirrorPt2;
-							}
-							//glm::vec2 dir = mirrorPos - pos;
-							//float distToMirrorCenter = sqrt(dir.x*dir.x + dir.y*dir.y);
-							//t = distToMirrorCenter - MIRROR_RADIUS;
-							laserEnd = pos + t * unitDirVector;
-							mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
-							nextLauncherId = mirror;
-							arrivedOnMirrorEdge = true;
 						}
 					}
 				}
 			}
+			spdlog::info("mirror {} t {}", mirror, t);
 		}
 	});
 
@@ -238,8 +233,8 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 		else {
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/10, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/10, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 	}
 }

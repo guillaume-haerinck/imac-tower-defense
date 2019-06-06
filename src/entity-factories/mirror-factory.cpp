@@ -17,7 +17,7 @@
 
 MirrorFactory::MirrorFactory(entt::DefaultRegistry& registry) : Factory(registry)
 {
-	m_mirrorSprite = m_spriteFactory.createAtlas("res/images/spritesheets/tower-mirror-100x100.png", glm::vec2(2*MIRROR_RADIUS), glm::vec2(100));
+	m_mirrorSprite = m_spriteFactory.createAtlas("res/images/spritesheets/tower-mirror-100x100.png", glm::vec2(TILE_SIZE), glm::vec2(100));
 }
 
 MirrorFactory::~MirrorFactory() {

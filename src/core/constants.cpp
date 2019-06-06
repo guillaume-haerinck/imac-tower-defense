@@ -20,7 +20,7 @@ const float KAMIKAZE_EXPLOSION_RADIUS = 75.0f;
 const float TOWER_HEALTH = 10;
 const float TOWER_HITBOX_RADIUS = 4.0f;
 const float TOWER_ATTACK_RANGE = 25.0f;
-const float MIRROR_RADIUS = TILE_SIZE / 2;
+const float MIRROR_RADIUS = TILE_SIZE *0.5f;
 
 const float LASER_DAMAGE_PER_SECOND = 2.0f;
 const float LASER_WIDTH = 13;
