@@ -17,8 +17,8 @@ energie 5
 max-slow 5
 max-mirror 6
 
-max-robot 10
-max-kamikaze 2
+max-robot 20
+max-kamikaze 3
 
 build-laser 7 2 0
 build-mirror 9 2 1

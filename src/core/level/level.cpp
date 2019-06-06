@@ -129,6 +129,16 @@ void Level::setLevel(unsigned int number) {
 				m_progression.setMaxMirrorNumber(maxMirror);
 				m_progression.setMirrorNumber(maxMirror);
 			}
+			else if (line.find("max-robot") != std::string::npos) {
+				int maxRobot = getIntFromString(line);
+				m_progression.setMaxRobotNumber(maxRobot);
+				m_progression.setRobotNumber(maxRobot);
+			}
+			else if (line.find("max-kamikaze") != std::string::npos) {
+				int maxKamikaze = getIntFromString(line);
+				m_progression.setMaxKamikazeNumber(maxKamikaze);
+				m_progression.setKamikazeNumber(maxKamikaze);
+			}
 			else if (line.find("build-laser") != std::string::npos) {
 				 glm::vec3 position = getVec3FromString(line);
 				 //Get tile

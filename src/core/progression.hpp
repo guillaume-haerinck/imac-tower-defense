@@ -44,6 +44,18 @@ public:
 	void increaseSlowNumberBy1();
 	int getSlowNumbers();
 
+	int getMaxRobotNumber();
+	int getRobotNumber();
+	void setMaxRobotNumber(int value);
+	void setRobotNumber(int value);
+	void decreaseRobotNumber();
+
+	int getMaxKamikazeNumber();
+	int getKamikazeNumber();
+	void setMaxKamikazeNumber(int value);
+	void setKamikazeNumber(int value);
+	void decreaseKamikazeNumber();
+
 	void setLevelNumber(int value);
 	int getLevelNumber();
 
@@ -59,5 +71,9 @@ private:
 	int m_slowNumber;
 	int m_maxMirrorNumber;
 	int m_mirrorNumber;
+	int m_maxRobotNumber;
+	int m_robotNumber;
+	int m_maxKamikazeNumber;
+	int m_kamikazeNumber;
 	int m_levelNumber;
 };

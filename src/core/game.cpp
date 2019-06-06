@@ -298,7 +298,7 @@ int Game::init() {
 	renderSystem = new RenderSystem(registry, emitter, m_viewMat, m_projMat);
 	animationSystem = new AnimationSystem(registry, emitter);
 	movementSystem = new MovementSystem(registry, emitter);
-	waveSystem = new WaveSystem(registry, emitter, *level);
+	waveSystem = new WaveSystem(registry, emitter, progression, *level);
 	attackSystem = new AttackSystem(registry, emitter);
 	lifeAndDeathSystem = new LifeAndDeathSystem(registry, emitter, progression);
 
