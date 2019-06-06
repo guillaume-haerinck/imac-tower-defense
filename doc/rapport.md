@@ -376,9 +376,9 @@ En commençant le projet, nous voulions apprendre à utiliser, à penser en term
 
 Deux librairies Libres et Open-Source sont actuellement réputées chez les développeurs de jeu indépendants : [EntityX](https://github.com/alecthomas/entityx) et [ENTT](https://github.com/skypjack/entt). La seconde possédant un développement actif, en plus d'être une amélioration directe de la première, nous avons choisi la **providence ENTT** :rainbow:.
 
-Après trois mois à l'utiliser, nous pouvons affirmer que cette librairie est extrêmement bien conçue. En plus d'être rapide, cohérente et bien documentée, elle possède, à l'image de SDL, de sous-bibliotèques qui sont susceptible d'être utilisé par tout développeur ayant recours à la libraire.
+Après trois mois à l'utiliser, nous pouvons affirmer que cette librairie est extrêmement bien conçue. En plus d'être rapide, cohérente et bien documentée, elle possède, à l'image de SDL, des sous-bibliotèques qui sont susceptibles d'être utilisées par tout développeur ayant recours à la libraire.
 
-Dans notre cas, il s'agit de base d'implémentation pour les design pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons lourdement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnus, on peut remarquer que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
+Dans notre cas, il s'agit d'une base d'implémentation pour le design pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons massivement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnues, on peut noter que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
 
 Dans sa dernière version, la librairie requiert d'utiliser C\++17, ce qui est impossible pour builder sur les ordinateurs de Copernic. Nous utilisons donc une ancienne version, compatible avec C\++14 et qui compile à l'université.
 
@@ -389,7 +389,7 @@ Comme vous le constaterez tout au long de ce rapport, l'architecture de notre ap
 - Le Registre
 - L'Event emitter
 
-Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est de lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est crée dans le main, est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code à besoin de manipuler les entités, il est nescessaire d'avoir accès à cet objet.
+Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans le *main* et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
 
 ![Event publisher](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true)
 
@@ -402,7 +402,7 @@ B -- Event -- D[Subscriber]
 ```
 -->
 
-L'Event emitter ensuite, est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleur le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les event-listener. L'idée, c'est qu'avec cet objet, on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
+L'Event Emitter ensuite est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleurs le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les event-listeners. L'idée est qu'avec cet objet on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
 
 Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en référence dans le constructeur de nombreuses classes de notre jeu.
 
@@ -412,21 +412,21 @@ La première grande étape a été de rassembler toutes les dépendances et beso
 
 ### Utilisation d'OpenGL 4.4 core
 
-Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir glBegin() et glEnd(), et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permi assez rapidement de passer cette étape.
+Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir glBegin() et glEnd(), et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
 
-Nous avons commencé notre apprentissage grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuller plus aisément. L'essentiel de ces classes se trouvent dans le dossier *graphics*.
+Nous avons commencé notre apprentissage grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. L'essentiel de ces classes se trouve dans le dossier *graphics*.
 
-Bien que nous ne cherchions pas forcément la performance, mais plûtot à apprendre le fonctionnement de cette API, nous avons implémentés quelques optimisations offerte par OpenGL.
+Bien que nous ne cherchions pas forcément la performance, mais plutôt à apprendre le fonctionnement de cette API, nous avons implémenté quelques optimisations offerte par OpenGL.
 
 #### Array texture
 
-C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker de multiples textures dans un seul buffer afin de limiter le coût du "texture switching". Concrètement, on y stocke une spritesheet, et on utilise un uniform dans le shader pour changer la tuile qui est active. Les textures coordinates restent identiques, sauf pour le paramêtre z qui correspond à la tuile à activer, c'est à dire à l'index de ce tableau de texture.
+C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker de multiples textures dans un seul buffer afin de limiter le coût du "texture switching". Concrètement, on y stocke une spritesheet, et on utilise un uniform dans le shader pour changer la tuile qui est active. Les texture coordinates restent identiques, sauf pour le paramètre *z* qui correspond à la tuile à activer, c'est-à-dire à l'index de ce tableau de texture.
 
 ![Systems](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/enemy-small-robot-77x117.png?raw=true)
 
 #### Index Buffer
 
-Très clairement inutile sachant que nous n'affichons des carrés composés que de deux triangles. Il n'empêche qu'utiliser un indexBuffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGl est une bonne pratique, que nous avons donc utilisée.
+Très clairement inutile sachant que nous n'affichons que des carrés composés de deux triangles. Il n'empêche qu'utiliser un indexBuffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGl est une bonne pratique, que nous avons donc utilisée.
 
 ![Index buffer](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/index-buffer.png?raw=true)
 
@@ -488,7 +488,7 @@ Comme tout bon héros de l'ombre, ils sont un peu partout : tremblement des enti
 
 Noesis est une librairie qui exploite le langage XAML développé puis rendu Open-Source par Microsoft. Concrètement, il est possible de créer des applications natives avec des interfaces développées dans un langage proche du HTML.
 
-Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance et de temps réel du jeu-vidéo. Bien que difficile à apprivoiser, cette librairie se trouve être d'une puissance assez inouie quand il relève de l'animation des éléments.
+Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance et de temps réel du jeu vidéo. Bien que difficile à apprivoiser, cette librairie se trouve être d'une puissance assez inouïe quand il s'agit de l'animation des éléments.
 
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/schéma_noesis.jpg?raw=true)
 
@@ -500,12 +500,12 @@ Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance
 
 Concernant le design de notre projet, plusieurs réflexions ont été menées et expérimentées. Afin d'exposer et de justifier notre choix graphique final, il est important de revenir sur les différentes versions établies afin de partager notre réflexion.
 
-Dans la première version réalisée, nous avons choisi de travailler avec une vue de face afin de correspondre au premier story telling que nous avions imaginé et de pouvoir développer au maximum l'esthétique du projet. 
-Néanmoins, la contrainte de la vue de face posait une difficulté quant au code. Ainsi, nous avons conservé les couleurs et le design de cette première version et l'avons déclinée en vue du dessus afin d'obtenir la seconde version. 
+Dans la première version réalisée, nous avons choisi de travailler avec une vue de face afin de correspondre au premier story-telling que nous avions imaginé et de pouvoir développer au maximum l'esthétique du projet. 
+Cependant la contrainte de la vue de face posait une difficulté quant au code. Ainsi, nous avons conservé les couleurs et le design de cette première version et l'avons déclinée en vue du dessus afin d'obtenir la seconde version. 
 
 ![Version1](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version1.jpg?raw=true)
 
-La seconde version reprenait l'esthétique de la première version en vue du dessus. Nous avons beaucoup travaillé sur cette version où nous avons imaginé des lasers changeant ainsi notre story telling. Néanmoins, bien que  fonctionnelle cette version manquait d'originalité esthétique. Elle entraînait des bordures noires et la vue du dessus occasionnait une restriction quant à notre envie de créer un projet esthétique.
+La seconde version reprenait l'esthétique de la première version en vue du dessus. Nous avons beaucoup travaillé sur cette version où nous avons imaginé des lasers, changeant ainsi notre story-telling. Néanmoins, bien que fonctionnelle, cette version manquait d'originalité esthétique. Elle entraînait des bordures noires et la vue du dessus occasionnait une restriction quant à notre envie de créer un projet esthétique.
 
 ![Version2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true)
 
@@ -513,7 +513,7 @@ La seconde version reprenait l'esthétique de la première version en vue du des
 
 ![AssetsVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v2.png?raw=true)
 
-La version que nous avons choisie d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. Nous avons choisi un décor de laboratoire détruit où les machines prendraient le dessus sur les scientifiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.
+La version que nous avons choisi d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. Nous avons choisi un décor de laboratoire détruit où les machines prendraient le dessus sur les scientifiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.
 
 ![Version3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version3.png?raw=true)
 
@@ -548,7 +548,7 @@ Ce projet m'a beaucoup appris, grâce au travail en équipe notamment ! L'ambiti
 
 Il est difficile d'appeler cette partie Post-Mortem tant je me sens encore poussé à ajouter des fonctionnalités et à réfractorer tout ce qui peut encore l'être ! Ce projet a été une **grosse prise de risque** dans tous ses aspects : utilisation d'openGl moderne, de librairies complexes, même dans les choix de level design n'étant pas un suivi total du sujet. 
 
-À l'heure de rendre ma copie, je suis satisfait de ce que nous avons accomplis, les objectifs initiaux de créer une base de moteur de jeu pour l'année prochaine ainsi que d'apprendre l'ECS ont été remplis. Cette structure ne demande plus qu'une chose, qu'on lui fasse gérrer des scènes avec de la lumière et des objets 3D.
+À l'heure de rendre ma copie, je suis satisfait de ce que nous avons accompli, les objectifs initiaux de créer une base de moteur de jeu pour l'année prochaine ainsi que d'apprendre l'ECS ont été remplis. Cette structure ne demande plus qu'une chose, qu'on lui fasse gérer des scènes avec de la lumière et des objets 3D.
 
 Néanmoins, si cela était à refaire, je pense que j'aurais réduit l'aspect prise de risque. Bien que cela ai été, de notre point de vue, un succès. Le **temps considérable** consacré à apprivoiser ces outils aurait aussi très bien pu être dégagé pendant les vacances d'été. Au moins, ce qui est fait n'est plus à faire, et je suis satisfait de pouvoir me baser sur ces travaux pour passer au projet suivant.
 
