@@ -35,6 +35,7 @@ public:
 
 	// Setters
 	void setLevel(unsigned int number);
+	bool doesLevelExist(unsigned int number);
 
 	// Update tile system
 	void updateTileSystem() const;

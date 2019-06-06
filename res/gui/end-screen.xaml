@@ -1,4 +1,7 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="EndScreen">
+    
+    <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="YOU FINISHED THE DAWN GAME" VerticalAlignment="Top" FontFamily="./#Sunrise International Demo" Foreground="Black" FontSize="22"/>
+    
 </Grid>

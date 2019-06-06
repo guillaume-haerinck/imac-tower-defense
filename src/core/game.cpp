@@ -29,7 +29,7 @@ bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
 :   m_window(nullptr), m_context(nullptr), emitter(emitter),
-	level(nullptr), m_state(GameState::TITLE_SCREEN), progression(emitter),
+	level(nullptr), m_state(GameState::END_SCREEN), progression(emitter),
 
 	// Camera
 	m_projMat(glm::ortho(0.0f, PROJ_WIDTH_RAT, 0.0f, PROJ_HEIGHT, -10.0f, 10.0f)),
@@ -57,6 +57,7 @@ Game::Game(EventEmitter& emitter)
 	m_bInstanciated = true;
 
 	// Handle state changes
+	// TODO do this automatically without switch case
 	emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
 		// Exit current state
 		switch (this->m_state) {
@@ -92,8 +93,14 @@ Game::Game(EventEmitter& emitter)
 			break;
 		}
 
+		// Update state
+		this->m_state = event.state;
+		if (event.state == GameState::LEVEL_INTRO && !level->doesLevelExist(event.subState)) {
+			this->m_state = GameState::END_SCREEN;
+		}
+
 		// Enter new state
-		switch (event.state) {
+		switch (this->m_state) {
 		case GameState::CINEMATIC:
 			if (m_cinematicState == nullptr) {
 				m_cinematicState = new CinematicState(*this);
@@ -113,7 +120,6 @@ Game::Game(EventEmitter& emitter)
 				m_levelIntroState = new LevelIntroState(*this);
 			}
 			m_levelIntroState->enter();
-			// TODO check if level exist, if  not, go to win screen
 			level->setLevel(event.subState);
 			break;
 
@@ -148,9 +154,6 @@ Game::Game(EventEmitter& emitter)
 		default:
 			break;
 		}
-
-		// Update state
-		this->m_state = event.state;
 	});
 }
 

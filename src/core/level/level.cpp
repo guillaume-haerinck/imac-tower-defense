@@ -48,6 +48,18 @@ void Level::updateTileSystem() const {
 
 /* ----------------------- PUBLIC SETTERS --------------------------------- */
 
+bool Level::doesLevelExist(unsigned int number) {
+	std::string path = "res/levels/level-" + std::to_string(number) + ".itd";
+	std::ifstream file(path);
+	if (file.is_open()) {
+		file.close();
+		return true;
+	} else {
+		file.close();
+		return false;
+	}
+}
+
 void Level::setLevel(unsigned int number) {
 	m_progression.setLevelNumber(number);
 	m_itdPath = "res/levels/level-";
