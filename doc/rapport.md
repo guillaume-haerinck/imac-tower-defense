@@ -25,11 +25,11 @@
 *	[**Utilisation d'openGL 4.4 core**](#utilisation-dopengl-4.4-core)
 *	[**Ajout des dépendances**](#ajout-des-dépendances)
 *	[**Création des entités**](#création-des-entités)
-*	[**Construction du graphe**](#construction-du-graphe)
+*	[**Fichier ITD et construction du graphe**](#fichier-itd-et-construction-du-graphe)
 
 [**IV -  L'ajout de mécaniques de jeu**](#iv---lajout-de-mécaniques-de-jeu)
-*	[**Déplacements et collisions**](#déplacements-et-collisions)
-*	[**Le lancer de rayons**](#le-lancer-de-rayons)
+*	[**Déplacements des ennemis**](#déplacements-des-ennemis)
+*	[**Lasers**](#lasers)
 *	[**Effets de feedbacks**](#effets-de-feedbacks)
 *	[**Interface graphique avec Noesis**](#interface-graphique-avec-noesis)
 
@@ -75,7 +75,7 @@ En sachant que le temps passé à créer la structure d'un logiciel et à appren
 
 Le Tower Defense est un genre extrêmement codifié, si bien qu'il peut être compliqué de différencier les nombreux jeux flash du genre disponibles en ligne. Avec un peu de recherche, on peut cependant tomber sur des propositions vraiment intéressantes, ayant extraites certaines mécaniques du genre, mais s'étant dirigés vers une autre expérience.
 
-À l'image de ces jeux, nous ne souhaitions pas créer un énième clone du genre, mais plutôt nous approprier le sujet en proposant quelque chose d'unique. Conscient des contraintes à respecter, nous avons décidé de 3 axes visant à aporter de la fraicheur, tout en conservant la base du cahier des charges.
+À l'image de ces jeux, nous ne souhaitions pas créer un énième clone du genre, mais plutôt nous approprier le sujet en proposant quelque chose d'unique. Conscients des contraintes à respecter, nous avons décidé de 3 axes visant à apporter de la fraîcheur, tout en conservant la base du cahier des charges.
 
 #### 1. Rendre le joueur actif pendant les vagues
 
@@ -117,21 +117,25 @@ Notre réflexion autour de ces éléments est toujours en cours. Parmi les méca
 
 ### Game Design
 
-TODO Schéma du jeu avec les différents écrans. Indiquer les interactions possibles, les types d'ennemis, etc
+[TODO Schéma du jeu avec les différents écrans. Indiquer les interactions possibles, les types d'ennemis, etc]
 
 ### Points forts
 
+Au délà d'utiliser une architecture et des librairies avancées, nous avons pris soin d'intégrer ces quelques autres fonctionnalités pour améliorer le rendu en jeu.
+
 Nom 		 					| Description
 ------------------------------- | ------------
-Graphe par analyse d'image 		| TODO
-Animations avec Texture Atlas 	| TODO 
-Lancer de rayons				| TODO
-Système de tuiles 				| TODO 
+Graphe à partir de l'image 		| Nous construisons le graphe sans le fichier .itd mais seulement en analysant pas-à-pas l'image du niveau, simplifiant ainsi l'écriture des fichiers .itd
+Animations avec [Array Texture](https://www.khronos.org/opengl/wiki/Array_Texture)	| Nos entités animés le sont à l'aide de spritesheets, envoyées à openGl sous une donnée optimisée de Array Texture
+Réflexion de lasers				| Notre mécanique de jeu principale repose sur le lancer de lasers à l'aide d'un algorithme récursif
+Système de tuiles 				| Nous détectons pour chaque tuile de la carte les tuiles aux alentours afin d'adapter la texture
+Animations de menu              | À l'aide de la bibliothèque Noesis et de Microsoft Blend, nous avons pu animer nos menus de jeu d'une façon semblable à des outils comme After Effects
+Data Oriented                   | L'entièreté des données des niveaux sont récupérrés dans les fichiers .itd, c'est à dire pré-construction d'entités, durée des vagues, consitutions des menus, etc...
 
 
 ## II - L'architecture ECS
 
-L'Entity Component System est un Design Pattern principalement utilisé lors de la conception de jeu vidéo.  C'est une architecture logicielle conçue à la fois pour optimiser la gestion de la mémoire, simplifier l'ajout de fonctionnalités et diviser les systèmes en parties totalement indépendantes. C'est un concept qui a progressivement émergé il y a une dizaine d'année et qui semble être devenue assez commune, bien qu'il existe, comme nous allons le voir, différent degrés dans son intégration.
+L'Entity Component System est un Design Pattern principalement utilisé lors de la conception de jeu vidéo.  C'est une architecture logicielle conçue à la fois pour optimiser la gestion de la mémoire, simplifier l'ajout de fonctionnalités et diviser les systèmes en parties totalement indépendantes. C'est un concept qui a progressivement émergé il y a une dizaine d'année et qui semble être devenu assez commun, bien qu'il existe, comme nous allons le voir, différents degrés dans son intégration.
 
 ### Contexte
 
@@ -175,11 +179,11 @@ digraph G {
 }
 ```
 
-Le problème le plus évident posé par cette architecture est la **complexité**. Comme cette classe détiens une grande partie de ce qu'est le moteur, elle est très lourde à manipuler et on peut se retrouver dans des projets conséquent avec une classe avec des centaines et des centaines de ligne.
+Le problème le plus évident posé par cette architecture est la **complexité**. Comme cette classe détient une grande partie de ce qu'est le moteur, elle est très lourde à manipuler et on peut se retrouver dans des projets conséquent avec une classe du genre grande de centaines et des centaines de ligne.
 
 #### 2. Approche par Héritage
 
-Afin d'alléger la classe Entité, il est possible d'utiliser l'héritage  afin de définir les besoins progressivements.
+Afin d'alléger la classe Entité, il est possible de tirer parti de la programmation orientée objet en utilisant l'héritage. Avec cette approche, on peut définir les besoins progressivements, les sortants ainsi de la classe mère.
 
 ```graphviz
 digraph G {
@@ -207,11 +211,18 @@ digraph G {
 }
 ```
 
-Le problème posé par cette nouvelle approche, déja la profondeur de la hierarchie qui n'est jamais quelque chose de souhaitable, et surtout, le **dreaded diamond of death**.
+Cependant, il peut devenir compliqué d'intégrer de nouvelles mécaniques de gameplay. L'exemple de "EvilTree" est assez parlant, à la fois Enemy et Tree, on ne pourrait le créer sans déclencher un **double héritage**, autorisé en C++, mais hautement déconseillé.
+
+De plus, même si le code d'Entité a été simplifié, la division n'a pas été faite selon les systèmes du moteur de jeu. C'est à dire que le code gérant animation, physique et intelligence artificielle peut très bien être mélangé dans ces classes, posant des problèmes de performances et de maintenance.
+
+:::info
+:fire: Bien que nous critiquons cette approche afin de nous amener à l'ECS, nous souhaitons préciser que des structures du genre plus complexes existent et s'en sortent très bien depuis des années.
+:::
 
 #### 3. Approche par Aggrégation
 
-En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de l'aggrégation, c'est à dire que les pans du moteurs de jeu possède maintenant leurs classes, que l'on appèle des components, et sont utilisés par l'entité.
+En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de l'aggrégation, c'est à dire que les pans du moteurs de jeu intéragissant avec les entités ont maintenant leur classe propre, et sont possédés par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
+
 
 ```graphviz
 digraph G {
@@ -268,6 +279,7 @@ digraph G {
 }
 ```
 
+Ce pattern à l'avantage de simplifier la structure et la compréhension du code, et permet aussi de mettre à jour les pans du moteurs de jeu dans un ordre précis.
 
 ```C++
 void gameLoop() {
@@ -286,35 +298,102 @@ void gameLoop() {
 }
 ```
 
-Cette approche résoud beaucoup de ploblèmes, mais elle est cependant assez **lente**, car la mémoire est trop segmentée.
+Bien que cette approche possède de réelle qualité et soit souhaitable dans de nombreux cas, elle à un problème majeur : la **vitesse**. En effet, bien que la vitesse des processeurs se soit accrue, il n'en n'est pas de même pour la vitesse d'accès à la RAM.
 
-![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos-full.gif?raw=true)
+![Data locality](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/data-locality-chart.png?raw=true)
 
-![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos-during.gif?raw=true)
+Pour palier ce problème, les constructeurs ont intégrés au fil des années différentes mémoires caches directement sur le processeur, nommés par importances L1, L2 et L3. L'idée est, grossièrement, de passer les zones de mémoires de la RAM en cours d'utilisation dans ces mémoires caches coté processeur, beaucoup plus rapide d'accès, mais aussi très petites. L'efficacité de ce procédé repose sur le fait que les données en train d'être manipulées soit côte à côte dans la RAM, sous peine de rater l'emplacement **(cache miss)** et de devoir demander les données à la RAM.
+
+Avec notre architecture telle qu'elle, voici notre RAM. Chaque entité possède 3 component, représenté par un carré de couleurs : un beige, un vert, et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de cache miss auront lieu lors de notre boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez collossale.
+
+![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos.PNG?raw=true)
+
+La solution à ce problème, est une structure en **"Structure of array"** représentée ci-dessous. Maintenant, les composants sont continus en mémoire, et le cache peut joueur son rôle efficacement.
+
+![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/soa.PNG?raw=true)
+
+Pour intégrer un tel fonctionnement, il est possible de créer un gestionnaire de mémoire à la main, qui irait s'occuper de cette allocation et du bon placement des composants. C'est une approche qui est loin d'être triviale, mais qui est courramment utilisé dans les moteurs de jeu pour s'assurer que la mémoire n'est pas fragmentée. DOOM y avait déja recours en 1991, comme indiqué dans [Game Engine Black book](http://fabiensanglard.net/gebbdoom/).
+
+Cependant, ce n'est pas l'approche que nous avons emprunté. Face à ces problèmes, nous avons choisi d'utiliser l'ECS, car c'est une architecture qui offre nativement un gain de performance, et qui, - et c'est le point qui nous intéresse réellement - offre une **nouvelle façon de structurer son application**. 
 
 ### Principe
 
-L'Entity Component System 
+L'Entity Component System est une architecture assez déstabilisante quand on est habitué à l'orienté objet. Assez semblable à la manipulation d'une base de donnée type SQL, il faut se faire à l'idée de séparrer la logique dans des emplacement totalement séparrés du code.
 
 #### 1. Les entités
 
+Encore une fois, l'entité est au coeur de l'architecture. Cette classe a commencé a perdre du poid depuis le début du rapport, jusqu'à arriver à l'anorexie: dans une architecture ecs, **une entité n'est qu'un ID**, c'est à dire un entier, rien de plus.
+
+Il est unique et permet, exactement comme dans une base de donnée, de faire des requêtes afin d'ajouter, de modifier et d'obtenir ses composants.
+
 #### 2. Les composants
+
+Les composants sont des **structures de données basiques** qui représentent un comportement en jeu. Par exemple, si une entité doit avoir une position dans le jeu, on vas lui assigner un composant "Transform", qui possède deux nombre flotants, x et y.
+
+Chaque entité vas donc posséder un nombre plus ou moins important de composants selon la complexité de son comportement en jeu. Voici des exemples de composants basiques tiré d'un article sur l'[ECS](https://medium.com/@savas/nomad-game-engine-part-2-ecs-9132829188e5) :
 
 ![Components](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/components.png?raw=true)
 
 #### 3. Les systèmes
 
+Les systèmes sont l'endroit où la **logique du jeu** est traité. Ce sont eux qui s'occupent de parcourir les entités pour modifier leurs composants. On peut diviser notre application en autant de système que l'on souhaite, typiquement, ce sera les pans de notre moteurs de jeu (animation, physique, etc...) ainsi que la gestion de fonctionnalités avancées (construction, vagues, etc...).
+
+Les systèmes vont récupérrer les entités en utilisant les composants comme requête. Seul les entités possédant l'ensemble des composants demandés dans la requête seront retournés. Afin d'affiner encore plus la recherche, il est courant de créer un composant jouant le rôle d'un tag. Les enemis par exemple, peuvent tous posséder un composant "EnemyTag". Voici une autre image tiré du même article pour illustrer les besoins des systèmes :
+
 ![Systems](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/systems.png?raw=true)
+
+#### Les Avantages
+
+On peut se demander pourquoi utiliser une architecture aussi radicallement différente pour créer son application. Déja évoqué plus haut, nous allons rappeler ici brièvement les raisons d'utiliser ce système :
+
+- **Performance**: Les composants sont des structures de données basiques, stockées en "Structure of Array" et demandés en groupe. Il difficile de faire plus optimisé que ça.
+
+- **Division**: Les systèmes regroupent la logique du jeu dans des classes totalement séparrés. Il sont mis à jour quand on le souhaite et dans l'ordre que l'on souhaite. Le code est organisé et on possède un contrôle total.
+
+- **Prototypage**: Si on oublie le temps passé à comprendre l'ECS, une fois en route il est simple et rapide d'ajouter et de supprimer des fonctionnalités à la volée. Il suffi pour cela de créer un composant et de le gérrer dans un système
+
+C'est une approche qui possède aussi des inconvénients, mais ces explications sont pour la fin du rapport.
 
 ### Implémentation
 
-Présenter ENTT
+Créer une architecture d'une telle complexité par nos propres moyens aurait été une erreur.
+
+En commençant le projet, nous voulions apprendre à utiliser, à penser en terme d'ECS. Nous avions qu'une vague compréhension de son fonctionnement, et nous manquions et manquons toujours de l'expérience et de l'expertise technique pour programmer un tel système. Nous sommes donc parti à la recherche de librairies C++.
 
 > Give a man a game engine and he delivers a game. Teach a man to make a game engine and he never delivers anything.
+> **@sandbaydev**
 
-[Todo, l'event emitter et le registre pignon de l'app]
+Deux librairies Libres et Open-Source sont actuellement réputés chez les développeurs de jeu indépendants : [EntityX](https://github.com/alecthomas/entityx) et [ENTT](https://github.com/skypjack/entt). La seconde possédant un développement actif, en plus d'être une amélioration directe de la première, nous avons choisi la **providence ENTT** :rainbow:.
+
+Après trois mois à l'utiliser, nous pouvons affirmer que cette librairie est extrêmement bien conçue. En plus d'être rapide, cohérente, et bien documentée, elle possède, à l'image de SDL, de sous-bibliotèques qui sont susceptible d'être utilisé par tout développeur ayant recours à la libraire.
+
+Dans notre cas, il s'agit de base d'implémentation pour les design pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons lourdement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnus, on peut remarquer que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
+
+Dans sa dernière version, la librairie requiert d'utiliser C\++17, ce qui est impossible pour builder sur les ordinateurs de Copernic. Nous utilisons donc une ancienne version, compatible avec C\++14 et qui compile à l'université.
+
+#### La colonne vertébrale de notre application
+
+Comme vous le constaterez tout au long de ce rapport, l'architecture de notre application s'est bâtie progressivement pour devenir assez complexe aujourd'hui. Néanmoins, deux objets sont au centre depuis le début et font fonctionner cette machinerie infernale :
+
+- Le Registre
+- L'Event emitter
+
+Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est de lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est crée dans le main, est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code à besoin de manipuler les entités, il est nescessaire d'avoir accès à cet objet.
+
+```mermaid
+graph TD
+A[Publisher] -- Event --> B((Event Bus))
+B -- Event --> C[Subscriber]
+B -- Event --> D[Subscriber]
+```
+
+L'Event emitter ensuite, est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleur le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les event-listener. L'idée, c'est qu'avec cet objet, on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
+
+Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en référence dans le constructeur de nombreuses classes de notre jeu.
 
 ## III - En route vers le premier prototype
+
+
 
 ### Utilisation d'openGL 4.4 core
 
@@ -328,23 +407,39 @@ Présenter ENTT
 
 [TODO Flyweight / Factory / Components]
 
-### Construction du graphe
+### Fichier ITD et construction du graphe
 
-[TODO Jules analyse de l'image]
+L'ITD contient les informations sur le niveau : vie dont dispose le joueur, nombre d'ennemis de chaque type qui doivent apparaître, position et orientation des structures déjà placées ainsi que nombre de miroirs et tours à disposition.
+La structure du niveau est elle récupérée dans l'image : un pixel représente une case, et sa couleur indique si c'est un chemin, une zone constructible ou une zone non-constructible.
+
+Pour se déplacer les ennemis utilisent un graphe qui contient toutes les positions des embranchements, puisque ce sont les seuls endroits où ils doivent changer de direction.
+
+Pour rendre l'édition et l'ajout de niveaux aussi simple que possible, devoir spécifier la position des embranchements du chemin dans le fichier ITD était un énorme frein ; ajoutez à cela que cette information est totalement redondante avec l'image décrivant le niveau et il ne nous en fallait pas plus pour nous décider à nous affranchir de cette contrainte.
+
+Le graphe est donc créé en parcourant l'image vue elle même comme un graphe : on part de la case d'arrivée (puisqu'on sait qu'elle est unique et existe toujours) et on lance un parcours récursif sur chaque voisin de cette case qui est un chemin. Tant que la case actuelle n'est pas un embranchement (ce qu'on sait en regardant lesquels de ses voisins sont des chemins), on continue à avancer, et quand on tombe sur un embranchement on créé un nœud dans le graphe.
+
 
 ## IV - L'ajout de mécaniques de jeu
 
-### Déplacements et collisions
+### Déplacements des ennemis
 
-[TODO Jules ]
+Pour se déplacer, les ennemis ont une stratégie très simple : ils choisissent un nœud et se déplacent vers lui en ligne droite, puis choisissent un nouveau nœud quand ils ont atteint leur cible.
+Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, avec une probabilité inversement proportionnelle à la distance (calculée par Dijkstra) entre ce nœud et l'arrivée.
+À cela il faut juste rajouter le fait que les ennemis se refusent à choisir le nœud dont ils viennent (à moins qu'ils n'arrivent à un cul-de-sac) et ne choisissent pas non plus un nœud qui les éloigne de l'arrivée (au sens de la norme 1), ce qui – essentiellement – leur évite de tomber dans des boucles.
 
-### Le lancer de rayons
 
-[TODO Jules]
 
-### Effets de feedbacks
+### Lasers
 
-[TODO Jules]
+Des lasers, des lasers, des lasers !
+Les lasers sont réfléchis par les miroirs et infligent des dégâts à toutes les entités sur leur passage !
+Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle $2\theta_{miroir} - \theta_{\textit{laser incident}}$. Et pour la collision entre le laser et les entités, on calcule la distance entre l'entité et sa projection orthogonale sur la droite, et vérifie si elle est plus petite que le rayon de la hitbox plus le rayon du laser. (Et on vérifie aussi qu'on est du bon côté de la demi-droite grâce au signe du produit scalaire utilisé pour calculer la projection orthogonale).
+
+### Effets de feedback
+
+Les héros de l'ombre du jeu vidéo ! Ceux qu'on ne remarque pas quand ils sont là, mais dont l'absence se fait cruellement sentir !
+
+Comme tout bon héros de l'ombre, ils sont un peu partout : tremblement des entités et production d'étincelles quand elles sont touchées par un laser, ennemis qui bleuissent quand ils sont ralentis, tours qui clignotent quand elles sont sous un laser pour prévenir le joueur, tuile colorée en rouge ou vert lors du placement des structures pour indiquer la constructibilité de la case, entités qui explosent quand elles sont détruites, tremblement de l'écran quand le joueur perd de la vie, laser mis en valeur quand on passe la souris sous la tour pour bien distinguer quel effet aura la désactivation de celle-ci, laser mis en transparence tant qu'il est désactivé, curseur qui change pour indiquer l'action possible sur la structure (rotation des miroirs ou désactivation des tours).
 
 ### Interface graphique avec Noesis
 
@@ -361,11 +456,17 @@ Concernant le design de notre projet, plusieurs réflexions ont été menées et
 Dans la première version réalisée, nous avons choisi de travailler avec une vue de face afin de correspondre au premier story telling que nous avions imaginé et de pouvoir développer au maximum l'esthétique du projet. 
 Néanmoins, la contrainte de la vue de face posait une difficulté quant au code. Ainsi, nous avons conservé les couleurs et le design de cette première version et l'avons déclinée en vue du dessus afin d'obtenir la seconde version. 
 
-La seconde version reprenait l'esthétique de la première version en vue du dessus. Nous avons beaucoup travaillé sur cette version où nous avons imaginé des lasers changeant ainsi notre story telling. Néanmoins, bien que  fonctionnelle cette version manquait d'originalité esthétique. Elle entrainait des bordures noires et la vue du dessus entrainait une restriction quant à notre envie de créer un projet esthétique. 
+![Version1](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version1.jpg?raw=true)
 
-La version que nous avons choisi d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.   
+La seconde version reprenait l'esthétique de la première version en vue du dessus. Nous avons beaucoup travaillé sur cette version où nous avons imaginé des lasers changeant ainsi notre story telling. Néanmoins, bien que  fonctionnelle cette version manquait d'originalité esthétique. Elle entrainait des bordures noires et la vue du dessus entrainait une restriction quant à notre envie de créer un projet esthétique.
 
-Choix du style graphique et des décors créés (labo)
+![Version2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true)
+
+![MenuVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/menuv2.jpg?raw=true)
+
+La version que nous avons choisi d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. Nous avons choisi un décor de laboratoire détruit où les machines prendraient le dessus sur les scientifiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.
+
+![Version3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version3.png?raw=true)
 
 #### 2. Choix des polices
 
@@ -385,11 +486,17 @@ Pour les titres, nous avons également privilégié une police du site Dafont : 
 
 ### Cyrielle Lassarre
 
-Suite du design : créer des animations plus poussées, davantage de personnages en fonction des niveaux, améliorer le story telling 
+À la suite de ce projet, plusieurs éléments pourraient être améliorés. En effet, nous pourrions envisagé l'apparition de plusieurs personnages afin de créer de nouveaux enjeux et d'augmenter la réflexion du joueur. Les animations, bien que déjà présentes, pourraient également être améliorées afin d'augmenter le feedback. Des vidéos au début de la partie permettraient de renforcer le story-telling de notre projet et de l'humaniser. 
+Néanmoins, notre rendu respecte de nombreux critères établis par les consignes du projet et représente une réalisation pertinente pour la suite de notre parcours.  
 
 ### Guillaume Haerinck
 
 ### Jules Fouchy
+
+Déjà un projet dont je suis très satisfait, et pourtant encore tant de choses à rajouter, notamment pour ma part toujours plus d'effets visuels, d'explosions, de fumée, de particules pour les lasers *etc.*
+Ce projet m'aura énormément appris, sur le C++, sur le travail en équipe, sur le game design, . . . et surtout, j'ai découvert l'**ECS** !
+Si au début découvrir cette architecture a été très compliqué car je ne savais pas où mettre mon code, comment accéder aux entités, *etc.*, désormais je ne sais plus comment m'en passer.
+L'ECS permet une maléabilité du code inouïe, et une fois une grande variété de *components* codés, créer de nouveaux types d'entité se fait sans prise de tête, simplement en spécifiant les comportements qu'elles doivent avoir. De plus, on peut ajouter à la volée des propriétés à une quelconque entité, comme une animation par exemple, et les enlever tout aussi simplement. Pour rajouter des effets visuels c'est un vrai bonheur.
 
 ## Conclusion
 
@@ -429,13 +536,17 @@ ECS
 : Design Pattern architectural utilisé principalement dans l'industrie du jeu-vidéo
 *[ECS]: Entity Component System
 
-XAML
-: Langage déclaratif développé par Microsoft semblable à du HTML
-*[XAML]: eXtensible Application Markup Language
-
 POO
 : Paradigme de programmation qui permet de grouper des fonctions et des variables dans des structures de données appelées objets.
 *[POO]: Programmation orientée objet
+
+RAM
+: Mémoire vive de l'ordinateur
+*[RAM]: Random Access Memory
+
+XAML
+: Langage déclaratif développé par Microsoft semblable à du HTML
+*[XAML]: eXtensible Application Markup Language
 
 # REMOVE ME
 
