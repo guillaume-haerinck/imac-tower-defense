@@ -18,7 +18,7 @@ void main() {
 		discard;
 	}
 	vec4 colorRed = vec4(0.8f, 0.2f, 0.1f, 1.0f) ;
-	vec4 colorYellow = vec4(0.75f, 0.5f, 0.15f, 1.0f) ;
+	vec4 colorYellow = vec4(0.78f, 0.3f, 0.13f, 1.0f) ;
 	float rand = rand(gl_FragCoord.xy) ;
 	color = colorRed * rand + colorYellow *(1-rand);
 	color.a = (1 - abs(n_d - (1-midRadiusRatio))/midRadiusRatio) * (1 - u_radius/u_maxR) ;
