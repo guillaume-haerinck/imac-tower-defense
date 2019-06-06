@@ -118,8 +118,8 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::END_SCREEN);
 			}
 
-			if (ImGui::Button("Load level exit")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT);
+			if (ImGui::Button("Load level 1 exit")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, 1);
 			}
 
 			// Check cursor position

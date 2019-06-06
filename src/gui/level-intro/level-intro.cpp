@@ -42,11 +42,11 @@ void LevelIntro::OnInitialized(BaseComponent*, const Noesis::EventArgs&) {
 }
 
 void LevelIntro::onStartLevel(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 1);
+	m_emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, m_progression.getLevelNumber());
 }
 
 void LevelIntro::onExit(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN, 1);
+	m_emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN);
 }
 
 std::string LevelIntro::decimalToRoman(int num) {
