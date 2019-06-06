@@ -446,6 +446,18 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			break;
 
 		case LevelInteractionState::BUILD:
+			//Give the count back in the shop
+			if (m_game.registry.has<entityTag::Mirror>(m_lastSelectedEntity)) {
+				m_game.progression.setMirrorNumber(m_game.progression.getMirrorNumbers() + 1);
+			}
+			else if (m_game.registry.has<towerTag::SlowTower>(m_lastSelectedEntity)) {
+				m_game.progression.setSlowNumber(m_game.progression.getSlowNumbers() + 1);
+			}
+			//Reset
+			m_game.emitter.entityBeingPlaced = false;
+			changeState(LevelInteractionState::FREE);
+			m_game.registry.destroy(m_lastSelectedEntity);
+			m_lastSelectedEntity = entt::null;
 			break;
 
 		default:

@@ -103,7 +103,6 @@ void AttackSystem::update(float deltatime) {
 		if (helper.mouseIsOn(entity)) {
 			col *= 0.5;
 		}
-		spdlog::info("-------------");
 		this->shootLaser(helper.getPositionTowerTip(entity), transform.rotation, 31, entity, deltatime, !laser.isActiv,col,helper.getAlpha(entity));
 	});
 	glLineWidth(1);
