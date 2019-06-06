@@ -125,43 +125,45 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 	bool mirrorIsBeingControlled = false;
 	bool arrivedOnMirrorEdge = false;
 	//Mirrors
-	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&nextLauncherId,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper, &arrivedOnMirrorEdge](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
-		glm::vec2 mirrorPos = helper.getPosition(mirror);
-		glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
-		glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos-trigger.radius*mirrorDir, mirrorPos+trigger.radius*mirrorDir);
-		if ( 0 <= inter.x && inter.x < t && 0 <= inter.y && inter.y <= 1) {
-			t = inter.x;
-			laserEnd = pos + t*unitDirVector;
-			surfaceAngle = mirrorTransform.rotation;
-			mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
-			nextLauncherId = mirror;
-			arrivedOnMirrorEdge = false;
-		}
-		else { //Check if they were actually aligned
-			if (inter.x == std::numeric_limits<float>::infinity()) { //The were parallel.
-				glm::vec2 mirrorPt1 = mirrorPos + MIRROR_RADIUS * mirrorDir;
-				glm::vec2 mirrorPt2 = mirrorPos - MIRROR_RADIUS * mirrorDir;
-				glm::vec2 dir1 = mirrorPt1 - pos;
-				glm::vec2 dir2 = mirrorPt2 - pos;
-				if (dir1.x*unitDirVector.x + dir2.y*unitDirVector.y > 0) { //The mirror is in the right direction
-					if (abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned 
-						float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
-						float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
-						if (dSq1 < dSq2) {
-							t = sqrt(dSq1);
-							laserEnd = mirrorPt1;
+	m_registry.view<cmpt::Transform, cmpt::Hitbox, entityTag::Mirror>().each([this,&nextLauncherId,&laserEnd,&surfaceAngle,&t,pos, unitDirVector, posPlusUnitVector, &mirrorIsBeingControlled, &helper, &arrivedOnMirrorEdge, launcherId](auto mirror, cmpt::Transform & mirrorTransform, cmpt::Hitbox& trigger, auto) {
+		if (mirror != launcherId) { //Cannot bounce on the same mirror twice in a row to prevent bugs
+			glm::vec2 mirrorPos = helper.getPosition(mirror);
+			glm::vec2 mirrorDir = glm::vec2(cos(mirrorTransform.rotation), sin(mirrorTransform.rotation));
+			glm::vec2 inter = imaths::segmentsIntersection(pos, posPlusUnitVector, mirrorPos - trigger.radius*mirrorDir, mirrorPos + trigger.radius*mirrorDir);
+			if (0 <= inter.x && inter.x < t && 0 <= inter.y && inter.y <= 1) {
+				t = inter.x;
+				laserEnd = pos + t * unitDirVector;
+				surfaceAngle = mirrorTransform.rotation;
+				mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+				nextLauncherId = mirror;
+				arrivedOnMirrorEdge = false;
+			}
+			else { //Check if they were actually aligned
+				if (inter.x == std::numeric_limits<float>::infinity()) { //The were parallel.
+					glm::vec2 mirrorPt1 = mirrorPos + MIRROR_RADIUS * mirrorDir;
+					glm::vec2 mirrorPt2 = mirrorPos - MIRROR_RADIUS * mirrorDir;
+					glm::vec2 dir1 = mirrorPt1 - pos;
+					glm::vec2 dir2 = mirrorPt2 - pos;
+					if (dir1.x*unitDirVector.x + dir2.y*unitDirVector.y > 0) { //The mirror is in the right direction
+						if (abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned 
+							float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
+							float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
+							if (dSq1 < dSq2) {
+								t = sqrt(dSq1);
+								laserEnd = mirrorPt1;
+							}
+							else {
+								t = sqrt(dSq2);
+								laserEnd = mirrorPt2;
+							}
+							//glm::vec2 dir = mirrorPos - pos;
+							//float distToMirrorCenter = sqrt(dir.x*dir.x + dir.y*dir.y);
+							//t = distToMirrorCenter - MIRROR_RADIUS;
+							laserEnd = pos + t * unitDirVector;
+							mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+							nextLauncherId = mirror;
+							arrivedOnMirrorEdge = true;
 						}
-						else {
-							t = sqrt(dSq2);
-							laserEnd = mirrorPt2;
-						}
-						/*glm::vec2 dir = mirrorPos - pos;
-						float distToMirrorCenter = sqrt(dir.x*dir.x + dir.y*dir.y);
-						t = distToMirrorCenter - MIRROR_RADIUS;
-						laserEnd = pos + (1- MIRROR_RADIUS/ distToMirrorCenter)*dir;*/
-						mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
-						nextLauncherId = mirror;
-						arrivedOnMirrorEdge = true;
 					}
 				}
 			}
