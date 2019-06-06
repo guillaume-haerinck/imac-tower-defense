@@ -1,7 +1,7 @@
 #pragma once
 
-enum class audioFiles {
-	CROWD_1
+enum AudioFiles {
+	MUSIC_WAVE = 0
 };
 
 class IAudio {

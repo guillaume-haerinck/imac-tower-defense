@@ -18,13 +18,16 @@ AudioService::AudioService() : m_fmodSystem(nullptr)
 		debug_break();
 	}
 
+	// Resize array to the number of items inside AudioFile enum
+	m_sounds.resize(5);
+
 	// Load sounds 
-	// TODO Check ressource manager design for better efficiency + Find a more robust design
-	// Load all sounds ? Or only repetitive ones ?
-	
 	FMOD::Sound* sound;
-	m_fmodSystem->createSound("res/audio/crowd.mp3", FMOD_DEFAULT, 0, &sound);
-	m_sounds.push_back(sound);
+	if (FMOD_OK != m_fmodSystem->createSound("res/audio/musics/cpu-showdown.mp3", FMOD_DEFAULT, 0, &sound)) {
+		spdlog::error("[FMOD] Error while loading a sound");
+		debug_break();
+	}
+	m_sounds.at(AudioFiles::MUSIC_WAVE) = sound;
 }
 
 AudioService::~AudioService() {

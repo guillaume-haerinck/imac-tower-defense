@@ -1,6 +1,9 @@
 #include "wave-system.hpp"
 
 #include <spdlog/spdlog.h>
+
+#include "services/locator.hpp"
+#include "services/audio/i-audio.hpp"
 #include "events/wave-updated.hpp"
 
 WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Level& level)
@@ -12,6 +15,8 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
 		this->m_spawnRate = event.spawnRate;
 		this->m_timer = 3; // Time for the animation
+		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
+		audioService.playSound(AudioFiles::MUSIC_WAVE);
 	});
 }
 

@@ -56,10 +56,6 @@ int main(int argc, char** argv) {
 	bool bAllowClickEvent = true;
 	bool bWireframe = false;
 
-	// Test audio service
-	// IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
-	//audioService.playSound(audioFiles::CROWD_1);
-
 	// Game loop
 	bool bQuit = false;
 	double deltatime = TARGET_DELTA_MS;
