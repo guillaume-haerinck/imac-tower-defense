@@ -147,6 +147,9 @@ Cela ne surprendra personne, créer un jeu, et plus particulièrement un moteur 
 
 L'approche la plus simple consiste à avoir une classe de base qui possède elle-même les différents systèmes avec lesquels elle doit interragir.
 
+![Entité simple](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v1.PNG?raw=true)
+
+<!--
 ```graphviz
 digraph G {
         fontname = "Bitstream Vera Sans"
@@ -178,6 +181,7 @@ digraph G {
         ]
 }
 ```
+-->
 
 Le problème le plus évident posé par cette architecture est la **complexité**. Comme cette classe détient une grande partie de ce qu'est le moteur, elle est très lourde à manipuler et on peut se retrouver dans des projets conséquent avec une classe du genre grande de centaines et des centaines de ligne.
 
@@ -185,6 +189,9 @@ Le problème le plus évident posé par cette architecture est la **complexité*
 
 Afin d'alléger la classe Entité, il est possible de tirer parti de la programmation orientée objet en utilisant l'héritage. Avec cette approche, on peut définir les besoins progressivements, les sortants ainsi de la classe mère.
 
+![Entité héritage](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v2.PNG?raw=true)
+
+<!--
 ```graphviz
 digraph G {
         fontname = "Bitstream Vera Sans"
@@ -210,20 +217,21 @@ digraph G {
         Enemy -> EvilTree [dir=back headlabel= "???"]
 }
 ```
+-->
 
 Cependant, il peut devenir compliqué d'intégrer de nouvelles mécaniques de gameplay. L'exemple de "EvilTree" est assez parlant, à la fois Enemy et Tree, on ne pourrait le créer sans déclencher un **double héritage**, autorisé en C++, mais hautement déconseillé.
 
 De plus, même si le code d'Entité a été simplifié, la division n'a pas été faite selon les systèmes du moteur de jeu. C'est à dire que le code gérant animation, physique et intelligence artificielle peut très bien être mélangé dans ces classes, posant des problèmes de performances et de maintenance.
 
-:::info
-:fire: Bien que nous critiquons cette approche afin de nous amener à l'ECS, nous souhaitons préciser que des structures du genre plus complexes existent et s'en sortent très bien depuis des années.
-:::
+> :fire: Bien que nous critiquons cette approche afin de nous amener à l'ECS, nous souhaitons préciser que des structures du genre plus complexes existent et s'en sortent très bien depuis des années.
 
 #### 3. Approche par Aggrégation
 
 En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de l'aggrégation, c'est à dire que les pans du moteurs de jeu intéragissant avec les entités ont maintenant leur classe propre, et sont possédés par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
 
+![Entité composants](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v3.PNG?raw=true)
 
+<!--
 ```graphviz
 digraph G {
         fontname = "Bitstream Vera Sans"
@@ -278,6 +286,7 @@ digraph G {
         Entité -> GraphicsComponent [dir=back]
 }
 ```
+-->
 
 Ce pattern à l'avantage de simplifier la structure et la compréhension du code, et permet aussi de mettre à jour les pans du moteurs de jeu dans un ordre précis.
 
@@ -380,12 +389,16 @@ Comme vous le constaterez tout au long de ce rapport, l'architecture de notre ap
 
 Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est de lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est crée dans le main, est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code à besoin de manipuler les entités, il est nescessaire d'avoir accès à cet objet.
 
+![Event publisher](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true)
+
+<!--
 ```mermaid
 graph TD
-A[Publisher] -- Event --> B((Event Bus))
-B -- Event --> C[Subscriber]
-B -- Event --> D[Subscriber]
+A[Publisher] -- Event -- B((Event Bus))
+B -- Event -- C[Subscriber]
+B -- Event -- D[Subscriber]
 ```
+-->
 
 L'Event emitter ensuite, est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleur le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les event-listener. L'idée, c'est qu'avec cet objet, on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
 
@@ -393,11 +406,35 @@ Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en
 
 ## III - En route vers le premier prototype
 
+La première grande étape a été de rassembler toutes les dépendances et besoins techniques du projet, et de les faire fonctionner. Nous avons cherché à identifier nos besoins à l'avance afin de ne pas rajouter plus de complexité à un projet qui n'en manquait déja pas sur le papier.
 
+### Utilisation d'OpenGL 4.4 core
 
-### Utilisation d'openGL 4.4 core
+Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir glBegin() et glEnd(), et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permi assez rapidement de passer cette étape.
 
-[TODO Parler de toutes les sources, et de pourquoi 4.4]
+Nous avons commencé notre apprentissage grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuller plus aisément. L'essentiel de ces classes se trouvent dans le dossier *graphics*.
+
+Bien que nous ne cherchions pas forcément la performance, mais plûtot à apprendre le fonctionnement de cette API, nous avons implémentés quelques optimisations offerte par OpenGL.
+
+#### Array texture
+
+C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker multiples textures dans un seul buffer afin de limiter le coût du "texture switching". Concretement, on y stocke une spritesheet, et on utilise un uniform dans le shader pour changer la tuile qui est active. Les textures coordinates restent les mêmes, sauf pour le paramêtre z qui correspond à la tuile à activer, c'est à dire l'index de ce tableau de texture.
+
+![Systems](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/enemy-small-robot-77x117.png?raw=true)
+
+#### Index Buffer
+
+Très clairement inutile sachant que nous n'affichons des carrés composés de deux triangles, il n'empêche qu'utiliser un indexBuffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGl est une bonne pratique, que nous avons donc utilisé.
+
+![Index buffer](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/index-buffer.png?raw=true)
+
+#### Vertex Array partagés
+
+Nous n'utilisons pas encore de "Instance Draw" qui permetterai d'indiquer à openGL qu'un même objet est déssiné plusieurs fois, cependant, nous partageons tout de même nos VertexArray entre les entités qui utilisent la même texture, au lieu d'en générrer une à chaque création.
+
+On peut donc assimiler ce comportement au design pattern [FlyWeight](https://gameprogrammingpatterns.com/flyweight.html), car une seule instance d'une classe est utilisés pour plusieurs objets en jeu.
+
+![Flyweight](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/flyweight-tiles.png?raw=true)
 
 ### Ajout des dépendances
 
@@ -464,15 +501,23 @@ La seconde version reprenait l'esthétique de la première version en vue du des
 
 ![MenuVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/menuv2.jpg?raw=true)
 
+![AssetsVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v2.png?raw=true)
+
 La version que nous avons choisi d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. Nous avons choisi un décor de laboratoire détruit où les machines prendraient le dessus sur les scientifiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.
 
 ![Version3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version3.png?raw=true)
+
+![AssetsVersion3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v3.png?raw=true)
 
 #### 2. Choix des polices
 
 Pour le corps de texte, nous avons choisi la police Sniglet disponible sur le site Dafont : https://www.dafont.com/sniglet.font. Ses arrondis permettent de contraster avec l'ambiance générale plutôt sérieuse et stricte en y apportant un aspect divertissant.
 
+![PoliceCorps](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_corps.png?raw=true)
+
 Pour les titres, nous avons également privilégié une police du site Dafont : https://www.dafont.com/fr/sunrise-international.font. Une fois de plus, elle constraste avec l'ambiance du jeu. Cette police a un aspect manuscrit qui contribue à ajouter une dimension humaine au projet afin de le rendre plus chaleureux. 
+
+![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_titre.png?raw=true)
 
 ### Système de tuiles
 
@@ -487,7 +532,8 @@ Pour les titres, nous avons également privilégié une police du site Dafont : 
 ### Cyrielle Lassarre
 
 À la suite de ce projet, plusieurs éléments pourraient être améliorés. En effet, nous pourrions envisagé l'apparition de plusieurs personnages afin de créer de nouveaux enjeux et d'augmenter la réflexion du joueur. Les animations, bien que déjà présentes, pourraient également être améliorées afin d'augmenter le feedback. Des vidéos au début de la partie permettraient de renforcer le story-telling de notre projet et de l'humaniser. 
-Néanmoins, notre rendu respecte de nombreux critères établis par les consignes du projet et représente une réalisation pertinente pour la suite de notre parcours.  
+Néanmoins, notre rendu respecte de nombreux critères établis par les consignes du projet et représente une réalisation pertinente pour la suite de notre parcours.
+Ce projet m'a beaucoup appris, grâce au travail en équipe nottament ! L'ambition qu'a suscité ce projet au sein de notre trinôme m'a permis d'avancer dans un environnement de travail très agréable et stimulant ! J'aurais aimé abordé ce projet dans le cadre d'un workshop dédié afin que notre enthousiasme face à ce projet ne soit pas occulté par de nombreux autres travaux que nous avions à réaliser dans le cadre de notre formation à l'IMAC.  
 
 ### Guillaume Haerinck
 
@@ -495,7 +541,7 @@ Néanmoins, notre rendu respecte de nombreux critères établis par les consigne
 
 Déjà un projet dont je suis très satisfait, et pourtant encore tant de choses à rajouter, notamment pour ma part toujours plus d'effets visuels, d'explosions, de fumée, de particules pour les lasers *etc.*
 Ce projet m'aura énormément appris, sur le C++, sur le travail en équipe, sur le game design, . . . et surtout, j'ai découvert l'**ECS** !
-Si au début découvrir cette architecture a été très compliqué car je ne savais pas où mettre mon code, comment accéder aux entités, *etc.*, désormais je ne sais plus comment m'en passer.
+Si au début découvrir cette architecture a été très compliquée car je ne savais pas où mettre mon code, comment accéder aux entités, *etc.*, désormais je ne sais plus comment m'en passer.
 L'ECS permet une maléabilité du code inouïe, et une fois une grande variété de *components* codés, créer de nouveaux types d'entité se fait sans prise de tête, simplement en spécifiant les comportements qu'elles doivent avoir. De plus, on peut ajouter à la volée des propriétés à une quelconque entité, comme une animation par exemple, et les enlever tout aussi simplement. Pour rajouter des effets visuels c'est un vrai bonheur.
 
 ## Conclusion
@@ -524,7 +570,7 @@ L'ECS permet une maléabilité du code inouïe, et une fois une grande variété
 [The art of screenshake](https://www.youtube.com/watch?v=AJdEqssNZ-U)
 [Cherno OpenGL Playlist](https://www.youtube.com/playlist?list=PLlrATfBNZ98foTJPJ_Ev03o2oq3-GGOS2)
 
-#### Books
+#### Livres
 
 [Game Programming Patterns](https://gameprogrammingpatterns.com/)
 [Game Engine Architecture](https://www.gameenginebook.com/)
@@ -547,49 +593,3 @@ RAM
 XAML
 : Langage déclaratif développé par Microsoft semblable à du HTML
 *[XAML]: eXtensible Application Markup Language
-
-# REMOVE ME
-
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
-
-> **ProTip:** You can disable any **Markdown extension** in the **File properties** dialog.
-
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
-
-
-## UML diagrams
-
-You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
-
-```mermaid
-sequenceDiagram
-Alice ->> Bob: Hello Bob, how are you?
-Bob-->>John: How about you John?
-Bob--x Alice: I am good thanks!
-Bob-x John: I am good thanks!
-Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-Bob-->Alice: Checking with John...
-Alice->John: Yes... John, how are you?
-```
-
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
