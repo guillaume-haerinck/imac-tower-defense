@@ -57,6 +57,7 @@ namespace projectileType {
 namespace stateTag {
 	TAG(IsBeingControlled);
 	TAG(RotateableByMouse);
+	TAG(IsDisappearing);
 };
 
 namespace positionTag {
