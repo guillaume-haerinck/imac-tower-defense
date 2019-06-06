@@ -10,6 +10,8 @@ public:
 	Progression(EventEmitter& emitter);
 	~Progression();
 
+	void resetValues();
+
 	void setIntroImgPath(std::string imgPath);
 	const char* getIntroImgPath();
 

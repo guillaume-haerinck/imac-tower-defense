@@ -106,32 +106,20 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::StartWave>(10, 2);
 			}
 
-			if (ImGui::Button("Load level 1")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 1);
-			}
-
-			if (ImGui::Button("Load level 2")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 2);
-			}
-
-			if (ImGui::Button("Load level 3")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL, 3);
-			}
-
 			if (ImGui::Button("Load title screen")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN, 1);
+				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN);
 			}
 
 			if (ImGui::Button("Load Game over screen")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER, 1);
+				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER);
 			}
 
-			if (ImGui::Button("Load level 1 intro")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 1);
+			if (ImGui::Button("Load end screen")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::END_SCREEN);
 			}
 
-			if (ImGui::Button("Load level 1 exit")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, 1);
+			if (ImGui::Button("Load level exit")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT);
 			}
 
 			// Check cursor position

@@ -9,6 +9,19 @@ Progression::Progression(EventEmitter& emitter)
 
 Progression::~Progression() {}
 
+void Progression::resetValues() {
+	m_introImgPath = "";
+	m_introText = "";
+	m_exitText = "";
+	m_maxLife = 0;
+	m_life = 0; 
+	m_maxMirrorNumber = 0;
+	m_mirrorNumber = 0;
+	m_maxSlowNumber = 0;
+	m_slowNumber = 0;
+	m_emitter.publish<evnt::ProgressionUpdated>();
+}
+
 void Progression::setIntroImgPath(std::string imgPath) {
 	m_introImgPath = imgPath;
 	m_emitter.publish<evnt::ProgressionUpdated>();

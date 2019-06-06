@@ -61,6 +61,7 @@ bool Level::doesLevelExist(unsigned int number) {
 }
 
 void Level::setLevel(unsigned int number) {
+	m_progression.resetValues();
 	m_progression.setLevelNumber(number);
 	m_itdPath = "res/levels/level-";
 	m_itdPath += std::to_string(number);
