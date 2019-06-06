@@ -9,7 +9,7 @@
 
 WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, Progression& progression, Level& level)
 : ISystem(registry, emitter), m_progression(progression), m_enemyFactory(registry, level), m_waveState(WaveState::NOT_STARTED),
-  m_frameCount(0), m_timer(0), m_spawnRate(0)
+  m_frameCount(0), m_timer(0)
 {
 	m_emitter.on<evnt::ChangeGameState>([this](const evnt::ChangeGameState & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::NOT_STARTED;
@@ -22,7 +22,6 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, P
 		this->m_progression.setRobotNumber(maxRobotNb);
 		this->m_progression.setKamikazeNumber(maxKamikazeNb);
 		this->m_probaSpawnKamikaze = (float)maxKamikazeNb / (maxRobotNb + maxKamikazeNb);
-		this->m_spawnRate = event.spawnRate;
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 		audioService.stopAllSounds();
@@ -44,7 +43,8 @@ void WaveSystem::update(float deltatime) {
 		}
 		if (m_timer <= 0) {
 			m_waveState = WaveState::DURING;
-			m_timer = (m_progression.getRobotNumber()+m_progression.getKamikazeNumber()) * m_spawnRate;
+			// m_timer = (m_progression.getRobotNumber()+m_progression.getKamikazeNumber()) * m_progression.getWaveRate();
+			m_timer = m_progression.getRobotNumber() + m_progression.getKamikazeNumber();
 		}
 		break;
 
@@ -71,7 +71,7 @@ void WaveSystem::update(float deltatime) {
 				m_enemyFactory.createRobot();
 				m_progression.decreaseRobotNumber();
 			}
-			else {
+			else if (kamikazeNb > 0) {
 				m_enemyFactory.createKamikaze();
 				m_progression.decreaseKamikazeNumber();
 			}

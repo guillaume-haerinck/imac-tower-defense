@@ -27,7 +27,6 @@ private:
 	WaveState m_waveState;
 	unsigned int m_frameCount;
 	int m_timer;
-	int m_spawnRate;
 	int m_nbRobotRemaingToSpawn;
 	int m_nbKamikazeRemaingToSpawn;
 	float m_probaSpawnKamikaze;
