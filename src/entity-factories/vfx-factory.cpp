@@ -59,7 +59,7 @@ void VFXFactory::createKamikazeExplosion(glm::vec2 pos, float maxRadius) {
 	//Create the association between each entity that has health and the explosion
 	//It will be removed when the explosion hits and damages the entity (allows the keep track of who has already been damaged and who has not)
 	m_registry.view<cmpt::Health>().each([this,myEntity](auto entity, auto) {
-		m_createEntityExplosionAssociation(entity, myEntity);
+		this->m_createEntityExplosionAssociation(entity, myEntity);
 	});
 }
 
