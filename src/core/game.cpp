@@ -101,14 +101,13 @@ Game::Game(EventEmitter& emitter)
 		case GameState::LEVEL_INTRO:
 		case GameState::LEVEL:
 		case GameState::LEVEL_EXIT:
-			if (level->doesLevelExist(event.subState)) {
-				// Only update the level if different
-				if (event.subState != progression.getLevelNumber()) {
+			if (event.subState != progression.getLevelNumber()) {
+				if (level->doesLevelExist(event.subState)) {
 					level->setLevel(event.subState);
+				} else {
+					// File does not exist, so end game
+					this->m_state = GameState::END_SCREEN;
 				}
-			} else {
-				// File does not exist, so end game
-				this->m_state = GameState::END_SCREEN;
 			}
 			break;
 
