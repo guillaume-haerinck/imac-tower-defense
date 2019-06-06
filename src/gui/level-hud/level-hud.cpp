@@ -79,11 +79,15 @@ void LevelHud::OnMouseDown(const Noesis::MouseButtonEventArgs& e) {
 }
 
 void LevelHud::onSelectTowerSlow(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_SLOW);
+	if (m_progression.getSlowNumbers() > 0) {
+		m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::TOWER_SLOW);
+	}
 }
 
 void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
-	m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::MIRROR_BASIC);
+	if (m_progression.getMirrorNumbers() > 0) {
+		m_emitter.publish<evnt::ConstructSelection>(ConstructibleType::MIRROR_BASIC);
+	}
 }
 
 void LevelHud::onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {

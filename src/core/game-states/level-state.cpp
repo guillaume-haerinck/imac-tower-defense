@@ -281,12 +281,12 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 				}
 				else {
 					spdlog::warn("Not a constructible tile");
-					//changeState(LevelInteractionState::INVALID);
+					changeState(LevelInteractionState::INVALID);
 				}
 			}
 			else {
 				spdlog::warn("Invalid tile");
-				//changeState(LevelInteractionState::INVALID);
+				changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
