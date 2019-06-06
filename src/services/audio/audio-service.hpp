@@ -18,4 +18,5 @@ public:
 private:
 	FMOD::System* m_fmodSystem;
 	std::vector<FMOD::Sound*> m_sounds;
+	FMOD::Channel* m_channel;
 };

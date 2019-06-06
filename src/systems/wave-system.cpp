@@ -16,6 +16,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 		this->m_spawnRate = event.spawnRate;
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
+		audioService.stopAllSounds();
 		audioService.playSound(AudioFiles::MUSIC_WAVE);
 	});
 }

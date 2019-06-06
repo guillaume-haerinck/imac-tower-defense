@@ -38,13 +38,12 @@ AudioService::~AudioService() {
 }
 
 void AudioService::playSound(int soundID) {
-	FMOD::Channel* channel = 0;
-	m_fmodSystem->playSound(m_sounds.at(soundID), 0, false, &channel);
+	m_fmodSystem->playSound(m_sounds.at(soundID), 0, false, &m_channel);
 }
 
 void AudioService::stopSound(int soundID) {
 }
 
 void AudioService::stopAllSounds() {
-
+	m_channel->stop();
 }
