@@ -8,6 +8,8 @@ const float PROJ_WIDTH_RAT = PROJ_WIDTH * WIN_RATIO;
 const float PROJ_HEIGHT = 100.0f;
 const float TILE_SIZE = 11.0f;
 
+const float DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE = 3.0f;
+
 const int ENEMY_SURVIVE_LIFE_COST = 1;
 const float ENEMY_DRONE_HEALTH = 2.0f;
 const float ENEMY_KAMIKAZE_HEALTH = 2.0f;

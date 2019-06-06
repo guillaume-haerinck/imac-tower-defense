@@ -13,6 +13,7 @@
 #include "events/tower-dead.hpp"
 #include "events/wave-updated.hpp"
 #include "events/loose.hpp"
+#include "events/victory-delay-ends.hpp"
 #include "events/enemy-dead.hpp"
 #include "events/change-game-state.hpp"
 #include "events/enemy-reached-end.hpp"
@@ -27,6 +28,8 @@
 #include "components/constrained-rotation.hpp"
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
+#include "components/age.hpp"
+
 
 LevelState::LevelState(Game& game)
 	: IGameState(game), m_levelHud(game.emitter, game.progression), m_state(LevelInteractionState::FREE),
@@ -76,9 +79,16 @@ void LevelState::handleVictoryConditions() {
 				}
 			});
 			if (enemyRemaining == 1) {
-				this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+				//Set delay before victory and changing game state
+				std::uint32_t timer = this->m_game.registry.create();
+				this->m_game.registry.assign<cmpt::Age>(timer,DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE);
+				this->m_game.registry.assign<entityTag::VictoryDelayTimer>(timer);
 			}
 		}
+	});
+
+	m_emitter.on<evnt::VictoryDelayEnds>([this](const evnt::VictoryDelayEnds & event, EventEmitter & emitter) {
+		this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
 	});
 
 	m_emitter.on<evnt::EnemyReachedEnd>([this](const evnt::EnemyReachedEnd & event, EventEmitter & emitter) {
@@ -90,7 +100,10 @@ void LevelState::handleVictoryConditions() {
 				}
 			});
 			if (enemyRemaining == 0) {
-				this->m_game.emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_EXIT, this->m_game.progression.getLevelNumber());
+				//Set delay before victory and changing game state
+				std::uint32_t timer = this->m_game.registry.create();
+				this->m_game.registry.assign<cmpt::Age>(timer, DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE);
+				this->m_game.registry.assign<entityTag::VictoryDelayTimer>(timer);
 			}
 		}
 	});

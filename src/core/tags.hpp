@@ -37,6 +37,7 @@ namespace entityTag {
 	TAG(Enemy);
 	TAG(SlowProjectile);
 	TAG(Tile);
+	TAG(VictoryDelayTimer);
 };
 
 namespace towerTag {

@@ -8,6 +8,8 @@ extern const float PROJ_WIDTH_RAT;
 extern const float PROJ_HEIGHT;
 extern const float TILE_SIZE;
 
+extern const float DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE;
+
 extern const int ENEMY_SURVIVE_LIFE_COST;
 extern const float ENEMY_DRONE_HEALTH;
 extern const float ENEMY_KAMIKAZE_HEALTH;
