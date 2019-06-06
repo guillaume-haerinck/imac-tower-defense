@@ -17,7 +17,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, L
 
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
-		this->m_nbEnemyRemaingToSpawn = event.nbEnemyToSpawn;
+		this->m_nbEnemyRemaingToSpawn = 1;// event.nbEnemyToSpawn;
 		this->m_spawnRate = event.spawnRate;
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();

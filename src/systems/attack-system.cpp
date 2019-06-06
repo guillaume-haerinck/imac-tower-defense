@@ -148,21 +148,14 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 						if (abs(dir1.x*dir2.y - dir2.x*dir1.y) < 20) { //The were aligned 
 							float dSq1 = dir1.x*dir1.x + dir1.y*dir1.y;
 							float dSq2 = dir2.x*dir2.x + dir2.y*dir2.y;
-							if (dSq1 < dSq2) {
-								t = sqrt(dSq1);
-								laserEnd = mirrorPt1;
+							float minDist = sqrt(imaths::min(dSq1, dSq2));
+							if (t > minDist) { //Closer than current end found
+								t = minDist;
+								laserEnd = pos + t * unitDirVector;
+								mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
+								nextLauncherId = mirror;
+								arrivedOnMirrorEdge = true;
 							}
-							else {
-								t = sqrt(dSq2);
-								laserEnd = mirrorPt2;
-							}
-							//glm::vec2 dir = mirrorPos - pos;
-							//float distToMirrorCenter = sqrt(dir.x*dir.x + dir.y*dir.y);
-							//t = distToMirrorCenter - MIRROR_RADIUS;
-							laserEnd = pos + t * unitDirVector;
-							mirrorIsBeingControlled = m_registry.has<stateTag::IsBeingControlled>(mirror) || m_registry.has<positionTag::IsOnHoveredTile>(mirror);
-							nextLauncherId = mirror;
-							arrivedOnMirrorEdge = true;
 						}
 					}
 				}
@@ -238,8 +231,8 @@ void AttackSystem::shootLaser(glm::vec2 pos, float agl, int nbBounce , unsigned 
 			shootLaser(laserEnd - unitDirVector * 0.001f, 2 * surfaceAngle - agl, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 		else {
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
-			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/8, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl + imaths::TAU/10, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
+			shootLaser(laserEnd - unitDirVector * 0.001f, agl - imaths::TAU/10, nbBounce - 1, nextLauncherId, deltatime, isTransparent || mirrorIsBeingControlled, col, launcherAlpha);
 		}
 	}
 }

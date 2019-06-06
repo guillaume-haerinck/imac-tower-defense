@@ -8,7 +8,7 @@ const float PROJ_WIDTH_RAT = PROJ_WIDTH * WIN_RATIO;
 const float PROJ_HEIGHT = 100.0f;
 const float TILE_SIZE = 11.0f;
 
-const int ENEMY_SURVIVE_LIFE_COST = 2;
+const int ENEMY_SURVIVE_LIFE_COST = 1;
 const float ENEMY_DRONE_HEALTH = 2.0f;
 const float ENEMY_KAMIKAZE_HEALTH = 2.0f;
 const float ENEMY_HEALTH_RANDOM_VARIATION = 0.5f;
@@ -20,7 +20,7 @@ const float KAMIKAZE_EXPLOSION_RADIUS = 75.0f;
 const float TOWER_HEALTH = 10;
 const float TOWER_HITBOX_RADIUS = 4.0f;
 const float TOWER_ATTACK_RANGE = 25.0f;
-const float MIRROR_RADIUS = TILE_SIZE / 2;
+const float MIRROR_RADIUS = TILE_SIZE *0.5f;
 
 const float LASER_DAMAGE_PER_SECOND = 2.0f;
 const float LASER_WIDTH = 13;
@@ -29,6 +29,8 @@ const float SLOW_PROJECTILE_VELOCITY = 1.0f;
 
 const float TOWER_SLOW_AMOUNT = 0.4;
 const float SLOW_DURATION = 4;
+
+const float SCREEN_SHAKE_DURATION = 0.4;
 
 const float FRAMERATE = 60.0f;
 const float TARGET_DELTA_MS = 1000.0f / FRAMERATE; // 60 FPS

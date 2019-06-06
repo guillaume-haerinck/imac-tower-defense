@@ -127,7 +127,7 @@ void RenderSystem::renderSpritesheet(std::uint32_t entity, cmpt::Sprite& sprite,
 	sprite.ib->bind();
 
 	// Updates
-	glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
+	glm::mat4 mvp = this->m_projection * this->getViewMatrix() * this->getModelMatrix(entity);
 	sprite.shader->setUniformMat4f("u_mvp", mvp);
 	sprite.shader->setUniform1i("u_activeTile", animation.activeTile);
 	if (m_registry.valid(entity)) {
@@ -174,7 +174,7 @@ void RenderSystem::renderSprite(std::uint32_t entity, cmpt::Sprite & sprite) con
 	sprite.ib->bind();
 
 	// Updates
-	glm::mat4 mvp = m_projection * m_view * getModelMatrix(entity);
+	glm::mat4 mvp = m_projection * this->getViewMatrix() * this->getModelMatrix(entity);
 	sprite.shader->setUniformMat4f("u_mvp", mvp);
 	if (m_registry.valid(entity)) {
 		sprite.shader->setUniform4f("tintColour", helper.getColour(entity));
@@ -215,13 +215,17 @@ void RenderSystem::update(float deltatime) {
         TODO find a way to use only a few glDraw by sharing buffer or using vertex array. Each draw call should draw all sprites of a particular type. For uniforms, transfer them to vertex attributes
         https://community.khronos.org/t/best-practices-to-render-multiple-2d-sprite-with-vbo/74096
     */
+
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+	helper.updateScreenShake(deltatime);
+
     m_registry.view<cmpt::Transform, cmpt::Primitive>().each([this](auto entity, cmpt::Transform& transform, cmpt::Primitive& primitive) {
         // Binding
         primitive.shader->bind();
         GLCall(glBindVertexArray(primitive.vaID));
 
         // Updates
-        glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(entity);
+        glm::mat4 mvp = this->m_projection * this->getViewMatrix() * this->getModelMatrix(entity);
         primitive.shader->setUniformMat4f("u_mvp", mvp);
         primitive.shader->setUniform4f("u_color", primitive.color.r, primitive.color.g, primitive.color.b, primitive.color.a);
 		if (m_registry.valid(entity) && m_registry.has<cmpt::TintColour>(entity)) {
@@ -314,7 +318,7 @@ void RenderSystem::update(float deltatime) {
 				healthTransform.position += healthbar.relativePos;
 
 				// Updates
-				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
+				glm::mat4 mvp = this->m_projection * this->getViewMatrix() * this->getModelMatrix(healthTransform);
 				healthbar.background.shader->setUniformMat4f("u_mvp", mvp);
 				healthbar.background.shader->setUniform4f("u_color", healthbar.background.color.r, healthbar.background.color.g, healthbar.background.color.b, healthbar.background.color.a);
 				GLCall(glDrawArrays(healthbar.background.type, 0, healthbar.background.vertexCount));
@@ -337,7 +341,7 @@ void RenderSystem::update(float deltatime) {
 				healthTransform.scale = glm::vec2(scale, 1.0f);
 
 				// Updates
-				glm::mat4 mvp = this->m_projection * this->m_view * this->getModelMatrix(healthTransform);
+				glm::mat4 mvp = this->m_projection * this->getViewMatrix() * this->getModelMatrix(healthTransform);
 				healthbar.bar.shader->setUniformMat4f("u_mvp", mvp);
 				if (scale > 0.4f) {
 					healthbar.bar.shader->setUniform4f("u_color", healthbar.bar.color.r, healthbar.bar.color.g, healthbar.bar.color.b, healthbar.bar.color.a);
@@ -380,4 +384,12 @@ glm::mat4 RenderSystem::getModelMatrix(cmpt::Transform& transform) const {
 	model = glm::rotate(model, transform.rotation, glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(transform.scale, 0.0f));
 	return model;
+}
+
+glm::mat4 RenderSystem::getViewMatrix() const {
+	IHelper& helper = entt::ServiceLocator<IHelper>::ref();
+	glm::mat4 view(1.0f);
+	view *= m_view;
+	view = glm::translate(view, glm::vec3(helper.getScreenShake(),0));
+	return view;
 }

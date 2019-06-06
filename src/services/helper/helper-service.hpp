@@ -16,6 +16,8 @@ public:
 	glm::vec2 getPositionTowerTip(std::uint32_t entityId) override;
 	glm::vec2 getScale(std::uint32_t entityId) override;
 	float getVelocityMultiplier(std::uint32_t entityId) override;
+	glm::vec2 getScreenShake() override;
+	void updateScreenShake(float deltatime) override;
 
 	bool mouseIsOn(std::uint32_t entityId) override;
 
@@ -28,6 +30,12 @@ public:
 	void setRegistry(entt::DefaultRegistry* registry) override;
 	void setEmitter(EventEmitter* emitter) override;
 	void setLevel(Level* level) override;
+
+private:
+	glm::vec2 m_screenShake;
+	bool m_screenShaking;
+	void startScreenShake(float duration);
+	float m_screenShakeTimeRemmaining;
 
 private:
 	entt::DefaultRegistry* m_registry;
