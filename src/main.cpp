@@ -98,24 +98,16 @@ int main(int argc, char** argv) {
 				
 			}
 			
-			if (ImGui::Button("Send wave event")) {
-				emitter.publish<evnt::StartWave>();
-			}
-
-			if (ImGui::Button("Load title screen")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::TITLE_SCREEN);
-			}
-
-			if (ImGui::Button("Load Game over screen")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER);
-			}
-
-			if (ImGui::Button("Load end screen")) {
-				emitter.publish<evnt::ChangeGameState>(GameState::END_SCREEN);
+			if (ImGui::Button("Load level 1")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 1);
 			}
 
 			if (ImGui::Button("Load level 2")) {
 				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 2);
+			}
+
+			if (ImGui::Button("Load level 3")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 3);
 			}
 
 			// Check cursor position

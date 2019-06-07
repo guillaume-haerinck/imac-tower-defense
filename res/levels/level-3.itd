@@ -1,9 +1,24 @@
 @ITD 1++
-# ITD ameliore, pas besoin de donnees de graphes.
+# ITD ameliore, pas besoin de donnees de graphes, et infos en plus.
+
 carte level-3.png
-energie 100
+background-img level-2-background.png
+intro-img level-3-intro.png
+intro-text Say freeeze
+exit-text What's next then ?
+
 chemin 255 255 255
 noeud 0 0 0
-construct 0 0 200
-in 0 200 0
-out 200 0 0
+construct 0 0 255
+in 0 255 0
+out 255 0 0
+
+energie 5
+slow 1
+mirror 2
+
+robot 15
+kamikaze 0
+wave-rate 2
+
+build-laser 8 7 3
