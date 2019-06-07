@@ -28,15 +28,6 @@ LevelHudBindings::LevelHudBindings()
   m_startWaveBtnVisibility("Visible"), m_startWaveBtnPosY(0.0f),
   m_timer("-"), m_life("-"), m_mirrorNumber("-"), m_slowNumber("-")
 {
-	/*
-	std::string text = std::to_string(this->m_progression.getMoney());
-	this->SetOutput(text.c_str());
-
-	m_emitter.on<evnt::ProgressionUpdated>([this](const evnt::ProgressionUpdated & event, EventEmitter & emitter) {
-		std::string text = std::to_string(this->m_progression.getMoney());
-		this->SetOutput(text.c_str());
-		});
-	*/
 }
 
 /* ---------------- Flying option menu -------------- */

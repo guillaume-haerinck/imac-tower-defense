@@ -102,6 +102,17 @@
     </Button>
   </Grid>
 
+  <Button Style="{StaticResource Btn}" Click="onStartWave" Background="#FF707070" Content="Start Wave" FontFamily="Sniglet" RenderTransformOrigin="0.5,0.5">
+    <Button.RenderTransform>
+      <TransformGroup>
+        <ScaleTransform/>
+        <SkewTransform/>
+        <RotateTransform/>
+        <TranslateTransform Y="{Binding StartWaveBtnPosY}"/>
+      </TransformGroup>
+    </Button.RenderTransform>
+  </Button>
+  
   <Grid x:Name="TopMenu" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Top" Height="70">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="50"/>

@@ -19,13 +19,14 @@ public:
 	void setOptionsPosY(float pos);
 	float getOptionsPosY() const;
 
-	// TopBar
+	// Start wave btn
 	const char* getStartWaveBtnVisibility() const;
 	void setStartWaveBtnVisibility(const char* value);
 
 	void setStartWaveBtnPosY(float pos);
 	float getStartWaveBtnPosY() const;
 
+	// TopBar
 	const char* getTimer() const;
 	void setTimer(const char* value);
 

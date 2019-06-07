@@ -36,6 +36,7 @@ LevelHud::LevelHud(EventEmitter& emitter, Progression& progression) : m_emitter(
 		switch (event.state) {
 		case WaveState::NOT_STARTED:
 			this->m_bindings->setTimer("-");
+			m_bindings->setStartWaveBtnPosY(0);
 			break;
 
 		case WaveState::PENDING:
@@ -64,6 +65,7 @@ bool LevelHud::ConnectEvent(Noesis::BaseComponent* source, const char* event, co
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectTowerSlow);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onSelectMirror);
 	NS_CONNECT_EVENT(Noesis::Button, Click, onDeleteEntity);
+	NS_CONNECT_EVENT(Noesis::Button, Click, onStartWave);
 	return false;
 }
 
@@ -96,6 +98,11 @@ void LevelHud::onSelectMirror(Noesis::BaseComponent* sender, const Noesis::Route
 
 void LevelHud::onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
 	m_emitter.publish<evnt::DeleteEntity>(m_lastSelectedEntity);
+}
+
+void LevelHud::onStartWave(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args) {
+	m_emitter.publish<evnt::StartWave>();
+	m_bindings->setStartWaveBtnPosY(-500);
 }
 
 /* ------------------------ SETTERS ----------------------- */

@@ -31,6 +31,7 @@ private:
 	void onSelectTowerSlow(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	void onSelectMirror(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 	void onDeleteEntity(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
+	void onStartWave(Noesis::BaseComponent* sender, const Noesis::RoutedEventArgs& args);
 
 	// Input events
 	void OnMouseEnter(const Noesis::MouseEventArgs& e) override;
