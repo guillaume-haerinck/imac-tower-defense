@@ -36,7 +36,7 @@ public:
 	void rect(float x1, float y1, float x2, float y2, int zIndex) override;
 	void square(float x, float y, float extent) override;
 	void ellipse(float a, float b, float c, float d) override;
-	void circleExplosion(float x, float y, float r, float maxR) override;
+	void circleExplosion(float x, float y, float r, float maxR, float noiseSeed) override;
 	void circleWithGlow(float x, float y, float r) override;
 	void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) override;
 	void line(float x1, float y1, float x2, float y2, BasicShaderType shaderType = BasicShaderType::BASIC) override;

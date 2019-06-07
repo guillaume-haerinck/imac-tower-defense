@@ -362,7 +362,7 @@ void RenderSystem::update(float deltatime) {
 	m_registry.view<cmpt::GrowingCircle, cmpt::Age, cmpt::Transform, renderOrderTag::o_VFX>().each([this](auto entity, cmpt::GrowingCircle& growingCircle, cmpt::Age& age, cmpt::Transform& transform, auto) {
 		IDebugDraw& debugDraw = entt::ServiceLocator<IDebugDraw>::ref();
 		float r = growingCircle.growthSpeed * age.age;
-		debugDraw.circleExplosion(transform.position.x, transform.position.y, r, growingCircle.maxRadius);
+		debugDraw.circleExplosion(transform.position.x, transform.position.y, r, growingCircle.maxRadius, growingCircle.noiseSeed);
 	});
 }
 
