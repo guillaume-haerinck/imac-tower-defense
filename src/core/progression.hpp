@@ -26,9 +26,6 @@ public:
 	void reduceLifeBy(int value);
 	int getLife();
 
-	void setMaxMirrorNumber(int value);
-	int getMaxMirrorNumber();
-
 	void setMirrorNumber(int value);
 	void reduceMirrorNumberBy1();
 	void increaseMirrorNumberBy1();
@@ -42,15 +39,11 @@ public:
 	void increaseSlowNumberBy1();
 	int getSlowNumbers();
 
-	int getMaxRobotNumber();
 	int getRobotNumber();
-	void setMaxRobotNumber(int value);
 	void setRobotNumber(int value);
 	void decreaseRobotNumber();
 
-	int getMaxKamikazeNumber();
 	int getKamikazeNumber();
-	void setMaxKamikazeNumber(int value);
 	void setKamikazeNumber(int value);
 	void decreaseKamikazeNumber();
 
@@ -68,13 +61,9 @@ private:
 	std::string m_exitText;
 	int m_maxLife;
 	int m_life;
-	int m_maxSlowNumber;
 	int m_slowNumber;
-	int m_maxMirrorNumber;
 	int m_mirrorNumber;
-	int m_maxRobotNumber;
 	int m_robotNumber;
-	int m_maxKamikazeNumber;
 	int m_kamikazeNumber;
 	int m_levelNumber;
 	int m_waveRate;

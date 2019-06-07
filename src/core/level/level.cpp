@@ -121,12 +121,10 @@ void Level::setLevel(unsigned int number) {
 			}
 			else if (line.find("robot") != std::string::npos) {
 				int maxRobot = getIntFromString(line);
-				m_progression.setMaxRobotNumber(maxRobot);
 				m_progression.setRobotNumber(maxRobot);
 			}
 			else if (line.find("kamikaze") != std::string::npos) {
 				int maxKamikaze = getIntFromString(line);
-				m_progression.setMaxKamikazeNumber(maxKamikaze);
 				m_progression.setKamikazeNumber(maxKamikaze);
 			}
 			else if (line.find("wave-rate") != std::string::npos) {
@@ -186,12 +184,10 @@ void Level::setLevel(unsigned int number) {
 			}
 			else if (line.find("slow") != std::string::npos) {
 				int maxSlow = getIntFromString(line);
-				m_progression.setMaxSlowNumber(maxSlow);
 				m_progression.setSlowNumber(maxSlow);
 			}
 			else if (line.find("mirror") != std::string::npos) {
 				int maxMirror = getIntFromString(line);
-				m_progression.setMaxMirrorNumber(maxMirror);
 				m_progression.setMirrorNumber(maxMirror);
 			}
 		}

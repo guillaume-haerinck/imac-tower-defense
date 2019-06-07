@@ -17,11 +17,7 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, P
 
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
-		int maxRobotNb = this->m_progression.getMaxRobotNumber();
-		int maxKamikazeNb = this->m_progression.getMaxKamikazeNumber();
-		this->m_progression.setRobotNumber(maxRobotNb);
-		this->m_progression.setKamikazeNumber(maxKamikazeNb);
-		this->m_probaSpawnKamikaze = (float)maxKamikazeNb / (maxRobotNb + maxKamikazeNb);
+		this->m_probaSpawnKamikaze = 0.5;
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 		audioService.stopAllSounds();
