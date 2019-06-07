@@ -27,5 +27,6 @@ private:
 	WaveState m_waveState;
 	unsigned int m_frameCount;
 	int m_timer;
+	int m_rateTimer;
 	float m_probaSpawnKamikaze;
 };

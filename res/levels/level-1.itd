@@ -19,7 +19,7 @@ mirror 0
 
 robot 20
 kamikaze 0
-wave-rate 2
+wave-rate 1
 
 build-laser 7 6 3
 build-mirror 7 3 1

@@ -11,7 +11,7 @@ const float TILE_SIZE = 11.0f;
 const float DELAY_BETWEEN_VICTORY_AND_CHANGE_GAME_STATE = 3.0f;
 
 const int ENEMY_SURVIVE_LIFE_COST = 1;
-const float ENEMY_DRONE_HEALTH = 2.0f;
+const float ENEMY_DRONE_HEALTH = 3.0f;
 const float ENEMY_KAMIKAZE_HEALTH = 2.0f;
 const float ENEMY_HEALTH_RANDOM_VARIATION = 0.5f;
 const float ENEMY_VELOCITY = 18.0f;

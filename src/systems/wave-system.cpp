@@ -39,39 +39,43 @@ void WaveSystem::update(float deltatime) {
 		}
 		if (m_timer <= 0) {
 			m_waveState = WaveState::DURING;
-			// m_timer = (m_progression.getRobotNumber()+m_progression.getKamikazeNumber()) * m_progression.getWaveRate();
-			m_timer = m_progression.getRobotNumber() + m_progression.getKamikazeNumber();
+			m_timer = (m_progression.getRobotNumber()+m_progression.getKamikazeNumber()) * m_progression.getWaveRate();
+			m_rateTimer = 0;
 		}
 		break;
 
 	case WaveState::DURING:
 		m_frameCount++;
 		if (m_frameCount >= FRAMERATE) {
-			// Spawn one robot per second
+			// One second elapsed
 			m_frameCount = 0;
-			m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
-			int robotNb = m_progression.getRobotNumber();
-			int kamikazeNb = m_progression.getKamikazeNumber();
-			if (robotNb > 0 && kamikazeNb > 0) {
-				IRandom& random = entt::ServiceLocator<IRandom>::ref();
-				if (random.random() < m_probaSpawnKamikaze) {
-					m_enemyFactory.createKamikaze();
-					m_progression.decreaseKamikazeNumber();
+			m_timer--;
+			m_rateTimer--;
+			if (m_rateTimer <= 0) {
+				m_rateTimer = m_progression.getWaveRate();
+				m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
+				int robotNb = m_progression.getRobotNumber();
+				int kamikazeNb = m_progression.getKamikazeNumber();
+				if (robotNb > 0 && kamikazeNb > 0) {
+					IRandom& random = entt::ServiceLocator<IRandom>::ref();
+					if (random.random() < m_probaSpawnKamikaze) {
+						m_enemyFactory.createKamikaze();
+						m_progression.decreaseKamikazeNumber();
+					}
+					else {
+						m_enemyFactory.createRobot();
+						m_progression.decreaseRobotNumber();
+					}
 				}
-				else {
+				else if (robotNb > 0) {
 					m_enemyFactory.createRobot();
 					m_progression.decreaseRobotNumber();
 				}
+				else if (kamikazeNb > 0) {
+					m_enemyFactory.createKamikaze();
+					m_progression.decreaseKamikazeNumber();
+				}
 			}
-			else if (robotNb > 0) {
-				m_enemyFactory.createRobot();
-				m_progression.decreaseRobotNumber();
-			}
-			else if (kamikazeNb > 0) {
-				m_enemyFactory.createKamikaze();
-				m_progression.decreaseKamikazeNumber();
-			}
-			m_timer--;
 		}
 		if (m_timer <= 0) {
 			m_waveState = WaveState::DONE;
