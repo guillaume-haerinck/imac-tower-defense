@@ -209,7 +209,7 @@ std::uint32_t Level::getTile(unsigned int x, unsigned int y) const {
 		return m_grid.at(y * m_gridWidth + x);
 	}
 	catch (const std::out_of_range e) {
-		spdlog::warn("Tile out of map range");
+		//spdlog::warn("Tile out of map range");
 		return entt::null;
 	}
 }
