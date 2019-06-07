@@ -31,8 +31,10 @@ LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmi
 : ISystem(registry, emitter), m_progression(progression)
 {
 	m_emitter.on<evnt::EntityDamaged>([this](const evnt::EntityDamaged & event, EventEmitter & emitter) {
-		cmpt::Health& health = m_registry.get<cmpt::Health>(event.entity);
-		health.current -= event.damage;
+		if (m_registry.has<cmpt::Health>(event.entity)) {
+			cmpt::Health& health = m_registry.get<cmpt::Health>(event.entity);
+			health.current -= event.damage;
+		}
 	});
 
 	m_emitter.on<evnt::EnemyReachedEnd>([this](const evnt::EnemyReachedEnd& event, EventEmitter & emitter) {
