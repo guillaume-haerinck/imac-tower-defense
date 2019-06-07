@@ -1,7 +1,7 @@
 ﻿
 # Rapport de projet - Imac Tower Defense
 
-![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/imac.png?raw=true)
+![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logo/imac.png?raw=true)
 
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
@@ -32,12 +32,13 @@
 [**IV -  L'ajout de mécaniques de jeu**](#iv---lajout-de-mécaniques-de-jeu)
 *	[**Déplacements des ennemis**](#déplacements-des-ennemis)
 *	[**Lasers**](#lasers)
-*	[**Effets de feedbacks**](#effets-de-feedbacks)
+*	[**Effets de feedback**](#effets-de-feedback)
 *	[**Interface graphique avec Noesis**](#interface-graphique-avec-noesis)
 
 [**V -  La solidification du projet**](#v---la-solidification-du-projet)
 *	[**State Machine**](#state-machine)
 *	[**Direction artistique**](#direction-artistique)
+*	[**Animations**](#animations)
 *	[**Système de tuiles**](#système-de-tuiles)
 
 [**VI -  Post-Mortem**](#vi---post-mortem)
@@ -79,6 +80,10 @@ Le Tower Defense est un genre extrêmement codifié, si bien qu'il peut être co
 
 À l'instar de ces jeux, nous ne souhaitions pas créer un énième clone du genre, mais plutôt nous approprier le sujet en proposant quelque chose d'unique. Conscients des contraintes à respecter, nous avons décidé de trois axes visant à apporter de la fraîcheur, tout en conservant la base du cahier des charges.
 
+<p align="left">
+<img src="https://image.flaticon.com/icons/svg/55/55240.svg" alt="Run" height="80">
+</p>
+
 #### 1. Rendre le joueur actif pendant les vagues
 
 Typiquement dans un Tower Defense, chaque niveau de jeu se divise entre une phase de construction et une phase d'attaque. Le joueur a des tours qu'il doit placer au mieux, puis il lance la vague pour voir si ses défenses tiennent bon. Avec un peu de chance, il gagnera assez de points pendant l'attaque pour construire de nouveaux bâtiments.
@@ -86,6 +91,10 @@ Typiquement dans un Tower Defense, chaque niveau de jeu se divise entre une phas
 Le problème posé par cette structure est que le joueur n'a **pas grand chose à faire lors de l'attaque**, si ce n'est regarder ce qui se passe à l'écran et croiser les doigts pour que tout se passe au mieux. C'est une structure qui fonctionne, mais qui commence à accuser son âge.
 
 Afin de pallier cette inactivité, nous avons décidé de construire les niveaux de sorte à ce qu'il soit impossible de couvrir l'ensemble de la zone de jeu. La conséquence est que le joueur sera obligé de désactiver des lasers et déplacer ses miroirs à de multiples reprises pour suivre l'évolution de l'attaque.
+
+<p align="left">
+<img src="https://image.flaticon.com/icons/svg/66/66143.svg" alt="Run" height="80">
+</p>
 
 #### 2. Proposer des choix intéressants
 
@@ -99,6 +108,10 @@ Pour ajouter du poids à ce genre de décisions, nous avons choisi de fixer le n
 > **Derek Yu**, *Créateur de Spelunky*
 
 Il est légitime de se demander si imposer de telles contraintes ne risquerait pas d'aller à l'encontre du jeu, et nuire à l'expérience. Nous pensons que la véritable question réside dans le choix de ce que l'on veut proposer. Dans notre cas, nous nous dirigeons vers l'aspect plus intense de ce spectre, car il propose des expériences - à notre sens - plus fun, à l'image de ce que peut être le jeu d'aventure/plateforme Spelunky face à un Mario.
+
+<p align="left">
+<img src="https://image.flaticon.com/icons/svg/1668/1668151.svg" alt="Run" height="80">
+</p>
 
 #### 3. Résoudre plusieurs problèmes avec la même mécanique
 
@@ -435,6 +448,43 @@ L'Event Emitter ensuite est ce qui **assure la majeure partie de la communicatio
 
 Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en référence dans le constructeur de nombreuses classes de notre jeu.
 
+#### La structure générale
+
+Si on commence à jeter un œil dans le dossier `src` on observe le point d'entrée de l'application `main.cpp`. Le rôle de ce fichier est de créer notre classe mère **Game** (présente dans le dossier `core`), ainsi que de gérer la game loop, l'interface de débogage et de propager les événements SDL.
+
+Parce que c'est l'emitter qui lance les événements, on le créé dans le main afin d'y avoir accès facilement dans ce fichier, et Game en récupère la référence. Autre point important : parce que la communication avec OpenGl ne peut s'effectuer qu'au runtime, on utilise une fonction pour initialiser la classe plutôt que de le faire dans le constructeur. C'est game qui possède le registre, et d'autres objets centraux de l'application.
+
+```C++
+EventEmitter emitter{};
+Game game(emitter);
+game.init();
+
+while(true) {
+	game.update(deltatime);
+}
+```
+
+Notre classe Game est en réalité une **StateMachine** (expliqué dans la suite du rapport). 
+
+Il existe plusieurs classes de type GameState, et seule celle qui est activée est mise à jour. Ces GameState ont une interface commune, mais sont très libres dans leur utilisation, rendant possible toutes nos envies créatrices. Typiquement, un état correspond à un type d'écran en jeu, mais cela n'est pas une règle immuable.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/architecture-general.JPG?raw=true" alt="Event publisher">
+</p>
+
+<!--
+```mermaid
+graph TD
+A[Game]
+A -- E[Level]
+B(*GameState*) -- A
+B(*GameState*) -- C(*GUI*)
+B(*GameState*) -- D(*Systems*)
+B(*GameState*) -- F(*EntityFactories*)
+F -- G(*ComponentFactories*)
+```
+-->
+
 ## III - En route vers le premier prototype
 
 La première grande étape a été de rassembler toutes les dépendances et besoins techniques du projet, et de les faire fonctionner. Nous avons cherché à identifier nos besoins à l'avance afin de ne pas rajouter plus de complexité à un projet qui n'en manquait déja pas sur le papier.
@@ -501,17 +551,25 @@ On peut donc assimiler ce comportement au design pattern [FlyWeight](https://gam
 
 Notre projet utilise de nombreuse dépendances, pour les gérrer, il était quasiment indispensable d'utiliser CMake. Afin de s'assurer que tout fonctionne, nous avons intégré l'entièreté de ces librairies dès le début du projet, quitte à ne pas en utiliser certaines (comme Box2D). Le *CMakeLists.txt* a été construit de sorte à ce que notre projet compile à la fois sur Windows et sur Linux. Toutes ces librairies sont présentes dans le dossier `lib`
 
-#### SDL2
+<p align="left">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logos/sdl.png?raw=true" alt="SDL Logo" height="50">
+</p>
 
 Pourquoi ne pas utiliser SDL 1 comme en cours pour créer un fenêtre ? Parce qu'il n'est pas possible de demander une version d'OpenGL précise, et nous avons besoins de certaines fonctionnalités de la 4.4.
 
-#### GLM
+<p align="left">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logos/glm.png?raw=true" alt="SDL Logo" height="50">
+</p>
 
 Il s'agit de la libraire mathématique d'OpenGL, que l'on utilise lourdement pour gérer nos données de position avec le type vec2. Nous utilisons aussi les différentes facettes de la librairie dans notre système de rendu lors des calculs de matrices.
 
 #### SPDLog
 
 Comme nous savions que notre architecture logicielle allait être conséquente, il était nécessaire d'utiliser un système de log pour la debug digne de ce nom. Avec SPDLog, on peut séparer les messages dans différents channels, et exporter l'output dans un fichier ou dans la console au choix.
+
+<p align="left">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logos/noesis.png?raw=true" alt="SDL Logo" height="50">
+</p>
 
 #### NeosisGUI
 
@@ -525,7 +583,9 @@ C'est une libraire qui s'occupe de lire, d'animer et d'afficher les fichiers XAM
 
 Nous préférons utiliser cette librairie à la place SDLImage pour la simplicité d'utilisation et d'installation.
 
-#### FMOD
+<p align="left">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logos/fmod.png?raw=true" alt="SDL Logo" height="25">
+</p>
 
 Nous ne faisons qu'effleurer les possibilités offertes par FMOD pour jouer et faire évoluer des sons. Mais au moins, nous commençons à l'utiliser.
 
@@ -664,6 +724,8 @@ Pour palier ce problème, nous avons créé une nouvelle state machine pour s'as
 
 ### Direction artistique
 
+La direction artistique a évolué à de multiples reprise dans notre projet.
+
 #### 1. Choix graphiques
 
 Concernant le design de notre projet, plusieurs réflexions ont été menées et expérimentées. Afin d'exposer et de justifier notre choix graphique final, il est important de revenir sur les différentes versions établies afin de partager notre réflexion.
@@ -689,19 +751,43 @@ La version que nous avons choisi d'approfondir est celle que nous vous avons pr�
 
 #### 2. Choix des polices
 
-Pour le corps de texte, nous avons choisi la police Sniglet disponible sur le site Dafont : https://www.dafont.com/sniglet.font. Ses arrondis permettent de contraster avec l'ambiance générale plutôt sérieuse et stricte en y apportant un aspect divertissant.
+Pour le corps de texte, nous avons choisi la police Google Font [Sniglet]([https://fonts.google.com/specimen/Sniglet](https://fonts.google.com/specimen/Sniglet)). Ses arrondis permettent de contraster avec l'ambiance générale plutôt sérieuse et stricte en y apportant un aspect divertissant.
 
 ![PoliceCorps](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_corps.png?raw=true)
 
-Pour les titres, nous avons également privilégié une police du site Dafont : https://www.dafont.com/fr/sunrise-international.font. Une fois de plus, elle constraste avec l'ambiance du jeu. Cette police a un aspect manuscrit qui contribue à ajouter une dimension humaine au projet afin de le rendre plus chaleureux. 
+Pour les titres, nous avons utilisé la version démo de la police commerciale [Sunrise International](https://creativemarket.com/thebrandedquotes/688290-Sunrise-International-%28Typeface%29). Une fois de plus, elle constraste avec l'ambiance du jeu. Cette police a un aspect manuscrit qui contribue à ajouter une dimension humaine au projet afin de le rendre plus chaleureux. 
 
 ![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_titre.png?raw=true)
+
+### Animations
+
+Afin de mettre le pied à l'étrier, nous avons récupéré un assets de robot sur le site [CartoonSmart](https://cartoonsmart.com/dumb-robot-royalty-free-game-art/). L’intérêt était d'apprendre du workflow d'un artiste professionnel afin de reproduire ce fonctionnement à l'avenir. 
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/dumb-robot.jpg?raw=true" alt="Asset dumb robot by Asa for CartoonSmart"  Height="300">
+</p>
+
+Une fois cet asset récupéré, nous avons modifié son style pour le faire coller à notre jeu. Conçu par dessin vectoriel, l'ensemble de ce qui assemble ce robot est séparé et exporté dans des parties distinctes afin de faciliter l'étape d'animation.
+
+![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/robot-design.JPG?raw=true)
+
+Ces assets sont animé à l'aide du logiciel [Spriter](https://brashmonkey.com/) qui était déja en notre possession. Semblable à ce qui peut se faire en animation 3D, le principe est de créer et d'attribuer des Os à des partie du corps. Comme ces parties sont des images séparer les unes des autres, il n'y a pas de notion de poid. Nous avons donc pu affiner l'animation de mouvement à nos besoins avant de l'exporter en spritesheet.
+
+![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/spriter.png?raw=true)
 
 ### Système de tuiles
 
 Bien qu'il soit encore limité, nous avons mis en place un système de tuile afin d'adapter la sprite de chacune à celles aux alentours. Le design n'exige pour le moment que de détecter celle du dessus, mais nous prévoyons de complexifier ce système lorsque d'autres tuiles plus complexes seront affichés.
 
-![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/tile-system.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/tile-system.png?raw=true" alt="Tile system"  Height="300">
+</p>
+
+Pour le moment, nous passons en revue notre grille en inspectant l’élément du dessus de chacune des tuiles de chemin. Si une autre est présente au dessus, alors la tuile active dans la spritesheet change pour une aidant la transition.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/tile-100x100.png?raw=true" alt="Tile system"  Height="80">
+</p>
 
 ## VI - Post-Mortem
 
