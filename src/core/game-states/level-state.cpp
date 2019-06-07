@@ -283,9 +283,9 @@ void LevelState::update(float deltatime) {
 }
 
 void LevelState::exit() {
-	// Remove self from input events
-	disconnectInputs();
 	m_emitter.publish<evnt::WaveUpdated>(0, WaveState::NOT_STARTED);
+	changeState(LevelInteractionState::FREE);
+	disconnectInputs();
 }
 
 /* ----------------------------------- INPUT EVENTS --------------------------- */
