@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
 	}
 
 	// Debug Window
+	bool bDisplayDebugWindow = false;
 	bool bDrawPhysic = false;
 	bool bAllowClickEvent = true;
 	bool bWireframe = false;
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
 	while (!bQuit) {
 
 		// Imgui main debug window
-		{
+		if(bDisplayDebugWindow){
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplSDL2_NewFrame(game.getWindow());
 			ImGui::NewFrame();
@@ -130,8 +131,10 @@ int main(int argc, char** argv) {
 		// Game update & render
 		{
 			game.update(deltatime/1000); //In seconds
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			if (bDisplayDebugWindow) {
+				ImGui::Render();
+				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			}
 		}
 		
 		// Handle inputs
@@ -182,6 +185,8 @@ int main(int argc, char** argv) {
 					emitter.publish<evnt::TranslateView>(-1.0f, 0.0f);
 				} else if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
 					emitter.publish<evnt::TranslateView>(1.0f, 0.0f);
+				}else if (e.key.keysym.sym == 'd') {
+					bDisplayDebugWindow = !bDisplayDebugWindow;
 				}
 				break;
 
