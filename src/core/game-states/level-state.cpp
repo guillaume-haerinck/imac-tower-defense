@@ -17,6 +17,7 @@
 #include "events/enemy-dead.hpp"
 #include "events/change-game-state.hpp"
 #include "events/enemy-reached-end.hpp"
+#include "events/progression-updated.hpp"
 #include "events/interactions/delete-entity.hpp"
 #include "events/interactions/change-cursor.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -29,6 +30,8 @@
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
 #include "components/age.hpp"
+#include "services/locator.hpp"
+#include "services/debug-draw/i-debug-draw.hpp"
 
 
 LevelState::LevelState(Game& game)
@@ -282,9 +285,9 @@ void LevelState::update(float deltatime) {
 }
 
 void LevelState::exit() {
-	// Remove self from input events
-	disconnectInputs();
 	m_emitter.publish<evnt::WaveUpdated>(0, WaveState::NOT_STARTED);
+	changeState(LevelInteractionState::FREE);
+	disconnectInputs();
 }
 
 /* ----------------------------------- INPUT EVENTS --------------------------- */
@@ -359,12 +362,12 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 				}
 				else {
 					spdlog::warn("Not a constructible tile");
-					changeState(LevelInteractionState::INVALID);
+					//changeState(LevelInteractionState::INVALID);
 				}
 			}
 			else {
 				spdlog::warn("Invalid tile");
-				changeState(LevelInteractionState::INVALID);
+				//changeState(LevelInteractionState::INVALID);
 			}
 			break;
 		}
@@ -488,6 +491,8 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			changeState(LevelInteractionState::FREE);
 			m_game.registry.destroy(m_lastSelectedEntity);
 			m_lastSelectedEntity = entt::null;
+			//Update info bar
+			m_game.emitter.publish<evnt::ProgressionUpdated>();
 			break;
 
 		default:
@@ -511,6 +516,10 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
 					// TODO handle activated and desactivated towers
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+				} else if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
+					//IDebugDraw& debugDraw = locator::debugDraw::ref();
+					//debugDraw.setColor(glm::vec4(0, 0, 0, 1));
+					//debugDraw.ellipse(30, 30, 32, 32);
 				}
 			} else {
 				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);

@@ -25,10 +25,8 @@
 
 [**III -  En route vers le premier prototype**](#iii---en-route-vers-le-premier-prototype)
 *	[**Utilisation d'openGL 4.4 core**](#utilisation-dopengl-4.4-core)
-<!--
 *	[**Ajout des dépendances**](#ajout-des-dépendances)
 *	[**Création des entités**](#création-des-entités)
--->
 *	[**Fichier ITD et construction du graphe**](#fichier-itd-et-construction-du-graphe)
 
 [**IV -  L'ajout de mécaniques de jeu**](#iv---lajout-de-mécaniques-de-jeu)
@@ -38,12 +36,9 @@
 *	[**Interface graphique avec Noesis**](#interface-graphique-avec-noesis)
 
 [**V -  La solidification du projet**](#v---la-solidification-du-projet)
+*	[**State Machine**](#state-machine)
 *	[**Direction artistique**](#direction-artistique)
 *	[**Système de tuiles**](#système-de-tuiles)
-<!--
-*	[**Animations**](#animations)
-*	[**Level design**](#level-design)
--->
 
 [**VI -  Post-Mortem**](#vi---post-mortem)
 *	[**Cyrielle Lassarre**](#cyrielle-lassarre)
@@ -51,8 +46,8 @@
 *	[**Jules Fouchy**](#jules-fouchy)
 
 [**ANNEXE**](#annexe)
+*	[**Différences avec le sujet**](#differences-avec-le-sujet)
 <!--
-*	[**Différences avec le cahier des charges**]
 *	[**Design pattern utilisés**]
 *	[**Schéma UML du projet**]
 -->
@@ -414,9 +409,17 @@ La première grande étape a été de rassembler toutes les dépendances et beso
 
 Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir glBegin() et glEnd(), et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
 
-Nous avons commencé notre apprentissage grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. L'essentiel de ces classes se trouve dans le dossier *graphics*.
+Cet apprentissage a commencé grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. L'essentiel de ces classes se trouvent dans le dossier *graphics*.
 
-Bien que nous ne cherchions pas forcément la performance, mais plutôt à apprendre le fonctionnement de cette API, nous avons implémenté quelques optimisations offerte par OpenGL.
+#### Des restes du immediate mode
+
+En règle générale nos dessins par OpenGl sont fait dans les règles de l'art : On envoi nos tableaux de vertex une unique fois à la carte graphique lors de la création d'un type d'entité. Puis à chaque frame, on update sa position dans le vertex shader à l'aide d'un uniform qui représente la matrice MVC.
+
+Cependant, nous disposons aussi d'un service **"Debug Draw"**, auxquel on peut accéder à n'importe quel endroit dans le code pour dessiner des formes simples. Comme on ne connaît pas à l'avance ce qu'on vas vouloir dessiner, cette classe ne déclare qu'un seul buffer de données à OpenGl, et on met à jour ces données de buffer à chaque fois que l'on demande le dessin d'une forme.
+
+Concrêtement, cette technique est du immediate draw en OpenGl Moderne, c'est à dire un comportement semblable à ce qui est proposé par l'ancienne version d'OpenGl par les fonctions glBegin() et glEnd().
+
+Pour nous donner bonne conscience, nous rattrapons cette mauvaise pratique par d'autres implémentations plus avancées. Bien que nous ne cherchions pas forcément la performance (à en voir le nombre de drawcall que nous émettons à chaque frame), mais plutôt à apprendre le fonctionnement de cette API, nous avons implémenté quelques optimisations offerte par OpenGL.
 
 #### Array texture
 
@@ -438,19 +441,49 @@ On peut donc assimiler ce comportement au design pattern [FlyWeight](https://gam
 
 ![Flyweight](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/flyweight-tiles.png?raw=true)
 
-<!--
 ### Ajout des dépendances
 
-[TODO Cmake, Puis listes des dépendances et de leurs utilités]
+Notre projet utilise de nombreuse dépendances, pour les gérrer, il était quasiment indispensable d'utiliser CMake. Nous l'avons construit de sorte à ce que notre projet compile à la fois sur Windows et sur Linux.
+
+### SDL2
+
+Pourquoi ne pas utiliser SDL 1 comme en cours pour créer un fenêtre ? Parce qu'il n'est pas possible de demander une version d'OpenGL précise, et nous avons besoins de certaines fonctionnalités de la 4.4.
+
+#### GLM
+
+Il s'agit de la libraire mathématique d'OpenGL, que l'on utilise lourdement pour gérrer nos données de position avec le type vec2. Nous utilisons aussi les différentes facettes de la librairie dans notre système de rendu lors des calculs de matrices.
+
+#### SPDLog
+
+Comme nous savions que notre architecture logicielle allait être conséquente, il était nescessaire d'utiliser un système de log pour la debug digne de ce nom. Avec SPDLog, on peut séparrer les messages dans différents channels, et exporter l'output dans un fichier ou dans la console au choix.
+
+#### NeosisGUI
+
+C'est une libraire qui s'occupe de lire, d'animer et d'afficher les fichiers XAML des interfaces pour le C++. Elle est très conséquente, et nous sommes toujours en train d'apprendre à l'utiliser et à la maitriser.
+
+#### Imgui
+
+À l'inverse de Noesis, cette libraire produit facilement et rapidement des interfaces utilisateurs. Elle est beaucoup moins puissante, mais largement suffisante pour nos besoins de debug.
+
+#### StbImage
+
+Nous préférons utiliser cette librairie à la place SDLImage pour la simplicité d'utilisation et d'installation.
+
+#### FMOD
+
+Nous ne faisons qu'effleurer les possibilités offertes par FMOD pour jouer et faire évoluer des sons. Mais au moins, nous commençons à l'utiliser.
 
 ### Création des entités
 
-[TODO Flyweight / Factory / Components]
--->
+Nous utilisons le design pattern **factory** pour créer nos entités et les components ayant besoin d'un constructeur.
+
+Comme nos entités sont devenues assez complexes, avec beaucoups de composants différents, avoir à appeler une fonction pour créer un type spécifique est une réele aide.
+
 
 ### Fichier ITD et construction du graphe
 
 L'ITD contient les informations sur le niveau : la vie dont dispose le joueur, le nombre d'ennemis de chaque type qui doivent apparaître, la position et l'orientation des structures déjà placées ainsi que le nombre de miroirs et de tours à disposition.
+
 La structure du niveau est quant à elle récupérée dans l'image : un pixel représente une case, et sa couleur indique si il s'agit d'un chemin, d'une zone constructible ou d'une zone non-constructible.
 
 Pour se déplacer les ennemis utilisent un graphe qui contient toutes les positions des embranchements, puisque ce sont les seuls endroits où ils doivent changer de direction.
@@ -461,6 +494,8 @@ Le graphe est donc créé en parcourant l'image vue elle-même comme un graphe :
 
 
 ## IV - L'ajout de mécaniques de jeu
+
+Une fois le prototype en place, il était temps de rendre notre jeu jouable et intéressant. Pour se faire, nous avons commencé à expérimenter de nouvelles mécaniques de jeu.
 
 ### Déplacements des ennemis
 
@@ -493,6 +528,36 @@ Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/schéma_noesis.jpg?raw=true)
 
 ## V - La solidification du projet
+
+Notre projet s'est complexifié, et il a donc fallu trouver de nouveaux moyens de simplifier notre architecture.
+
+### State Machine
+
+Le passage entre les différents écrans du jeu se devait d'être simple à gérer, tout en nous permettant un contrôle total et une division nette entre ces états. Le design pattern State était donc idéal.
+
+#### Gestion du jeu
+
+Notre jeu est divisé en 7 états indépendants :
+
+- TitleScreen
+- Cinematic
+- LevelIntro
+- Level
+- LevelExit
+- GameOver
+- EndScreen
+
+Ils sont créés au besoin au runtime, et une fois instanciés ils le restent jusqu'à la fermeture du jeu pour favoriser l'utilisation de la mémoire.
+
+Le fait que ces objets restent créés nous impose de gérer la transition entre ces états. Concrètement, l'objet qui devient actif souscrit aux évènements de l'utilisateur, et retire cette souscription quand on quitte l'état.
+
+#### Gestion des inputs
+
+La gestion des inputs lors du "LevelState" aurait pû être assez problématique : gérrer la construction, la selection et les effets de hover appèlent forcément à une gestion complexe des conditions.
+
+Pour palier ce problème, nous avons créé une nouvelle state machine pour s'assurer du bon fonctionnement des inputs. Elle est décrite ci-dessous.
+
+![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/level-state-machine.png?raw=true)
 
 ### Direction artistique
 
@@ -564,29 +629,48 @@ L'ECS permet une maléabilité du code inouïe, et une fois une grande variété
 
 ## ANNEXE
 
+###	Différences avec le sujet
+
+Différence 		 					| Motivation
+------------------------------- | ------------
+Les nœuds du graphe de déplacement sont déterminés à partir du png représentant la carte plutôt que d'être lus dans l'ITD. | Permet de créer de nouveaux niveaux beaucoup plus simplement
+Système de tuiles plutôt que placement libre | Le joueur n'a pas à se préoccuper du positionnement exact des tours pour optimiser l'espace, mécanique que nous ne voulions pas implémenter. Le jeu s'en retrouve plus lisible
+Dans le png, un pixel représente une case plutôt que d'avoir des disques de 30 pixels | Facilite la lecture du png
+Tours laser, ralentissante et miroirs plutôt que 4 types de tours projectiles, des centrales et des bâtiments pour améliorer leurs statistiques | Nous souhaitions rendre le joueur actif pendant les vagues, ainsi que différencier notre jeu des autres tower defense. À force de test et d'expérimentations, nous avons fini par remplacer projectiles de dégats par seulement les lasers.
+Déplacement selon le plus court chemin | Le choix est aléatoire, le chemin le plus court est le plus probable mais tous les chemins sont possibles, ce qui apporte de la diversité aux vagues.
+Dossiers ressources, include et lib | La structure de dossier proposée ne pouvait pas correspondre à la complexité des librairies que nous utilisons, ainsi qu'a la diversité des assets. D'où la disposition par bibliothèque du dossier lib, ainsi que le rassemblement des ressources dans le dossier res
+
+
 ### Bibliographie
 
 #### Articles
 
 [Tile Bitmasking](https://gamedevelopment.tutsplus.com/tutorials/how-to-use-tile-bitmasking-to-auto-tile-your-level-layouts--cms-25673)
+
 [Nomad Game Engine](https://savas.ca/nomad)
+
 [Data Oriented Design](http://gamesfromwithin.com/data-oriented-design)
+
 [Programming lessons learned from making my first game](https://github.com/adnzzzzZ/blog/issues/31)
+
 [Finishing a game](https://makegames.tumblr.com/post/1136623767/finishing-a-game)
 
 #### Videos
 
 [Is there more to Game Architecture than ECS ?](https://www.youtube.com/watch?v=JxI3Eu5DPwE)
+
 [The art of screenshake](https://www.youtube.com/watch?v=AJdEqssNZ-U)
+
 [Cherno OpenGL Playlist](https://www.youtube.com/playlist?list=PLlrATfBNZ98foTJPJ_Ev03o2oq3-GGOS2)
 
 #### Livres
 
 [Game Programming Patterns](https://gameprogrammingpatterns.com/)
+
 [Game Engine Architecture](https://www.gameenginebook.com/)
 
 
-## LEXIQUE
+### Lexique
 
 ECS
 : Design Pattern architectural utilisé principalement dans l'industrie du jeu-vidéo
