@@ -6,7 +6,7 @@ struct GrowingCircle {
 	//Entity must have an "age" component
 	GrowingCircle(float growthSpeed, float maxRadius) : growthSpeed(growthSpeed), maxRadius(maxRadius) {
 		IRandom& random = entt::ServiceLocator<IRandom>::ref();
-		noiseSeed = random.random(1,2);
+		noiseSeed = random.random(2);
 	}
 
 	float growthSpeed;
