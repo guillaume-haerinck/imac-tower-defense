@@ -110,6 +110,10 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::GAME_OVER);
 			}
 
+			if (ImGui::Button("Load Game end screen")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::END_SCREEN);
+			}
+
 			if (ImGui::Button("Load end screen")) {
 				emitter.publish<evnt::ChangeGameState>(GameState::END_SCREEN);
 			}

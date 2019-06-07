@@ -2,6 +2,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="EndScreen">
     
-    <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="YOU FINISHED THE DAWN GAME" VerticalAlignment="Top" FontFamily="./#Sunrise International Demo" Foreground="Black" FontSize="22"/>
-    
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" x:Name="textBlock" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="YOU FINISHED ALL OF THE LEVELS" VerticalAlignment="Center" FontFamily="./#Sniglet" Foreground="Black"/>
+        <TextBlock Grid.Row="1" x:Name="textBlock_Copy" HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="CONGRATULATIONS !" VerticalAlignment="Center" FontFamily="./#Sunrise International Demo" Foreground="Black" FontSize="48"/>
+    </Grid>
 </Grid>
