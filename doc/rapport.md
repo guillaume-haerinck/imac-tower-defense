@@ -1,7 +1,7 @@
 ﻿
 # Rapport de projet - Imac Tower Defense
 
-![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logo/imac.png?raw=true)
+![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/logos/imac.png?raw=true)
 
 **Cours d'algorithmique avancée - Cours de synthèse d'image**
 
