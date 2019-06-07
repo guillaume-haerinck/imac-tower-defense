@@ -13,9 +13,9 @@ construct 0 0 255
 in 0 255 0
 out 255 0 0
 
-energie 10
+energie 2
 slow 0
-mirror 1
+mirror 0
 
 robot 5
 kamikaze 10
