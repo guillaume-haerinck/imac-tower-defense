@@ -114,6 +114,10 @@ int main(int argc, char** argv) {
 				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 4);
 			}
 
+			if (ImGui::Button("Load level 5")) {
+				emitter.publish<evnt::ChangeGameState>(GameState::LEVEL_INTRO, 5);
+			}
+
 			// Check cursor position
 			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemHovered()) {
 				bAllowClickEvent = false;

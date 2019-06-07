@@ -1,0 +1,24 @@
+@ITD 1++
+# ITD ameliore, pas besoin de donnees de graphes, et infos en plus.
+
+carte level-5.png
+background-img level-5-background.png
+intro-img level-5-intro.png
+intro-text Easy ?
+exit-text GG
+
+chemin 255 255 255
+noeud 0 0 0
+construct 0 0 255
+in 0 255 0
+out 255 0 0
+
+energie 5
+slow 2
+mirror 4
+
+robot 20
+kamikaze 5
+wave-rate 2
+
+build-laser 6 3 1
