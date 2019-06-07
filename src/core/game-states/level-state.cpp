@@ -30,6 +30,8 @@
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
 #include "components/age.hpp"
+#include "services/locator.hpp"
+#include "services/debug-draw/i-debug-draw.hpp"
 
 
 LevelState::LevelState(Game& game)
@@ -514,6 +516,10 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
 					// TODO handle activated and desactivated towers
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+				} else if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
+					//IDebugDraw& debugDraw = locator::debugDraw::ref();
+					//debugDraw.setColor(glm::vec4(0, 0, 0, 1));
+					//debugDraw.ellipse(30, 30, 32, 32);
 				}
 			} else {
 				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
