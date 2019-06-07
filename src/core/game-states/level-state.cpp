@@ -17,6 +17,7 @@
 #include "events/enemy-dead.hpp"
 #include "events/change-game-state.hpp"
 #include "events/enemy-reached-end.hpp"
+#include "events/progression-updated.hpp"
 #include "events/interactions/delete-entity.hpp"
 #include "events/interactions/change-cursor.hpp"
 #include "logger/gl-log-handler.hpp"
@@ -488,6 +489,8 @@ void LevelState::onRightClickDown(const evnt::RightClickDown& event) {
 			changeState(LevelInteractionState::FREE);
 			m_game.registry.destroy(m_lastSelectedEntity);
 			m_lastSelectedEntity = entt::null;
+			//Update info bar
+			m_game.emitter.publish<evnt::ProgressionUpdated>();
 			break;
 
 		default:
