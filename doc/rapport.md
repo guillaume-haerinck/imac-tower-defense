@@ -1,4 +1,5 @@
-﻿# Rapport de projet - Imac Tower Defense
+﻿
+# Rapport de projet - Imac Tower Defense
 
 ![Logo école ingénieur IMAC](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/imac.png?raw=true)
 
@@ -13,10 +14,9 @@
 
 [**I - Présentation du jeu**](#i---présentation-du-jeu)
 *	[**Intentions**](#intentions)
-<!--
 *	[**Game Design**](#game-design)
--->
 *  [**Points forts**](#points-forts)
+* [**Différences avec le sujet**](#différences-avec-le-sujet)
 
 [**II - L'architecture ECS**](#ii---larchitecture-ecs)
 *  [**Contexte**](#contexte)
@@ -46,21 +46,22 @@
 *	[**Jules Fouchy**](#jules-fouchy)
 
 [**ANNEXE**](#annexe)
-*	[**Différences avec le sujet**](#differences-avec-le-sujet)
 <!--
-*	[**Design pattern utilisés**]
+*	[**Liste des pattern utilisés**]
 *	[**Schéma UML du projet**]
 -->
 *	[**Bibliographie**](#bibliographie)
 *	[**Lexique**](#lexique)
 
-![Capture du premier niveau](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
+</p>
 
 ## Introduction
 
 En nous lançant dans ce projet, nous avions le souhait de créer une base de moteur de jeu assez solide pour être réutilisable lors de notre prochaine année à l'IMAC.
 
-En sachant que le temps passé à créer la structure d'un logiciel et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte un projet avec de nombreuses dépendances, qui utilise plusieurs design patterns propres à l'industrie du jeu vidéo, et qui pousse ces systèmes dans leurs retranchements pour s'assurer qu'ils sont bien structurés. Les points techniques majeurs sont :
+En sachant que le temps passé à créer la structure d'un logiciel et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte un projet avec de nombreuses dépendances, qui utilise plusieurs design patterns propres à l'industrie du jeu vidéo, et qui pousse ces systèmes dans leurs retranchements pour s'assurer qu'ils soient bien structurés. Les points techniques majeurs sont :
 
 - Architecture logicielle en ECS,
 - Création d'interfaces dans le language XAML,
@@ -74,7 +75,7 @@ En sachant que le temps passé à créer la structure d'un logiciel et à appren
 
 ### Intentions
 
-Le Tower Defense est un genre extrêmement codifié, si bien qu'il peut être compliqué de différencier les nombreux jeux flashs du genre disponibles en ligne. Avec un peu de recherche, on peut cependant tomber sur des propositions vraiment intéressantes, ayant extrait certaines mécaniques du genre, mais s'étant dirigées vers une autre expérience.
+Le Tower Defense est un genre extrêmement codifié, si bien qu'il peut être compliqué de différencier les nombreux jeux flashs du genre disponibles en ligne. Avec un peu de recherche, on peut cependant tomber sur des propositions assez innovantes, ayant extraites certaines mécaniques du genre, mais s'étant dirigées vers un autre type d'expérience.
 
 À l'instar de ces jeux, nous ne souhaitions pas créer un énième clone du genre, mais plutôt nous approprier le sujet en proposant quelque chose d'unique. Conscients des contraintes à respecter, nous avons décidé de trois axes visant à apporter de la fraîcheur, tout en conservant la base du cahier des charges.
 
@@ -82,26 +83,26 @@ Le Tower Defense est un genre extrêmement codifié, si bien qu'il peut être co
 
 Typiquement dans un Tower Defense, chaque niveau de jeu se divise entre une phase de construction et une phase d'attaque. Le joueur a des tours qu'il doit placer au mieux, puis il lance la vague pour voir si ses défenses tiennent bon. Avec un peu de chance, il gagnera assez de points pendant l'attaque pour construire de nouveaux bâtiments.
 
-Le problème posé par cette structure est que le joueur n'a pas grand chose à faire lors de l'attaque, si ce n'est regarder ce qui se passe à l'écran et croiser les doigts. C'est une structure qui fonctionne, mais qui commence à accuser son âge.
+Le problème posé par cette structure est que le joueur n'a **pas grand chose à faire lors de l'attaque**, si ce n'est regarder ce qui se passe à l'écran et croiser les doigts pour que tout se passe au mieux. C'est une structure qui fonctionne, mais qui commence à accuser son âge.
 
-Afin de pallier cette inactivité, nous avons décidé de construire les niveaux de sorte à ce qu'il soit impossible de couvrir l'ensemble de la zone de jeu. La conséquence est que le joueur sera obligé de désactiver des lasers, et déplacer ses miroirs à de multiples reprises pour suivre l'évolution de l'attaque.
+Afin de pallier cette inactivité, nous avons décidé de construire les niveaux de sorte à ce qu'il soit impossible de couvrir l'ensemble de la zone de jeu. La conséquence est que le joueur sera obligé de désactiver des lasers et déplacer ses miroirs à de multiples reprises pour suivre l'évolution de l'attaque.
 
 #### 2. Proposer des choix intéressants
 
 Tout jeu peut se résumer en une suite de choix. Qu'il s'agisse de sélectionner son opposant, un chemin à traverser, ou encore de placer des tours. Il est défini qu'un choix intéressant repose sur l'opposition entre un risque et une récompense. Plus grande pourrait être la récompense, plus grand sera le risque.
 
-Dans un Tower Defense, les choix ont lieu lors de la sélection du type de tours, et lors du placement des unités. Cependant, il n'est pas rare que ces choix aient très peu de conséquences car le système est extrêmement permissif : il n'y a pas vraiment de mauvaise décision, et il est simple de rattraper un mauvais placement.
+Dans un Tower Defense, les choix ont lieu lors de la sélection du type de tours, et lors du placement des unités. Cependant, il n'est pas rare que ces choix aient **très peu de conséquences** car le système est extrêmement permissif : il n'y a pas vraiment de mauvaise décision, et il est simple de rattraper un mauvais placement.
 
-Pour ajouter du poids à ce genre de décisions, nous avons choisi de fixer le nombre d'unités qu'il est possible de créer par niveau, le compteur n'augmentera pas pendant la partie. Afin d'enfoncer le clou, certains niveaux nécessitent de sacrifier des constructions pour être terminés. En résulte un système où chaque placement a une importance cruciale.
+Pour ajouter du poids à ce genre de décisions, nous avons choisi de fixer le nombre d'unités qu'il est possible de créer par niveau, le compteur n'augmentera pas pendant la partie. Afin d'enfoncer le clou, certains niveaux nécessitent de sacrifier des constructions pour être terminés. En résulte un système où chaque placement doit réellement être prit en considération.
 
 > I wanted to force [the player] to make difficult decisions and experience both the satisfaction of choosing correctly and the regret of choosing poorly.
 > **Derek Yu**, *Créateur de Spelunky*
 
-Il est légitime de se demander si imposer de telles contraintes ne risquerait pas d'aller à l'encontre du jeu, et nuire à l'expérience. Nous pensons que la véritable question réside dans le choix de l'expérience qu'un jeu veut proposer. Dans notre cas, nous choisissons l'aspect plus intense de ce spectre, car il propose des expériences - à notre sens - plus fun, à l'image de ce que peut être le jeu d'aventure/plateforme Spelunky face à un Mario.
+Il est légitime de se demander si imposer de telles contraintes ne risquerait pas d'aller à l'encontre du jeu, et nuire à l'expérience. Nous pensons que la véritable question réside dans le choix de ce que l'on veut proposer. Dans notre cas, nous nous dirigeons vers l'aspect plus intense de ce spectre, car il propose des expériences - à notre sens - plus fun, à l'image de ce que peut être le jeu d'aventure/plateforme Spelunky face à un Mario.
 
 #### 3. Résoudre plusieurs problèmes avec la même mécanique
 
-Quand on commence le développement d'un jeu, et que plusieurs niveaux sont déja en route, il est récurrent d'imaginer de nouvelles mécaniques à utiliser et intégrer. L'expérience indique cependant que ce n'est pas forcément une bonne idée. Comme de nombreux game designers l'expliquent, avant de chercher ailleurs, il faut déja utiliser ce que l'on a.
+Quand on commence le développement d'un jeu, et que plusieurs niveaux sont déja en route, il est récurrent d'imaginer de nouvelles mécaniques à utiliser et intégrer. L'expérience indique cependant que ce n'est pas forcément une bonne idée. Comme de nombreux game designers l'expliquent, avant de **chercher ailleurs**, il faut déja utiliser ce que l'on a.
 
 > A good idea is something that does not solve just one single problem, but rather can solve multiple problems at once
 > **Shigeru Miyamoto**, *Créateur de Mario*
@@ -122,13 +123,25 @@ Au delà d'avoir utilisé des librairies spécifiques, nous avons pris soin d'in
 
 Nom 		 					| Description
 ------------------------------- | ------------
-Graphe à partir de l'image 		| Nous construisons le graphe sans le fichier .itd, seulement en analysant pas-à-pas l'image du niveau, simplifiant ainsi l'écriture des fichiers .itd
+Graphe à partir de l'image 		| Nous construisons le graphe en analysant pas-à-pas l'image du niveau, simplifiant ainsi l'écriture des fichiers .itd
 Animations avec [Array Texture](https://www.khronos.org/opengl/wiki/Array_Texture)	| Nos entités animées le sont à l'aide de spritesheets, envoyées à openGl sous une donnée optimisée de Array Texture
 Réflexion des lasers				| Notre mécanique de jeu principale repose sur le lancer de lasers
 Système de tuiles 				| Nous détectons pour chaque tuile de la carte les tuiles aux alentours afin d'adapter la texture de manière cohérente
 Animations de menu              | À l'aide de la bibliothèque Noesis et de Microsoft Blend, nous avons pu animer nos menus de jeu d'une façon semblable à des outils comme After Effects
 Data Oriented                   | L'entièreté des données des niveaux sont récupérées depuis les fichiers .itd, c'est à dire pré-construction d'entités, durée des vagues, consitutions des menus, etc...
 
+###	Différences avec le sujet
+
+Bien que nous ayons suivi la base du projet, consistant à créer un jeu de Tower Defense avec des niveau construits à partir d'images et de fichiers textes, nous avons progressivement emprunté des points de divergences listés ici bas.
+
+Différence 		 				| Motivation
+------------------------------- | ------------
+Les nœuds du graphe de déplacement sont déterminés à partir du png représentant la carte plutôt que d'être lus dans le .itd. | Permet de créer de nouveaux fichiers .itd beaucoup plus simplement
+Système de grille plutôt que placement libre | Le joueur n'a pas à se préoccuper du positionnement exact des tours pour optimiser l'espace, mécanique que nous ne voulions pas implémenter. Le jeu s'en retrouve plus lisible
+Dans le png, un pixel représente une case plutôt que d'avoir des disques de 30 pixels | Facilite la lecture du png
+Tours laser, ralentissante et miroirs plutôt que 4 types de tours projectiles, des centrales et des bâtiments pour améliorer leurs statistiques | Nous souhaitions que chaque mécanique implantée en jeu ai un réel impact et soit simple à appréhender. À force de test et d'expérimentations, nous avons fini par remplacer les différentes tours assez semblables par trois réellement différentes: les lasers, les miroirs et les tours de glaces. La centrale et l'armement, qui devaient alimenter et améliorer les tours, sont des objets possédant trop peu de fonctionnalités et d'impact pour être pertinent dans notre système de quasi "Pierre, feuille, ciseau". Nous avons donc gardé l'idée de l'alimentation, mais fait le choix de rendre l'action accessible et rapide au travers du click, ce qui correspond au gameplay nerveux que l'on recherche
+Déplacement selon le plus court chemin | Le choix est aléatoire, le chemin le plus court est le plus probable mais tous les chemins sont possibles, ce qui apporte de la diversité dans le mouvements des ennemis lors des vagues.
+Dossiers ressources, include et lib | La structure de dossier proposée ne pouvait pas correspondre à la complexité des librairies que nous utilisons, ainsi qu'a la diversité des assets. D'où la disposition par bibliothèque du dossier lib, ainsi que le rassemblement des ressources dans le dossier res.
 
 ## II - L'architecture ECS
 
@@ -142,9 +155,11 @@ Cela ne surprendra personne, créer un jeu, et plus particulièrement un moteur 
 
 #### 1. Approche Monolithique
 
-L'approche la plus simple consiste à avoir une classe de base qui possède elle-même les différents systèmes avec lesquels elle doit interragir.
+L'approche la plus simple consiste à avoir une classe de base qui possède elle-même les différents systèmes avec lesquels elle doit interagir.
 
-![Entité simple](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v1.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v1.PNG?raw=true" alt="Entité simple">
+</p>
 
 <!--
 ```graphviz
@@ -186,7 +201,9 @@ Le problème le plus évident posé par cette architecture est la **complexité*
 
 Afin d'alléger la classe Entité, il est possible de tirer parti de la programmation orientée objet en utilisant l'héritage. Avec cette approche, on peut définir les besoins progressivement, les sortant ainsi de la classe mère.
 
-![Entité héritage](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v2.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v2.PNG?raw=true" alt="Entité et héritage">
+</p>
 
 <!--
 ```graphviz
@@ -226,7 +243,9 @@ De plus, même si le code d'Entité a été simplifié, la division n'a pas ét�
 
 En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de l'aggrégation, c'est à dire que les pans du moteurs de jeu interagissant avec les entités ont maintenant leur classe propre, et sont détenus par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
 
-![Entité composants](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v3.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v3.PNG?raw=true" alt="Entité composants">
+</p>
 
 <!--
 ```graphviz
@@ -306,17 +325,22 @@ void gameLoop() {
 
 Bien que cette approche possède de réelles qualités et soit souhaitable dans de nombreux cas, elle a un problème majeur : la **vitesse**. En effet, bien que la vitesse des processeurs se soit accrue, il n'en n'est pas de même pour la vitesse d'accès à la RAM.
 
+
 ![Data locality](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/data-locality-chart.png?raw=true)
 
 Pour pallier ce problème, les constructeurs ont intégré au fil des années différentes mémoires caches directement sur le processeur, nommées par importances L1, L2 et L3. L'idée est, grossièrement, de passer les zones de mémoires de la RAM en cours d'utilisation dans ces mémoires caches côté processeur, beaucoup plus rapide d'accès, mais aussi très petites. L'efficacité de ce procédé repose sur l'hypothèse que les données en train d'être manipulées sont côte-à-côte dans la RAM, sous peine de rater l'emplacement **(cache miss)** et de devoir demander les données à la RAM.
 
 Avec notre architecture telle qu'elle est, voici notre RAM. Chaque entité possède trois components, représentés par un carré de couleur : un beige, un vert et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de cache miss auront lieu lors de notre boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez collossale.
 
-![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos.PNG?raw=true" alt="Array of structure">
+</p>
 
 La solution à ce problème est une structure en **"Structure of array"** représentée ci-dessous. Maintenant, les composants sont continus en mémoire, et le cache peut joueur son rôle efficacement.
 
-![Array of structure](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/soa.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/soa.PNG?raw=true" alt="Structure of array">
+</p>
 
 Pour intégrer un tel fonctionnement, il est possible de créer un gestionnaire de mémoire à la main, qui irait s'occuper de cette allocation et du bon placement des composants. C'est une approche qui est loin d'être triviale, mais qui est couramment utilisée dans les moteurs de jeu pour s'assurer que la mémoire n'est pas fragmentée. DOOM y avait déja recours en 1991, comme indiqué dans [Game Engine Black book](http://fabiensanglard.net/gebbdoom/).
 
@@ -338,7 +362,9 @@ Les composants sont des **structures de donnée basiques** qui représentent un 
 
 Chaque entité va donc posséder un nombre plus ou moins important de composants selon la complexité de son comportement en jeu. Voici des exemples de composants basiques tiré d'un article sur l'[ECS](https://medium.com/@savas/nomad-game-engine-part-2-ecs-9132829188e5) :
 
-![Components](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/components.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/components.png?raw=true" alt="Components">
+</p>
 
 #### 3. Les systèmes
 
@@ -346,7 +372,9 @@ Les systèmes sont l'endroit où la **logique du jeu** est traitée. Ce sont eux
 
 Les systèmes vont récupérer les entités en utilisant les composants comme requête. Seules les entités possédant l'ensemble des composants demandés dans la requête seront retournés. Afin d'affiner encore plus la recherche, il est courant de créer un composant jouant le rôle d'un tag. Les enemis par exemple, peuvent tous posséder un composant "EnemyTag". Voici une autre image tirée du même article pour illustrer les besoins des systèmes :
 
-![Systems](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/systems.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/systems.png?raw=true" alt="Systèmes">
+</p>
 
 #### Les Avantages
 
@@ -371,6 +399,10 @@ En commençant le projet, nous voulions apprendre à utiliser, à penser en term
 
 Deux librairies Libres et Open-Source sont actuellement réputées chez les développeurs de jeu indépendants : [EntityX](https://github.com/alecthomas/entityx) et [ENTT](https://github.com/skypjack/entt). La seconde possédant un développement actif, en plus d'être une amélioration directe de la première, nous avons choisi la **providence ENTT** :rainbow:.
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/1812216/42513718-ee6e98d0-8457-11e8-9baf-8d83f61a3097.png" alt="ENTT Logo">
+</p>
+
 Après trois mois à l'utiliser, nous pouvons affirmer que cette librairie est extrêmement bien conçue. En plus d'être rapide, cohérente et bien documentée, elle possède, à l'image de SDL, des sous-bibliotèques qui sont susceptibles d'être utilisées par tout développeur ayant recours à la libraire.
 
 Dans notre cas, il s'agit d'une base d'implémentation pour le design pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons massivement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnues, on peut noter que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
@@ -386,7 +418,9 @@ Comme vous le constaterez tout au long de ce rapport, l'architecture de notre ap
 
 Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans le *main* et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
 
-![Event publisher](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true" alt="Event publisher">
+</p>
 
 <!--
 ```mermaid
@@ -405,17 +439,35 @@ Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en
 
 La première grande étape a été de rassembler toutes les dépendances et besoins techniques du projet, et de les faire fonctionner. Nous avons cherché à identifier nos besoins à l'avance afin de ne pas rajouter plus de complexité à un projet qui n'en manquait déja pas sur le papier.
 
+<p align="left">
+<img src="https://upload.wikimedia.org/wikipedia/fr/2/21/OpenGL_logo.svg" alt="OpenGl logo" height="100">
+</p>
+
 ### Utilisation d'OpenGL 4.4 core
 
-Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir glBegin() et glEnd(), et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
+Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir *glBegin()* et *glEnd()*, et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
 
-Cet apprentissage a commencé grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. L'essentiel de ces classes se trouvent dans le dossier *graphics*.
+Cet apprentissage a commencé grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. Ces classes se trouvent dans le dossier `graphics`.
+
+ Classe	| Description
+ --- | ---
+ VertexBuffer | Permet de gérer la création, la sélection et la suppression de données
+ VertexBufferLayout | Permet de gérer facilement la disposition des données en SOA dans le buffer
+ VertexArray | Permet de gérer les différents VertexBuffer d'un objet. C'est cette classe que l'on utilise pour chaque type d'entité au travers de la **SpriteFactory** et de la **PrimitiveFactory**
+ IndexBuffer | Instancié une unique fois dans la **SpriteFactory**, car tous les sprites utilisent le même (Plus d'explication plus bas)
+ Texture | Crée et envoie les données d'une image à OpenGl, on sauvegarde l'id de texture renvoyé et on supprime cette classe juste après (la suppression de texture est gérée par la **SpriteFactory**)
+ TextureArray | Même principe que pour Texture, sauf qu'elle est spécifique et optimisée pour des images de type SpriteSheets
+ Shader | Prend un vertex et un fragment shader dans le constructeur, et s'occupe de leur compilation. S'occupe aussi de retrouver les Uniform à l'aide d'une Hashmap. On instancie plusieurs objets de cette classe au travers des **SpriteFactory** et **PrimitiveFactory**, mais aussi dans le service **DebugDraw**. 
+ FrameBuffer | (Pas encore implémenté)
+ 
 
 #### Des restes du immediate mode
 
 En règle générale nos dessins par OpenGl sont fait dans les règles de l'art : On envoi nos tableaux de vertex une unique fois à la carte graphique lors de la création d'un type d'entité. Puis à chaque frame, on update sa position dans le vertex shader à l'aide d'un uniform qui représente la matrice MVC.
 
-Cependant, nous disposons aussi d'un service **"Debug Draw"**, auxquel on peut accéder à n'importe quel endroit dans le code pour dessiner des formes simples. Comme on ne connaît pas à l'avance ce qu'on vas vouloir dessiner, cette classe ne déclare qu'un seul buffer de données à OpenGl, et on met à jour ces données de buffer à chaque fois que l'on demande le dessin d'une forme.
+Cependant, nous disposons aussi d'un service **"Debug Draw"**, auxquel on peut accéder à n'importe quel endroit dans le code pour dessiner des formes simples. Comme on ne connaît pas à l'avance ce qu'on vas vouloir dessiner, cette classe ne déclare qu'**un seul buffer de données** à OpenGl. Ce dernier est mis à jour avec la fonction *glBufferData* à chaque fois que l'on demande le dessin d'une forme, c'est à dire plusieurs fois par frame.
+ 
+*(Il existe un moyen plus optimisé de mettre à jour le buffer avec *glBufferStorage*, mais son utilisation causait des problème avec nos drivers NVidia, donc nous l'avons laissé ainsi pour le moment).*
 
 Concrêtement, cette technique est du immediate draw en OpenGl Moderne, c'est à dire un comportement semblable à ce qui est proposé par l'ancienne version d'OpenGl par les fonctions glBegin() et glEnd().
 
@@ -425,13 +477,17 @@ Pour nous donner bonne conscience, nous rattrapons cette mauvaise pratique par d
 
 C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker de multiples textures dans un seul buffer afin de limiter le coût du "texture switching". Concrètement, on y stocke une spritesheet, et on utilise un uniform dans le shader pour changer la tuile qui est active. Les texture coordinates restent identiques, sauf pour le paramètre *z* qui correspond à la tuile à activer, c'est-à-dire à l'index de ce tableau de texture.
 
-![Systems](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/enemy-small-robot-77x117.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/enemy-small-robot-77x117.png?raw=true" alt="SpriteSheet">
+</p>
 
 #### Index Buffer
 
 Très clairement inutile sachant que nous n'affichons que des carrés composés de deux triangles. Il n'empêche qu'utiliser un indexBuffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGl est une bonne pratique, que nous avons donc utilisée.
-
-![Index buffer](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/index-buffer.png?raw=true)
+<br>
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/index-buffer.png?raw=true" alt="IndexBuffer">
+</p>
 
 #### Vertex Array partagés
 
@@ -443,23 +499,23 @@ On peut donc assimiler ce comportement au design pattern [FlyWeight](https://gam
 
 ### Ajout des dépendances
 
-Notre projet utilise de nombreuse dépendances, pour les gérrer, il était quasiment indispensable d'utiliser CMake. Nous l'avons construit de sorte à ce que notre projet compile à la fois sur Windows et sur Linux.
+Notre projet utilise de nombreuse dépendances, pour les gérrer, il était quasiment indispensable d'utiliser CMake. Afin de s'assurer que tout fonctionne, nous avons intégré l'entièreté de ces librairies dès le début du projet, quitte à ne pas en utiliser certaines (comme Box2D). Le *CMakeLists.txt* a été construit de sorte à ce que notre projet compile à la fois sur Windows et sur Linux. Toutes ces librairies sont présentes dans le dossier `lib`
 
-### SDL2
+#### SDL2
 
 Pourquoi ne pas utiliser SDL 1 comme en cours pour créer un fenêtre ? Parce qu'il n'est pas possible de demander une version d'OpenGL précise, et nous avons besoins de certaines fonctionnalités de la 4.4.
 
 #### GLM
 
-Il s'agit de la libraire mathématique d'OpenGL, que l'on utilise lourdement pour gérrer nos données de position avec le type vec2. Nous utilisons aussi les différentes facettes de la librairie dans notre système de rendu lors des calculs de matrices.
+Il s'agit de la libraire mathématique d'OpenGL, que l'on utilise lourdement pour gérer nos données de position avec le type vec2. Nous utilisons aussi les différentes facettes de la librairie dans notre système de rendu lors des calculs de matrices.
 
 #### SPDLog
 
-Comme nous savions que notre architecture logicielle allait être conséquente, il était nescessaire d'utiliser un système de log pour la debug digne de ce nom. Avec SPDLog, on peut séparrer les messages dans différents channels, et exporter l'output dans un fichier ou dans la console au choix.
+Comme nous savions que notre architecture logicielle allait être conséquente, il était nécessaire d'utiliser un système de log pour la debug digne de ce nom. Avec SPDLog, on peut séparer les messages dans différents channels, et exporter l'output dans un fichier ou dans la console au choix.
 
 #### NeosisGUI
 
-C'est une libraire qui s'occupe de lire, d'animer et d'afficher les fichiers XAML des interfaces pour le C++. Elle est très conséquente, et nous sommes toujours en train d'apprendre à l'utiliser et à la maitriser.
+C'est une libraire qui s'occupe de lire, d'animer et d'afficher les fichiers XAML des interfaces pour le C++. Elle est très conséquente, et nous sommes toujours en train d'apprendre à l'utiliser et à la maîtriser.
 
 #### Imgui
 
@@ -475,16 +531,63 @@ Nous ne faisons qu'effleurer les possibilités offertes par FMOD pour jouer et f
 
 ### Création des entités
 
-Nous utilisons le design pattern **factory** pour créer nos entités et les components ayant besoin d'un constructeur.
+Créer les entités est simple, il suffit de faire un appel au registre de ENTT pour obtenir l'id de l'entité créé :
 
-Comme nos entités sont devenues assez complexes, avec beaucoups de composants différents, avoir à appeler une fonction pour créer un type spécifique est une réele aide.
+``` C++
+int entityId = registry.create();
+```
 
+Cependant, une entité est aussi et surtout un paquet de composants. Position, Sprite, Chemin, et la liste est encore longue. Afin de s'assurer de la création en bonne et dûe forme de chacun de nos types d'entités, nous avons créé un dossier `entity factories`, qui comme sont nom l'indique, est une utilisation du design pattern **Factory**.
+
+On dispose donc d'une classe factory spécifique pour:
+
+- Les ennemis (Robots et Kamikazes)
+- Les miroirs (Un seul type pour le moment)
+- Les projectiles
+- Les tuiles de carte
+- Les tours (Glace et laser)
+- Les effets divers (Explosions, Particules, etc..)
+
+Ces factory s’occupent d'assigner les composants pour nos différentes entités, mais il arrive que certains de ces composants aient besoins eux-aussi d'un constructeur : C'est le cas pour les Sprites et les Primitives, qui on besoin de charger et d'envoyer leurs données à OpenGl. Pour ces cas précis, nous avons crées d'autres factory, sous le dossier `component factories`
+
+En plus de la simplicité d'utilisation, l’intérêt d'utiliser de telles classes factory et qu'elle permet de partager des données entre les différentes entités. En l’occurrence, comme expliqué plus haut en abordant le pattern Flyweight, ici ce sont les composants de type Sprite qui sont partagés entre les entités.
 
 ### Fichier ITD et construction du graphe
 
-L'ITD contient les informations sur le niveau : la vie dont dispose le joueur, le nombre d'ennemis de chaque type qui doivent apparaître, la position et l'orientation des structures déjà placées ainsi que le nombre de miroirs et de tours à disposition.
+Le fichier .itd contient les informations sur le niveau : la vie dont dispose le joueur, le nombre d'ennemis de chaque type qui doivent apparaître, la position et l'orientation des structures déjà placées ainsi que le nombre de miroirs et de tours à disposition. En voici un exemple :
 
-La structure du niveau est quant à elle récupérée dans l'image : un pixel représente une case, et sa couleur indique si il s'agit d'un chemin, d'une zone constructible ou d'une zone non-constructible.
+```
+@ITD 1++
+# ITD ameliore, pas besoin de donnees de graphes, et infos en plus.
+
+carte level-1.png
+intro-img level-1-intro.png
+intro-text Use your wheel to rotate the mirror
+exit-text Good start ! Ready for what's next ?
+
+chemin 255 255 255
+noeud 0 0 0
+construct 0 0 255
+in 0 255 0
+out 255 0 0
+
+energie 6
+slow 0
+mirror 0
+
+robot 20
+kamikaze 0
+wave-rate 1
+
+build-laser 7 6 3
+build-mirror 7 3 1
+```
+
+Cette structure est simple, malléable et permet de rapidement prototyper et créer des niveaux. La structure de la carte, c'est à dire le type et la position des tuiles, ainsi que les données du graphes, sont quant à elles récupérées dans une image : un pixel représente une case, et sa couleur indique si il s'agit d'un chemin, d'une zone constructible ou d'une zone non-constructible. Voici un exemple de niveau :
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/level-1.png?raw=true" alt="SpriteSheet">
+</p>
 
 Pour se déplacer les ennemis utilisent un graphe qui contient toutes les positions des embranchements, puisque ce sont les seuls endroits où ils doivent changer de direction.
 
@@ -629,18 +732,6 @@ L'ECS permet une maléabilité du code inouïe, et une fois une grande variété
 
 ## ANNEXE
 
-###	Différences avec le sujet
-
-Différence 		 					| Motivation
-------------------------------- | ------------
-Les nœuds du graphe de déplacement sont déterminés à partir du png représentant la carte plutôt que d'être lus dans l'ITD. | Permet de créer de nouveaux niveaux beaucoup plus simplement
-Système de tuiles plutôt que placement libre | Le joueur n'a pas à se préoccuper du positionnement exact des tours pour optimiser l'espace, mécanique que nous ne voulions pas implémenter. Le jeu s'en retrouve plus lisible
-Dans le png, un pixel représente une case plutôt que d'avoir des disques de 30 pixels | Facilite la lecture du png
-Tours laser, ralentissante et miroirs plutôt que 4 types de tours projectiles, des centrales et des bâtiments pour améliorer leurs statistiques | Nous souhaitions rendre le joueur actif pendant les vagues, ainsi que différencier notre jeu des autres tower defense. À force de test et d'expérimentations, nous avons fini par remplacer projectiles de dégats par seulement les lasers.
-Déplacement selon le plus court chemin | Le choix est aléatoire, le chemin le plus court est le plus probable mais tous les chemins sont possibles, ce qui apporte de la diversité aux vagues.
-Dossiers ressources, include et lib | La structure de dossier proposée ne pouvait pas correspondre à la complexité des librairies que nous utilisons, ainsi qu'a la diversité des assets. D'où la disposition par bibliothèque du dossier lib, ainsi que le rassemblement des ressources dans le dossier res
-
-
 ### Bibliographie
 
 #### Articles
@@ -687,3 +778,11 @@ RAM
 XAML
 : Langage déclaratif développé par Microsoft semblable à du HTML
 *[XAML]: eXtensible Application Markup Language
+
+SOA
+: Structure Of Arrays (voir partie 1)
+*[SOA]: Structure Of Arrays
+
+AOS
+: Array Of Structures (voir partie 1)
+*[AOS]: Array Of Structures
