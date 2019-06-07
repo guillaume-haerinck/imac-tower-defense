@@ -1,0 +1,28 @@
+@ITD 1++
+# ITD ameliore, pas besoin de donnees de graphes, et infos en plus.
+
+carte level-4.png
+background-img level-4-background.png
+intro-img level-4-intro.png
+intro-text Desactivate lasers for these bad boys. They explode.
+exit-text I guess that's all for us
+
+chemin 255 255 255
+noeud 0 0 0
+construct 0 0 255
+in 0 255 0
+out 255 0 0
+
+energie 10
+slow 0
+mirror 1
+
+robot 5
+kamikaze 10
+wave-rate 4
+
+build-laser 4 1 1
+build-laser 6 7 3
+build-laser 9 7 3
+build-laser 11 1 1
+build-laser 1 4 0
