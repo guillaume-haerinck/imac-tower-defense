@@ -1,7 +1,8 @@
 # Imac Tower Defense
 
 An OpenGL 4.4 game made with Entity-Component-System design pattern.
-It is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/).
+
+This is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/). If you're a french-speaker, you might consider to have a look at the [post-mortem](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport.md) inside the `doc` folder. 
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
