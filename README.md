@@ -1,4 +1,4 @@
-# Imac Tower Defense
+# Mirrors, Lasers & Robots
 
 An OpenGL 4.4 game made with Entity-Component-System design pattern. It is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/).
 
