@@ -639,9 +639,9 @@ On dispose donc d'une classe factory spécifique pour:
 - Les tours (Glace et laser)
 - Les effets divers (Explosions, Particules, etc..)
 
-Ces factory s’occupent d'assigner les composants pour nos différentes entités, mais il arrive que certains de ces composants aient besoins eux-aussi d'un constructeur : C'est le cas pour les Sprites et les Primitives, qui on besoin de charger et d'envoyer leurs données à OpenGl. Pour ces cas précis, nous avons crées d'autres factory, sous le dossier `component factories`
+Ces factory s’occupent d'assigner les composants pour nos différentes entités, mais il arrive que certains de ces composants aient besoins eux-aussi d'un constructeur : C'est le cas pour les Sprites et les Primitives, qui ont besoin de charger et d'envoyer leurs données à OpenGl. Pour ces cas précis, nous avons créés d'autres factory, sous le dossier `component factories`
 
-En plus de la simplicité d'utilisation, l’intérêt d'utiliser de telles classes factory et qu'elle permet de partager des données entre les différentes entités. En l’occurrence, comme expliqué plus haut en abordant le pattern Flyweight, ici ce sont les composants de type Sprite qui sont partagés entre les entités.
+En plus de la simplicité d'utilisation, l’intérêt d'utiliser de telles classes factory et qu'elles permettent de partager des données entre les différentes entités. En l’occurrence, comme expliqué plus haut en abordant le pattern Flyweight, ici ce sont les composants de type Sprite qui sont partagés entre les entités.
 
 ### Fichier ITD et construction du graphe
 
@@ -706,9 +706,9 @@ Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, a
 
 ### Lasers
 
-Nous souhaitions trouver une mécanique à la fois **simple, unique et pouvant offrir une profondeur intéressante** de gameplay. Après différentes idées (dont celle d'un principe de minage), nous nous sommes lancés vers la création et la réflexion de laser.
+Nous souhaitions trouver une mécanique à la fois **simple, unique et pouvant offrir une profondeur intéressante** de gameplay. Après différentes idées (dont une avec du [minage](https://play.google.com/store/apps/details?id=com.mugshotgames.digfender&hl=en_US)), nous avons choisi un principe de laser et de miroirs.
 
-C'est un principe qu'il arrive de croiser dans le jeu-vidéo. On peut penser aux jeux types [Laser Chess](https://www.thinkfun.com/products/laser-chess/), à certains niveaux dans [Zack & Wiki](https://fr.wikipedia.org/wiki/Zack_et_Wiki_:_Le_Tr%C3%A9sor_de_Barbaros) où encore dans le jeu [Archaica : The Path of Light](https://store.steampowered.com/app/550590/Archaica_The_Path_of_Light/) qui y est dédié. Souvent, le laser a une position déja définie, et c'est au rôle du joueur de placer et tourner des mirroirs pour atteindre un emplacement précis. On savait donc que c'était une mécanique fun et qui pouvait potentiellement assez bien fonctionner dans un Tower Defense.
+C'est une mécanique qu'il arrive de croiser dans le jeu-vidéo. On peut penser aux jeux types [Laser Chess](https://www.thinkfun.com/products/laser-chess/), à certains niveaux dans [Zack & Wiki](https://fr.wikipedia.org/wiki/Zack_et_Wiki_:_Le_Tr%C3%A9sor_de_Barbaros) où encore avec [Archaica : The Path of Light](https://store.steampowered.com/app/550590/Archaica_The_Path_of_Light/) qui y est dédié. Souvent, le laser a une position déja définie, et c'est au rôle du joueur de placer et tourner des mirroirs pour atteindre un emplacement précis. On savait donc que c'était une mécanique fun et qui pouvait potentiellement bien fonctionner dans un Tower Defense.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/archaica.jpg?raw=true" alt="SpriteSheet">
@@ -716,8 +716,7 @@ C'est un principe qu'il arrive de croiser dans le jeu-vidéo. On peut penser aux
 
 Nous avions maintenant la tâche d’implémenter ce système.
 
-Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle 
-*2Theta mirroir - Theta laser incident*
+Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et de *tous* les miroirs (en attendant d'implémenter un *space partitioning*). On regarde le point le plus proche et relance un laser depuis ce point, avec l'angle [*2 Theta mirroir - Theta laser incident*]
 
 Pour la collision entre le laser et les entités, on calcule la distance entre l'entité et sa projection orthogonale sur la droite, et vérifie si elle est plus petite que le rayon de la hitbox plus le rayon du laser. (Et on vérifie aussi qu'on est du bon côté de la demi-droite grâce au signe du produit scalaire utilisé pour calculer la projection orthogonale).
 
@@ -774,7 +773,7 @@ La seconde, tout aussi efficace mais plus complexe à comprendre car *beaucoup* 
 
 - L'Application Framework de Noesis est incroyablement moins propagée et "War tested" que SDL. L'utiliser est donc s'exposer potentiellement à de nombreux bugs et à une communauté plus petite,
 
-- Bien que l'Application Framework soit open source, Noesis reste une librairie propriétaire. Avoir une architecture logicielle autant dépendante de cet outil est un danger potentiel. D'autant plus que d'autres librairies comme [Crazy Eddie's GUI](http://cegui.org.uk/) offre des solutions, certes moins puissantes, mais similaire et libre de droit,
+- Bien que l'Application Framework soit open source, Noesis reste une librairie propriétaire. Avoir une architecture logicielle aussi dépendante de cet outil est un danger potentiel. D'autant plus que d'autres librairies comme [Crazy Eddie's GUI](http://cegui.org.uk/) offrent des solutions, certes moins puissantes, mais similaires et libres de droit,
 
 - Enfin, intégrer nous-même cette librairie dans notre système de rendu signifie avoir un contrôle total sur celle-ci. Il peut très bien y avoir des moment ou nous souhaitons par exemple modifier le FrameBuffer de l'interface pour appliquer du flou ou un Overlay de couleur.
 
@@ -803,7 +802,7 @@ Ensuite, parce que la création des classes dîtes "Code Behind" utilisent un pa
 
 Ces classes sont présentes dans le dossier `gui`. Elles permettent de gérer les événements qui ont lieu dans les fichiers XAML, ainsi que de leur envoyer et mettre à jour les données, avec le principe de **Data Binding**. Pour l'utiliser, il faut créer une nouvelle classe qui consiste en un ensemble de getters et de setters, et qui sera appelé par la classe s'occupant des événements.
 
-Une fois en place, que l'on a identifié les différentes méthodes à appeler, comment et quand les appeler, et comment sauvegarder leur résultat, oui, l'utilisation devient assez naturelle. Cependant, pour arriver à cet état, il nous a fallu faire de nombreux test, et comprendre des comportements assez étrange de la librairie. Il suffit de voir les deux première ligne du constructeur de n'importe quel classe GUI pour s'en rendre compte :
+Une fois en place, quand on a identifié les différentes méthodes à appeler, comment les appeler et sauvegarder leur résultat, oui, l'utilisation devient assez naturelle. Cependant, pour arriver à cet état, il nous a fallu faire de nombreux test, et comprendre des comportements assez étrange de la librairie. Il suffit de voir les deux première ligne du constructeur de n'importe quel classe GUI pour s'en rendre compte :
 
 ```C++
 m_bindings =  *new  LevelHudBindings();
@@ -824,7 +823,7 @@ Les briques de gameplay posés, nous pouvions améliorer tout ce qui pouvait l'�
 
 Nous n'avions pour le moment qu'un seul écran de jeu : Le niveau. En sachant que les autres écrans allaient être différents les uns des autres tant au niveau de la forme que du contenu, et que le passage entre eux devrait sûrement lancer une transition, le design pattern State a fini par s'imposer.
 
-Ce dernier, qu'on apprend quand on commence à programmer des intelligence artificielles basiques, offre deux avantages :
+Ce dernier, qu'on apprend quand on commence à programmer des intelligences artificielles basiques, offre deux avantages :
 
 - Un objet ne peut être que dans un seul état à la fois,
 - En passant d'un état à un autre, on déclenche la sortie de l'état actuel, et l'entrée dans le nouvel état, idéal donc pour une transition.
@@ -837,7 +836,7 @@ C'est le livre [Game Programming Pattern ](http://gameprogrammingpatterns.com/st
 
 #### Gestion du jeu
 
-Nous avons décidé de divisé nos écrans en autant d'état du jeu. Ce sont donc 7 états indépendants qui possèdent chacun leur interface :
+Nous avons décidé de diviser nos écrans en autant d'état du jeu. Ce sont donc 7 états indépendants qui possèdent chacun leur interface :
 
 - Title screen
 - Cinematic *(pas encore utilisé)*
@@ -867,6 +866,14 @@ La gestion des inputs lors du "LevelState" aurait pu être assez problématique 
 
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/level-state-machine.png?raw=true)
 
+#### Gestion des événements
+
+Tout aussi performant et bien organisée que soit la libraire ENTT et en un sens, notre code, le fait que l'accès au registre et à l'event emitter soient aussi global nous rend tributaire d'être extrêmement bien organisé. En l'état, rien n'empêche de supprimer le sprite d'un ennemi dans la classe qui s'occupe de l'interface du menu de niveau.
+
+Cette grande permissivité est un énorme avantage mais **une arme à double tranchant**. Et il arrive donc de devoir chercher quelques minutes dans le code pour retrouver le bloc qui s'occupe d'une fonctionnalité précise, et cela, même si on a fait en sorte de respecter l'organisation de nos classes système.
+
+Si l'ECS possède bien des avantages, c'est ici qu'est représenté son plus grand inconvénient : il est aisé de faire du code spaghetti. Nous manquons encore d'expérience avec différents moteurs de jeu pour juger à quel point cette affirmation est vraie, mais nous la garderons à l'esprit lors de notre prochain projet.
+
 ### Direction artistique
 
 Arrivé à cet étape, nous n'étions toujours pas satisfait du rendu en jeu : L'action était difficilement lisible quand ils y avait beaucoup de lasers, les éléments à l'écran se ressemblaient trop, les bords carrés des tuiles donnaient une impression d'amateurisme et on pouvait voir le fond noir de l'écran au bord de la carte. Avant de vous expliquer comment nous avons résolu ces problèmes, nous allons vous présenter comment ils ont pu se produire.
@@ -887,13 +894,13 @@ Pour accélérer le rythme de création, le design lui même se devait d'être c
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/illus-step-3.jpg?raw=true" alt="Croquis" height="200">
 </p>
 
-Dans nos première idées d'implémentation, nous souhaitions approfondir le sujet en ajoutant une mécanique de minage dans le jeu. Nous avons rassemblés des inspirations, puis avons fait un premier croquis de prototypage pour imaginer l'écran de jeu.
+Dans nos première idées d'implémentation, nous souhaitions approfondir le sujet en ajoutant une mécanique de minage. Nous avons rassemblés des inspirations, puis avons fait un premier croquis de prototypage pour imaginer l'écran de jeu.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version1.jpg?raw=true" alt="Croquis" height="260">
 </p>
 
-Mais cette idée n'a pas tenu longtemps, car nous la considérions être beaucoup trop éloignée de ce qui nous était demandé, nous nous sommes donc re-centré sur des règles qui pouvaient être appliqués sur un tower defense, à savoir l'utilisation de laser. Les design du robots en vue de face ayant été créé et validés, ils sont restés en jeu, et d'autres éléments on été designés pour correspondre à nos nouveaux besoins.
+Cette idée n'a pas tenu longtemps, car nous la considérions être beaucoup trop éloignée de ce qui nous était demandé, nous nous sommes donc re-centré sur des règles qui pouvaient être appliqués sur un tower defense, à savoir l'utilisation de laser. Les designs du robot en vue de face ayant été créés et validés, ils sont restés en jeu, et d'autres éléments on été designés pour correspondre à nos nouveaux besoins.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/robot.png?raw=true" alt="Croquis" height="200">
@@ -901,25 +908,25 @@ Mais cette idée n'a pas tenu longtemps, car nous la considérions être beaucou
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/mirroir.png?raw=true" alt="Croquis" height="180">
 </p>
 
-Un second croquis a été fait, ajoutant des détails et de nouveaux éléments. Le moment de l'intégration arrivé, nous n'avons pas questionné cet agencement. Ils avaient été validés au préalable, et beaucoup de travail était encore à faire.
+Un second croquis a été fait, ajoutant des détails et de nouveaux éléments. Le moment de l'intégration arrivé, nous n'avons pas questionné cet agencement. Il avait été validé au préalable, et beaucoup de travail était encore à faire.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true" alt="Croquis" height="260">
 </p>
 
-Le problème, c'est qu'une fois en jeu, nous avons seulement commencé à remarquer les problèmes évoqués en introduction. Parce qu'ils avaient été crée un a un, et pas ensemble, et parce qu'en plus il n'avaient pas été testé en jeu, ces assets et leur esthétique posaient problème.
+Le problème, c'est qu'une fois en jeu, nous avons seulement commencé à remarquer les problèmes évoqués en introduction. Parce qu'ils avaient étés créés un à un, et pas ensemble, et parce qu'en plus ils n'avaient pas été testés en jeu, ces assets et leur esthétique posaient problème.
 
-Notre erreur a été de ne pas penser au design dans son ensemble, mais en prenant les éléments un a un. Comme nous nous étions accordé sur chacune des illustration, cela nous a en partie privé de notre esprit critique lorsque tout les éléments ont été ajoutés. Après un certain temps, nous avons donc fait le choix de **repartir d'une nouvelle base**, en prévoyant cette fois ci le rendu assemblé de bout-en-bout.
+Notre erreur a été de ne pas penser au design dans son ensemble, mais en prenant les éléments un à un. Comme nous nous étions accordés sur chacune des illustrations, cela nous a en partie privé de notre esprit critique lorsque tous les éléments ont été ajoutés. Après un certain temps, nous avons donc fait le choix de **repartir d'une nouvelle base**, en prévoyant cette fois ci le rendu assemblé de bout-en-bout.
 
 #### Nouvelles inspirations 
 
-Comme tout créateur qui se respecte, nous avons été regardé sur la copie du voisin pour voir ce qui nous plaisait en terme de tower defense. Nous nous sommes stoppés sur des jeux à l'apect crayonnés, et avec une vue de 3/4 permettant des illustration beaucoup plus abouties. Par exemple pour ce jeu [Defense King](https://play.google.com/store/apps/details?id=com.mobirix.towerking&hl=en_US).
+Comme tout créateur qui se respecte, nous avons été regardé sur la copie du voisin pour voir ce qui nous plaisait en terme de Tower Defense. Nous nous sommes stoppés sur des jeux à l’aspect crayonnés, et avec une vue de 3/4 permettant des illustrations beaucoup plus abouties. Par exemple pour ce jeu [Defense King](https://play.google.com/store/apps/details?id=com.mobirix.towerking&hl=en_US).
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/defense-king.png?raw=true" alt="Croquis" height="400">
 </p>
 
-En continuant nos recherches, nous avons rencontrés d'autres esthétiques intéressantes, et aussi plus à notre portée de création. Notamment l'oubli de couleurs pour favoriser des nuances de gris allait nous permettre de nous concentrer sur la forme et la différenciation des éléments, tout en nous offrants une esthétique très solide. Des jeux comme [Hidden Folks](https://hiddenfolks.com/) et des artistes comme [Dom2D](https://dom2d.tumblr.com/) et [Steven Cooling](https://stevencolling.itch.io/inked-adventure-items) ont été une grande source d'inspiration.
+En continuant nos recherches, nous avons rencontrés d'autres esthétiques intéressantes, et aussi plus à notre portée de création. Notamment l'oubli de couleurs pour favoriser des nuances de gris allait nous permettre de nous concentrer sur la forme et la différenciation des éléments, tout en nous offrants une esthétique très solide. Des jeux comme [Hidden Folks](https://hiddenfolks.com/) et des artistes comme [Dom2D](https://dom2d.tumblr.com/) et [Steven Cooling](https://stevencolling.itch.io/inked-adventure-items) ont été de grandes sources d'inspirations.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/hidden-folks.jpg?raw=true" alt="Croquis">
@@ -932,17 +939,17 @@ En continuant nos recherches, nous avons rencontrés d'autres esthétiques inté
 
 #### Création d'un nouveau style
 
-Les inspirations posées, nous avons décidé de changer d'univers de jeu : d'une grotte étrange et futuriste, nous sommes passés dans un **laboratoire** sous l'attaque d'une bande de robots. Nous avons donc fait des premiers test d'assemblage pour s'assurer que cette nouvelle direction allait coller à notre système de grille.
+Les inspirations posées, nous avons décidé de changer d'univers de jeu : d'une grotte étrange et futuriste, nous sommes passés à un **laboratoire** sous l'attaque d'une bande de robots. Nous avons donc fait des premiers tests d'assemblages pour s'assurer que cette nouvelle direction allait coller à notre système de grille.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/redesign.png?raw=true" alt="Croquis" height="400">
 </p>
 
-L'idée validée, nous avons commencer à croquiser tout un ensemble d'assets pour habiller ce laboratoire en perdition. Tout les clichés du genre y sont passés, il était nécessaire d'être caricatural pour que le joueur puisse s'identifier en un coup d'œil à la situation.
+L'idée validée, nous avons commencer à croquiser tout un ensemble d'assets pour habiller ce laboratoire en perdition. Tous les clichés du genre y sont passés, il était nécessaire d'être caricatural pour que le joueur puisse s'identifier en un coup d'œil à la situation.
 
 ![AssetsVersion3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v3.png?raw=true)
 
-Nous avons sélectionnée une partie de ces assets, en avons rajoutés d'autres, puis sommes passés à l'étape de vectorisation. Si besoin des assets interactifs sont dessinée dans 4 directions pour suivre le prince de vue de 3/4. Avec cette base d’éléments réutilisables, il devient possible de créer n'importe quel agencement, et créer un nombre important de niveau sans créer d'autres design.
+Nous avons sélectionné une partie de ces assets, en avons ajouté d'autres, puis sommes passés à l'étape de vectorisation. Si besoin, les assets interactifs sont dessinés dans 4 directions. Avec cette base d’éléments réutilisables, il devient possible de créer n'importe quel agencement, et créer un nombre important de niveau sans créer d'autres design.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/reusable-assets.png?raw=true" alt="Assets reutilisables" height="300">
@@ -953,7 +960,7 @@ Nous avons sélectionnée une partie de ces assets, en avons rajoutés d'autres,
 
 ### Animations
 
-L'animation est un processus complexe qui demande de l'expérience afin d'être maîtrisé. Afin de mettre le pied à l'étrier, nous avons récupéré un assets de robot sur le site [CartoonSmart](https://cartoonsmart.com/dumb-robot-royalty-free-game-art/). L’intérêt était d'apprendre du workflow d'un artiste professionnel afin de reproduire ce fonctionnement à l'avenir. 
+L'animation est un processus complexe qui demande de l'expérience pour être maîtrisé. Afin de mettre le pied à l'étrier, nous avons récupéré un asset de robot sur le site [CartoonSmart](https://cartoonsmart.com/dumb-robot-royalty-free-game-art/). L’intérêt était d'apprendre du workflow d'un artiste professionnel et de reproduire son fonctionnement à l'avenir. 
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/dumb-robot.jpg?raw=true" alt="Asset dumb robot by Asa for CartoonSmart"  Height="300">
@@ -963,19 +970,17 @@ Une fois cet asset récupéré, nous avons modifié son style pour le faire coll
 
 ![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/robot-design.JPG?raw=true)
 
-Ces assets sont animé à l'aide du logiciel [Spriter](https://brashmonkey.com/) qui était déja en notre possession. Semblable à ce qui peut se faire en animation 3D, le principe est de créer et d'attribuer des Os à des partie du corps. Comme ces parties sont des images séparer les unes des autres, il n'y a pas de notion de poid. Nous avons donc pu affiner l'animation de mouvement à nos besoins avant de l'exporter en spritesheet.
+Ces assets sont animés à l'aide du logiciel [Spriter](https://brashmonkey.com/) qui était déja en notre possession. Semblable à ce qui peut se faire en animation 3D, le principe est de créer et d'attribuer des Os à des parties du corps. Comme ces parties sont des images séparées les unes des autres, il n'y a pas de notion de poids. Nous avons donc pu affiner l'animation de mouvement à nos besoins avant de l'exporter en spritesheet.
 
 ![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/spriter.png?raw=true)
 
 ### Système de tuiles
 
-Bien qu'il soit encore limité, nous avons mis en place un système de tuile afin d'adapter la sprite de chacune à celles aux alentours. Le design n'exige pour le moment que de détecter celle du dessus, mais nous prévoyons de complexifier ce système lorsque d'autres tuiles plus complexes seront affichés.
+Bien qu'il soit encore limité, nous avons mis en place un [système de tuile](https://gamedevelopment.tutsplus.com/tutorials/how-to-use-tile-bitmasking-to-auto-tile-your-level-layouts--cms-25673) afin d'adapter la sprite de chacune à celles aux alentours. Le design n'exige pour le moment que de détecter celle du dessus, mais nous prévoyons de complexifier ce système lorsque d'autres tuiles plus complexes seront affichés.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/tile-system.png?raw=true" alt="Tile system"  Height="300">
 </p>
-
-Pour le moment, nous passons en revue notre grille en inspectant l’élément du dessus de chacune des tuiles de chemin. Si une autre est présente au dessus, alors la tuile active dans la spritesheet change pour une aidant la transition.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/tile-100x100.png?raw=true" alt="Tile system"  Height="80">
