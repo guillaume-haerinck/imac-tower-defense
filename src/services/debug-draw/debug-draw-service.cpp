@@ -347,7 +347,7 @@ void DebugDrawService::ellipse(float a, float b, float c, float d) {
 
 }
 
-void DebugDrawService::circleExplosion(float x, float y, float r, float maxR, float noiseSeed) {
+void DebugDrawService::circleExplosion(float x, float y, float r, float maxR) {
 	// Binding
 	m_shaderCircleExplosion.bind();
 	m_va.bind();
@@ -372,7 +372,6 @@ void DebugDrawService::circleExplosion(float x, float y, float r, float maxR, fl
 	m_shaderCircleExplosion.setUniform2f("u_pos", x / 100 / WIN_RATIO * WIN_WIDTH, y / 100 * WIN_HEIGHT);
 	m_shaderCircleExplosion.setUniform1f("u_radius", r / 100 / WIN_RATIO * WIN_WIDTH);
 	m_shaderCircleExplosion.setUniform1f("u_maxR", maxR / 100 / WIN_RATIO * WIN_WIDTH);
-	m_shaderCircleExplosion.setUniform1f("u_noiseSeed", noiseSeed);
 	GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, segmentNumber + 2));
 
 	// Unbinding

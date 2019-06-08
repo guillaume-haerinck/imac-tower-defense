@@ -85,8 +85,8 @@ float snoise(vec2 v)
 
 void main() {
 	float agl = atan(gl_FragCoord.y-u_pos.y,gl_FragCoord.x-u_pos.x);
-	float r = u_radius *(0.9+0.1*snoise(vec2(u_noiseSeed*cos(agl),u_noiseSeed*sin(agl))));
-	float midRadiusRatio = 0.25 ;
+	float r = u_radius *(0.9+0.1*snoise(vec2(60.0*cos(agl),60.0*sin(agl))));
+	float midRadiusRatio = 0.2 ;
 	float d = sqrt( (gl_FragCoord.x-u_pos.x)*(gl_FragCoord.x-u_pos.x) + (gl_FragCoord.y-u_pos.y)*(gl_FragCoord.y-u_pos.y) );
 	float n_d = d/r;
 	if( n_d < (1-2*midRadiusRatio)){
