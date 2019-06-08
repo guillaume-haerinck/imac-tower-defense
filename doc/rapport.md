@@ -717,13 +717,17 @@ Pour la collision entre le laser et les entités, on calcule la distance entre l
 
 ### Effets de feedback
 
-Les héros de l'ombre du jeu vidéo ! Ceux qu'on ne remarque pas quand ils sont là, mais dont l'absence se fait cruellement sentir !
+Les héros de l'ombre du jeu vidéo ! Ceux qu'on ne remarque pas quand ils sont là, mais dont l'absence se fait cruellement sentir ! Nous avons été beaucoup inspiré par la conférence [The art of screenshake](https://www.youtube.com/watch?v=AJdEqssNZ-U) par Jan Willem Nijman, où il montre de façon concrète tout ce que ces effets peuvent apporter au jeu.  
 
-<p align="center">
-<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/etincelle.png?raw=true" alt="SpriteSheet">
-</p>
+Comme tout bon héros de l'ombre, ils sont un peu partout, et permettent au joueur de ressentir les effets de ses actions en jeu. En voici une présentation non exhaustive :
 
-Comme tout bon héros de l'ombre, ils sont un peu partout : tremblement des entités et production d'étincelles quand elles sont touchées par un laser, ennemis qui bleuissent quand ils sont ralentis, tours qui clignotent quand elles sont sous un laser pour prévenir le joueur, tuile colorée en rouge ou vert lors du placement des structures pour indiquer la constructibilité de la case, entités qui explosent quand elles sont détruites, tremblement de l'écran quand le joueur perd de la vie, laser mis en valeur quand on passe la souris sous la tour pour bien distinguer quel effet aura la désactivation de celle-ci, laser mis en transparence tant qu'il est désactivé, curseur qui change pour indiquer l'action possible sur la structure (rotation des miroirs ou désactivation des tours).
+Description | Animation
+--- | ---
+Tremblement des entités et production d'étincelles quand elles sont touchées par un laser | <img width="200px" src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/degat.gif?raw=true" alt="SpriteSheet">
+Tuile colorée en rouge ou vert lors du placement des structures pour indiquer la constructibilité de la case | <img width="200px" src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/construct.gif?raw=true" alt="SpriteSheet">
+Curseur change pour indiquer l'action possible sur la structure (rotation des miroirs ou désactivation des tours) | <img width="200px" src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/rotate.gif?raw=true" alt="SpriteSheet">
+Ennemis qui bleuissent quand ils sont ralentis | <img width="200px" src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/freeze.gif?raw=true" alt="SpriteSheet">
+Apparition progressive des ennemis | <img width="200px" src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/arrival.gif?raw=true" alt="SpriteSheet">
 
 ### Interface graphique avec Noesis
 
@@ -853,7 +857,7 @@ La gestion des inputs lors du "LevelState" aurait pu être assez problématique 
 
 ### Direction artistique
 
-Arrivé à cet étape, nous n'étions toujours pas satisfait du rendu en jeu : L'action était difficilement lisible quand ils y avait beaucoup de lasers, les éléments à l'écran se ressemblaient trop, les bords carrés des tuiles donnait une impression d'amateurisme et on pouvais voir le fond noir de l'écran au bord de la carte. Avant de vous expliquer comment nous avons résolus ces problèmes, nous allons vous présenter comment ils ont pu se produire.
+Arrivé à cet étape, nous n'étions toujours pas satisfait du rendu en jeu : L'action était difficilement lisible quand ils y avait beaucoup de lasers, les éléments à l'écran se ressemblaient trop, les bords carrés des tuiles donnaient une impression d'amateurisme et on pouvait voir le fond noir de l'écran au bord de la carte. Avant de vous expliquer comment nous avons résolu ces problèmes, nous allons vous présenter comment ils ont pu se produire.
 
 #### Les premiers essais
 
