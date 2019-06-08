@@ -251,9 +251,9 @@ De plus, même si le code d'Entité a été simplifié, la division n'a pas ét�
 
 > :fire: Bien que nous critiquions cette approche afin de nous amener à l'ECS, nous souhaitons préciser que des structures du genre plus complexes existent et s'en sortent très bien depuis des années.
 
-#### 3. Approche par Aggrégation
+#### 3. Approche par Composition
 
-En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de l'aggrégation, c'est à dire que les pans du moteurs de jeu interagissant avec les entités ont maintenant leur classe propre, et sont détenus par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
+En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de la composition, c'est à dire que les pans du moteurs de jeu interagissant avec les entités ont maintenant leur classe propre, et sont détenus par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v3.PNG?raw=true" alt="Entité composants">
