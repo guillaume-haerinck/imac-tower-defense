@@ -1,6 +1,10 @@
 # Imac Tower Defense
 
-An OpenGL 4.4 game made with Entity-Component-System design pattern.
+An OpenGL 4.4 game made with Entity-Component-System design pattern. It is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/).
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
+</p>
 
 ## Table of Contents
 
@@ -21,6 +25,10 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 **Additional info**
   * [**Dependencies**](#dependencies)
   * [**Inspired by**](#inspired-by)
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v3.gif?raw=true" alt="SpriteSheet">
+</p>
 
 ## Features
 
