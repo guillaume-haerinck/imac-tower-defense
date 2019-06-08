@@ -23,7 +23,7 @@
 *  [**Implémentation**](#implémentation)
 
 [**III -  En route vers le premier prototype**](#iii---en-route-vers-le-premier-prototype)
-*	[**Utilisation d'openGL 4.4 core**](#utilisation-dopengl-4.4-core)
+*	[**Utilisation d'openGL Moderne**](#utilisation-de-opengl-moderne)
 *	[**Ajout des dépendances**](#ajout-des-dépendances)
 *	[**Création des entités**](#création-des-entités)
 *	[**Fichier ITD et construction du graphe**](#fichier-itd-et-construction-du-graphe)
@@ -524,7 +524,7 @@ La première grande étape a été de rassembler toutes les dépendances et beso
 <img src="https://upload.wikimedia.org/wikipedia/fr/2/21/OpenGL_logo.svg" alt="OpenGl logo" height="100">
 </p>
 
-### Utilisation d'OpenGL 4.4 core
+### Utilisation de OpenGL Moderne
 
 Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir *glBegin()* et *glEnd()*, et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
 
@@ -706,6 +706,8 @@ Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, a
 
 ### Lasers
 
+<!-- TODO parler des inspriation de jeu -->
+
 Des lasers, des lasers, des lasers ! Les lasers sont réfléchis par les miroirs et infligent des dégâts à toutes les entités sur leur passage !
 
 Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle 
@@ -800,76 +802,142 @@ Initialized() +=  MakeDelegate(this, &LevelHud::OnInitialized);
 
 ## V - La solidification du projet
 
-Notre projet s'est complexifié, et il a donc fallu trouver de nouveaux moyens de simplifier notre architecture.
+Les briques de gameplay posés, nous pouvions améliorer tout ce qui pouvait l'être. C'est à dire autant dans l'architecture logicielle que de l'aspect visuel et tout ce qui touche de près ou de loin au **"Game Feel"**.
 
 ### State Machine
 
-Le passage entre les différents écrans du jeu se devait d'être simple à gérer, tout en nous permettant un contrôle total et une division nette entre ces états. Le design pattern State était donc idéal.
+Nous n'avions pour le moment qu'un seul écran de jeu : Le niveau. En sachant que les autres écrans allaient être différents les uns des autres tant au niveau de la forme que du contenu, et que le passage entre eux devrait sûrement lancer une transition, le design pattern State a fini par s'imposer.
+
+Ce dernier, qu'on apprend quand on commence à programmer des intelligence artificielles basiques, offre deux avantages :
+
+- Un objet ne peut être que dans un seul état à la fois,
+- En passant d'un état à un autre, on déclenche la sortie de l'état actuel, et l'entrée dans le nouvel état, idéal donc pour une transition.
+
+C'est le livre [Game Programming Pattern ](http://gameprogrammingpatterns.com/state.html) qui nous a poussé à l'utiliser pour d'autres aspect que l'intelligence artificielle, dans son exemple excellent pour la gestion des inputs d'un personnage :
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/state-flowchart.png?raw=true" alt="State flowchart" height="300">
+</p>
 
 #### Gestion du jeu
 
-Notre jeu est divisé en 7 états indépendants :
+Nous avons décidé de divisé nos écrans en autant d'état du jeu. Ce sont donc 7 états indépendants qui possèdent chacun leur interface :
 
-- TitleScreen
-- Cinematic
-- LevelIntro
+- Title screen
+- Cinematic *(pas encore utilisé)*
+- Level intro
 - Level
-- LevelExit
-- GameOver
-- EndScreen
+- Level exit
+- Game over
+- End screen
 
-Ils sont créés au besoin au runtime, et une fois instanciés ils le restent jusqu'à la fermeture du jeu pour favoriser l'utilisation de la mémoire.
+Ils sont créés au besoin au runtime, et **une fois instanciés ils le restent** jusqu'à la fermeture du jeu pour optimiser l'utilisation de la mémoire. Le fait que ces objets restent créés nous impose de gérer la transition entre ces états. 
 
-Le fait que ces objets restent créés nous impose de gérer la transition entre ces états. Concrètement, l'objet qui devient actif souscrit aux évènements de l'utilisateur, et retire cette souscription quand on quitte l'état.
+Parce que nos événements sont asynchrones, et n'ont pas besoin d'utiliser d'update pour être propagés, nous avons besoin de bloquer la souscription aux événements quand l'état n'est pas actif. Concrètement, l'objet qui devient actif souscrit aux événements de l'utilisateur, et retire cette souscription quand on quitte l'état. L'état reste souscrit cependant souscrit aux d'autres types d’événements que les inputs, rendant donc la division poreuse, mais nous n'avons pas encore trouvé de solution simple et efficace à ce problème.
+
+```C++
+void  LevelIntroState::enter() {
+	connectInputs();
+}
+
+void  LevelIntroState::exit() {
+	disconnectInputs();
+}
+```
 
 #### Gestion des inputs
 
-La gestion des inputs lors du "LevelState" aurait pû être assez problématique : gérrer la construction, la selection et les effets de hover appèlent forcément à une gestion complexe des conditions.
-
-Pour palier ce problème, nous avons créé une nouvelle state machine pour s'assurer du bon fonctionnement des inputs. Elle est décrite ci-dessous.
+La gestion des inputs lors du "LevelState" aurait pu être assez problématique : gérer la construction, la sélection et les effets de hover appellent forcément à une gestion complexe des conditions. Pour palier ce problème, nous avons créé une nouvelle state machine pour s'assurer du bon fonctionnement des inputs. Elle est décrite ci-dessous.
 
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/level-state-machine.png?raw=true)
 
 ### Direction artistique
 
-La direction artistique a évolué à de multiples reprise dans notre projet.
+Arrivé à cet étape, nous n'étions toujours pas satisfait du rendu en jeu : L'action était difficilement lisible quand ils y avait beaucoup de lasers, les éléments à l'écran se ressemblaient trop, les bords carrés des tuiles donnait une impression d'amateurisme et on pouvais voir le fond noir de l'écran au bord de la carte. Avant de vous expliquer comment nous avons résolus ces problèmes, nous allons vous présenter comment ils ont pu se produire.
 
-#### 1. Choix graphiques
+#### Les premiers essais
 
-Concernant le design de notre projet, plusieurs réflexions ont été menées et expérimentées. Afin d'exposer et de justifier notre choix graphique final, il est important de revenir sur les différentes versions établies afin de partager notre réflexion.
+Au commencement du projet, nous avions mis un point d'honneur à adopter un bonne procédure de collaboration pour avancer **étape par étape**. Nous récupérions des fonctionnalités depuis le sujet, puis nous les prototypions en code avec des assets basiques, avant de demander un design plus aboutis et passer à l'étape suivante. Un peu comme illustré par cette image :
 
-Dans la première version réalisée, nous avons choisi de travailler avec une vue de face afin de correspondre au premier story-telling que nous avions imaginé et de pouvoir développer au maximum l'esthétique du projet. 
-Cependant la contrainte de la vue de face posait une difficulté quant au code. Ainsi, nous avons conservé les couleurs et le design de cette première version et l'avons déclinée en vue du dessus afin d'obtenir la seconde version. 
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/prototyping.png?raw=true" alt="Step work" height="260">
+</p>
 
-![Version1](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version1.jpg?raw=true)
+Pour accélérer le rythme de création, le design lui même se devait d'être crée progressivement. En commençant par des croquis simples illustrant une mécanique de gameplay, avant de passer à l'ajout de couleurs et fixation des formes, avant d'enfin nettoyer le tout et proposer un design final.
 
-La seconde version reprenait l'esthétique de la première version en vue du dessus. Nous avons beaucoup travaillé sur cette version où nous avons imaginé des lasers, changeant ainsi notre story-telling. Néanmoins, bien que fonctionnelle, cette version manquait d'originalité esthétique. Elle entraînait des bordures noires et la vue du dessus occasionnait une restriction quant à notre envie de créer un projet esthétique.
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/illus-step-1.jpg?raw=true" alt="Croquis" height="200">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/illus-step-2.jpg?raw=true" alt="Croquis" height="200">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/illus-step-3.jpg?raw=true" alt="Croquis" height="200">
+</p>
 
-![Version2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true)
+Dans nos première idées d'implémentation, nous souhaitions approfondir le sujet en ajoutant une mécanique de minage dans le jeu. Nous avons rassemblés des inspirations, puis avons fait un premier croquis de prototypage pour imaginer l'écran de jeu.
 
-![MenuVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/menuv2.jpg?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version1.jpg?raw=true" alt="Croquis" height="260">
+</p>
 
-![AssetsVersion2](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v2.png?raw=true)
+Mais cette idée n'a pas tenu longtemps, car nous la considérions être beaucoup trop éloignée de ce qui nous était demandé, nous nous sommes donc re-centré sur des règles qui pouvaient être appliqués sur un tower defense, à savoir l'utilisation de laser. Les design du robots en vue de face ayant été créé et validés, ils sont restés en jeu, et d'autres éléments on été designés pour correspondre à nos nouveaux besoins.
 
-La version que nous avons choisi d'approfondir est celle que nous vous avons présentée dans ce rapport et lors de notre soutenance. Notre priorité était de consolider l'aspect esthétique. Pour cela, nous sommes passés à une vue de 3/4 proposant davantage d'opportunités graphiques. Nous avons choisi un décor de laboratoire détruit où les machines prendraient le dessus sur les scientifiques. L'aspect minimaliste a été privilégié afin de ne pas risquer de perdre le joueur et également par contrainte temporelle. Les couleurs ont été remplacées par des nuances de gris afin de différencier le décor des lasers.
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/robot.png?raw=true" alt="Croquis" height="200">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/laser.png?raw=true" alt="Croquis" height="200">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/mirroir.png?raw=true" alt="Croquis" height="180">
+</p>
 
-![Version3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version3.png?raw=true)
+Un second croquis a été fait, ajoutant des détails et de nouveaux éléments. Le moment de l'intégration arrivé, nous n'avons pas questionné cet agencement. Ils avaient été validés au préalable, et beaucoup de travail était encore à faire.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true" alt="Croquis" height="260">
+</p>
+
+Le problème, c'est qu'une fois en jeu, nous avons seulement commencé à remarquer les problèmes évoqués en introduction. Parce qu'ils avaient été crée un a un, et pas ensemble, et parce qu'en plus il n'avaient pas été testé en jeu, ces assets et leur esthétique posaient problème.
+
+Notre erreur a été de ne pas penser au design dans son ensemble, mais en prenant les éléments un a un. Comme nous nous étions accordé sur chacune des illustration, cela nous a en partie privé de notre esprit critique lorsque tout les éléments ont été ajoutés. Après un certain temps, nous avons donc fait le choix de **repartir d'une nouvelle base**, en prévoyant cette fois ci le rendu assemblé de bout-en-bout.
+
+#### Nouvelles inspirations 
+
+Comme tout créateur qui se respecte, nous avons été regardé sur la copie du voisin pour voir ce qui nous plaisait en terme de tower defense. Nous nous sommes stoppés sur des jeux à l'apect crayonnés, et avec une vue de 3/4 permettant des illustration beaucoup plus abouties. Par exemple pour ce jeu [Defense King](https://play.google.com/store/apps/details?id=com.mobirix.towerking&hl=en_US).
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/defense-king.png?raw=true" alt="Croquis" height="400">
+</p>
+
+En continuant nos recherches, nous avons rencontrés d'autres esthétiques intéressantes, et aussi plus à notre portée de création. Notamment l'oubli de couleurs pour favoriser des nuances de gris allait nous permettre de nous concentrer sur la forme et la différenciation des éléments, tout en nous offrants une esthétique très solide. Des jeux comme [Hidden Folks](https://hiddenfolks.com/) et des artistes comme [Dom2D](https://dom2d.tumblr.com/) et [Steven Cooling](https://stevencolling.itch.io/inked-adventure-items) ont été une grande source d'inspiration.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/hidden-folks.jpg?raw=true" alt="Croquis">
+</p>
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/dom2d.jpg?raw=true" alt="Croquis" height="500">
+</p>
+
+
+#### Création d'un nouveau style
+
+Les inspirations posées, nous avons décidé de changer d'univers de jeu : d'une grotte étrange et futuriste, nous sommes passés dans un **laboratoire** sous l'attaque d'une bande de robots. Nous avons donc fait des premiers test d'assemblage pour s'assurer que cette nouvelle direction allait coller à notre système de grille.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/redesign.png?raw=true" alt="Croquis" height="400">
+</p>
+
+L'idée validée, nous avons commencer à croquiser tout un ensemble d'assets pour habiller ce laboratoire en perdition. Tout les clichés du genre y sont passés, il était nécessaire d'être caricatural pour que le joueur puisse s'identifier en un coup d'œil à la situation.
 
 ![AssetsVersion3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v3.png?raw=true)
 
-#### 2. Choix des polices
+Nous avons sélectionnée une partie de ces assets, en avons rajoutés d'autres, puis sommes passés à l'étape de vectorisation. Si besoin des assets interactifs sont dessinée dans 4 directions pour suivre le prince de vue de 3/4. Avec cette base d’éléments réutilisables, il devient possible de créer n'importe quel agencement, et créer un nombre important de niveau sans créer d'autres design.
 
-Pour le corps de texte, nous avons choisi la police Google Font [Sniglet]([https://fonts.google.com/specimen/Sniglet](https://fonts.google.com/specimen/Sniglet)). Ses arrondis permettent de contraster avec l'ambiance générale plutôt sérieuse et stricte en y apportant un aspect divertissant.
-
-![PoliceCorps](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_corps.png?raw=true)
-
-Pour les titres, nous avons utilisé la version démo de la police commerciale [Sunrise International](https://creativemarket.com/thebrandedquotes/688290-Sunrise-International-%28Typeface%29). Une fois de plus, elle constraste avec l'ambiance du jeu. Cette police a un aspect manuscrit qui contribue à ajouter une dimension humaine au projet afin de le rendre plus chaleureux. 
-
-![PoliceTitre](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/police_titre.png?raw=true)
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/reusable-assets.png?raw=true" alt="Assets reutilisables" height="300">
+</p>
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/tower-laser-100x100.png?raw=true" height="60" alt="Tour laser">
+</p>
 
 ### Animations
 
-Afin de mettre le pied à l'étrier, nous avons récupéré un assets de robot sur le site [CartoonSmart](https://cartoonsmart.com/dumb-robot-royalty-free-game-art/). L’intérêt était d'apprendre du workflow d'un artiste professionnel afin de reproduire ce fonctionnement à l'avenir. 
+L'animation est un processus complexe qui demande de l'expérience afin d'être maîtrisé. Afin de mettre le pied à l'étrier, nous avons récupéré un assets de robot sur le site [CartoonSmart](https://cartoonsmart.com/dumb-robot-royalty-free-game-art/). L’intérêt était d'apprendre du workflow d'un artiste professionnel afin de reproduire ce fonctionnement à l'avenir. 
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/dumb-robot.jpg?raw=true" alt="Asset dumb robot by Asa for CartoonSmart"  Height="300">
