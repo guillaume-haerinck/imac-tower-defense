@@ -14,7 +14,6 @@
 
 [**I - Présentation du jeu**](#i---présentation-du-jeu)
 *	[**Intentions**](#intentions)
-*	[**Game Design**](#game-design)
 *  [**Points forts**](#points-forts)
 * [**Différences avec le sujet**](#différences-avec-le-sujet)
 
@@ -122,7 +121,7 @@ Quand on commence le développement d'un jeu, et que plusieurs niveaux sont déj
 
 Notre projet a une taille et une équipe réduite, qui a peu d'expérience. Pour rajouter du poids à cet argumentaire, développer de nombreuses fonctionnalités serait, au mieux, irréaliste. C'est pour cela que l'entièreté de nos niveaux sont structurés autours de seulement trois types de constructions très différentes : des miroirs, des lasers et des tours de glace.
 
-Notre réflexion autour de ces éléments est toujours en cours. Parmi les mécaniques citées ci-dessous, certaines ont été intégrées, et d'autres seront amenées à évoluer au fil des tests :
+Notre réflexion autour de ces éléments est toujours en cours. Nous avions le souhait de créer un principe équivalent à ce que l'on peut retrouver dans un jeu de "Pierre Feuille Ciseau", c'est à dire que chacun des objets en jeu doit se compléter et interagir avec les autres. Parmi les mécaniques citées ci-dessous, certaines ont été intégrées, et d'autres seront amenées à évoluer au fil des tests :
 
 - Envoi de boules de feu quand le laser touche la tour de glace,
 - Activation d'élements du décors par le laser,
@@ -158,7 +157,7 @@ Dossiers ressources, include et lib | La structure de dossier proposée ne pouva
 
 ## II - L'architecture ECS
 
-L'Entity Component System est un Design Pattern principalement utilisé lors de la conception de jeux vidéos.  C'est une architecture logicielle conçue à la fois pour optimiser la gestion de la mémoire, simplifier l'ajout de fonctionnalités et diviser les systèmes en parties totalement indépendantes. C'est un concept qui a progressivement émergé il y a une dizaine d'année et qui semble être devenu assez commun, bien qu'il existe, comme nous allons le voir, différents degrés dans son intégration.
+L'Entity Component System est un Design Pattern principalement utilisé lors de la conception de jeux vidéos.  C'est une architecture logicielle conçue à la fois pour optimiser la gestion de la mémoire, simplifier l'ajout de fonctionnalités et diviser les systèmes en parties totalement indépendantes. C'est un concept qui a progressivement émergé il y a une dizaine d'années et qui semble être devenu assez commun, bien qu'il existe, comme nous allons le voir, différents degrés dans son intégration.
 
 ### Contexte
 
@@ -341,9 +340,9 @@ Bien que cette approche possède de réelles qualités et soit souhaitable dans 
 
 ![Data locality](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/data-locality-chart.png?raw=true)
 
-Pour pallier ce problème, les constructeurs ont intégré au fil des années différentes mémoires caches directement sur le processeur, nommées par importances L1, L2 et L3. L'idée est, grossièrement, de passer les zones de mémoires de la RAM en cours d'utilisation dans ces mémoires caches côté processeur, beaucoup plus rapide d'accès, mais aussi très petites. L'efficacité de ce procédé repose sur l'hypothèse que les données en train d'être manipulées sont côte-à-côte dans la RAM, sous peine de rater l'emplacement **(cache miss)** et de devoir demander les données à la RAM.
+Pour pallier ce problème, les constructeurs ont intégré au fil des années différentes mémoires caches directement sur le processeur, nommées par importance L1, L2 et L3. L'idée est, grossièrement, de passer les zones de mémoires de la RAM en cours d'utilisation dans ces mémoires caches côté processeur, beaucoup plus rapide d'accès, mais aussi très petites. L'efficacité de ce procédé repose sur l'hypothèse que les données en train d'être manipulées sont côte-à-côte dans la RAM, sous peine de rater l'emplacement **(cache miss)** et de devoir demander les données à la RAM.
 
-Avec notre architecture telle qu'elle est, voici notre RAM. Chaque entité possède trois components, représentés par un carré de couleur : un beige, un vert et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de cache miss auront lieu lors de notre boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez collossale.
+Avec une architecture en component agrégés, voici l'état de la RAM. Chaque entité possède trois components, représentés par un carré de couleur : un beige, un vert et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de cache miss aura lieu lors d'une boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez colossale.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos.PNG?raw=true" alt="Array of structure">
@@ -429,7 +428,7 @@ Comme vous le constaterez tout au long de ce rapport, l'architecture de notre ap
 - Le Registre
 - L'Event emitter
 
-Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans le *main* et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
+Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans notre classe **Game** et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true" alt="Event publisher">
@@ -484,6 +483,38 @@ B(*GameState*) -- F(*EntityFactories*)
 F -- G(*ComponentFactories*)
 ```
 -->
+
+#### Structure de dossier
+
+Pour structurer notre arborescence, nous avons privilégié une **approche déclarative** plutôt que par type de fonctionnalité afin de simplifier la compréhension du rôle de chacun des fichiers.
+
+*(Une approche par fonctionnalité, aurait été d'avoir les dossiers organisés par états du jeu, chacun des ces dossiers ayant ses propres components, factories, events, etc... Un dossier "shared" à la racine permettant de récupérer ce qui est utilisés par tous ces états. )*
+
+| Dossier | Description |
+| ------------- | ----------------- |
+| **src** | **Code Source** |
+| `main.cpp` | Point d'entrée du jeu |
+| `components` | Struct de données utilisés par les entités |
+| `component-factories` | Création des components complexes |
+| `entity-factories` | Création des entités |
+| `events` | Struct de données transmis par un événement |
+| `graphics` | Classes wrapper pour les objets OpenGL |
+| `gui` | Les classes dîtes "Code Behind" utilisés par Noesis pour manipuler les fichiers XAML avec le design pattern View Model |
+| `logger` | Gestion des erreurs et des fichiers de logs pour la debug |
+| `services` | Fonctionnalités utilisées n'importe où, comme jouer un son ou avoir du random. Utilisation du design pattern Service Locator |
+| `systems` | Mise à jour des entités par sélection de leurs composants. Toute la logique du jeu est présente dans ces classes |
+| **core** | **Constantes, Chargement de la carte et Gestion de la State Machine** |
+| `game-states` | Les différents états de notre jeu (title menu, in-level, game over, ...) |
+| `level` | Lit les fichiers .itd et construit le graphe |
+| **res** | **Ressources chargées au runtime** |
+| `audio` | Sons et musiques |
+| `fonts` | Les police de caractère utilisées par les interfaces |
+| `gui` | Les fichiers XAML décrivant les interfaces pour chacun des états de jeu |
+| `images` | Images et Spritesheets utilisées par le jeu |
+| `levels` | Fichiers .itd et leurs images associées |
+| `shaders` | Shaders GLSL utilisés par OpenGL |
+| **doc** | **Documentation** |
+| **lib** | **Dépendances** |
 
 ## III - En route vers le premier prototype
 
@@ -672,7 +703,8 @@ Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, a
 
 Des lasers, des lasers, des lasers ! Les lasers sont réfléchis par les miroirs et infligent des dégâts à toutes les entités sur leur passage !
 
-Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle $2\theta_{miroir} - \theta_{\textit{laser incident}}$.
+Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle 
+*2Theta mirroir - Theta laser incident*
 
 Pour la collision entre le laser et les entités, on calcule la distance entre l'entité et sa projection orthogonale sur la droite, et vérifie si elle est plus petite que le rayon de la hitbox plus le rayon du laser. (Et on vérifie aussi qu'on est du bon côté de la demi-droite grâce au signe du produit scalaire utilisé pour calculer la projection orthogonale).
 
@@ -680,15 +712,80 @@ Pour la collision entre le laser et les entités, on calcule la distance entre l
 
 Les héros de l'ombre du jeu vidéo ! Ceux qu'on ne remarque pas quand ils sont là, mais dont l'absence se fait cruellement sentir !
 
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/etincelle.png?raw=true" alt="SpriteSheet">
+</p>
+
 Comme tout bon héros de l'ombre, ils sont un peu partout : tremblement des entités et production d'étincelles quand elles sont touchées par un laser, ennemis qui bleuissent quand ils sont ralentis, tours qui clignotent quand elles sont sous un laser pour prévenir le joueur, tuile colorée en rouge ou vert lors du placement des structures pour indiquer la constructibilité de la case, entités qui explosent quand elles sont détruites, tremblement de l'écran quand le joueur perd de la vie, laser mis en valeur quand on passe la souris sous la tour pour bien distinguer quel effet aura la désactivation de celle-ci, laser mis en transparence tant qu'il est désactivé, curseur qui change pour indiquer l'action possible sur la structure (rotation des miroirs ou désactivation des tours).
 
 ### Interface graphique avec Noesis
 
 Noesis est une librairie qui exploite le langage XAML développé puis rendu Open-Source par Microsoft. Concrètement, il est possible de créer des applications natives avec des interfaces développées dans un langage proche du HTML.
 
-Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance et de temps réel du jeu vidéo. Bien que difficile à apprivoiser, cette librairie se trouve être d'une puissance assez inouïe quand il s'agit de l'animation des éléments.
+Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance et de temps réel du jeu vidéo. Bien que difficile à apprivoiser, cette librairie se trouve être d'une puissance assez inouïe quand il s'agit de l'animation des éléments. Déja dans le workflow que cette librairie propose, présenté ci-dessous :
+
+#### Workflow
 
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/schéma_noesis.jpg?raw=true)
+
+L'artiste fait ses design sur des outils qu'il connait, Photoshop, Illustrator, ou Affinity Designer dans notre cas. Une fois le design validé, il exporte ces créations en parties indépendantes afin qu'elles soient intégrable facilement dans le fichier XAML.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/panel.png?raw=true" alt="Panel texture">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/panel-title.png?raw=true" height="50" alt="Panel texture">
+</p>
+
+L'intégrateur prend alors le relai, il peut tapper le fichier XAML à la main, mais pour créer des animations et des dispositions plus complexes il est quasiment indispensable d'utiliser Microsoft Blend. Cet outils permet d'éditer les interfaces en temps réel, d'animer une timeline tels After Effect, ainsi qu'une des modifications à la souris type WYSIWYG.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/blend.png?raw=true" alt="Microsoft Blend">
+</p>
+
+Une fois cette mise en page validée et fonctionnelle, on peut commencer la création des classes "Code Behind" en C++.  Ces dernières utilisent le design pattern View Model et s'assurent de la bonne connexion entre les données, envoyées dynamiquement dans le code, et les fichiers XAML.
+
+#### Intégration
+
+Il existe deux façon d'implémenter Noesis dans son application. La première, la plus documentée et la plus simple, est d'utiliser leur ["Application Framework"](https://www.noesisengine.com/docs/Gui.Core.ApplicationTutorial.html), qui offre un nouveau *main* et s'agence parfaitement avec la structure d'une application WPF, permettant en plus de se passer de SDL pour créer une fenêtre. **Ce n'est pas l'approche que nous avons choisie**.
+
+La seconde, tout aussi efficace mais plus complexe à comprendre car *beaucoup* moins documentée, est d'initialiser noesis et de créer un Renderer indépendant au reste de notre application. **Nous avons choisi cette approche** pour plusieurs raisons :
+
+- L'Application Framework de Noesis est incroyablement moins propagée et "War tested" que SDL. L'utiliser est donc s'exposer potentiellement à de nombreux bugs et à une communauté plus petite,
+
+- Bien que l'Application Framework soit open source, Noesis reste une librairie propriétaire. Avoir une architecture logicielle autant dépendante de cet outil est un danger potentiel. D'autant plus que d'autres librairies comme [Crazy Eddie's GUI](http://cegui.org.uk/) offre des solutions, certes moins puissantes, mais similaire et libre de droit,
+
+- Enfin, intégrer nous-même cette librairie dans notre système de rendu signifie avoir un contrôle total sur celle-ci. Il peut très bien y avoir des moment ou nous souhaitons par exemple modifier le FrameBuffer de l'interface pour appliquer du flou ou un Overlay de couleur.
+
+L'intégration n'a donc pas été sans heurt. Déja parce que le Renderer de Noesis performe de nombreuses opération, et que OpenGL fonctionne comme une state machine, il est nécessaire de réinitialiser son état à chaque frame après avoir mis à jour Noesis.
+
+```C++
+// Framebuffer
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+glViewport(0, 0, WIN_WIDTH, WIN_HEIGHT);
+glClearStencil(0);
+
+// Z-buffer
+glEnable(GL_DEPTH_TEST);
+glDepthFunc(GL_LEQUAL);
+glDepthMask(GL_TRUE);
+
+// Blending
+glEnable(GL_BLEND);
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+glClearColor(1, 1, 1, 1);
+```
+
+Ensuite, parce que la création des classes dîtes "Code Behind" utilisent un pattern assez complexe de Reflection, qui permet grossièrement d'identifier des types au runtime, un peut comme avec un principe de Template. Nous n'avons - heureusement - pas eu à créer ce système nous-même. Néanmoins il nous faut l'utiliser, et la documentation encore une fois est beaucoup floue sur les étapes et l'emplacement de ces éléments dans le code.
+
+#### Création des classes Code Behind
+
+Ces classes sont présentes dans le dossier `gui`. Elles permettent de gérer les événements qui ont lieu dans les fichiers XAML, ainsi que de leur envoyer et mettre à jour les données, avec le principe de **Data Binding**. Pour l'utiliser, il faut créer une nouvelle classe qui consiste en un ensemble de getters et de setters, et qui sera appelé par la classe s'occupant des événements.
+
+Une fois en place, que l'on a identifié les différentes méthodes à appeler, comment et quand les appeler, et comment sauvegarder leur résultat, oui, l'utilisation devient assez naturelle. Cependant, pour arriver à cet état, il nous a fallu faire de nombreux test, et comprendre des comportements assez étrange de la librairie. Il suffit de voir les deux première ligne du constructeur de n'importe quel classe GUI pour s'en rendre compte :
+
+```C++
+m_bindings =  *new  LevelHudBindings();
+Initialized() +=  MakeDelegate(this, &LevelHud::OnInitialized);
+```
 
 ## V - La solidification du projet
 
@@ -872,3 +969,7 @@ SOA
 AOS
 : Array Of Structures (voir partie 1)
 *[AOS]: Array Of Structures
+
+WYSIWYG
+: What you see is what you get
+*[WYSIWYG]: What you see is what you get
