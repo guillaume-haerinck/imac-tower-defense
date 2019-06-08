@@ -686,6 +686,11 @@ Pour rendre l'édition et l'ajout de niveaux aussi simple que possible, devoir s
 
 Le graphe est donc créé en parcourant l'image vue elle-même comme un graphe : on part de la case d'arrivée (puisqu'on sait qu'elle est unique et existe toujours) et on lance un parcours récursif sur chaque voisin de cette case qui est un chemin. Tant que la case actuelle n'est pas un embranchement (ce qu'on sait en regardant lesquels de ses voisins sont des chemins), on continue à avancer, et quand on tombe sur un embranchement on crée un nœud dans le graphe.
 
+### Version 1
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v1.gif?raw=true" alt="SpriteSheet">
+</p>
 
 ## IV - L'ajout de mécaniques de jeu
 
@@ -787,6 +792,12 @@ m_bindings =  *new  LevelHudBindings();
 Initialized() +=  MakeDelegate(this, &LevelHud::OnInitialized);
 ```
 
+### Version 2
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v2.gif?raw=true" alt="SpriteSheet">
+</p>
+
 ## V - La solidification du projet
 
 Notre projet s'est complexifié, et il a donc fallu trouver de nouveaux moyens de simplifier notre architecture.
@@ -884,6 +895,12 @@ Pour le moment, nous passons en revue notre grille en inspectant l’élément d
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/tile-100x100.png?raw=true" alt="Tile system"  Height="80">
+</p>
+
+### Version 3
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v3.gif?raw=true" alt="SpriteSheet">
 </p>
 
 ## VI - Post-Mortem
