@@ -706,14 +706,26 @@ Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, a
 
 ### Lasers
 
-<!-- TODO parler des inspriation de jeu -->
+Nous souhaitions trouver une mécanique à la fois **simple, unique et pouvant offrir une profondeur intéressante** de gameplay. Après différentes idées (dont celle d'un principe de minage), nous nous sommes lancés vers la création et la réflexion de laser.
 
-Des lasers, des lasers, des lasers ! Les lasers sont réfléchis par les miroirs et infligent des dégâts à toutes les entités sur leur passage !
+C'est un principe qu'il arrive de croiser dans le jeu-vidéo. On peut penser aux jeux types [Laser Chess](https://www.thinkfun.com/products/laser-chess/), à certains niveaux dans [Zack & Wiki](https://fr.wikipedia.org/wiki/Zack_et_Wiki_:_Le_Tr%C3%A9sor_de_Barbaros) où encore dans le jeu [Archaica : The Path of Light](https://store.steampowered.com/app/550590/Archaica_The_Path_of_Light/) qui y est dédié. Souvent, le laser a une position déja définie, et c'est au rôle du joueur de placer et tourner des mirroirs pour atteindre un emplacement précis. On savait donc que c'était une mécanique fun et qui pouvait potentiellement assez bien fonctionner dans un Tower Defense.
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/archaica.jpg?raw=true" alt="SpriteSheet">
+</p>
+
+Nous avions maintenant la tâche d’implémenter ce système.
 
 Pour trouver la trajectoire d'un laser, on calcule l'intersection entre la demi-droite partant de la tour et *tous* les miroirs (oui on n'est pas très subtils), garde le point le plus proche et relance un laser depuis ce point, avec l'angle 
 *2Theta mirroir - Theta laser incident*
 
 Pour la collision entre le laser et les entités, on calcule la distance entre l'entité et sa projection orthogonale sur la droite, et vérifie si elle est plus petite que le rayon de la hitbox plus le rayon du laser. (Et on vérifie aussi qu'on est du bon côté de la demi-droite grâce au signe du produit scalaire utilisé pour calculer la projection orthogonale).
+
+Quelques semaines après avoir implanté cette mécanique, nous sommes d'ailleurs tombé sur un autre jeu de tower defense qui tourne essentiellement autour. Il s'agit de [Lethal Laser](https://store.steampowered.com/app/669390/Lethal_Laser/).
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/lethal-laser.jpg?raw=true" alt="Lethal laser">
+</p>
 
 ### Effets de feedback
 
