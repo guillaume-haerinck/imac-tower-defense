@@ -23,7 +23,7 @@
 *  [**Implémentation**](#implémentation)
 
 [**III -  En route vers le premier prototype**](#iii---en-route-vers-le-premier-prototype)
-*	[**Utilisation d'openGL Moderne**](#utilisation-de-opengl-moderne)
+*	[**Utilisation d'OpenGL Moderne**](#utilisation-de-opengl-moderne)
 *	[**Ajout des dépendances**](#ajout-des-dépendances)
 *	[**Création des entités**](#création-des-entités)
 *	[**Fichier ITD et construction du graphe**](#fichier-itd-et-construction-du-graphe)
@@ -61,11 +61,11 @@
 
 En nous lançant dans ce projet, nous avions le souhait de créer une base de moteur de jeu assez solide pour être réutilisable lors de notre prochaine année à l'IMAC.
 
-En sachant que le temps passé à créer la structure d'un logiciel et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte un projet avec de nombreuses dépendances, qui utilise plusieurs design patterns propres à l'industrie du jeu vidéo, et qui pousse ces systèmes dans leurs retranchements pour s'assurer qu'ils soient bien structurés. Les points techniques majeurs sont :
+En sachant que le temps passé à créer la structure d'un logiciel et à apprendre des librairies tierces est conséquent, nous avons décidé de réserver ce temps maintenant afin d'avoir une plus grande marge de manœuvre à l'avenir. En résulte un projet avec de nombreuses dépendances, qui utilise plusieurs Design Patterns propres à l'industrie du jeu vidéo, et qui pousse ses systèmes dans leurs retranchements pour s'assurer qu'ils soient bien structurés. Les points techniques majeurs étant :
 
 - Architecture logicielle en ECS,
 - Création d'interfaces dans le language XAML,
-- Utilisation de OpenGl 4.4 core
+- Utilisation de OpenGL 4.4 core
 
 ## I - Présentation du jeu
 
@@ -121,13 +121,14 @@ Quand on commence le développement d'un jeu, et que plusieurs niveaux sont déj
 
 Notre projet a une taille et une équipe réduite, qui a peu d'expérience. Pour rajouter du poids à cet argumentaire, développer de nombreuses fonctionnalités serait, au mieux, irréaliste. C'est pour cela que l'entièreté de nos niveaux sont structurés autours de seulement trois types de constructions très différentes : des miroirs, des lasers et des tours de glace.
 
-Notre réflexion autour de ces éléments est toujours en cours. Nous avions le souhait de créer un principe équivalent à ce que l'on peut retrouver dans un jeu de "Pierre Feuille Ciseau", c'est à dire que chacun des objets en jeu doit se compléter et interagir avec les autres. Parmi les mécaniques citées ci-dessous, certaines ont été intégrées, et d'autres seront amenées à évoluer au fil des tests :
+Notre réflexion autour de ces éléments est toujours en cours. Nous avions le souhait de créer un principe équivalent à ce que l'on peut retrouver dans un jeu de "Pierre feuille ciseaux", c'est à dire que chacun des objets en jeu doit se compléter et interagir avec les autres. Parmi les mécaniques citées ci-dessous, certaines ont été intégrées, et d'autres seront amenées à évoluer au fil des tests :
 
 - Envoi de boules de feu quand le laser touche la tour de glace,
 - Activation d'élements du décors par le laser,
 - Activation et désactivation du laser pour éviter des types d'enemis précis,
 - Séparation du laser en deux s'il arrive sur l'arrête du miroir,
-- Renvoi d'attaques ennemies grâce aux miroirs
+- Renvoi d'attaques ennemies grâce aux miroirs,
+- Perturbation de la tour laser si tour de glace proche.
 
 ### Points forts
 
@@ -136,7 +137,7 @@ Au delà d'avoir utilisé des librairies spécifiques, nous avons pris soin d'in
 Nom 		 					| Description
 ------------------------------- | ------------
 Graphe à partir de l'image 		| Nous construisons le graphe en analysant pas-à-pas l'image du niveau, simplifiant ainsi l'écriture des fichiers .itd
-Animations avec [Array Texture](https://www.khronos.org/opengl/wiki/Array_Texture)	| Nos entités animées le sont à l'aide de spritesheets, envoyées à openGl sous une donnée optimisée de Array Texture
+Animations avec [Array Texture](https://www.khronos.org/opengl/wiki/Array_Texture)	| Nos entités animées le sont à l'aide de spritesheets, envoyées à OpenGL sous une donnée optimisée de Array Texture
 Réflexion des lasers				| Notre mécanique de jeu principale repose sur le lancer de lasers
 Système de tuiles 				| Nous détectons pour chaque tuile de la carte les tuiles aux alentours afin d'adapter la texture de manière cohérente
 Animations de menu              | À l'aide de la bibliothèque Noesis et de Microsoft Blend, nous avons pu animer nos menus de jeu d'une façon semblable à des outils comme After Effects
@@ -148,12 +149,12 @@ Bien que nous ayons suivi la base du projet, consistant à créer un jeu de Towe
 
 Différence 		 				| Motivation
 ------------------------------- | ------------
-Les nœuds du graphe de déplacement sont déterminés à partir du png représentant la carte plutôt que d'être lus dans le .itd. | Permet de créer de nouveaux fichiers .itd beaucoup plus simplement
-Système de grille plutôt que placement libre | Le joueur n'a pas à se préoccuper du positionnement exact des tours pour optimiser l'espace, mécanique que nous ne voulions pas implémenter. Le jeu s'en retrouve plus lisible
-Dans le png, un pixel représente une case plutôt que d'avoir des disques de 30 pixels | Facilite la lecture du png
-Tours laser, ralentissante et miroirs plutôt que 4 types de tours projectiles, des centrales et des bâtiments pour améliorer leurs statistiques | Nous souhaitions que chaque mécanique implantée en jeu ai un réel impact et soit simple à appréhender. À force de test et d'expérimentations, nous avons fini par remplacer les différentes tours assez semblables par trois réellement différentes: les lasers, les miroirs et les tours de glaces. La centrale et l'armement, qui devaient alimenter et améliorer les tours, sont des objets possédant trop peu de fonctionnalités et d'impact pour être pertinent dans notre système de quasi "Pierre, feuille, ciseau". Nous avons donc gardé l'idée de l'alimentation, mais fait le choix de rendre l'action accessible et rapide au travers du click, ce qui correspond au gameplay nerveux que l'on recherche
-Déplacement selon le plus court chemin | Le choix est aléatoire, le chemin le plus court est le plus probable mais tous les chemins sont possibles, ce qui apporte de la diversité dans le mouvements des ennemis lors des vagues.
-Dossiers ressources, include et lib | La structure de dossier proposée ne pouvait pas correspondre à la complexité des librairies que nous utilisons, ainsi qu'a la diversité des assets. D'où la disposition par bibliothèque du dossier lib, ainsi que le rassemblement des ressources dans le dossier res.
+Les nœuds du graphe de déplacement sont déterminés à partir du .png représentant la carte plutôt que d'être lus dans le .itd. | Permet de créer de nouveaux fichiers .itd beaucoup plus simplement
+Système de grille plutôt que placement libre | Le joueur n'a pas à se préoccuper du positionnement exact des tours pour optimiser l'espace. Le jeu s'en retrouve plus lisible
+Dans le .png, un pixel représente une case plutôt que d'avoir des disques de 30 pixels | Facilite la lecture du png pour la construction du graphe
+Tours laser, ralentissante et miroirs complexes, à la place de 4 types de tours projectiles, centrales et bâtiments | Nous souhaitions que chaque mécanique implantée en jeu ai un réel impact et soit simple à appréhender. À force de test et d'expérimentations, nous avons fini par remplacer les différentes tours assez semblables par trois réellement différentes: les lasers, les miroirs et les tours de glaces. La centrale et l'armement, qui devaient alimenter et améliorer les tours, sont des objets possédant trop peu de fonctionnalités et d'impact pour être pertinent dans notre système de quasi "Pierre, feuille, ciseaux". Nous avons donc gardé l'idée de l'alimentation, mais fait le choix de rendre l'action accessible et rapide au travers du click, ce qui correspond au gameplay nerveux que l'on recherche
+Déplacement selon le plus court chemin | Le choix est semi-aléatoire, le chemin le plus court est le plus probable mais tous les chemins sont possibles, ce qui apporte de la diversité dans le mouvements des ennemis lors des vagues.
+Dossiers ressources, include et lib | La structure de dossier proposée ne pouvait pas correspondre à la complexité des librairies que nous utilisons, ainsi qu'a la diversité des assets. D'ou la disposition par bibliothèque du dossier lib, ainsi que le rassemblement des ressources dans le dossier res.
 
 ## II - L'architecture ECS
 
@@ -211,7 +212,7 @@ Le problème le plus évident posé par cette architecture est la **complexité*
 
 #### 2. Approche par Héritage
 
-Afin d'alléger la classe Entité, il est possible de tirer parti de la programmation orientée objet en utilisant l'héritage. Avec cette approche, on peut définir les besoins progressivement, les sortant ainsi de la classe mère.
+Afin d'alléger la classe Entité, il est possible de tirer parti de la programmation orientée objet en utilisant l'héritage. Avec cette approche, on peut définir les besoins progressivement, les sortants ainsi de la classe mère.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v2.PNG?raw=true" alt="Entité et héritage">
@@ -253,7 +254,7 @@ De plus, même si le code d'Entité a été simplifié, la division n'a pas ét�
 
 #### 3. Approche par Composition
 
-En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de la composition, c'est à dire que les pans du moteurs de jeu interagissant avec les entités ont maintenant leur classe propre, et sont détenus par la classe Entité. Il s'agit du design pattern [Component](http://gameprogrammingpatterns.com/component.html).
+En utilisant la POO avec un peu plus de subtilité, on se retrouve à faire de la composition, c'est à dire que les pans du moteurs de jeu interagissant avec les entités ont maintenant leur classe propre, et sont détenus par la classe Entité. Il s'agit du Design Pattern [Component](http://gameprogrammingpatterns.com/component.html).
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/entite-v3.PNG?raw=true" alt="Entité composants">
@@ -316,7 +317,7 @@ digraph G {
 ```
 -->
 
-Ce pattern à l'avantage de simplifier la structure et la compréhension du code, et permet aussi de mettre à jour les pans du moteurs de jeu dans un ordre précis.
+Ce pattern à l'avantage de simplifier la structure et la compréhension du code, et permet aussi de mettre à jour les pans du moteur de jeu dans un ordre précis.
 
 ```C++
 void gameLoop() {
@@ -342,7 +343,7 @@ Bien que cette approche possède de réelles qualités et soit souhaitable dans 
 
 Pour pallier ce problème, les constructeurs ont intégré au fil des années différentes mémoires caches directement sur le processeur, nommées par importance L1, L2 et L3. L'idée est, grossièrement, de passer les zones de mémoires de la RAM en cours d'utilisation dans ces mémoires caches côté processeur, beaucoup plus rapide d'accès, mais aussi très petites. L'efficacité de ce procédé repose sur l'hypothèse que les données en train d'être manipulées sont côte-à-côte dans la RAM, sous peine de rater l'emplacement **(cache miss)** et de devoir demander les données à la RAM.
 
-Avec une architecture en component agrégés, voici l'état de la RAM. Chaque entité possède trois components, représentés par un carré de couleur : un beige, un vert et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de cache miss aura lieu lors d'une boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez colossale.
+Avec une architecture en component composés, voici l'état de la RAM. Chaque entité possède trois components, représentés par un carré de couleur : un beige, un vert et un violet. Les entités sont stockées à la suite, c'est une structure dîte **"Array of structure"**. Avec cette disposition, beaucoup de [cache miss](http://gamesfromwithin.com/data-oriented-design) aura lieu lors d'une boucle principale, car on cherchera à accéder à tous les orange, puis tous les verts, puis tous les violets. Et la perte en terme de temps est assez colossale.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/aos.PNG?raw=true" alt="Array of structure">
@@ -360,7 +361,7 @@ Cependant, ce n'est pas l'approche que nous avons empruntée. Face à ces probl�
 
 ### Principe
 
-L'Entity Component System est une architecture assez déstabilisante quand on est habitué à l'orienté objet. Assez semblable à la manipulation d'une base de donnée type SQL, il faut se faire à l'idée de séparer la logique dans des emplacements totalement séparés du code.
+L'Entity Component System est une architecture déstabilisante quand on est habitué à l'orienté objet. Assez semblable à la manipulation d'une base de donnée type SQL, il faut se faire à l'idée de séparer la logique dans des emplacements très éloignés du code.
 
 #### 1. Les entités
 
@@ -370,9 +371,9 @@ Il est unique et permet, exactement comme dans une base de donnée, de faire des
 
 #### 2. Les composants
 
-Les composants sont des **structures de donnée basiques** qui représentent un comportement en jeu. Par exemple, si une entité doit avoir une position dans le jeu, on va lui assigner un composant "Transform", qui possède deux nombre flotants, x et y.
+Les composants sont des **structures de donnée basiques** qui représentent un comportement. Par exemple, si une entité doit avoir une position, on va lui assigner un composant "Transform", qui possède deux nombre flottants, x et y.
 
-Chaque entité va donc posséder un nombre plus ou moins important de composants selon la complexité de son comportement en jeu. Voici des exemples de composants basiques tiré d'un article sur l'[ECS](https://medium.com/@savas/nomad-game-engine-part-2-ecs-9132829188e5) :
+Chaque entité va donc posséder un nombre plus ou moins important de composants selon la complexité de son comportement en jeu. Voici des exemples de composants basiques tirés d'un article sur l'[ECS](https://medium.com/@savas/nomad-game-engine-part-2-ecs-9132829188e5) :
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/components.png?raw=true" alt="Components">
@@ -417,7 +418,7 @@ Deux librairies Libres et Open-Source sont actuellement réputées chez les dév
 
 Après trois mois à l'utiliser, nous pouvons affirmer que cette librairie est extrêmement bien conçue. En plus d'être rapide, cohérente et bien documentée, elle possède, à l'image de SDL, des sous-bibliotèques qui sont susceptibles d'être utilisées par tout développeur ayant recours à la libraire.
 
-Dans notre cas, il s'agit d'une base d'implémentation pour le design pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons massivement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnues, on peut noter que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
+Dans notre cas, il s'agit d'une base d'implémentation pour le Design Pattern [Event Dispatcher](http://gameprogrammingpatterns.com/event-queue.html) et [Service Locator](http://gameprogrammingpatterns.com/service-locator.html) que nous utilisons massivement dans notre jeu. Ces qualités, nous ne sommes pas les seul à les avoir reconnues, on peut noter que des jeux comme [Minecraft](https://www.minecraft.net/fr-fr/) (oui, minecraft rien que ça) utilisent ENTT dans leur développement.
 
 Dans sa dernière version, la librairie requiert d'utiliser C\++17, ce qui est impossible pour builder sur les ordinateurs de Copernic. Nous utilisons donc une ancienne version, compatible avec C\++14 et qui compile à l'université.
 
@@ -426,9 +427,9 @@ Dans sa dernière version, la librairie requiert d'utiliser C\++17, ce qui est i
 Comme vous le constaterez tout au long de ce rapport, l'architecture de notre application s'est bâtie progressivement pour devenir assez complexe aujourd'hui. Néanmoins, deux objets sont au centre depuis le début et font fonctionner cette machinerie infernale :
 
 - Le Registre
-- L'Event emitter
+- L'Event Emitter
 
-Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire, et c'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans notre classe **Game** et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
+Concrètement, **le Registre est notre base de données**. C'est un objet ENTT qui est obligatoire pour toute utilisation de la libraire. C'est avec lui qu'on crée les entités, ajoute des composants et effectue des requêtes pour récupérer et modifier les composants dans les systèmes. Il est créé dans notre classe **Game** et est passé par référence dans la quasi-totalité de nos classes. C'est simple, dès qu'un endroit du code a besoin de manipuler les entités, il est nécessaire d'avoir accès à cet objet.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/event.PNG?raw=true" alt="Event publisher">
@@ -443,7 +444,7 @@ B -- Event -- D[Subscriber]
 ```
 -->
 
-L'Event Emitter ensuite est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleurs le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les event-listeners. L'idée est qu'avec cet objet on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
+L'Event Emitter ensuite est ce qui **assure la majeure partie de la communication** au sein de notre application. C'est d'ailleurs le seul moyen de communiquer entre les systèmes. La syntaxe et le comportement sont semblables à ce que l'on peut retrouver en *javascript* avec les [Event Listeners](https://developer.mozilla.org/fr/docs/Web/API/EventTarget/addEventListener). L'idée est qu'avec cet objet on peut publier des évènements et y souscrire, le tout sans avoir besoin d'update cet objet directement dans une boucle. Le contenu de chacun de ces events est défini dans une structure de donnée très proche des components. 
 
 Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en référence dans le constructeur de nombreuses classes de notre jeu.
 
@@ -451,7 +452,7 @@ Même s'il est moins propagé que le registre, cet objet est lui-aussi passé en
 
 Si on commence à jeter un œil dans le dossier `src` on observe le point d'entrée de l'application `main.cpp`. Le rôle de ce fichier est de créer notre classe mère **Game** (présente dans le dossier `core`), ainsi que de gérer la game loop, l'interface de débogage et de propager les événements SDL.
 
-Parce que c'est l'emitter qui lance les événements, on le créé dans le main afin d'y avoir accès facilement dans ce fichier, et Game en récupère la référence. Autre point important : parce que la communication avec OpenGl ne peut s'effectuer qu'au runtime, on utilise une fonction pour initialiser la classe plutôt que de le faire dans le constructeur. C'est game qui possède le registre, et d'autres objets centraux de l'application.
+Parce que c'est l'Event Emitter qui lance les événements, on le créé dans le main afin d'y avoir accès facilement dans ce fichier, et Game en récupère la référence. Autre point important : parce que la communication avec OpenGL ne peut s'effectuer qu'au runtime, on utilise une fonction pour initialiser la classe plutôt que de le faire dans le constructeur. C'est game qui possède le registre, et d'autres objets centraux de l'application.
 
 ```C++
 EventEmitter emitter{};
@@ -499,9 +500,9 @@ Pour structurer notre arborescence, nous avons privilégié une **approche décl
 | `entity-factories` | Création des entités |
 | `events` | Struct de données transmis par un événement |
 | `graphics` | Classes wrapper pour les objets OpenGL |
-| `gui` | Les classes dîtes "Code Behind" utilisés par Noesis pour manipuler les fichiers XAML avec le design pattern View Model |
+| `gui` | Les classes dîtes "Code Behind" utilisés par Noesis pour manipuler les fichiers XAML avec le Design Pattern View Model |
 | `logger` | Gestion des erreurs et des fichiers de logs pour la debug |
-| `services` | Fonctionnalités utilisées n'importe où, comme jouer un son ou avoir du random. Utilisation du design pattern Service Locator |
+| `services` | Fonctionnalités utilisées n'importe où, comme jouer un son ou avoir du random. Utilisation du Design Pattern Service Locator |
 | `systems` | Mise à jour des entités par sélection de leurs composants. Toute la logique du jeu est présente dans ces classes |
 | **core** | **Constantes, Chargement de la carte et Gestion de la State Machine** |
 | `game-states` | Les différents états de notre jeu (title menu, in-level, game over, ...) |
@@ -526,37 +527,37 @@ La première grande étape a été de rassembler toutes les dépendances et beso
 
 ### Utilisation de OpenGL Moderne
 
-Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGl. Au revoir *glBegin()* et *glEnd()*, et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGl au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
+Le premier challenge et la première réussite a été l'utilisation de la version moderne d'OpenGL. Au revoir *glBegin()* et *glEnd()*, et bonjour à vous les buffers et autres drawcalls. Nous avions commencé à apprendre OpenGL au lancement des cours de Synthèse d'image, donc bien avant le début du projet, ce qui nous a permis assez rapidement de passer cette étape.
 
-Cet apprentissage a commencé grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGl et les manipuler plus aisément. Ces classes se trouvent dans le dossier `graphics`.
+Cet apprentissage a commencé grâce aux excellents tutoriels du développeur [Yan Chernikov](https://www.youtube.com/user/TheChernoProject). Tout au long de ses vidéos, nous avons pu construire des classes pour abstraire les objets d'OpenGL et les manipuler plus aisément. Ces classes se trouvent dans le dossier `graphics`.
 
  Classe	| Description
  --- | ---
  VertexBuffer | Permet de gérer la création, la sélection et la suppression de données
  VertexBufferLayout | Permet de gérer facilement la disposition des données en SOA dans le buffer
  VertexArray | Permet de gérer les différents VertexBuffer d'un objet. C'est cette classe que l'on utilise pour chaque type d'entité au travers de la **SpriteFactory** et de la **PrimitiveFactory**
- IndexBuffer | Instancié une unique fois dans la **SpriteFactory**, car tous les sprites utilisent le même (Plus d'explication plus bas)
- Texture | Crée et envoie les données d'une image à OpenGl, on sauvegarde l'id de texture renvoyé et on supprime cette classe juste après (la suppression de texture est gérée par la **SpriteFactory**)
+ IndexBuffer | Instancié une unique fois dans la **SpriteFactory**, car tous les sprites utilisent le même (plus d'explication plus bas)
+ Texture | Crée et envoie les données d'une image à OpenGL, on sauvegarde l'id de texture renvoyé et on supprime cette classe juste après (la suppression de texture est gérée par la **SpriteFactory**)
  TextureArray | Même principe que pour Texture, sauf qu'elle est spécifique et optimisée pour des images de type SpriteSheets
- Shader | Prend un vertex et un fragment shader dans le constructeur, et s'occupe de leur compilation. S'occupe aussi de retrouver les Uniform à l'aide d'une Hashmap. On instancie plusieurs objets de cette classe au travers des **SpriteFactory** et **PrimitiveFactory**, mais aussi dans le service **DebugDraw**. 
+ Shader | Prend un vertex et un fragment shader dans le constructeur, et s'occupe de leur compilation. S'occupe aussi de retrouver les Uniforms à l'aide d'une Hashmap. On instancie plusieurs objets de cette classe au travers des **SpriteFactory** et **PrimitiveFactory**, mais aussi dans le service **DebugDraw**. 
  FrameBuffer | (Pas encore implémenté)
  
 
 #### Des restes du immediate mode
 
-En règle générale nos dessins par OpenGl sont fait dans les règles de l'art : On envoi nos tableaux de vertex une unique fois à la carte graphique lors de la création d'un type d'entité. Puis à chaque frame, on update sa position dans le vertex shader à l'aide d'un uniform qui représente la matrice MVC.
+En règle générale nos dessins par OpenGL sont faits dans les règles de l'art : On envoi nos tableaux de vertex une unique fois à la carte graphique lors de la création d'un type d'entité. Puis à chaque frame, on update la position de l'objet dans le vertex shader à l'aide d'un uniform qui représente la matrice MVC.
 
-Cependant, nous disposons aussi d'un service **"Debug Draw"**, auxquel on peut accéder à n'importe quel endroit dans le code pour dessiner des formes simples. Comme on ne connaît pas à l'avance ce qu'on vas vouloir dessiner, cette classe ne déclare qu'**un seul buffer de données** à OpenGl. Ce dernier est mis à jour avec la fonction *glBufferData* à chaque fois que l'on demande le dessin d'une forme, c'est à dire plusieurs fois par frame.
+Cependant, nous disposons aussi d'un service **"Debug Draw"**, auquel on peut accéder à n'importe quel endroit dans le code pour dessiner des formes simples. Comme on ne connaît pas à l'avance ce qu'on vas vouloir dessiner, cette classe ne déclare qu'**un seul buffer de données** à OpenGL. Ce dernier est mis à jour avec la fonction *glBufferData* à chaque fois que l'on demande le dessin d'une forme, c'est à dire plusieurs fois par frame.
  
 *(Il existe un moyen plus optimisé de mettre à jour le buffer avec *glBufferStorage*, mais son utilisation causait des problème avec nos drivers NVidia, donc nous l'avons laissé ainsi pour le moment).*
 
-Concrêtement, cette technique est du immediate draw en OpenGl Moderne, c'est à dire un comportement semblable à ce qui est proposé par l'ancienne version d'OpenGl par les fonctions glBegin() et glEnd().
+Concrêtement, cette technique est du immediate draw en OpenGL Moderne, c'est à dire un comportement semblable à ce qui est proposé par l'ancienne version d'OpenGL par les fonctions glBegin() et glEnd().
 
 Pour nous donner bonne conscience, nous rattrapons cette mauvaise pratique par d'autres implémentations plus avancées. Bien que nous ne cherchions pas forcément la performance (à en voir le nombre de drawcall que nous émettons à chaque frame), mais plutôt à apprendre le fonctionnement de cette API, nous avons implémenté quelques optimisations offerte par OpenGL.
 
 #### Array texture
 
-C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker de multiples textures dans un seul buffer afin de limiter le coût du "texture switching". Concrètement, on y stocke une spritesheet, et on utilise un uniform dans le shader pour changer la tuile qui est active. Les texture coordinates restent identiques, sauf pour le paramètre *z* qui correspond à la tuile à activer, c'est-à-dire à l'index de ce tableau de texture.
+C'est un type de texture présent dans le profil core depuis la version 3.0. L'idée est de stocker de multiples textures dans un seul buffer afin de limiter le coût du **"Texture Switching"**. Concrètement, on y stocke une spritesheet, et on utilise un Uniform dans le shader pour changer la tuile qui est active. Les texture coordinates restent identiques, sauf pour le paramètre *z* qui correspond à la tuile à activer, c'est-à-dire à l'index de ce tableau de texture.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/spritesheets/enemy-small-robot-77x117.png?raw=true" alt="SpriteSheet">
@@ -564,7 +565,7 @@ C'est un type de texture présent dans le profil core depuis la version 3.0. L'i
 
 #### Index Buffer
 
-Très clairement inutile sachant que nous n'affichons que des carrés composés de deux triangles. Il n'empêche qu'utiliser un indexBuffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGl est une bonne pratique, que nous avons donc utilisée.
+Très clairement inutile sachant que nous n'affichons que des carrés composés de deux triangles. Il n'empêche qu'utiliser un Index Buffer pour éviter de dupliquer les coordonnées de vertex dans le buffer envoyé à OpenGL est une bonne pratique, que nous avons donc utilisée.
 <br>
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/index-buffer.png?raw=true" alt="IndexBuffer">
@@ -572,9 +573,9 @@ Très clairement inutile sachant que nous n'affichons que des carrés composés 
 
 #### Vertex Array partagés
 
-Nous n'utilisons pas encore de "Instance Draw" qui permettrait d'indiquer à OpenGL qu'un même objet est dessiné plusieurs fois. Cependant, nous partageons tout de même nos VertexArray entre les entités qui utilisent la même texture, au lieu d'en générer une à chaque création.
+Nous n'utilisons pas encore de **"Instance Draw"** qui permettrait d'indiquer à OpenGL qu'un même objet est dessiné plusieurs fois. Cependant, nous partageons tout de même nos VertexArray entre les entités qui utilisent la même texture, au lieu d'en générer une à chaque création.
 
-On peut donc assimiler ce comportement au design pattern [FlyWeight](https://gameprogrammingpatterns.com/flyweight.html), car une seule instance d'une classe est utilisée pour plusieurs objets en jeu.
+On peut donc assimiler ce comportement au Design Pattern [FlyWeight](https://gameprogrammingpatterns.com/flyweight.html), car une seule instance d'une classe est utilisée pour plusieurs objets en jeu.
 
 ![Flyweight](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/flyweight-tiles.png?raw=true)
 
@@ -628,7 +629,7 @@ Créer les entités est simple, il suffit de faire un appel au registre de ENTT 
 int entityId = registry.create();
 ```
 
-Cependant, une entité est aussi et surtout un paquet de composants. Position, Sprite, Chemin, et la liste est encore longue. Afin de s'assurer de la création en bonne et dûe forme de chacun de nos types d'entités, nous avons créé un dossier `entity factories`, qui comme sont nom l'indique, est une utilisation du design pattern **Factory**.
+Cependant, une entité est aussi et surtout un paquet de composants. Position, Sprite, Chemin, et la liste est encore longue. Afin de s'assurer de la création en bonne et dûe forme de chacun de nos types d'entités, nous avons créé un dossier `entity factories`, qui comme sont nom l'indique, est une utilisation du Design Pattern **Factory**.
 
 On dispose donc d'une classe factory spécifique pour:
 
@@ -636,10 +637,10 @@ On dispose donc d'une classe factory spécifique pour:
 - Les miroirs (Un seul type pour le moment)
 - Les projectiles
 - Les tuiles de carte
-- Les tours (Glace et laser)
+- Les tours (Glace et Laser)
 - Les effets divers (Explosions, Particules, etc..)
 
-Ces factory s’occupent d'assigner les composants pour nos différentes entités, mais il arrive que certains de ces composants aient besoins eux-aussi d'un constructeur : C'est le cas pour les Sprites et les Primitives, qui ont besoin de charger et d'envoyer leurs données à OpenGl. Pour ces cas précis, nous avons créés d'autres factory, sous le dossier `component factories`
+Ces factory s’occupent d'assigner les composants pour nos différentes entités, mais il arrive que certains de ces composants aient besoins eux-aussi d'un constructeur : C'est le cas pour les Sprites et les Primitives, qui ont besoin de charger et d'envoyer leurs données à OpenGL. Pour ces cas précis, nous avons créés d'autres factory, sous le dossier `component factories`
 
 En plus de la simplicité d'utilisation, l’intérêt d'utiliser de telles classes factory et qu'elles permettent de partager des données entre les différentes entités. En l’occurrence, comme expliqué plus haut en abordant le pattern Flyweight, ici ce sont les composants de type Sprite qui sont partagés entre les entités.
 
@@ -682,7 +683,7 @@ Cette structure est simple, malléable et permet de rapidement prototyper et cr�
 
 Pour se déplacer les ennemis utilisent un graphe qui contient toutes les positions des embranchements, puisque ce sont les seuls endroits où ils doivent changer de direction.
 
-Pour rendre l'édition et l'ajout de niveaux aussi simple que possible, devoir spécifier la position des embranchements du chemin dans le fichier ITD était un énorme frein ; ajoutez à cela que cette information est totalement redondante avec l'image décrivant le niveau et il ne nous en fallait pas plus pour nous décider à nous affranchir de cette contrainte.
+Pour rendre l'édition et l'ajout de niveaux aussi simple que possible, devoir spécifier la position des embranchements du chemin dans le fichier ITD était un énorme frein ; ajoutez à cela que cette information est redondante avec l'image décrivant le niveau et il ne nous en fallait pas plus pour nous décider de supprimer cette indication.
 
 Le graphe est donc créé en parcourant l'image vue elle-même comme un graphe : on part de la case d'arrivée (puisqu'on sait qu'elle est unique et existe toujours) et on lance un parcours récursif sur chaque voisin de cette case qui est un chemin. Tant que la case actuelle n'est pas un embranchement (ce qu'on sait en regardant lesquels de ses voisins sont des chemins), on continue à avancer, et quand on tombe sur un embranchement on crée un nœud dans le graphe.
 
@@ -700,7 +701,7 @@ Une fois le prototype en place, il était temps de rendre notre jeu jouable et i
 
 Pour se déplacer, les ennemis ont une stratégie très simple : ils choisissent un nœud et se déplacent vers lui en ligne droite, puis choisissent un nouveau nœud quand ils ont atteint leur cible.
 
-Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, avec une probabilité inversement proportionnelle à la distance (calculée par Dijkstra) entre ce nœud et l'arrivée.
+Le choix du prochain nœud est à peine plus subtil : il est choisi au hasard, avec une probabilité inversement proportionnelle à la distance (calculée par **Dijkstra**) entre ce nœud et l'arrivée.
 
 À cela il faut juste rajouter le fait que les ennemis se refusent à choisir le nœud dont ils viennent (à moins qu'ils n'arrivent à un cul-de-sac) et ne choisissent pas non plus un nœud qui les éloigne de l'arrivée (au sens de la norme 1), ce qui – essentiellement – leur évite de tomber dans des boucles.
 
@@ -750,20 +751,20 @@ Ce que Noesis a fait, c'est adapter cette technologie aux besoins de performance
 
 ![NoesisSchema](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/schéma_noesis.jpg?raw=true)
 
-L'artiste fait ses design sur des outils qu'il connait, Photoshop, Illustrator, ou Affinity Designer dans notre cas. Une fois le design validé, il exporte ces créations en parties indépendantes afin qu'elles soient intégrable facilement dans le fichier XAML.
+L'artiste fait ses design sur des outils qu'il connait, Photoshop, Illustrator, ou Affinity Designer dans notre cas. Une fois le design validé, il exporte ses créations en parties indépendantes afin qu'elles soient intégrable facilement dans le fichier XAML.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/panel.png?raw=true" alt="Panel texture">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/res/images/textures/panel-title.png?raw=true" height="50" alt="Panel texture">
 </p>
 
-L'intégrateur prend alors le relai, il peut tapper le fichier XAML à la main, mais pour créer des animations et des dispositions plus complexes il est quasiment indispensable d'utiliser Microsoft Blend. Cet outils permet d'éditer les interfaces en temps réel, d'animer une timeline tels After Effect, ainsi qu'une des modifications à la souris type WYSIWYG.
+L'intégrateur prend alors le relai, il peut coder le fichier XAML à la main, mais pour créer des animations et des dispositions plus complexes il est quasiment indispensable d'utiliser Microsoft Blend. Cet outil permet d'éditer les interfaces en temps réel, d'animer une timeline tels After Effect, ainsi qu'apporter des modifications à la souris type WYSIWYG.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/blend.png?raw=true" alt="Microsoft Blend">
 </p>
 
-Une fois cette mise en page validée et fonctionnelle, on peut commencer la création des classes "Code Behind" en C++.  Ces dernières utilisent le design pattern View Model et s'assurent de la bonne connexion entre les données, envoyées dynamiquement dans le code, et les fichiers XAML.
+Une fois cette mise en page validée et fonctionnelle, on peut commencer la création des classes "Code Behind" en C++.  Ces dernières utilisent le Design Pattern View Model et s'assurent de la bonne connexion entre les données, envoyées dynamiquement dans le code, et les fichiers XAML.
 
 #### Intégration
 
@@ -796,7 +797,7 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 glClearColor(1, 1, 1, 1);
 ```
 
-Ensuite, parce que la création des classes dîtes "Code Behind" utilisent un pattern assez complexe de Reflection, qui permet grossièrement d'identifier des types au runtime, un peut comme avec un principe de Template. Nous n'avons - heureusement - pas eu à créer ce système nous-même. Néanmoins il nous faut l'utiliser, et la documentation encore une fois est beaucoup floue sur les étapes et l'emplacement de ces éléments dans le code.
+Ensuite, parce que la création des classes dîtes "Code Behind" utilisent un pattern assez complexe de Reflection, qui permet grossièrement d'identifier des types au runtime, un peut comme avec un principe de Template. Nous n'avons - heureusement - pas eu à créer ce système nous-même. Néanmoins il nous faut l'utiliser, et la documentation encore une fois est beaucoup trop floue sur les étapes et l'emplacement de ces éléments dans le code.
 
 #### Création des classes Code Behind
 
@@ -821,7 +822,7 @@ Les briques de gameplay posés, nous pouvions améliorer tout ce qui pouvait l'�
 
 ### State Machine
 
-Nous n'avions pour le moment qu'un seul écran de jeu : Le niveau. En sachant que les autres écrans allaient être différents les uns des autres tant au niveau de la forme que du contenu, et que le passage entre eux devrait sûrement lancer une transition, le design pattern State a fini par s'imposer.
+Nous n'avions pour le moment qu'un seul écran de jeu : Le niveau. En sachant que les autres écrans allaient être différents les uns des autres tant au niveau de la forme que du contenu, et que le passage entre eux devrait sûrement lancer une transition, le Design Pattern State a fini par s'imposer.
 
 Ce dernier, qu'on apprend quand on commence à programmer des intelligences artificielles basiques, offre deux avantages :
 
@@ -848,7 +849,7 @@ Nous avons décidé de diviser nos écrans en autant d'état du jeu. Ce sont don
 
 Ils sont créés au besoin au runtime, et **une fois instanciés ils le restent** jusqu'à la fermeture du jeu pour optimiser l'utilisation de la mémoire. Le fait que ces objets restent créés nous impose de gérer la transition entre ces états. 
 
-Parce que nos événements sont asynchrones, et n'ont pas besoin d'utiliser d'update pour être propagés, nous avons besoin de bloquer la souscription aux événements quand l'état n'est pas actif. Concrètement, l'objet qui devient actif souscrit aux événements de l'utilisateur, et retire cette souscription quand on quitte l'état. L'état reste souscrit cependant souscrit aux d'autres types d’événements que les inputs, rendant donc la division poreuse, mais nous n'avons pas encore trouvé de solution simple et efficace à ce problème.
+Parce que nos événements sont asynchrones, et n'ont pas besoin d'utiliser d'update pour être propagés, nous avons besoin de bloquer la souscription aux événements quand l'état n'est pas actif. Concrètement, l'objet qui devient actif souscrit aux événements de l'utilisateur, et retire cette souscription quand on quitte l'état. Chaque GameState reste cependant souscrit aux autres types d’événements que les inputs, rendant donc la division poreuse. Nous n'avons pas encore trouvé de solution simple et efficace à ce problème.
 
 ```C++
 void  LevelIntroState::enter() {
@@ -868,7 +869,7 @@ La gestion des inputs lors du "LevelState" aurait pu être assez problématique 
 
 #### Gestion des événements
 
-Tout aussi performant et bien organisée que soit la libraire ENTT et en un sens, notre code, le fait que l'accès au registre et à l'event emitter soient aussi global nous rend tributaire d'être extrêmement bien organisé. En l'état, rien n'empêche de supprimer le sprite d'un ennemi dans la classe qui s'occupe de l'interface du menu de niveau.
+Tout aussi performant et bien organisée que soit la libraire ENTT et en un sens, notre code, le fait que l'accès au Registre et à l'Event Emitter soient aussi global nous rend tributaire d'être extrêmement bien organisé. En l'état, rien n'empêche de supprimer le sprite d'un ennemi dans la classe qui s'occupe de l'interface du menu de niveau.
 
 Cette grande permissivité est un énorme avantage mais **une arme à double tranchant**. Et il arrive donc de devoir chercher quelques minutes dans le code pour retrouver le bloc qui s'occupe d'une fonctionnalité précise, et cela, même si on a fait en sorte de respecter l'organisation de nos classes système.
 
@@ -886,7 +887,7 @@ Au commencement du projet, nous avions mis un point d'honneur à adopter un bonn
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/prototyping.png?raw=true" alt="Step work" height="260">
 </p>
 
-Pour accélérer le rythme de création, le design lui même se devait d'être crée progressivement. En commençant par des croquis simples illustrant une mécanique de gameplay, avant de passer à l'ajout de couleurs et fixation des formes, avant d'enfin nettoyer le tout et proposer un design final.
+Pour accélérer le rythme de création, le design lui même se devait d'être créé progressivement. En commençant par des croquis simples illustrant une mécanique de gameplay, avant de passer à l'ajout de couleurs et fixation des formes, avant d'enfin nettoyer le tout et proposer un design final.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/illus-step-1.jpg?raw=true" alt="Croquis" height="200">
@@ -914,9 +915,9 @@ Un second croquis a été fait, ajoutant des détails et de nouveaux éléments.
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/version2.png?raw=true" alt="Croquis" height="260">
 </p>
 
-Le problème, c'est qu'une fois en jeu, nous avons seulement commencé à remarquer les problèmes évoqués en introduction. Parce qu'ils avaient étés créés un à un, et pas ensemble, et parce qu'en plus ils n'avaient pas été testés en jeu, ces assets et leur esthétique posaient problème.
+Le problème, c'est qu'une fois en jeu, nous avons seulement commencé à remarquer les problèmes évoqués en introduction. Parce qu'ils avaient étés créés un à un, et pas ensembles, et parce qu'en plus ils n'avaient pas été testés en jeu, ces assets et leur esthétique posaient problème.
 
-Notre erreur a été de ne pas penser au design dans son ensemble, mais en prenant les éléments un à un. Comme nous nous étions accordés sur chacune des illustrations, cela nous a en partie privé de notre esprit critique lorsque tous les éléments ont été ajoutés. Après un certain temps, nous avons donc fait le choix de **repartir d'une nouvelle base**, en prévoyant cette fois ci le rendu assemblé de bout-en-bout.
+Notre erreur a été de ne pas penser au design dans sa globalité mais en prenant les éléments uns à uns. Comme nous nous étions accordés sur chacune des illustrations, cela nous a en partie privé de notre esprit critique lorsque tous les éléments ont été ajoutés. Après un certain temps, nous avons donc fait le choix de **repartir d'une nouvelle base**, en prévoyant cette fois ci le rendu assemblé de bout-en-bout.
 
 #### Nouvelles inspirations 
 
@@ -926,7 +927,7 @@ Comme tout créateur qui se respecte, nous avons été regardé sur la copie du 
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/defense-king.png?raw=true" alt="Croquis" height="400">
 </p>
 
-En continuant nos recherches, nous avons rencontrés d'autres esthétiques intéressantes, et aussi plus à notre portée de création. Notamment l'oubli de couleurs pour favoriser des nuances de gris allait nous permettre de nous concentrer sur la forme et la différenciation des éléments, tout en nous offrants une esthétique très solide. Des jeux comme [Hidden Folks](https://hiddenfolks.com/) et des artistes comme [Dom2D](https://dom2d.tumblr.com/) et [Steven Cooling](https://stevencolling.itch.io/inked-adventure-items) ont été de grandes sources d'inspirations.
+En continuant nos recherches, nous avons rencontrés d'autres esthétiques intéressantes, et aussi plus à notre portée de création. Notamment l'oubli de couleurs pour favoriser des nuances de gris allait nous permettre de nous concentrer sur la forme et la différenciation des éléments, tout en nous offrant une esthétique très solide. Des jeux comme [Hidden Folks](https://hiddenfolks.com/) et des artistes comme [Dom2D](https://dom2d.tumblr.com/) et [Steven Cooling](https://stevencolling.itch.io/inked-adventure-items) ont été de grandes sources d'inspirations.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/hidden-folks.jpg?raw=true" alt="Croquis">
@@ -949,7 +950,7 @@ L'idée validée, nous avons commencer à croquiser tout un ensemble d'assets po
 
 ![AssetsVersion3](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/assets_v3.png?raw=true)
 
-Nous avons sélectionné une partie de ces assets, en avons ajouté d'autres, puis sommes passés à l'étape de vectorisation. Si besoin, les assets interactifs sont dessinés dans 4 directions. Avec cette base d’éléments réutilisables, il devient possible de créer n'importe quel agencement, et créer un nombre important de niveau sans créer d'autres design.
+Nous avons sélectionné une partie de ces assets, en avons ajouté d'autres, puis sommes passés à l'étape de vectorisation. Si besoin, les assets interactifs sont dessinés dans 4 directions. Avec cette base d’éléments réutilisables, il devient possible d'assembler n'importe quel agencement, et avoir un nombre important de niveaux sans créer d'autres design.
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/reusable-assets.png?raw=true" alt="Assets reutilisables" height="300">
@@ -996,14 +997,14 @@ Bien qu'il soit encore limité, nous avons mis en place un [système de tuile](h
 
 ### Cyrielle Lassarre
 
-À la suite de ce projet, plusieurs éléments pourraient être améliorés. En effet, nous pourrions envisager l'apparition de plusieurs personnages afin de créer de nouveaux enjeux et d'augmenter la réflexion du joueur. Les animations, bien que déjà présentes, pourraient également être améliorées afin d'augmenter le feedback. Des vidéos au début de la partie permettraient de renforcer le story-telling de notre projet et de l'humaniser. 
+À la suite de ce projet, plusieurs éléments pourraient être améliorés. En effet, nous pourrions envisager l'apparition de plusieurs autres ennemis afin de créer de nouveaux enjeux et d'augmenter la réflexion du joueur. Les animations, bien que déjà présentes, pourraient également être améliorées afin d'augmenter le feedback. Des vidéos au début de la partie permettraient de renforcer le story-telling de notre projet et de l'humaniser. 
 Néanmoins, notre rendu respecte de nombreux critères établis par les consignes du projet et représente une **réalisation pertinente pour la suite de notre parcours.**
 
 Ce projet m'a beaucoup appris, grâce au travail en équipe notamment ! L'ambition qu'a suscité ce projet au sein de notre trinôme m'a permis d'avancer dans un **environnement de travail très agréable et stimulant !** J'aurais aimé aborder ce projet dans le cadre d'un **workshop dédié** afin que notre enthousiasme face à ce projet ne soit pas occulté par de nombreux autres travaux que nous avions à réaliser dans le cadre de notre formation à l'IMAC.  
 
 ### Guillaume Haerinck
 
-Il est difficile d'appeler cette partie Post-Mortem tant je me sens encore poussé à ajouter des fonctionnalités et à réfractorer tout ce qui peut encore l'être ! Ce projet a été une **grosse prise de risque** dans tous ses aspects : utilisation d'openGl moderne, de librairies complexes, même dans les choix de level design n'étant pas un suivi total du sujet. 
+Il est difficile d'appeler cette partie Post-Mortem tant je me sens encore poussé à ajouter des fonctionnalités et à réfractorer tout ce qui peut encore l'être ! Ce projet a été une **grosse prise de risque** dans tous ses aspects : utilisation d'OpenGL moderne, de librairies complexes, même dans les choix de level design n'étant pas un suivi total du sujet. 
 
 À l'heure de rendre ma copie, je suis satisfait de ce que nous avons accompli, les objectifs initiaux de créer une base de moteur de jeu pour l'année prochaine ainsi que d'apprendre l'ECS ont été remplis. Cette structure ne demande plus qu'une chose, qu'on lui fasse gérer des scènes avec de la lumière et des objets 3D.
 
@@ -1049,6 +1050,7 @@ L'ECS permet une maléabilité du code inouïe, et une fois une grande variété
 
 [Game Engine Architecture](https://www.gameenginebook.com/)
 
+[Game Engine Black Book](http://fabiensanglard.net/gebbdoom/)
 
 ### Lexique
 
