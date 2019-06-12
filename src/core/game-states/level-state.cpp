@@ -526,11 +526,19 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
 				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
 					// TODO handle activated and desactivated towers
-					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					if (m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv) {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::DESACTIVATE);
+					}
+					else {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					}
 				} else if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
-					//IDebugDraw& debugDraw = locator::debugDraw::ref();
-					//debugDraw.setColor(glm::vec4(0, 0, 0, 1));
-					//debugDraw.ellipse(30, 30, 32, 32);
+					if (m_game.registry.has<cmpt::ShootAt>(entityId)) {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::DESACTIVATE);
+					}
+					else {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					}
 				}
 			} else {
 				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
