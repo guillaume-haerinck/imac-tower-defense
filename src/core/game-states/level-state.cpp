@@ -525,7 +525,6 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
 				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
-					// TODO handle activated and desactivated towers
 					if (m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv) {
 						m_emitter.publish<evnt::ChangeCursor>(CursorType::DESACTIVATE);
 					}
@@ -557,7 +556,6 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 			break;
 
 		case LevelInteractionState::BUILD:
-			// TODO follow mouse with transparent entity to be built
 			break;
 		default:
 			break;

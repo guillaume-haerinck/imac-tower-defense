@@ -52,9 +52,9 @@ void WaveSystem::update(float deltatime) {
 			m_frameCount = 0;
 			m_timer--;
 			m_rateTimer--;
+			m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
 			if (m_rateTimer <= 0) {
 				m_rateTimer = m_progression.getWaveRate();
-				m_emitter.publish<evnt::WaveUpdated>(m_timer, m_waveState);
 				int robotNb = m_progression.getRobotNumber();
 				int kamikazeNb = m_progression.getKamikazeNumber();
 				if (robotNb > 0 && kamikazeNb > 0) {
