@@ -1,5 +1,7 @@
 #pragma once
 
+#include "services/random/i-random.hpp"
+
 namespace cmpt {
 struct GrowingCircle {
 	//Renders the entity as a circle which radius grows over time

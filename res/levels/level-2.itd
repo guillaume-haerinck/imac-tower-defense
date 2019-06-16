@@ -22,4 +22,4 @@ kamikaze 0
 wave-rate 10
 
 build-laser 2 6 0
-build-mirror 1 1 1
+build-mirror 12 6 7

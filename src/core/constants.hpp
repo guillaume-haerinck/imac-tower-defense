@@ -28,6 +28,7 @@ extern const float LASER_DAMAGE_PER_SECOND;
 extern const float LASER_WIDTH;
 extern const float PROJECTILE_HITBOX_RADIUS;
 extern const float SLOW_PROJECTILE_VELOCITY;
+extern const float SLOW_TOWER_TIME_BETWEEN_TWO_SHOTS;
 
 extern const float TOWER_SLOW_AMOUNT;
 extern const float SLOW_DURATION;

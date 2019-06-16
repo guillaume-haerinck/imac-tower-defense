@@ -17,7 +17,8 @@ WaveSystem::WaveSystem(entt::DefaultRegistry& registry, EventEmitter& emitter, P
 
 	m_emitter.on<evnt::StartWave>([this](const evnt::StartWave & event, EventEmitter & emitter) {
 		this->m_waveState = WaveState::PENDING;
-		this->m_probaSpawnKamikaze = 0.5;
+		this->m_probaSpawnKamikaze = (float) this->m_progression.getKamikazeNumber() / (this->m_progression.getRobotNumber() + this->m_progression.getKamikazeNumber());
+		spdlog::info(this->m_probaSpawnKamikaze);
 		this->m_timer = 3; // Time for the animation
 		IAudio& audioService = entt::ServiceLocator<IAudio>::ref();
 		audioService.stopAllSounds();

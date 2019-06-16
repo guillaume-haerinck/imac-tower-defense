@@ -2,6 +2,12 @@
 
 An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
+This is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/). If you're a french-speaker, you might consider to have a look at the [post-mortem](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport.md) (it has a lot of images) inside the `doc` folder. 
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
+</p>
+
 ## Table of Contents
 
 [**Features**](#features)
@@ -16,11 +22,14 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 [**Documentation**](#documentation)
   * [**Philosophy**](#philosophy)
   * [**Folder structure**](#folder-structure)
-  * [**Reference**](#code-reference)
 
 **Additional info**
   * [**Dependencies**](#dependencies)
   * [**Inspired by**](#inspired-by)
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v3.gif?raw=true" alt="SpriteSheet">
+</p>
 
 ## Features
 
@@ -104,8 +113,6 @@ If you add files, you will need to re-generate the cache for a successfull build
 
 #### `Option 3: VSCode`
 
-**WARNING: Does not work on windows with Visual Studio 2019 as the CMakeTools extension hasn't been updated for it yet. So use Visual Studio 2019 directly instead**
-
 You will need the `CMakeTools` extension from vector-of-bools. If you want to change the source code, I highly recommend using the `C/C++` extension from Microsoft and the `CMake` extension from twxs.
 
 ![Screenshot](doc/readme-img/vs-code-extensions.png?raw=true "VSCode extensions")
@@ -120,9 +127,15 @@ Before launching the compiled binaries, **make sure that the working directory i
 
 ## Documentation
 
-### Philosohy
+### Philosophy
 
-The project follows the **Entity Component System** design pattern.
+The project follows the **Entity Component System** design pattern. It has been made possible with the great [ENTT](https://github.com/skypjack/entt) library.
+
+Our game is concieved as a state machine, and works like this architecture :
+
+<p align="center">
+<img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/architecture-general.JPG?raw=true" alt="Event publisher">
+</p>
 
 ### Folder structure
 
@@ -151,10 +164,6 @@ The project follows the **Entity Component System** design pattern.
 | `shaders`					| GLSL shaders used by openGL for rendering |
 | **doc**					| **Documentation** |
 | **lib**					| **Dependencies** |
-
-### Code reference
-
-The reference for the code is built with [doxygen](http://www.doxygen.nl/).
 
 ## Dependencies
 

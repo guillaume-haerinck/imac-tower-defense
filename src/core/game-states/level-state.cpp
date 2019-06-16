@@ -26,6 +26,7 @@
 #include "components/transform.hpp"
 #include "components/tint-colour.hpp"
 #include "components/shoot-laser.hpp"
+#include "components/shoot-at.hpp"
 #include "components/constrained-rotation.hpp"
 #include "components/animated.hpp"
 #include "components/animation-alpha.hpp"
@@ -300,9 +301,10 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 		case LevelInteractionState::FREE:
 		case LevelInteractionState::INVALID:
 		{
-			// Get entity. If valid mirror rotate. If laser then switch on or off. Else invalid
+			// Get entity.
 			int entityId = m_game.level->getEntityOnTileFromProjCoord(event.mousePos.x, event.mousePos.y);
 			if (m_game.registry.valid(entityId)) {
+				//If valid mirror then rotate.
 				if (m_game.registry.has<entityTag::Mirror>(entityId)) {
 					changeState(LevelInteractionState::ROTATE);
 					m_game.registry.accommodate<stateTag::IsBeingControlled>(entityId);
@@ -311,9 +313,18 @@ void LevelState::onLeftClickDown(const evnt::LeftClickDown& event) {
 					m_lastSelectedEntity = entityId;
 					m_levelHud.setSelectedEntity(entityId);
 				}
+				//If tower then switch on or off
 				if (m_game.registry.has<cmpt::ShootLaser>(entityId)) {
 					cmpt::ShootLaser& shootLaser = m_game.registry.get<cmpt::ShootLaser>(entityId);
 					shootLaser.isActiv = !shootLaser.isActiv;
+				}
+				if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
+					if (m_game.registry.has<cmpt::ShootAt>(entityId)) {
+						m_game.registry.remove<cmpt::ShootAt>(entityId);
+					}
+					else {
+						m_game.registry.assign<cmpt::ShootAt>(entityId, SLOW_TOWER_TIME_BETWEEN_TWO_SHOTS);
+					}
 				}
 			}
 			else {
@@ -515,11 +526,19 @@ void LevelState::onMouseMove(const evnt::MouseMove& event) {
 					m_emitter.publish<evnt::ChangeCursor>(CursorType::ROTATION);
 				} else if (m_game.registry.has<towerTag::LaserTower>(entityId)) {
 					// TODO handle activated and desactivated towers
-					m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					if (m_game.registry.get<cmpt::ShootLaser>(entityId).isActiv) {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::DESACTIVATE);
+					}
+					else {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					}
 				} else if (m_game.registry.has<towerTag::SlowTower>(entityId)) {
-					//IDebugDraw& debugDraw = locator::debugDraw::ref();
-					//debugDraw.setColor(glm::vec4(0, 0, 0, 1));
-					//debugDraw.ellipse(30, 30, 32, 32);
+					if (m_game.registry.has<cmpt::ShootAt>(entityId)) {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::DESACTIVATE);
+					}
+					else {
+						m_emitter.publish<evnt::ChangeCursor>(CursorType::ACTIVATE);
+					}
 				}
 			} else {
 				m_emitter.publish<evnt::ChangeCursor>(CursorType::ARROW);
