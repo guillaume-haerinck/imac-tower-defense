@@ -43,6 +43,9 @@ public:
 	EventEmitter& emitter;
 	Level* level;
 
+	// Noesis
+	Noesis::Ptr<Noesis::RenderDevice> noesisDevice;
+
 	// ISystem
 	RenderSystem* renderSystem;
 	AnimationSystem* animationSystem;

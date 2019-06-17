@@ -28,7 +28,7 @@ bool Game::m_bInstanciated = false;
 bool Game::m_bInit = false;
 
 Game::Game(EventEmitter& emitter)
-:   m_window(nullptr), m_context(nullptr), emitter(emitter),
+:   m_window(nullptr), m_context(nullptr), noesisDevice(nullptr), emitter(emitter),
 	level(nullptr), m_state(GameState::TITLE_SCREEN), progression(emitter),
 
 	// Camera
@@ -249,6 +249,13 @@ int Game::init() {
 	GLCall(glDepthFunc(GL_LESS));
 	GLCall(glClearColor(1, 1, 1, 1));
 
+	// Noesis GUI
+	Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
+	Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
+	Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
+	Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
+	noesisDevice = NoesisApp::GLFactory::CreateDevice();
+
     // ImGui
     IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -257,12 +264,6 @@ int Game::init() {
     ImGui_ImplSDL2_InitForOpenGL(m_window, m_context);
 	ImGui_ImplOpenGL3_Init("#version 330");
 	ImGui::StyleColorsDark();
-
-    // Noesis GUI
-    Noesis::GUI::Init(noelog::errorHandler, noelog::messageCallback, nullptr);
-    Noesis::GUI::SetXamlProvider(Noesis::MakePtr<NoesisApp::LocalXamlProvider>("./res/gui"));
-    Noesis::GUI::SetTextureProvider(Noesis::MakePtr<NoesisApp::LocalTextureProvider>("./res/images"));
-    Noesis::GUI::SetFontProvider(Noesis::MakePtr<NoesisApp::LocalFontProvider>("./res/fonts"));
 
 	// Init Physics
 	/*
@@ -386,6 +387,9 @@ Game::~Game() {
 	locator::audio::reset();
 	locator::random::reset();
 	locator::helper::reset();
+
+	// Delete noesis device
+	noesisDevice.Reset();
 
 	// Delete systems
 	delete renderSystem;

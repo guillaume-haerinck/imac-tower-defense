@@ -10,7 +10,7 @@ LevelIntroState::LevelIntroState(Game& game) : IGameState(game), m_levelIntro(ga
 	m_xaml = m_levelIntro;
 	m_ui = Noesis::GUI::CreateView(m_xaml).GiveOwnership();
 	m_ui->SetIsPPAAEnabled(true);
-	m_ui->GetRenderer()->Init(NoesisApp::GLFactory::CreateDevice());
+	m_ui->GetRenderer()->Init(game.noesisDevice);
 	m_ui->SetSize(WIN_WIDTH, WIN_HEIGHT);
 }
 
