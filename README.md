@@ -4,6 +4,8 @@ An OpenGL 4.4 game made with Entity-Component-System design pattern.
 
 This is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/). If you're a french-speaker, you might consider to have a look at the [post-mortem](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport.md) (it has a lot of images) inside the `doc` folder. 
 
+The structure of this project is being improved in my next C++ game [Roll Goal](https://github.com/guillaume-haerinck/roll-goal/tree/master/sdl2). The main changes are : improved state machine with the pushdown automaton structure, the replacement of most events by singleton components, a render queue for the renderrer and an more elaborate and maintenable structure for rendering (materials, layers, ...).
+
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
 </p>
