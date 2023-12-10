@@ -13,30 +13,30 @@
 
 #if defined(NS_COMPILER_GCC)
 
-    #include <NsCore/KernelApi.h>
-    extern NS_CORE_KERNEL_API const uint32_t NsPrettyFunctionOffset;
-    
-    // Do not use char here because the output of __PRETTY_FUNCTION__ varies dependening of
-    // the namespace who calls NsTypeName()
-    template<class T> const char* NsTypeName(T* = 0)
-    {
-        return __PRETTY_FUNCTION__ + NsPrettyFunctionOffset;
-    }
+#include <NsCore/KernelApi.h>
+extern NS_CORE_KERNEL_API const uint32_t NsPrettyFunctionOffset;
+
+// Do not use char here because the output of __PRETTY_FUNCTION__ varies dependening of
+// the namespace who calls NsTypeName()
+template<class T> const char* NsTypeName(T* = 0)
+{
+	return __PRETTY_FUNCTION__ + NsPrettyFunctionOffset;
+}
 
 #else
 
 #ifdef NS_COMPILER_MSVC
-    // https://connect.microsoft.com/VisualStudio/feedback/details/1600701
-    #include <exception>
+	// https://connect.microsoft.com/VisualStudio/feedback/details/1600701
+#include <exception>
 #endif
 
-    #include <typeinfo.h>
+#include <typeinfo>
 
-    template<class T> const char* NsTypeName()
-    {
-        // raw_name() better than name() because it is smaller and we are going to use it to compare
-        return typeid(T).raw_name();
-    }
+template<class T> const char* NsTypeName()
+{
+	// raw_name() better than name() because it is smaller and we are going to use it to compare
+	return typeid(T).raw_name();
+}
 
 #endif
 
@@ -45,31 +45,31 @@
 namespace Noesis
 {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// TypeInfo, offers a first-class, comparable wrapper for types created with NS_TYPEID
-////////////////////////////////////////////////////////////////////////////////////////////////////
-class TypeInfo
-{
-public:
-    inline TypeInfo();
-    inline TypeInfo(const char* id);
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// TypeInfo, offers a first-class, comparable wrapper for types created with NS_TYPEID
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	class TypeInfo
+	{
+	public:
+		inline TypeInfo();
+		inline TypeInfo(const char* id);
 
-    inline bool operator==(const TypeInfo& typeInfo) const;
-    inline bool operator!=(const TypeInfo& typeInfo) const;
+		inline bool operator==(const TypeInfo& typeInfo) const;
+		inline bool operator!=(const TypeInfo& typeInfo) const;
 
-    inline bool operator<(const TypeInfo& typeInfo) const;
-    inline bool operator<=(const TypeInfo& typeInfo) const;
-    inline bool operator>(const TypeInfo& typeInfo) const;
-    inline bool operator>=(const TypeInfo& typeInfo) const;
+		inline bool operator<(const TypeInfo& typeInfo) const;
+		inline bool operator<=(const TypeInfo& typeInfo) const;
+		inline bool operator>(const TypeInfo& typeInfo) const;
+		inline bool operator>=(const TypeInfo& typeInfo) const;
 
-    inline const char* GetId() const;
+		inline const char* GetId() const;
 
-private:
-    TypeInfo& operator=(const TypeInfo&);
+	private:
+		TypeInfo& operator=(const TypeInfo&);
 
-private:
-    const char* const mId;
-};
+	private:
+		const char* const mId;
+	};
 
 }
 
