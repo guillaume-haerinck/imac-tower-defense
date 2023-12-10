@@ -114,7 +114,7 @@ void MovementSystem::update(float deltatime) {
 					m_registry.assign<cmpt::AnimationPixelsVanish>(entity, false);
 					m_registry.assign<stateTag::IsDisappearing>(entity);
 					m_registry.reset<cmpt::Health>(entity);
-					m_emitter.publish<evnt::EnemyReachedEnd>();
+					m_emitter.publish<evnt::EnemyReachedEnd>(entity);
 				}
 			}
 		}

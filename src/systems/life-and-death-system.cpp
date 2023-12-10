@@ -38,6 +38,11 @@ LifeAndDeathSystem::LifeAndDeathSystem(entt::DefaultRegistry& registry, EventEmi
 	});
 
 	m_emitter.on<evnt::EnemyReachedEnd>([this](const evnt::EnemyReachedEnd& event, EventEmitter & emitter) {
+		if (m_registry.has<enemyTag::Kamikaze>(event.entity))
+		{
+			return;
+		}
+
 		m_progression.reduceLifeBy(ENEMY_SURVIVE_LIFE_COST);
 		IHelper& helper = entt::ServiceLocator<IHelper>::ref();
 		helper.startScreenShake(SCREEN_SHAKE_DURATION);
