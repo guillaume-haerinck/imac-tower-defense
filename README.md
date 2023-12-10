@@ -1,10 +1,8 @@
 # Imac Tower Defense
 
-An OpenGL 4.4 game made with Entity-Component-System design pattern.
+An OpenGL 4.4 game made with Entity-Component-System design pattern. A gameplay video is [visible here](https://vimeo.com/892983458).
 
 This is a student project for the French engineering school [IMAC](https://www.ingenieur-imac.fr/). If you're a french-speaker, you might consider to have a look at the [post-mortem](https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport.md) (it has a lot of images) inside the `doc` folder. 
-
-The structure of this project is being improved in my next C++ game [Roll Goal](https://github.com/guillaume-haerinck/roll-goal/tree/master/sdl2). The main changes are : improved state machine with the pushdown automaton structure, the replacement of most events by singleton components, a render queue for the renderrer and an more elaborate and maintenable structure for rendering (materials, layers, ...).
 
 <p align="center">
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/title.png?raw=true" alt="Logo Projet">
@@ -33,30 +31,9 @@ The structure of this project is being improved in my next C++ game [Roll Goal](
 <img src="https://github.com/guillaume-haerinck/imac-tower-defense/blob/master/doc/rapport-img/v3.gif?raw=true" alt="SpriteSheet">
 </p>
 
-## Features
-
-### To-do list
-
-- [x] Integrate ECS system
-- [x] Load & play spritesheet
-- [x] Load, validate and interpret .itd files
-- [x] Load map as a grid
-- [x] User interface
-- [x] Play audio
-- [x] Object picking
-- [x] Construction system
-- [x] Monster path following
-- [x] Attack system
-- [x] Projectiles
-- [x] Waves system
-- [x] Banking system
-- [x] Switch levels
-- [x] Attack with raycasting
-- [x] Mirror towers
-- [ ] Level design
-- [ ] Tutorials
-
 ## Getting Started
+
+You can play the game directly if you download the [executable here](https://github.com/guillaume-haerinck/imac-tower-defense/releases/tag/1.0) (windows only).
 
 ### Prerequisites
 
